@@ -1,0 +1,42 @@
+﻿<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Performance /</span> Review
+    </h4>
+    <input type="hidden" id="PerformanceSettingId" value="@ViewBag.PerformanceSettingId" />
+    <div class="card" id="">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <table class="table">
+                        <tbody>
+                            @{
+                                if (ViewBag.FillPMS == true)
+                                {
+                                    <tr><td><a href="/Performance/MISView?snc=@ViewBag.SourceEmployee">Fill PMS</a></td></tr>
+                                }
+                            }
+                            @{
+                                if (ViewBag.FillPMSManager == true)
+                                {
+                                    <tr><td><a href="/Performance/MISView?snc=@ViewBag.SourceManager">Review As Manager</a></td></tr>
+                                }
+                            }
+                            @{
+                                if (ViewBag.FillPMSHOD == true)
+                                {
+                                    <tr><td><a href="/Performance/MISView?snc=@ViewBag.SourceHOD">Review As HOD</a></td></tr>
+                                }
+                            }
+                            @{
+                                if (ViewBag.FillPMS == false && ViewBag.FillPMSManager == false && ViewBag.FillPMSHOD == false)
+                                {
+                                    <tr><td><a href="javascript:void(0)">No PMS available at the moment</a></td></tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,273 @@
+﻿@model SimpliHR.Infrastructure.Models.Attendance.WorkFlowSettingsDTO
+@{
+    ViewData["Title"] = "WorkflowSettings";
+}
+<style>
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 18px;
+    }
+</style>
+
+<link rel="stylesheet" href="../../assets/vendor/libs/tagify/tagify.css" />
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Attendance /</span> Workflow Settings</h4>
+    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            @*<input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />*@
+            <button type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="tooltip"
+                    data-bs-offset="0,4"
+                    data-bs-placement="right"
+                    data-bs-html="true"
+                    style="float:right;"
+                    onclick="AddView()"
+                    title="Configure approval workflows for different HR modules.">
+                @*title="<i class='bx bx-trending-up bx-xs' ></i> <span>Add all existing departments within your company structure. For example: Marketing, Sales, HR.</span>">*@
+                Add Record
+            </button>
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Module</th>
+                            <th>Authority 1</th>
+                            <th>Authority 2</th>
+                            <th>Authority 3</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.WorkFlowSettingsList != null)
+                            @foreach (var item in Model.WorkFlowSettingsList)
+                            {
+                                <tr>
+
+                                    <td>@item.Name</td>
+
+                                    <td>@item.ModuleName</td>
+
+                                    <td>@(item.Authority1 == 1 ? "Manager" : item.Authority1 == 2 ? "HOD" : item.Authority1 == 3 ? "HR" : "None")</td>
+                                    <td>@(item.Authority2 == 1 ? "Manager" : item.Authority2 == 2 ? "HOD" : item.Authority2 == 3 ? "HR" : "None")</td>
+                                    <td>@(item.Authority3 == 1 ? "Manager" : item.Authority3 == 2 ? "HOD" : item.Authority3 == 3 ? "HR" : "None")</td>
+
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="/WorkFlowSettings/GetWorkflowSettingId/@item.EncryptedId"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="javascript:void(0)" onclick="deleteSetting('@item.EncryptedId')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div id="wizard-checkout" class="bs-stepper wizard-icons wizard-icons-example mt-2">
+            <div class="container selectMain pt">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/WorkFlowSettings/WorkflowSettings'" style="float:right" />
+                        <div style="clear:both"></div>
+
+                        <form method="post" action="/WorkFlowSettings/SaveWorkFlowSetting">
+
+                            <div class="row g-3 mt-3">
+                                <div class="col-md-6">
+                                    <label class="form-label required" for="">Name</label>
+                                    <input class="form-control" type="text" required name="Name" value="@Model.Name" id="" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="">Action</label>
+                                    <select id="" name="ActionId" class="select2 form-select" data-allow-clear="true">
+                                        <option value="">Select</option>
+                                        <option value="1" selected>Approved By</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label required" for="">Module</label>
+                                    <select id="" name="ModuleId" required class="select2 form-select" data-allow-clear="true">
+                                        <option value="">Select</option>
+                                        @if (Model.ModuleMasterList != null)
+                                            foreach (var item in Model.ModuleMasterList)
+                                            {
+                                                if (item.ModuleId == Model.ModuleId)
+                                                {
+                                                    <option value="@item.ModuleId" selected> @item.ModuleName</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.ModuleId"> @item.ModuleName</option>
+                                                }
+
+                                            }
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="">Description</label>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </div>
+                                @*
+                                <div class="col-md-6">
+                                <label class="form-label" for="">Select Level 1</label>
+                                <select id="" class="select2 form-select" data-allow-clear="true">
+                                <option value="">Select</option>
+                                <option value="1">Approved By</option>
+
+                                </select>
+                                </div>*@
+                                <div class="col-md-4">
+                                    <label class="form-label required" for="">Authority Level 1</label>
+                                    <select id="Authority1" required name="Authority1" class="select2 form-select" data-allow-clear="true">
+                                        <option value="">Select</option>
+                                        <option value="1">Manager</option>
+                                        <option value="2">HOD</option>                                      
+                                        <option value="3">None</option>
+
+                                    </select>
+                                </div>
+
+                                @* <div class="col-md-6">
+                                <label class="form-label" for="">Select Level 2</label>
+                                <select id="" class="select2 form-select" data-allow-clear="true">
+                                <option value="">Select</option>
+                                <option value="1">Approved By</option>
+
+                                </select>
+                                </div>*@
+                                <div class="col-md-4">
+                                    <label class="form-label required" for="">Authority Level 2</label>
+                                    <select id="Authority2" required name="Authority2" class="select2 form-select" data-allow-clear="true">
+                                        <option value="">Select</option>
+                                        <option value="1">Manager</option>
+                                        <option value="2">HOD</option>                                       
+                                        <option value="3">None</option>
+
+                                    </select>
+                                </div>
+
+                                @*  <div class="col-md-6">
+                                <label class="form-label" for="">Select Level 3</label>
+                                <select id="" class="select2 form-select" data-allow-clear="true">
+                                <option value="">Select</option>
+                                <option value="1">Approved By</option>
+
+                                </select>
+                                </div>*@
+                                <div class="col-md-4">
+                                    <label class="form-label required" for="">Authority Level 3</label>
+                                    <select id="Authority3" required name="Authority3" class="select2 form-select" data-allow-clear="true">
+                                        <option value="">Select</option>
+                                        <option value="1">Manager</option>
+                                        <option value="2">HOD</option>                                      
+                                        <option value="3">None</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="pt-4">
+                                <input type="hidden" id="hdnWorkflowSettingID" name="WorkFlowSettingsId" value="@Model.WorkFlowSettingsId" class="form-control" />
+                                <input type="hidden" id="hdnAuthority1" value="@Model.Authority1" class="form-control" />
+                                <input type="hidden" id="hdnAuthority2" value="@Model.Authority2" class="form-control" />
+                                <input type="hidden" id="hdnAuthority3" value="@Model.Authority3" class="form-control" />
+                                <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                                <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/WorkFlowSettings/WorkFlowSettings'">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<script src="../../assets/vendor/libs/tagify/tagify.js"></script>
+<script src="../../assets/js/forms-tagify.js"></script>
+*@
+
+@section scripts {
+
+    <script src="../../customjs/CommonFunction.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+            if ("@Model.DisplayMessage.ToLower()" != "_blank") {
+                if ("@Model.DisplayMessage.ToUpper()" == "ADDSUCCESS") {
+                    //jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                    $successalert("", "Transaction Successful!");
+                    ClearInputs()
+                }
+                else if ("@Model.DisplayMessage.ToUpper()" == "EDITSUCCESS") {
+                    //jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                    $successalert("", "Transaction Successful!");
+                    ClearInputs()
+                }
+                else if ("@Model.DisplayMessage.ToUpper()" == "DELETESUCCESS") {
+                    $successalert("", "Transaction Successful!");
+                    ClearInputs()
+                }
+                else if ("@Model.DisplayMessage.Trim()" != "") {
+                    $erroralert("", "@Model.DisplayMessage");
+                }
+            }
+            else {
+
+            }
+
+        });
+
+        function deleteSetting(EncryptedId) {
+            Swal.fire({ title: 'Are you sure?', text: "This will get deleted permanently!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, delete it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    window.location.href = "/WorkFlowSettings/DeleteWorkflowSetting/" + EncryptedId;
+                }
+            });
+        }
+
+        function ClearInputs() {
+
+            $("[name='Name']").val("");
+            $("[name='ActionId']").val("").change();
+            $("[name='ModuleId']").val("").change();
+            $("[name='Authority1']").val("").change();
+            $("[name='Authority2']").val("").change();
+            $("[name='Authority3']").val("").change();
+
+
+
+
+        }
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+        }
+
+        if (@Model.WorkFlowSettingsId != 0) {
+            $("#List").hide();
+            $("#Add").show();
+        }
+        else {
+            $("#List").show();
+            $("#Add").hide();
+        }
+
+
+        $('#Authority1').val(parseInt($("#hdnAuthority1").val()));
+        $('#Authority2').val(parseInt($("#hdnAuthority2").val()));
+        $('#Authority3').val(parseInt($("#hdnAuthority3").val()));
+
+    </script>
+}

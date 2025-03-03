@@ -1,0 +1,32 @@
+﻿@model SimpliHR.Infrastructure.Models.ProjectTracker.PTProjectPriorityMasterViewModel
+<div class="row" style="margin-top:25px;">
+    <div class="col-md-12">
+        <div class="table-responsive text-nowrap">
+            <table class="datatables-ajax table List">
+                <thead>
+                    <tr>
+                        <th>Priority</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        if (Model != null && Model.projectPriorityList != null)
+                        {
+                            foreach (var item in Model.projectPriorityList)
+                            {
+                                <tr>
+                                    <td>@item.Priority</td>
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="javascript:void(0)" onclick="AddPartialView('@item.encPriorityId')"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="javascript:void(0)" onclick="deleteRecord('@item.encPriorityId')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

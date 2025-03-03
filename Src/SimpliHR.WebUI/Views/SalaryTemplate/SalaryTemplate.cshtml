@@ -1,0 +1,571 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.SalaryTemplateDTOForSave
+<style>
+    .error {
+        color: red;
+    }
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll /</span> Salary Template</h4>
+
+    <div class="row">
+        <!-- User Content -->
+        @*  <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1 mb-4">
+        <div class="card-header d-flex justify-content-sm-between align-items-sm-center flex-column flex-sm-row">
+        <h5 class="card-title mb-sm-0 me-2">New Salary Template</h5>
+        </div>
+        </div>*@
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <!-- User Pills -->
+
+            <div class="nav-align-top mb-4">
+
+                <div class="tab-content">
+                    <div class="btn-group" id="EarningMaster">
+                        <button type="button" class="btn btn-outline-secondary dropdown-toggle btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                            Earnings
+                        </button>
+                        <ul class="dropdown-menu" style="">
+                            @{
+                                if (Model != null)
+                                {
+                                    if (Model.PayrollEarningComponentList != null)
+                                    {
+                                        if (Model.PayrollEarningComponentList.Count > 0)
+                                        {
+                                            foreach (var item in Model.PayrollEarningComponentList)
+                                            {
+                                                //if (item.SalaryComponentType.Trim() == "E")
+                                                //{
+                                                if (Model.SalaryComponentIds == null)
+                                                {
+                                                    <li>
+                                                        <a href="javascript:void(0);" SalaryComponentId="@item.SalaryComponentId" onclick="addToTemplate(this,'E','@item.NameInPaySlip','@item.SalaryComponentId','@item.CalculationType','@item.Percentage','@item.IsBasic')" class="dropdown-item d-flex align-items-center"><i class="bx bx-plus"></i>@item.NameInPaySlip</a>
+                                                    </li>
+                                                }
+                                                else
+                                                {
+                                                    if (!Model.SalaryComponentIds.Contains(item.SalaryComponentId))
+                                                    {
+                                                        <li>
+                                                            <a href="javascript:void(0);" SalaryComponentId="@item.SalaryComponentId" onclick="addToTemplate(this,'E','@item.NameInPaySlip','@item.SalaryComponentId','@item.CalculationType','@item.Percentage','@item.IsBasic')" class="dropdown-item d-flex align-items-center"><i class="bx bx-plus"></i>@item.NameInPaySlip</a>
+                                                        </li>
+                                                    }
+                                                    else
+                                                    {
+                                                        <li>
+                                                            <a href="javascript:void(0);" SalaryComponentId="@item.SalaryComponentId" style="display:none !important" onclick="addToTemplate(this,'E','@item.NameInPaySlip','@item.SalaryComponentId','@item.CalculationType','@item.Percentage','@item.IsBasic')" class="dropdown-item d-flex align-items-center"><i class="bx bx-plus"></i>@item.NameInPaySlip</a>
+                                                        </li>
+                                                    }
+                                                }
+
+
+                                                //}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <div class="btn-group" id="DeductionMaster">
+                        <button type="button" class="btn btn-outline-secondary dropdown-toggle btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                            Deductions
+                        </button>
+                        <ul class="dropdown-menu" style="">
+                            @{
+                                if (Model != null)
+                                {
+                                    if (Model.PayrollDeductionComponentList != null)
+                                    {
+                                        if (Model.PayrollDeductionComponentList.Count > 0)
+                                        {
+                                            foreach (var item in Model.PayrollDeductionComponentList)
+                                            {
+
+                                                if (Model.SalaryComponentIds == null)
+                                                {
+                                                    <li>
+                                                        <a href="javascript:void(0);" SalaryComponentId="@item.SalaryComponentId" onclick="addToTemplate(this,'D','@item.NameInPaySlip','@item.SalaryComponentId','@item.CalculationType','@item.Percentage',1)" class="dropdown-item d-flex align-items-center"><i class="bx bx-plus"></i>@item.NameInPaySlip</a>
+                                                    </li>
+                                                }
+                                                else
+                                                {
+                                                    if (!Model.SalaryComponentIds.Contains(item.SalaryComponentId))
+                                                    {
+                                                        <li>
+                                                            <a href="javascript:void(0);" SalaryComponentId="@item.SalaryComponentId" onclick="addToTemplate(this,'D','@item.NameInPaySlip','@item.SalaryComponentId','@item.CalculationType','@item.Percentage',1)" class="dropdown-item d-flex align-items-center"><i class="bx bx-plus"></i>@item.NameInPaySlip</a>
+                                                        </li>
+                                                    }
+                                                    else
+                                                    {
+                                                        <li>
+                                                            <a href="javascript:void(0);" SalaryComponentId="@item.SalaryComponentId" style="display:none !important" onclick="addToTemplate(this,'D','@item.NameInPaySlip','@item.SalaryComponentId','@item.CalculationType','@item.Percentage',1)" class="dropdown-item d-flex align-items-center"><i class="bx bx-plus"></i>@item.NameInPaySlip</a>
+                                                        </li>
+                                                    }
+                                                }
+
+
+
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        </ul>
+
+                    </div>
+                    <div class="btn-group" id="ReimbursementMaster">
+                        <button type="button" class="btn btn-outline-secondary dropdown-toggle btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                            Reimbursement
+                        </button>
+                        <ul class="dropdown-menu" style="">
+                            @{
+                                if (Model != null)
+                                {
+                                    if (Model.PayrollReimbursementComponentList != null)
+                                    {
+                                        if (Model.PayrollReimbursementComponentList.Count > 0)
+                                        {
+                                            foreach (var item in Model.PayrollReimbursementComponentList)
+                                            {
+
+                                                if (Model.SalaryComponentIds == null)
+                                                {
+                                                    <li>
+                                                        <a href="javascript:void(0);" SalaryComponentId="@item.SalaryComponentId" onclick="addToTemplate(this,'R','@item.NameInPaySlip','@item.SalaryComponentId','Flat','@item.AmountValue',1)" class="dropdown-item d-flex align-items-center"><i class="bx bx-plus"></i>@item.NameInPaySlip</a>
+                                                    </li>
+                                                }
+                                                else
+                                                {
+                                                    if (!Model.SalaryComponentIds.Contains(item.SalaryComponentId))
+                                                    {
+                                                        <li>
+                                                            <a href="javascript:void(0);" SalaryComponentId="@item.SalaryComponentId" onclick="addToTemplate(this,'R','@item.NameInPaySlip','@item.SalaryComponentId','Flat','@item.AmountValue',1)" class="dropdown-item d-flex align-items-center"><i class="bx bx-plus"></i>@item.NameInPaySlip</a>
+                                                        </li>
+                                                    }
+                                                    else
+                                                    {
+                                                        <li>
+                                                            <a href="javascript:void(0);" SalaryComponentId="@item.SalaryComponentId" style="display:none !important" onclick="addToTemplate(this,'R','@item.NameInPaySlip','@item.SalaryComponentId','Flat','@item.AmountValue',1)" class="dropdown-item d-flex align-items-center"><i class="bx bx-plus"></i>@item.NameInPaySlip</a>
+                                                        </li>
+                                                    }
+                                                }
+
+
+
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        </ul>
+
+                    </div>
+
+
+                    <div class="tab-pane fade show active" id="earnings" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="mb-3">
+                                            <label class="form-label" for="username">Template Name <span class="text-danger">*</span></label>
+                                            <input type="text" id="" asp-for="TemplateName" value="@Model.TemplateName" class="form-control" placeholder="" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-1">
+                                        <div class="mb-3">
+                                            <label class="form-label" for="">description</label>
+                                            <textarea class="form-control" asp-for="Description" id="" rows="2">@Model.Description</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-md-2">
+                                        <div>Annual CTC</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="basic-addon11">₹</span>
+                                            <input type="text" class="form-control" placeholder="" asp-for="AnnualCTC" value="@Model.AnnualCTC" aria-label="" aria-describedby="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive text-nowrap">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th width="26.5%">SALARY COMPONENTS</th>
+                                                <th width="23.5%">CALCULATION TYPE</th>
+                                                <th width="23%">MONTHLY AMOUNT</th>
+                                                <th width="27%" class="text-end">ANNUAL AMOUNT</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="4">
+                                                    <table class="table table-borderless" id="payTemplate">
+                                                        <tbody name="Earnings">
+                                                            <tr style="border-bottom:1px solid #cec8c8"><td style="padding-left:0 ;"><b>Earnings (+) </b> </td></tr>
+                                                            <tr style="display:none">
+                                                                <td width="25%" style="padding-left:0 ;">Basic<br><span class="text-muted">(50 )</span></td>
+                                                                <td width="25%">
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="">
+                                                                        <span class="input-group-text" id="basic-addon13">% of CTC</span>
+                                                                    </div>
+                                                                </td>
+                                                                <td width="25%" class="text-end">
+                                                                    <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="">
+                                                                </td>
+                                                                <td width="25%" class="text-end" style="padding-right:0 ;">₹ 12,50,004.00</td>
+                                                            </tr>
+                                                            <tr style="display:none">
+                                                                <td width="25%" style="padding-left:0 ;">
+                                                                    <label class="form-label" for="username">
+                                                                        Fixed Income
+                                                                        <i class="fa-solid fa-circle-info" data-bs-toggle="tooltip"
+                                                                           data-bs-offset="0,4"
+                                                                           data-bs-placement="top"
+                                                                           data-bs-html="true"
+                                                                           title="<span class='small'>Content comes here</span>"></i>
+                                                                    </label>
+                                                                    <div class="small">Monthly CTC - Sum of all other components</div>
+                                                                </td>
+                                                                <td width="25%">Fixed Amount</td>
+                                                                <td width="25%" class="text-end">0</td>
+                                                                <td width="25%" class="text-end" style="padding-right:0 ;">0</td>
+                                                            </tr>
+
+                                                            @{
+                                                                if (Model != null)
+                                                                {
+                                                                    if (Model.SalaryComponentIds != null)
+                                                                    {
+                                                                        foreach (var item in Model.SalaryComponentIds)
+                                                                        {
+                                                                            if (Model.PayrollEarningComponentList != null)
+                                                                            {
+                                                                                foreach (var item1 in Model.PayrollEarningComponentList)
+                                                                                {
+                                                                                    if (item1.SalaryComponentId == item)
+                                                                                    {
+                                                                                        string resTitle = Model.PayrollEarningComponentList.Where(x => x.SalaryComponentId == item).Select(x => x.NameInPaySlip).FirstOrDefault();
+                                                                                        string calType = Model.PayrollEarningComponentList.Where(x => x.SalaryComponentId == item).Select(x => x.CalculationType).FirstOrDefault();
+                                                                                        var calValue = Model.PayrollEarningComponentList.Where(x => x.SalaryComponentId == item).Select(x => x.Percentage).FirstOrDefault();
+                                                                                        var isBasic = Model.PayrollEarningComponentList.Where(x => x.SalaryComponentId == item).Select(x => x.IsBasic).FirstOrDefault();
+
+                                                                                        <tr SalaryComponentId="@item">
+                                                                                            <td width="25%" style="padding-left:0;">@resTitle<br><span class="text-muted"></span></td>
+                                                                                            <td width="25%">
+                                                                                                <div class="input-group">
+                                                                                                    <input type="text" value=@calValue class="form-control" placeholder="">
+                                                                                                    @if (@calType == "Flat")
+                                                                                                    {
+                                                                                                        <span class="input-group-text" id="basic-addon13">Fixed</span>
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        @if (@isBasic == true)
+                                                                                                        {
+                                                                                                            <span class="input-group-text" id="basic-addon13"> % of CTC</span>
+                                                                                                        }
+                                                                                                        else
+                                                                                                        {
+                                                                                                            <span class="input-group-text" id="basic-addon13"> % of Basic</span>
+                                                                                                        }
+
+                                                                                                    }
+
+                                                                                                </div>
+                                                                                            </td>
+                                                                                            <td width="25%" class="text-end"><input type="text" value="0" class="form-control" placeholder=""></td>
+                                                                                            <td width="25%" class="text-end" style="padding-right:0;">₹ 00.00 &nbsp;&nbsp;   <i style="color:red" class="fa fa-trash hvr-grow" onclick="deleteComponentFromTable(this,@item,'E')"></i> </td>
+                                                                                        </tr>
+                                                                                    }
+                                                                                }
+                                                                            }
+
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+
+
+                                                        </tbody>
+                                                        <tbody name="Reimbursement">
+                                                            <tr style="border-bottom:1px solid #cec8c8"><td style="padding-left:0 ;"> <b>Reimbursement (+)</b> </td></tr>
+
+                                                            @{
+                                                                if (Model != null)
+                                                                {
+                                                                    if (Model.SalaryComponentIds != null)
+                                                                    {
+                                                                        foreach (var item in Model.SalaryComponentIds)
+                                                                        {
+                                                                            if (Model.PayrollReimbursementComponentList != null)
+                                                                            {
+                                                                                foreach (var item1 in Model.PayrollReimbursementComponentList)
+                                                                                {
+                                                                                    if (item1.SalaryComponentId == item)
+                                                                                    {
+                                                                                        string resTitle = Model.PayrollReimbursementComponentList.Where(x => x.SalaryComponentId == item).Select(x => x.NameInPaySlip).FirstOrDefault();
+                                                                                        var calValue = Model.PayrollReimbursementComponentList.Where(x => x.SalaryComponentId == item).Select(x => x.AmountValue).FirstOrDefault();
+
+                                                                                        <tr SalaryComponentId="@item">
+                                                                                            <td width="25%" style="padding-left:0;">@resTitle<br><span class="text-muted"></span></td>
+                                                                                            <td width="25%">
+                                                                                                <div class="input-group">
+                                                                                                    <input type="text" value=@calValue class="form-control" placeholder="">
+                                                                                                    <span class="input-group-text" id="basic-addon13">Fixed</span>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                            <td width="25%" class="text-end"><input type="text" value="0" class="form-control" placeholder=""></td>
+                                                                                            <td width="25%" class="text-end" style="padding-right:0;">₹ 00.00 &nbsp;&nbsp;   <i style="color:red" class="fa fa-trash hvr-grow" onclick="deleteComponentFromTable(this,@item,'R')"></i> </td>
+                                                                                        </tr>
+                                                                                        //}
+
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+
+                                                        </tbody>
+                                                        <tbody name="Deduction">
+                                                            <tr style="border-bottom:1px solid #cec8c8"><td style="padding-left:0 ;"><b>Deduction (-)</b></td></tr>
+
+                                                            @{
+                                                                if (Model != null)
+                                                                {
+                                                                    if (Model.SalaryComponentIds != null)
+                                                                    {
+                                                                        foreach (var item in Model.SalaryComponentIds)
+                                                                        {
+                                                                            if (Model.PayrollDeductionComponentList != null)
+                                                                            {
+                                                                                foreach (var item1 in Model.PayrollDeductionComponentList)
+                                                                                {
+                                                                                    if (item1.SalaryComponentId == item)
+                                                                                    {
+                                                                                        string resTitle = Model.PayrollDeductionComponentList.Where(x => x.SalaryComponentId == item).Select(x => x.NameInPaySlip).FirstOrDefault();
+                                                                                        string calType = Model.PayrollDeductionComponentList.Where(x => x.SalaryComponentId == item).Select(x => x.CalculationType).FirstOrDefault();
+                                                                                        var calValue = Model.PayrollDeductionComponentList.Where(x => x.SalaryComponentId == item).Select(x => x.Percentage).FirstOrDefault();
+                                                                                        <tr SalaryComponentId="@item">
+                                                                                            <td width="25%" style="padding-left:0;">@resTitle<br><span class="text-muted"></span></td>
+                                                                                            <td width="25%">
+                                                                                                <div class="input-group">
+                                                                                                    <input type="text" value=@calValue class="form-control" placeholder="">
+                                                                                                    @if (@calType == "Flat")
+                                                                                                    {
+                                                                                                        <span class="input-group-text" id="basic-addon13">Fixed</span>
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        <span class="input-group-text" id="basic-addon13">% of Basic</span>
+                                                                                                    }
+                                                                                                </div>
+                                                                                            </td>
+                                                                                            <td width="25%" class="text-end"><input type="text" value="0" class="form-control" placeholder=""></td>
+                                                                                            <td width="25%" class="text-end" style="padding-right:0;">₹ 00.00 &nbsp;&nbsp;   <i style="color:red" class="fa fa-trash hvr-grow" onclick="deleteComponentFromTable(this,@item,'D')"></i> </td>
+                                                                                        </tr>
+                                                                                        //}
+
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+
+                                            <tr class="bg-label-info" style="color: #607387!important;">
+                                                <td width="26.5%">Cost to company</td>
+                                                <td width="23.5%">Fixed Amount</td>
+                                                <td width="24%" class="text-end">0</td>
+                                                <td width="26%" class="text-end">0</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="row mt-1">
+                                    <div class="col-md-12">
+                                        <input type="hidden" id="" asp-for="SalaryTemplateId" class="form-control" value="@(Model.SalaryTemplateId==null ? 0 : Model.SalaryTemplateId)" />
+                                        <input type="button" name="ManageSalaryTemplate" value="Submit" class="btn btn-info btn-sm" />
+                                        <input type="button" name="" onclick="window.location.href='/SalaryTemplate/SalaryTemplateList'" value="Cancel" class="btn btn-warning btn-sm" />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+            </div>
+            <!--/ User Pills -->
+
+        </div>
+        <!--/ User Content -->
+    </div>
+
+
+
+</div>
+
+
+@section scripts {
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+        });
+
+        function addToTemplate(currObj, orien, NameInPaySlip, salaryComponentId, CalculationType, Percentage, IsBasic) {
+            if (orien == "E") {              
+                //alert(CalculationType);
+                if (CalculationType.trim() == 'Flat')
+                    $("#payTemplate tbody[name='Earnings']").append('<tr SalaryComponentId="' + salaryComponentId + '">     <td width="25%" style="padding-left:0;">' + NameInPaySlip + '<br><span class="text-muted"></span></td>   <td width="25%"><div class="input-group"><input type="text" value=' + Percentage + ' class="form-control" placeholder="">  <span class="input-group-text" id="basic-addon13"> Fixed</span></div>      </td>  <td width="25%" class="text-end"><input type="text" value="0" class= "form-control" placeholder=""></td>  <td width="25%" class="text-end" style="padding-right:0;">₹ 00.00&nbsp;&nbsp;   <i style="color:red" class="fa fa-trash hvr-grow" onclick="deleteComponentFromTable(this,' + salaryComponentId + ',\'' + orien + '\')"></i></td></tr>');
+                if (NameInPaySlip.trim().toUpperCase() == 'BASIC') {                  
+                    $("#payTemplate tbody[name='Earnings']").append('<tr SalaryComponentId="' + salaryComponentId + '">     <td width="25%" style="padding-left:0;">' + NameInPaySlip + '<br><span class="text-muted"></span></td>   <td width="25%"><div class="input-group"><input type="text" value=' + Math.round(Percentage) + ' class="form-control" placeholder="">  <span class="input-group-text" id="basic-addon13">% of CTC</span></div>      </td>  <td width="25%" class="text-end"><input type="text" value="0" class= "form-control" placeholder=""></td>  <td width="25%" class="text-end" style="padding-right:0;">₹ 00.00&nbsp;&nbsp;   <i style="color:red" class="fa fa-trash hvr-grow" onclick="deleteComponentFromTable(this,' + salaryComponentId + ',\'' + orien + '\')"></i></td></tr>');
+                }
+                else if (CalculationType.trim() == 'Percentage') {                    
+                    $("#payTemplate tbody[name='Earnings']").append('<tr SalaryComponentId="' + salaryComponentId + '">     <td width="25%" style="padding-left:0;">' + NameInPaySlip + '<br><span class="text-muted"></span></td>   <td width="25%"><div class="input-group"><input type="text" value=' + Math.round(Percentage) + ' class="form-control" placeholder="">  <span class="input-group-text" id="basic-addon13">% of Basic</span></div>      </td>  <td width="25%" class="text-end"><input type="text" value="0" class= "form-control" placeholder=""></td>  <td width="25%" class="text-end" style="padding-right:0;">₹ 00.00&nbsp;&nbsp;   <i style="color:red" class="fa fa-trash hvr-grow" onclick="deleteComponentFromTable(this,' + salaryComponentId + ',\'' + orien + '\')"></i></td></tr>');
+                }
+            }
+            else if (orien == "R") {
+                $("#payTemplate tbody[name='Reimbursement']").append('<tr SalaryComponentId="' + salaryComponentId + '">   <td width="25%" style="padding-left:0;">' + NameInPaySlip + '<br><span class="text-muted"></span></td>  <td width="25%"><div class="input-group"><input type="text" value=' + Percentage + ' class="form-control" placeholder="">  <span class="input-group-text" id="basic-addon13">Fixed</span></div>    </td> <td width="25%" class="text-end"><input type="text" value="0" class= "form-control" placeholder=""></td> <td width="25%" class="text-end" style="padding-right:0;">₹ 00.00&nbsp;&nbsp;   <i style="color:red" class="fa fa-trash hvr-grow" onclick="deleteComponentFromTable(this,' + salaryComponentId + ',\'' + orien + '\')"></i></td></tr>');
+            }
+            else if (orien == "D") {
+                if (CalculationType.trim() == 'Flat')
+                $("#payTemplate tbody[name='Deduction']").append('<tr SalaryComponentId="' + salaryComponentId + '">   <td width="25%" style="padding-left:0;">' + NameInPaySlip + '<br><span class="text-muted"></span></td>    <td width="25%"><div class="input-group"><input type="text" value=' + Percentage + ' class="form-control" placeholder="">   <span class="input-group-text" id="basic-addon13">Fixed</span></div>    </td> <td width="25%" class="text-end"><input type="text" value="0" class= "form-control" placeholder=""></td> <td width="25%" class="text-end" style="padding-right:0;">₹ 00.00&nbsp;&nbsp;   <i style="color:red" class="fa fa-trash hvr-grow" onclick="deleteComponentFromTable(this,' + salaryComponentId + ',\'' + orien + '\')"></i></td></tr>');
+                else
+                    $("#payTemplate tbody[name='Deduction']").append('<tr SalaryComponentId="' + salaryComponentId + '">   <td width="25%" style="padding-left:0;">' + NameInPaySlip + '<br><span class="text-muted"></span></td>    <td width="25%"><div class="input-group"><input type="text" value=' + Math.round(Percentage) + ' class="form-control" placeholder="">   <span class="input-group-text" id="basic-addon13">% of Basic</span></div>    </td> <td width="25%" class="text-end"><input type="text" value="0" class= "form-control" placeholder=""></td> <td width="25%" class="text-end" style="padding-right:0;">₹ 00.00&nbsp;&nbsp;   <i style="color:red" class="fa fa-trash hvr-grow" onclick="deleteComponentFromTable(this,' + salaryComponentId + ',\'' + orien + '\')"></i></td></tr>');
+
+            }
+
+            $(currObj).css("display", "none");
+            $(currObj).removeClass("d-flex");
+        }
+
+        $("[name='ManageSalaryTemplate']").click(function () {
+            if (!ValidateSalaryTemplate()) {
+                return;
+            }
+            let SalaryComponentIds = [];
+            $("#payTemplate tbody").each(function () {
+                let $tbody = $(this);
+                $tbody.find("tr").each(function () {
+                    let $tr = $(this);
+                    $tr.each(function () {
+                        let $currObj = $(this);
+                        let SalaryComponentId = $currObj.attr("SalaryComponentId");
+                        if (SalaryComponentId != undefined) {
+                            if (SalaryComponentId != null) {
+                                if ($.trim(SalaryComponentId) != "") {
+                                    SalaryComponentIds.push(SalaryComponentId);
+                                }
+                            }
+                        }
+                    });
+                });
+            });
+            let TemplateName = $("[name='TemplateName']").val();
+            let Description = $("[name='Description']").val();
+            let AnnualCTC = $("[name='AnnualCTC']").val();
+            let SalaryTemplateId = $("[name='SalaryTemplateId']").val();
+
+            if (SalaryComponentIds.length == 0) {
+                $erroralert("Error!", "Please select atleast one Salary Component");
+                return false;
+            }
+            BlockUI();
+            jQuery.ajax({
+                type: "POST",
+                url: "/SalaryTemplate/ManageSalaryTemplate/",
+                data: { SalaryComponentIds: SalaryComponentIds, SalaryTemplateId: SalaryTemplateId, TemplateName: TemplateName, Description: Description, AnnualCTC: AnnualCTC },
+                cache: false,
+                dataType: "json",
+                success: function (data) {
+
+
+                    window.location.href = "/SalaryTemplate/SalaryTemplateList";
+                    UnblockUI();
+                    //sessionStorage.setItem('AllMenus', JSON.stringify(data));
+                    //handleSample1();
+                },
+                error: function (result) {
+                    UnblockUI();
+                    $erroralert("Error!", result.responseText + "!")
+                }
+            });
+        });
+
+        function ValidateSalaryTemplate() {
+            var isValid = true;
+
+            let TemplateName = $("[name='TemplateName']").val();
+
+            if ($.trim(TemplateName) == "") {
+                if (!$("[name='TemplateName']").hasClass("error")) {
+                    var name = $("[name='TemplateName']").attr('name');
+                    $("[name='TemplateName']").addClass("error");
+                    $("[name='TemplateName']").parent().append('<span id="' + name + '-error" class="error" for="' + name + '">This field is required</span>');
+                    //$('<span id="' + name + '-error" class="error" for="' + name + '">This field is required</span>').insertAfter(this);
+                }
+                isValid = false;
+            }
+
+            //let divname = "divMapRoles";
+            //var inputs = $("div[name='" + divname + "']").find($('input[required]'));
+            //var selects = $("div[name='" + divname + "']").find($('select[required]'));
+            //selects.each(function () {
+            //    if ($.trim($(this).val()) == "") {
+            //        if (!$(this).hasClass("error")) {
+            //            var name = $(this).attr('name');
+            //            $(this).addClass("error");
+
+            //            $(this).parent().append('<span id="' + name + '-error" class="error" for="' + name + '">This field is required</span>');
+
+            //            //$('<span id="' + name + '-error" class="error" for="' + name + '">This field is required</span>').insertAfter(this);
+            //        }
+            //        isValid = false;
+            //    }
+            //});
+            return isValid;
+        }
+        function deleteComponentFromTable(tblCurrObj, Id, Orien) {
+            if (Orien == "E") {
+                let currObj = $("#EarningMaster").find("ul").find("li").find("a[SalaryComponentId='" + Id + "']")
+                $(currObj).css("display", "");
+                $(currObj).addClass("d-flex");
+            }
+            else if (Orien == "D") {
+                let currObj = $("#DeductionMaster").find("ul").find("li").find("a[SalaryComponentId='" + Id + "']")
+                $(currObj).css("display", "");
+                $(currObj).addClass("d-flex");
+            }
+            else if (Orien == "R") {
+                let currObj = $("#ReimbursementMaster").find("ul").find("li").find("a[SalaryComponentId='" + Id + "']")
+                $(currObj).css("display", "");
+                $(currObj).addClass("d-flex");
+            }
+
+
+            $(tblCurrObj).parent().parent().remove();
+        }
+    </script>
+
+}

@@ -1,0 +1,451 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.EmployeeSalaryTemplateMappingViewModel
+@{
+    ViewData["Title"] = "Employee Salary Template Mapping";
+}
+
+<style>
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+</style>
+
+<link rel="stylesheet" href="../../assets/vendor/libs/tagify/tagify.css" />
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll /</span> Employee Salary Template Mapping</h4>
+    <div class="card addShow" id="List" @(Model.ViewScreen.ToUpper() == "LIST" ? "" : Html.Raw("style=\'display:none\'"))>
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table table-bordered List" id="ListTable">
+                    <thead>
+                        <tr>
+                            <th>Mapping Name</th>
+                            <th>Template Name</th>
+                            <th>Department</th>
+                            <th>Employees</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    @if (@Model.EmployeeSalaryTemplateMappingList != null)
+                    {
+                        <tbody>
+                            @foreach (var item in @Model.EmployeeSalaryTemplateMappingList)
+                            {
+                                string department = "All Departemnts";
+                                if (item.DepartmentId != 0)
+                                    department = @Model.DepartmentKeyValues.Where(r => r.DepartmentId == item.DepartmentId).Select(x => x.DepartmentName).FirstOrDefault();
+                                <tr>
+                                    <td>@item.MappingName</td>
+                                    <td>@item.TemplateName</td>
+                                    <td>@department</td>
+                                    <td><a href="#" onclick="ShowEmployee('@item.EncryptedEmployeeSalaryTemplateId')">@(item.EmployeesSelection == 1 ? "All Employees" : item.EmployeesSelection == 2 ? "Custom" : "")</a></td>
+                                    <td>
+                                        <button class="btn btn-primary" onclick="window.location.href='/PayrollSalary/GetEmployeeSalaryTemplateMapping/@item.EncryptedEmployeeSalaryTemplateId'">Edit</button>
+                                        <button class="btn btn-primary" onclick="DeleteRecord('@item.MappingName','@item.EncryptedEmployeeSalaryTemplateId')"> Delete</button>
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    }
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <form id="showAlert" class="row g-3" onsubmit="return false">
+                    <div class="modal-body">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center mb-4">
+                        </div>
+
+                        <div class="col-12 text-center" id="successDiv">
+                            <p id="errorPara" class="error" style="color:red"></p>
+                        </div>
+                        <div class="col-12 text-center" id="errorDiv">
+                            <p id="successPara" class="error" style="color:black"></p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 text-center">
+                        @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                        <button type="reset" id="btnClose"
+                                class="btn btn-label-secondary btn-reset mt-3"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                            Close
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="showEmployee" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <form id="showMappedEmployee" class="row g-3" onsubmit="return false">
+                    <div class="modal-body">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        @* <div class="row g-3">
+                        <div class="col-md-6">
+                        <label for="defaultInput" class="form-label required">Mapping Name</label>
+                        <input id="Mapping_Name" name="Mapping_Name" class="form-control" type="text" disabled />
+                        </div>
+                        <div class="col-md-6">
+                        <label for="defaultInput" class="form-label required">Tamplate Name</label>
+                        <input id="Template_Name" name="Template_Name" class="form-control" type="text" disabled />
+                        </div>
+                        </div>*@
+                        <table class="datatables-ajax table table-bordered List" id="ListDetailTable">
+                            <thead>
+                                <tr>
+                                    <th>Employee Name</th>
+                                </tr>
+                            </thead>
+                            @* @if (@Model.EmployeeSalaryTemplateDetailList != null)
+                            {
+                            <tbody>
+                            @foreach (var item in @Model.EmployeeSalaryTemplateDetailList)
+                            {
+                            //var department = @Model.DepartmentKeyValues.Where(r => r.DepartmentId == item.DepartmentId).Select(x => x.DepartmentName).FirstOrDefault();
+                            <tr>
+                            <td>@(Model.EmployeeKeyValues.Where(x=>x.EmployeeId==item.EmployeeId).Select(r=>r.EmployeeName).FirstOrDefault())</td>
+                            </tr>
+                            }
+
+                            </tbody>
+                            }*@
+                        </table>
+
+                    </div>
+
+                    <div class="col-12 text-center">
+                        @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                        <button type="reset" id="btnClose"
+                                class="btn btn-label-secondary btn-reset mt-3"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                            Close
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" id="Add" @(Model.ViewScreen.ToUpper() == "ADD" || Model.ViewScreen.ToUpper() == "EDIT" ? "" : Html.Raw("style=\'display:none\'"))>
+        <div id="wizard-checkout" class="bs-stepper wizard-icons wizard-icons-example mt-2">
+            <div class="container selectMain">
+                <div class="card-body">
+                    <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/PayrollSalary/EmployeeSalaryTemplateMapping/'" style="float:right" />
+                    <div style="clear:both"></div>
+                    <!--<h5 class="card-header">Roster Details</h5>-->
+                    <form id="EmployeeTemplateMappingForm" onsubmit="return false">
+                        @*   <div class="row g-3" id="errorDiv"><p id="errorPara" class="error" style="color:red"></p></div>*@
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="defaultInput" class="form-label required">Mapping Name</label>
+                                <input id="MappingName" name="MappingName" required value="@Model.EmployeeSalaryTemplateMapping.MappingName" class="form-control dbcol clearForm" type="text" placeholder="Default input" />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="defaultInput" class="form-label required">Tamplate Name</label>
+                                @Html.DropDownList("SalaryTemplateId",new SelectList(Model.SalaryTemplateKeyValues,"SalaryTemplateId", "TemplateName", Model.EmployeeSalaryTemplateMapping.SalaryTemplateId),"Select Template",htmlAttributes: new { @class = "form-select dbcol clearForm" ,@name="SalaryTemplateId"})
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label required" for="">Select Department</label>
+                                @Html.DropDownList("DepartmentId",new SelectList(Model.DepartmentKeyValues,"DepartmentId", "DepartmentName", Model.EmployeeSalaryTemplateMapping.DepartmentId),"All Departments",htmlAttributes: new { @class = "form-select dbcol clearForm" ,@name="DepartmentId",@onchange = "GetEmployeeOfDepartments()"})
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="multicol-last-name">Employees</label>
+                                <div class="col mt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input name="EmployeesSelection"
+                                               value="1"
+                                               class="form-check-input dbcol"
+                                               type="radio"
+                                               id="EmployeesSelection_1"
+                                        @((Model.EmployeeSalaryTemplateMapping.EmployeesSelection == null || Model.EmployeeSalaryTemplateMapping.EmployeesSelection == 1) ? Html.Raw("checked=\'checked\'") : "") />
+                                        <label class="form-check-label" for="collapsible-address-type-home">All</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input name="EmployeesSelection"
+                                               value="2"
+                                               class="form-check-input dbcol"
+                                               type="radio"
+                                               id="EmployeesSelection_2"
+                                        @(Model.EmployeeSalaryTemplateMapping.EmployeesSelection == 2 ? Html.Raw("checked=\'checked\'") : "") />
+                                        <label class="form-check-label" for="collapsible-address-type-office">Custom</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12" id="dvEmployee" style="display:none;">
+                                <label for="TagifyUserList" class="form-label">Select Employees</label>
+                                @Html.DropDownList("EmployeeId",new SelectList(Model.EmployeeKeyValues,"EmployeeId", "EmployeeName"),"All Employees",htmlAttributes: new { @class="select2 form-select select2-hidden-accessible dbcol clearForm", @multiple="multiple"})
+                            </div>
+                        </div>
+
+                        <div class="pt-4">
+                            <input type="hidden" id="MappingEmployeeIds" name="MappingEmployeeIds" class="form-control dbcol" value="@Model.EmployeeSalaryTemplateMapping.MappingEmployeeIds" />
+                            <input type="hidden" id="UnitId" name="UnitId" class="dbcol" value="@Model.UnitId" />
+                            <button type="button" class="btn btn-primary" onclick="SaveEmployeeSalaryTemplateMapping()">Submit</button>
+                            <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/PayrollSalary/EmployeeSalaryTemplateMapping/'">Cancel</button>
+                            <input type="hidden" id="EmployeeSalaryTemplateId" name="EmployeeSalaryTemplateId" class="dbcol" value="@Model.EmployeeSalaryTemplateMapping.EmployeeSalaryTemplateId" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*<script src="../../assets/vendor/libs/tagify/tagify.js"></script>
+<script src="../../assets/js/forms-tagify.js"></script>*@
+<script src="~/customjs/commonfunction.js"></script>
+<script src="~/customjs/employeevalidation.js"></script>
+
+@section scripts {
+
+
+    <script type="text/javascript">
+
+        jQuery(document).ready(function () {
+            jQuery(".List").dataTable();
+            if ("@Model.DisplayMessage.Trim().ToUpper()" != "_BLANK") {
+                ShowServerMessage("@Model.DisplayMessage")
+            }
+            if (jQuery("#DepartmentId").val() != "") {
+                jQuery("#DepartmentId option[value='" + jQuery("#DepartmentId").val() + "']").prop("selected", true).change();
+                // GetEmployeeOfDepartments();
+            }
+            else {
+                jQuery.each(jQuery("#MappingEmployeeIds").val().split(","), function (i, e) {
+                    jQuery("#EmployeeId option[value='" + e + "']").prop("selected", true);
+                });
+            }
+        });
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                if (sMsg.toUpperCase() == "SUCCESS") {
+                    sMsg = "Salary Template Mapping completed successfully";
+                    jQuery("#successDiv").show();
+                    jQuery("#successPara").html(sMsg);
+                    ResetForm();
+                    //window.href.location = "/PayrollSalary/EmployeeSalaryTemplateMapping"
+                }
+                else {
+                    jQuery("#errorDiv").show();
+                    jQuery("#errorPara").html(sMsg);
+                }
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+            }
+        }
+
+        jQuery(':radio[name=EmployeesSelection]').change(function () {
+            var value = jQuery(this).val();
+            if (value == '2') {
+                jQuery('#dvEmployee').show();
+            }
+            else {
+                jQuery('#dvEmployee').hide();
+            }
+        });
+
+        jQuery("#DepartmentId").change(function () {
+            var select = document.getElementById('MappingEmployeeIds');
+            var selected = [...select.options]
+                .filter(option => option.selected)
+                .map(option => option.value);
+            jQuery("#DepartmentId").val(selected);
+        });
+
+        function GetEmployeeOfDepartments() {
+            var unitId = jQuery("#UnitId").val();
+            var departmentId = jQuery("#DepartmentId").val();
+            jQuery("#EmployeeId").html("")
+            if (departmentId != "") {
+                var formParam = unitId + "&" + departmentId + "&true";
+                BlockUI();
+                jQuery.ajax({
+                    type: "GET",
+                    url: '/EmployeeAttendanceUI/EmployeeKeyValue/' + formParam,
+                    //data: formParam,
+                    success: function (response) {
+                        UnblockUI();
+                        PopulateDropDown('EmployeeId', response, '@Model.EmployeeSalaryTemplateMapping.DepartmentId', 'employeeId', 'employeeName', 'All Employees')
+
+                        if ("@Model.EmployeeSalaryTemplateMapping.EmployeesSelection" == 2) {
+                            jQuery('#dvEmployee').show();
+                        }
+                        jQuery.each(jQuery("#MappingEmployeeIds").val().split(","), function (i, e) {
+                            jQuery("#EmployeeId option[value='" + e + "']").prop("selected", true);
+                        });
+
+
+                    },
+                    failure: function (response) {
+                        UnblockUI();
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+        }
+
+
+        function ShowEmployee(id) {
+            var url = "/PayrollSalary/GetEmployeeSalaryTemplateDetail/" + id
+            BlockUI();
+            jQuery.ajax({
+                type: "GET",
+                url: url,
+                success: function (data) {
+                    UnblockUI();
+                    if (data.displayMessage.toUpperCase() == "SUCCESS") {
+                        PopulateSalaryTemplateDetailTable(data.employeeSalaryTemplateDetailList, "ListDetailTable");
+                        jQuery("#showEmployee").modal('show');
+                    }
+                    else {
+                        ShowServerMessage(data.displayMessage);
+                    }
+                },
+                error: function (result) {
+                    UnblockUI();
+                    var x = 1;
+                    jQuery("#FormName").val("");
+                }
+            });
+        }
+
+        function PopulateSalaryTemplateDetailTable(data, tableID) {
+            var tableCtrl = jQuery("#" + tableID);
+            jQuery("#" + tableID + " tr").slice(1).remove();
+            data.forEach(function (row) {
+                var tr = jQuery('<tr>');
+                tr.append('<td><span>' + row["employeeName"] + '</span></td>');
+                tableCtrl.append(tr);
+            });
+
+        }
+
+        function ResetForm() {
+            jQuery("#EmployeeTemplateMappingForm")[0].reset();
+        }
+
+        function ListView() {
+            jQuery("#Add").hide();
+            jQuery("#List").show();
+            ClearFrom();
+        }
+        function AddView() {
+            jQuery("#Add").show();
+            jQuery("#List").hide();
+            ClearFrom();
+        }
+
+        function DeleteRecord(mappingName, id) {
+            if (confirm("Sure want to delete '" + mappingName + "' Salary Template Mapping!")) {
+                var url = "/PayrollSalary/DeleteEmployeeSalaryTemplateMappingInfo/" + id
+                BlockUI();
+                jQuery.ajax({
+                    type: "GET",
+                    url: url,
+                    success: function (data) {
+                        UnblockUI();
+                        if (data.toUpperCase() == "SUCCESS") {
+                            jQuery("#btnClose").click(function () {
+                                window.location.href = "/PayrollSalary/EmployeeSalaryTemplateMapping/"
+                            });
+                            data = "Mapping '" + mappingName + "' deleted successfully"
+                            ShowServerMessage(data);
+                        }
+                        else {
+                            ShowServerMessage(data);
+                        }
+                    },
+                    error: function (result) {
+                        UnblockUI();
+                        var x = 1;
+                        jQuery("#FormName").val("");
+                    }
+                });
+            }
+            return false
+        }
+
+        function SaveEmployeeSalaryTemplateMapping() {
+            var rowData = {};
+            var formVM = {};
+            var isData = false;
+            var sMsg = "";
+            var dataCollection = new Array();
+            formVM.EmployeeSalaryTemplateMapping = GetFormControls();
+            formVM.EmployeeSalaryTemplateMapping.MappingEmployeeIds = formVM.EmployeeSalaryTemplateMapping.EmployeeId.toString();
+
+            if (formVM.EmployeeSalaryTemplateMapping.MappingName == "")
+                sMsg = "Mapping Name cannot be left blank<br>";
+            if (formVM.EmployeeSalaryTemplateMapping.SalaryTemplateId == "")
+                sMsg = sMsg + "Select the Salary Template";
+            if (sMsg != "") {
+                ShowServerMessage(sMsg);
+                return false;
+            }
+
+
+            //payrollComponentVM.EmployeeSalaryTemplateMapping.SalaryComponentId = jQuery("#SalaryComponentId").val()
+            var url = "/PayrollSalary/SaveEmployeeSalaryTemplateMapping"
+            BlockUI();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: { employeeSalaryTemplateMappingVM: formVM },
+                //cache: false,
+                //contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                success: function (data) {
+                    UnblockUI();
+                    if (data.displayMessage.toUpperCase() == "SUCCESS") {
+                        jQuery("#btnClose").click(function () {
+                            window.location.href = "/PayrollSalary/EmployeeSalaryTemplateMapping"
+                        });
+                        ShowServerMessage(data.displayMessage);
+                    }
+                    else {
+                        ShowServerMessage(data.displayMessage);
+                    }
+                },
+                error: function (result) {
+                    UnblockUI();
+                    var x = 1;
+                    jQuery("#FormName").val("");
+                }
+            });
+        }
+
+        jQuery("#MappingEmployeeIds").change(function () {
+            var select = document.getElementById('EmployeeId');
+            var selected = [...select.options]
+                .filter(option => option.selected)
+                .map(option => option.value);
+            // alert(selected);
+            jQuery("#MappingEmployeeIds").val(selected);
+        });
+
+    </script>
+    }

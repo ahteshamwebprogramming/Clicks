@@ -1,0 +1,283 @@
+﻿@model SimpliHR.Infrastructure.Models.ITDeclaration.ItDeclarationHouseRentDetailDTO
+@using System.Globalization;
+@{
+
+    string[] months = new string[12];
+    months[0] = "January";
+    months[1] = "February";
+    months[2] = "March";
+    months[3] = "April";
+    months[4] = "May";
+    months[5] = "June";
+    months[6] = "July";
+    months[7] = "August";
+    months[8] = "September";
+    months[9] = "October";
+    months[10] = "November";
+    months[11] = "December";
+    string[] years = new string[12];
+    years[0] = "2020";
+    years[1] = "2021";
+    years[2] = "2022";
+    years[3] = "2023";
+    years[4] = "2024";
+    years[5] = "2025";
+    years[6] = "2026";
+    years[7] = "2027";
+    years[8] = "2028";
+    years[9] = "2029";
+    years[10] = "2030";
+    years[11] = "2031";
+}
+
+<div>
+    <div class="float-start"><h6>House Rent Details</h6></div>
+    <div class="float-end"><i class="fa-solid fa-xmark" onclick="removeHouseRentDetailDiv(this,@(Model==null ? 0 : Model.ItDeclarationHouseRentDetailsId))"></i></div>
+    <div class="clearfix"></div>
+    <input type="hidden" value="@(Model==null ? 0 : Model.ItDeclarationHouseRentDetailsId)" name="ItDeclarationHouseRentDetailsId" />
+    <input type="hidden" value="@(Model==null ? "" : Model.Regime)" name="Regime" />
+    <input type="hidden" value="@(Model==null ? "" : Model.FY)" name="FY" />
+
+</div>
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label class="form-label @(Model.Regime=="Old" ? "required" : "")" for="username">Period From</label>
+        <div class="input-group">
+            <select class="form-select inptgrps @(Model.Regime=="Old" ? "required" : "")" name="MonthFrom">
+                <option selected="" value="">--Select Month--</option>
+                @{
+                    if (Model == null)
+                    {
+                        for (int i = 0; i < 12; i++)
+                        {
+                            <option value="@(i+1)">@CultureInfo.CurrentUICulture.DateTimeFormat.MonthNames[i]</option>
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < 12; i++)
+                        {
+                            if (Model.MonthFrom == (i + 1).ToString())
+                            {
+                                <option value="@(i+1)" selected>@CultureInfo.CurrentUICulture.DateTimeFormat.MonthNames[i]</option>
+                            }
+                            else
+                            {
+                                <option value="@(i+1)">@CultureInfo.CurrentUICulture.DateTimeFormat.MonthNames[i]</option>
+                            }
+
+                        }
+                    }
+                }
+                @*@{
+                if (Model == null)
+                {
+                foreach (var item in months)
+                {
+                <option value="@item">@item</option>
+                }
+                }
+                else
+                {
+                foreach (var item in months)
+                {
+                if (Model.MonthFrom == item)
+                {
+                <option value="@item" selected>@item</option>
+                }
+                else
+                {
+                <option value="@item">@item</option>
+                }
+                }
+                }
+                }*@
+            </select>
+            <select class="form-select inptgrps @(Model.Regime=="Old" ? "required" : "")" name="YearFrom">
+                <option selected="" value="">-Select Year--</option>
+                @{
+                    if (Model == null)
+                    {
+                        foreach (var item in years)
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    }
+                    else
+                    {
+                        foreach (var item in years)
+                        {
+                            if (Model.YearFrom == item)
+                            {
+                                <option value="@item" selected>@item</option>
+                            }
+                            else
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        }
+                    }
+                }
+            </select>
+        </div>
+        <span class="error" style="display:none">This field is mandatory</span>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label class="form-label @(Model.Regime=="Old" ? "required" : "")" for="username">Period To</label>
+        <div class="input-group">
+            <select class="form-select inptgrps @(Model.Regime=="Old" ? "required" : "")" name="MonthTo">
+
+                <option selected="" value="">--Select Month--</option>
+                @{
+                    if (Model == null)
+                    {
+                        for (int i = 0; i < 12; i++)
+                        {
+                            <option value="@(i+1)">@CultureInfo.CurrentUICulture.DateTimeFormat.MonthNames[i]</option>
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < 12; i++)
+                        {
+                            if (Model.MonthTo == (i + 1).ToString())
+                            {
+                                <option value="@(i+1)" selected>@CultureInfo.CurrentUICulture.DateTimeFormat.MonthNames[i]</option>
+                            }
+                            else
+                            {
+                                <option value="@(i+1)">@CultureInfo.CurrentUICulture.DateTimeFormat.MonthNames[i]</option>
+                            }
+
+                        }
+                    }
+                }
+                @*@{
+                if (Model == null)
+                {
+                foreach (var item in months)
+                {
+                <option value="@item">@item</option>
+                }
+                }
+                else
+                {
+                foreach (var item in months)
+                {
+                if (Model.MonthTo == item)
+                {
+                <option value="@item" selected>@item</option>
+                }
+                else
+                {
+                <option value="@item">@item</option>
+                }
+                }
+                }
+                }*@
+            </select>
+            <select class="form-select inptgrps @(Model.Regime=="Old" ? "required" : "")" name="YearTo">
+                <option selected="" value="">-Select Year--</option>
+                @{
+                    if (Model == null)
+                    {
+                        foreach (var item in years)
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    }
+                    else
+                    {
+                        foreach (var item in years)
+                        {
+                            if (Model.YearTo == item)
+                            {
+                                <option value="@item" selected>@item</option>
+                            }
+                            else
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        }
+                    }
+                }
+            </select>
+        </div>
+        <span class="error" style="display:none">This field is mandatory</span>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="col-md-12 mb-3">
+            <label class="form-label @(Model.Regime=="Old" ? "required" : "")" for="username">Amount /Month.</label>
+            <div class="input-group">
+                <span class="input-group-text" id="basic-addon11">₹</span>
+                <input type="number" id="Amount" name="Amount" value="@(Model==null ? "" :  Model.Amount)" class="form-control mr-2 @(Model.Regime=="Old" ? "required" : "")" placeholder="" aria-label="" aria-describedby="">
+            </div>
+            <span class="error" style="display:none">This field is mandatory</span>
+        </div>
+    </div>
+    <div class="col-md-9 mb-1">
+        <div class="mb-3">
+            <label class="form-label @(Model.Regime=="Old" ? "required" : "")" for="username">House Address</label>
+            <textarea class="form-control @(Model.Regime=="Old" ? "required" : "")" id="HouseAddress" name="HouseAddress" rows="2">@(Model == null ? "" : Model.HouseAddress)</textarea>
+            <span class="error" style="display:none">This field is mandatory</span>
+        </div>
+    </div>
+    <div class="col-md-3 mb-1">
+        <div class="row">
+            <label class="form-label @(Model.Regime=="Old" ? "required" : "")" for="username">Staying In</label>
+            <div class="col-md-12 mb-3">
+                <select id="StayingIn" name="StayingIn" class="form-select @(Model.Regime=="Old" ? "required" : "")" aria-label="">
+                    @{
+                        if (Model != null)
+                        {
+                            if (Model.StayingIn == "Metro")
+                            {
+                                <option selected value="Metro">Metro</option>
+                            }
+                            else
+                            {
+                                <option value="Metro">Metro</option>
+                            }
+                            if (Model.StayingIn == "Non Metro")
+                            {
+                                <option selected value="Non Metro">Non Metro</option>
+                            }
+                            else
+                            {
+                                <option value="Non Metro">Non Metro</option>
+                            }
+                        }
+                        else
+                        {
+                            <option selected value="Metro">Metro</option>
+                            <option value="Non Metro">Non Metro</option>
+                        }
+                    }
+                </select>
+            </div>
+            <span class="error" style="display:none">This field is mandatory</span>
+            @*<div class="col-md-6 mb-3"><input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby=""></div>*@
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <div class="col-md-12 mb-3">
+                <label class="form-label @(Model.Regime=="Old" ? "required" : "")" for="username">Landloard Name</label>
+                <div class="input-group">
+                    <input type="text" id="LandlordName" name="LandlordName" value="@(Model==null ? "" : Model.LandlordName)" class="form-control @(Model.Regime=="Old" ? "required" : "")" />
+                </div>
+                <span class="error" style="display:none">This field is mandatory</span>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="col-md-12 mb-3">
+                <label class="form-label @(Model.Regime=="Old" ? "required" : "")" for="username">Landloard PanCard</label>
+                <div class="input-group">
+                    <input type="text" id="LandlordPancard" name="LandlordPancard" value="@(Model.LandlordPancard==null ? "" : Model.LandlordPancard)" class="form-control mr-2 @(Model.Regime=="Old" ? "required" : "")" placeholder="" aria-label="" aria-describedby="">
+                </div>
+                <span class="error" style="display:none">This field is mandatory</span>
+            </div>
+        </div>
+    </div>
+</div>

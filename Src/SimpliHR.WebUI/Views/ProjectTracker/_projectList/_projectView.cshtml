@@ -1,0 +1,376 @@
+﻿@model SimpliHR.Infrastructure.Models.ProjectTracker.ProjectViewModel
+
+<style>
+    .section-resignationdetails input {
+        color: green !important;
+    }
+
+        .section-resignationdetails input[type=button] {
+            color: white !important;
+        }
+
+    .section-resignationdetails textarea {
+        color: green !important;
+    }
+
+    textarea {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        font-size: 16px;
+        line-height: 1.5;
+        resize: none; /* Prevent manual resizing */
+        overflow: hidden; /* Hide scrollbars */
+    }
+
+    .tagify.tagify-email-list:hover .tagify__tag__removeBtn {
+        display: none !important;
+    }
+
+    .avatar-group .avatar {
+        margin-left: -0.8rem;
+    }
+
+    .avatar-xl {
+        width: 4.5rem;
+        height: 4.5rem;
+    }
+
+    .avatar-lg {
+        width: 4rem;
+        height: 4rem;
+    }
+
+    .avatar-md {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .chat-history-wrapper {
+        padding-bottom: 25px;
+    }
+
+    .app-chat .app-chat-history {
+        position: relative;
+        height: initial !important;
+        transition: all 0.25s ease;
+    }
+
+    .app-chat {
+        position: relative;
+        height: initial !important;
+    }
+
+        .app-chat .app-chat-history .chat-history-body {
+            height: initial;
+            padding: 1.25rem 1.25rem;
+            /* overflow: hidden; */
+            overflow-y: scroll !important;
+            max-height: 80vh;
+        }
+
+        .app-chat .app-chat-history .chat-history-body {
+            scrollbar-width: thin; /* "auto" or "thin" */
+            scrollbar-color: #888 #f1f1f1; /* Thumb and track color */
+        }
+
+            /* For WebKit browsers (Chrome, Safari) */
+            .app-chat .app-chat-history .chat-history-body::-webkit-scrollbar {
+                width: 8px; /* Set the width of the scrollbar */
+            }
+
+            .app-chat .app-chat-history .chat-history-body::-webkit-scrollbar-track {
+                background: #f1f1f1; /* Track color */
+            }
+
+            .app-chat .app-chat-history .chat-history-body::-webkit-scrollbar-thumb {
+                background: #888; /* Thumb color */
+                border-radius: 10px; /* Rounded corners */
+            }
+
+                .app-chat .app-chat-history .chat-history-body::-webkit-scrollbar-thumb:hover {
+                    background: #555; /* Thumb color when hovered */
+                }
+
+</style>
+
+<div class="row mt-5">
+    <div class="col-md-12">
+        <div style="padding: 20px;border: 2px solid green;" class="mb-5 section-resignationdetails" id="DetailedProjectViewSection">
+            <div class="float-end"><i class="fa-solid fa-xmark" onclick="remove(this)"></i></div>
+            <div class="row g-3">
+                <h4><span style="text-decoration: underline;">Project Details</span> &nbsp;&nbsp;&nbsp; <i class="badge badge-dot bg-success"></i><span style="margin-left:5px;" class="text-success">@((Model != null && Model.ProjectWithChild != null) ? Model.ProjectWithChild.Status : "")</span> </h4>
+                <div class="col-md-3">
+                    <label class="form-label required" for="multicol-last-name">Project Name</label>
+                    <input type="text" class="form-control form-control-plaintext" readonly value="@(Model==null?"":Model.ProjectWithChild==null?"":Model.ProjectWithChild.ProjectName)" placeholder="">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label required" for="multicol-last-name">Project Category</label>
+                    <input type="text" class="form-control  form-control-plaintext" readonly value="@(Model==null?"":Model.ProjectWithChild==null?"":Model.ProjectWithChild.ProjectCategoryName)" placeholder="Employee Name">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label required" for="multicol-last-name">Start Date</label>
+                    <input type="text" class="form-control  form-control-plaintext" readonly value="@(Model==null?"":Model.ProjectWithChild==null?"":Model.ProjectWithChild.StartDate==null ? "" : ((DateTime)Model.ProjectWithChild.StartDate).ToString("dd-MMM-yyyy"))" placeholder="Employee Name">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label required" for="multicol-last-name">End Date</label>
+                    <input type="text" class="form-control  form-control-plaintext" readonly value="@(Model==null?"":Model.ProjectWithChild==null?"":Model.ProjectWithChild.EndDate==null ? "" : ((DateTime)Model.ProjectWithChild.EndDate).ToString("dd-MMM-yyyy"))" placeholder="Employee Name">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label required" for="multicol-last-name">Description</label>
+                    <textarea class="form-control form-control-plaintext auto-resize" readonly>@(Model == null ? "" : Model.ProjectWithChild == null ? "" : Model.ProjectWithChild.Description)</textarea>
+                </div>
+                @*  <div class="col-md-3">
+                <label class="form-label required" for="multicol-last-name">Initiator</label>
+                <textarea class="form-control form-control-plaintext auto-resize" readonly>@(Model == null ? "" : Model.ProjectWithChild == null ? "" : Model.ProjectWithChild.Description)</textarea>
+                </div>
+                <div class="col-md-3">
+                <label class="form-label required" for="multicol-last-name">Approver</label>
+                <textarea class="form-control form-control-plaintext auto-resize" readonly>@(Model == null ? "" : Model.ProjectWithChild == null ? "" : Model.ProjectWithChild.Description)</textarea>
+                </div>*@
+                <div class="col-md-6">
+                    <label class="form-label required" for="multicol-last-name">Team Members</label>
+
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap border-top-0 p-0">
+                            <div class="d-flex flex-wrap align-items-center">
+                                <ul class="list-unstyled users-list d-flex align-items-center avatar-group m-0 me-2">
+
+                                    @{
+                                        if (Model != null && Model.ProjectWithChild != null)
+                                        {
+                                            <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar avatar-md pull-up" aria-label="@Model.ProjectWithChild.Initiator (Initiator)" title="@Model.ProjectWithChild.Initiator (Initiator)">
+                                                <img class="rounded-circle" src="@(String.IsNullOrEmpty(Model.ProjectWithChild.InitiatorProfileImagePath)?"../../assets/img/avatars/12.png" : Model.ProjectWithChild.InitiatorProfileImagePath)" alt="Avatar">
+                                            </li>
+                                        }
+                                        if (Model != null && Model.ProjectMembersWithChild != null)
+                                        {
+                                            var approver = Model.ProjectMembersWithChild.Where(x => x.RoleType == "Approver");
+                                            if (approver != null && approver.Count() > 0)
+                                            {
+                                                foreach (var item in approver)
+                                                {
+                                                    <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar avatar-md pull-up" aria-label="@item.EmployeeName (Approver)" title="@item.EmployeeName (Approver)">
+                                                        <img class="rounded-circle" src="@(String.IsNullOrEmpty(item.UserProfileImagePath)?"../../assets/img/avatars/12.png" : item.UserProfileImagePath)" alt="Avatar">
+                                                    </li>
+                                                }
+                                            }
+                                            var collaborator = Model.ProjectMembersWithChild.Where(x => x.RoleType == "Collaborator");
+                                            if (collaborator != null && collaborator.Count() > 0)
+                                            {
+                                                foreach (var item in collaborator)
+                                                {
+                                                    <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar avatar-md pull-up" aria-label="@item.EmployeeName  (Collaborator)" title="@item.EmployeeName  (Collaborator)">
+                                                        <img class="rounded-circle" src="@(String.IsNullOrEmpty(item.UserProfileImagePath)?"../../assets/img/avatars/12.png" : item.UserProfileImagePath)" alt="Avatar">
+                                                    </li>
+                                                }
+                                            }
+                                        }
+                                    }
+
+
+                                    @*<li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar pull-up" aria-label="Allen Rieske" data-bs-original-title="Allen Rieske">
+                                    <img class="rounded-circle" src="../../assets/img/avatars/12.png" alt="Avatar">
+                                    </li>
+                                    <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar pull-up" aria-label="Julee Rossignol" data-bs-original-title="Julee Rossignol">
+                                    <img class="rounded-circle" src="../../assets/img/avatars/6.png" alt="Avatar">
+                                    </li>
+                                    <li class="avatar">
+                                    <span class="avatar-initial rounded-circle pull-up" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="3 more">+3</span>
+                                    </li> *@
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+
+
+                </div>
+
+                @{
+                    if (Model != null && Model.ProjectWithChild != null && Model.ProjectWithChild.ProjectApprovalNeeded == true && Model.ProjectWithChild.IsApproved != 1 && Model.ProjectWithChild.IsApproved != -1 && Model.ProjectWithChild.IsApprover == 1)
+                    {
+                        <div class="col-md-12">
+                            <input type="button" class="btn btn-primary btn-sm" onclick="ActionOnProject('@Model.ProjectWithChild.encProjectID','Approve')" value="Approve" />
+                            <input type="button" class="btn btn-danger btn-sm" onclick="ActionOnProject('@Model.ProjectWithChild.encProjectID','Reject')" value="Reject" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-12">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Milestone</th>
+                                        <th>Deliverables</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        if (Model != null && Model.MilestonesList != null)
+                                        {
+                                            int inc = 0;
+                                            foreach (var item in Model.MilestonesList)
+                                            {
+                                                <tr style="@(item.IsCompleted == 1 ? "text-decoration: line-through;" : "")">
+                                                    <td style="@(item.IsCompleted == 1 ? "color:green" : "");">@item.MilestoneName</td>
+                                                    <td style="@(item.IsCompleted == 1 ? "color:green" : "")">@item.Deliverables</td>
+                                                    <td style="@(item.IsCompleted == 1 ? "color:green" : "")">
+                                                        @{
+                                                            if (item.ApprovalSent == true)
+                                                            {
+                                                                if (Model.ProjectWithChild != null && Model.ProjectWithChild.IsApprover == 1)
+                                                                {
+                                                                    <span>
+                                                                        <a style='color:blue' href="javascipt:void(0)" onclick="MarkMilestoneApprove(@item.MilestoneId,this)">Approve</a>
+                                                                        <a style='color:red' href="javascipt:void(0)" onclick="MarkMilestoneRevise(@item.MilestoneId,this)">Revise</a>
+                                                                    </span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span style='color:red'>Sent For Approval</span>
+                                                                }
+
+
+                                                            }
+                                                            else if ((item.IsCompleted != 1) && inc == 0)
+                                                            {
+                                                                <span style='color:red'><a href="javascipt:void(0)" onclick="MarkMilestoneCompleted(@item.MilestoneId,this)">Mark As Completed</a></span>
+                                                                inc += 1;
+                                                            }
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                }
+            </div>
+
+            @{
+                if (!(Model != null && Model.ProjectWithChild != null && Model.ProjectWithChild.ProjectApprovalNeeded == true && Model.ProjectWithChild.IsApproved != 1 && Model.ProjectWithChild.IsApproved != -1 && Model.ProjectWithChild.IsApprover == 1))
+                {
+                    <div class="row g-3 mt-3 app-chat">
+                        <h4><span style="text-decoration: underline;">Comments</span></h4>
+                        <div class="col-md-12">
+                            <div class="col app-chat-history">
+                                <div class="chat-history-wrapper">
+                                    <div class="chat-history-body ps ps--active-y">
+                                        <ul class="list-unstyled chat-history mb-0">
+
+
+                                            @{
+                                                if (Model != null && Model.Comments != null)
+                                                {
+                                                    foreach (var item in Model.Comments)
+                                                    {
+                                                        if (item.Orien == "")
+                                                        {
+                                                            <li class="chat-message">
+                                                                <div class="d-flex overflow-hidden">
+                                                                    <div class="user-avatar flex-shrink-0 me-3">
+                                                                        <div class="avatar avatar-sm">
+                                                                            <img src="@item.ProfileImagePath" alt="Avatar" class="rounded-circle">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="chat-message-wrapper flex-grow-1">
+                                                                        <div class="chat-message-text">
+                                                                            <p class="mb-0">@item.CommentText</p>
+                                                                        </div>
+                                                                        <div class="text-muted mt-1">
+                                                                            <small>@(item.CreatedDate.ToString("hh:mm tt"))</small>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        }
+                                                        else
+                                                        {
+                                                            <li class="chat-message chat-message-right">
+                                                                <div class="d-flex overflow-hidden">
+                                                                    <div class="chat-message-wrapper flex-grow-1 w-50">
+                                                                        <div class="chat-message-text">
+                                                                            <p class="mb-0">
+                                                                                @item.CommentText
+                                                                            </p>
+                                                                        </div>
+                                                                        <div class="text-end text-muted mt-1">
+                                                                            @*<i class="bx bx-check-double"></i>*@
+
+                                                                            <small>@(item.CreatedDate.ToString("hh:mm tt"))</small>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="user-avatar flex-shrink-0 ms-3">
+                                                                        <div class="avatar avatar-sm">
+                                                                            <img src="@item.ProfileImagePath" alt="Avatar" class="rounded-circle">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                        </ul>
+
+
+                                    </div>
+                                    <div class="chat-history-footer">
+                                        <form class="form-send-message d-flex justify-content-between align-items-center" id=CommentForm>
+                                            <input class="form-control message-input border-0 me-3 shadow-none" name="CommentText" placeholder="Type your message here...">
+                                            <div class="message-actions d-flex align-items-center">
+                                                <label for="attach-doc" class="form-label mb-0">
+                                                    <i class="bx bx-paperclip bx-sm cursor-pointer mx-3"></i>
+                                                    <input type="file" id="attach-doc" multiple hidden="">
+                                                </label>
+                                                <button class="btn btn-primary d-flex send-msg-btn" id="SaveComment">
+                                                    <i class="bx bx-paper-plane me-md-1 me-0"></i>
+                                                    <span class="align-middle d-md-inline-block d-none">Save</span>
+                                                </button>
+                                            </div>
+                                            <input type="hidden" asp-for="ProjectWithChild.encProjectID" />
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+
+        </div>
+        <form method="post" style="display:none;padding: 20px;border: 2px solid green;@((Model!=null && Model.ProjectWithChild!=null && Model.ProjectWithChild.IsApproved!=0) ? "pointer-events: none;" : "")" id="AdminDetails">
+            <div class="float-end"><i class="fa-solid fa-xmark" onclick="remove(this)"></i></div>
+            <div class="row g-3">
+                @* <div class="col-md-6">
+                <input type="checkbox" id="NoticePeriodWaiveOffAdmin" name="NoticePeriodWaiveOffAdmin" class="form-check-input" @(Model == null ? "" : Model.ResignationDetails == null ? "" : Model.ResignationDetails.AdminApproval == 0 ? (Model.ResignationDetails.NoticePeriodWaiveOff == true ? "checked" : "") : (Model.ResignationDetails.NoticePeriodWaiveOffAdmin == true ? "checked" : "")) />
+                <label for="NoticePeriodWaiveOffAdmin" class="form-label">Notice Period Waived Off</label>
+                </div>
+                <div class="col-md-6">
+                <input type="checkbox" id="EligibleToHireAdmin" name="EligibleToHireAdmin" class="form-check-input" @(Model == null ? "" : Model.ResignationDetails == null ? "" : Model.ResignationDetails.AdminApproval == 0 ? (Model.ResignationDetails.EligibleToHire == true ? "checked" : "") : (Model.ResignationDetails.EligibleToHireAdmin == true ? "checked" : "")) /> <label for="EligibleToHireAdmin" class="form-label">Eligible to Rehire</label>
+                </div> *@
+
+
+            </div>
+            <div class="pt-4">
+
+                @{
+                    // if (Model != null && Model.ResignationDetails != null && Model.ResignationDetails.ManagerApproval == 1 && Model.ResignationDetails.AdminApproval == 0)
+                    // {
+
+                    // }
+                }
+                <input type="button" class="btn btn-primary me-sm-3 me-1" onclick="SaveResignationDetailsByAdmin()" value="Approve" />
+                <input type="button" class="btn btn-danger me-sm-3 me-1" onclick="RejectResignationByAdmin()" value="Reject" />
+
+
+            </div>
+        </form>
+    </div>
+</div>

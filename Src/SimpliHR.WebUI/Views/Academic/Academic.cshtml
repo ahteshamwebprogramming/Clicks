@@ -1,0 +1,220 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.AcademicMasterDTO
+@{
+    ViewData["Title"] = "Academics";
+    Model.DisplayMessage += "";
+    //Layout = null;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Academic Details /</span> Academic Degrees </h4>
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <form id="showAlert" class="row g-3" onsubmit="return false">
+                    <div class="modal-body">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center mb-4">
+                        </div>
+
+                        <div class="col-12 text-center" id="successDiv">
+                            <p id="errorPara" class="error" style="color:red"></p>
+                        </div>
+                        <div class="col-12 text-center" id="errorDiv">
+                            <p id="successPara" class="error" style="color:black"></p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 text-center">
+                        @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                        <button type="reset" id="btnClose"
+                                class="btn btn-label-secondary btn-reset mt-3"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                            Close
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+                            <th>Academic Code</th>
+                            <th>Academic Name</th>
+                            @* <th>Status</th>*@
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.AcademicMasterList != null)
+                            @foreach (var item in Model.AcademicMasterList)
+                            {
+                                <tr>
+                                    <td>@item.AcademicCode</td>
+                                    <td>@item.AcademicName</td>
+                                    @* <th>@(item.IsActive == true ? "Active" : "Inactive")</th>*@
+                                    @* <th>
+                            <a class="btn btn-primary" href="/Academic/GetAcademicInfo/@item.EncryptedAcademicId">Edit</a>
+                            <button class="btn btn-primary" onclick="DeleteRecord('@item.AcademicName','@item.EncryptedAcademicId')"> Delete</button>
+                            </th> *@
+
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="/Academic/GetAcademicInfo/@item.EncryptedAcademicId"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="#" onclick="DeleteRecord('@item.AcademicName','@item.EncryptedAcademicId')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/Academic/Academic'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/Academic/SaveAcademic">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Academic Code</label>
+                        <input type="text" id="AcademicCode" required name="AcademicCode" maxlength="10" value="@Model.AcademicCode" class="form-control clearForm" placeholder="Academic Code">
+                        <span asp-validation-for="AcademicCode" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Academic Name</label>
+                        <input type="text" id="AcademicName" required name="AcademicName" maxlength="100" value="@Model.AcademicName" class="form-control clearForm" placeholder="Academic Name">
+                        <span asp-validation-for="AcademicName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" id="AcademicId" name="AcademicId" class="clearForm" value="@Model.AcademicId">
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/Academic/Academic'">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+
+            if (@Model.AcademicId != 0 || @Model.HttpStatusCode!= 200) {
+                $("#List").hide();
+                $("#Add").show();
+            }
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                if ("@Model.HttpStatusCode" == 200) {
+                    $successalert("", "@Model.DisplayMessage");
+                }
+                else {
+                    $erroralert("Transaction Failed!", "@Model.DisplayMessage");
+                }
+            }
+
+        });
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+        function AddView() {
+            if (@Model.AcademicId == 0) {
+                ClearForm();
+            }
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+
+        function DeleteRecord(academicName, academicId) {
+            // event.preventDefault();
+            url = $(this).attr('href');
+            history.pushState({ key: url }, '', url);
+
+            Swal.fire({ title: 'Are you sure?', text: "This will get deleted permanently!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, delete it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    window.location.href = "/Academic/DeleteAcademic/" + academicId;
+                }
+            });
+            return false;
+        }
+
+        function BlockedUI() {
+
+            BlockUI();
+            if (jQuery("#AcademicCode").val() == '') {
+                $successerror("Academic Validation", "Please insert Academic Code");
+                // ShowServerMessage("Please insert Academic Code");
+                UnblockUI();
+                return false;
+            }
+            if (jQuery("#AcademicName").val() == '') {
+                $successerror("Academic Validation", "Please insert Academic Name");
+                UnblockUI();
+                return false;
+            }
+            return
+
+        }
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                // if (sMsg.toUpperCase() == "SUCCESS") {
+                // sMsg = "Earnnig component created/updated successfully";
+                jQuery("#successDiv").show();
+                jQuery("#successPara").html(sMsg);
+
+                // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                //  }
+                //else {
+                //    jQuery("#errorDiv").show();
+                //    jQuery("#errorPara").html(sMsg);
+                //}
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+        function ClearForm() {
+
+            var $allCtrl = $('.clearForm');
+            $allCtrl.each(function (i) {
+                var curCtrl = jQuery(this);
+                //if (this.type.toLowerCase() != "radio") {
+
+                if (this.type.toLowerCase() == "select") {
+                    curCtrl.val("").change();
+                    curCtrl.val("0").change();
+                }
+                else if (this.type.toLowerCase() == "select-one") {
+                    curCtrl.val("").change();
+                    curCtrl.val("0").change();
+                }
+                else
+                    curCtrl.val("");
+
+
+                //}
+            })
+        }
+    </script>
+}

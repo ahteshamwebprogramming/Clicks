@@ -1,0 +1,380 @@
+﻿@model SimpliHR.Infrastructure.Models.Attendance.AttendanceViewModel
+@{
+    ViewData["Title"] = "Roster";
+}
+
+<style>
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+</style>
+
+<link rel="stylesheet" href="../../assets/vendor/libs/tagify/tagify.css" />
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Attendance /</span> Roster</h4>
+    <div class="card addShow" id="List" @(Model.ViewScreen.ToUpper() == "LIST" ? "" : Html.Raw("style=\'display:none\'"))>
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+            @if (@Model.AttendanceRosterList != null)
+            {
+
+                <div class="card-datatable table-responsive text-nowrap">
+                    <table class="datatables-ajax table List" id="ListTable">
+                        <thead>
+                            <tr>
+                                <th>Roster Name</th>
+                                <th>Department</th>
+                                <th>Work Location Type</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Shift</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in @Model.AttendanceRosterList)
+                            {
+                                var department = @Model.AttendanceMastersKeyValues.DepartmentKeyValues.Where(r => r.DepartmentId == item.DepartmentId).Select(x => x.DepartmentName).FirstOrDefault();
+                                var shiftAtndDetail = @Model.AttendanceMastersKeyValues.ShiftKeyValues.Where(x => x.ShiftCode == @item.ShiftCode.Trim()).Select(r => r.ShiftName).FirstOrDefault().ToString();
+                                <tr>
+                                    <td>@(item.RosterName)</td>
+                                    <td>@(department == "" || department == null ? "All" : department)</td>
+                                   @* <td>@Model.AttendanceMastersKeyValues.WorkLocationKeyValues.Where(r=>r.WorkLocationId==item.WorkLocationId).Select(x=>x.Location).FirstOrDefault()</td>*@
+                                    <td>@(item.WorkLocationType == 1 ? "WFO" : item.WorkLocationType == 2 ? "WFH" : item.WorkLocationType == 3 ? "Client/Field" : "")</td>
+                                    <td>@item.StartDate.Value.ToString("dd-MMM-yyyy")</td>
+                                    <td>@item.EndDate.Value.ToString("dd-MMM-yyyy") </td>
+                                    <td>
+                                        <span data-bs-toggle="tooltip"
+                                              data-bs-offset="0,4"
+                                              data-bs-placement="top"
+                                              data-bs-html="true"
+                                              data-bs-custom-class="tooltip-secondary"
+                                              title="@shiftAtndDetail">
+                                            @item.ShiftCode
+                                        </span>
+                                        </td>
+                                    
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="/AttendanceRosterUI/GetRoster/@item.EncryptedId"><i class="bx bx-edit-alt me-1"></i></a>
+                                        @if (item.StartDate.Value > DateTime.Now)
+                                        {                                                                                
+                                            <a class="dropdown-item d-inline" href="#" onclick="DeleteRosterDetails('@item.EncryptedId')"><i class="bx bx-trash me-1"></i></a>
+                                        }
+                                       
+                                    </td>
+                                    @* <td>
+                                        <button class="btn btn-primary" onclick="window.location.href='/AttendanceRosterUI/GetRoster/@item.EncryptedId'">Edit</button>
+                                        <button class="btn btn-primary" onclick="DeleteRecord('@item.EncryptedId')"> Delete</button>
+                                    </td> *@
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+
+    </div>
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <div class="modal-body">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-4">
+                    </div>
+                    @*<form id="showAlert" class="row g-3" onsubmit="return false">*@
+                    <div class="col-12 text-center" id="successDiv">
+                        <p id="errorPara" class="error" style="color:red"></p>
+                    </div>
+                    <div class="col-12 text-center" id="errorDiv">
+                        <p id="successPara" class="error" style="color:black"></p>
+                    </div>
+                </div>
+
+                <div class="col-12 text-center">
+                    @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                    <button type="reset"
+                            class="btn btn-label-secondary btn-reset mt-3"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                        Cancel
+                    </button>
+                </div>
+                @*</form>*@
+            </div>
+        </div>
+    </div>
+
+
+<div class="card" id="Add" @(Model.ViewScreen.ToUpper() == "ADD" || Model.ViewScreen.ToUpper() == "EDIT" ? "" : Html.Raw("style=\'display:none\'"))>
+    <div id="wizard-checkout" class="bs-stepper wizard-icons wizard-icons-example mt-2">
+        <div class="container selectMain">
+            <div class="card-body">
+                <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/AttendanceRosterUI/Roster'" style="float:right" />
+                <div style="clear:both"></div>
+                <!--<h5 class="card-header">Roster Details</h5>-->
+                <form id="AttendanceRosterForm" method="post" action="/AttendanceRosterUI/SaveAttendanceRoster">
+                    @*   <div class="row g-3" id="errorDiv"><p id="errorPara" class="error" style="color:red"></p></div>*@
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                                <label for="defaultInput" class="form-label required">Roster Name</label>
+                            <input id="RosterName" name="RosterName" required value="@Model.AttendanceRoster.RosterName" class="form-control" type="text" placeholder="Default input" />
+                        </div>
+                        <div class="col-md-6">
+                                <label class="form-label required" for="multicol-last-name">Work Location Type</label>
+                            <div class="col mt-2">
+                                <div class="form-check form-check-inline">
+                                    <input name="WorkLocationType"
+                                           class="form-check-input"
+                                           type="radio"
+                                           value="1"
+                                           id="WorkLocationType_1"
+                                    @((Model.AttendanceRoster.WorkLocationType == null || Model.AttendanceRoster.WorkLocationType == 1) ? Html.Raw("checked=\'checked\'") : "") />
+                                    <label class="form-check-label" for="collapsible-address-type-office">WFO</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input name="WorkLocationType"
+                                           class="form-check-input"
+                                           type="radio"
+                                           value="2"
+                                           id="WorkLocationType_2"
+                                    @(Model.AttendanceRoster.WorkLocationType == 2 ? Html.Raw("checked=\'checked\'") : "") />
+                                    <label class="form-check-label" for="collapsible-address-type-home">WFH</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input name="WorkLocationType"
+                                           class="form-check-input"
+                                           type="radio"
+                                           value="3"
+                                           id="WorkLocationType_3"
+                                    @(Model.AttendanceRoster.WorkLocationType == 3 ? Html.Raw("checked=\'checked\'") : "") />
+                                    <label class="form-check-label" for="collapsible-address-type-office">Client/Field</label>
+                                </div>
+
+                            </div>
+                        </div>
+                       @* <div class="col-md-6">
+                                <label class="form-label required" for="">Select Work Location</label>
+                            @Html.DropDownList("WorkLocationId",new SelectList(Model.AttendanceMastersKeyValues.WorkLocationKeyValues,"WorkLocationId", "Location", Model.AttendanceRoster.WorkLocationId),"Work Location",htmlAttributes: new { @class = "form-select" ,@name="WorkLocationId", @required="required"})
+                        </div>*@
+                        <div class="col-md-6">
+                                <label class="form-label required" for="">Select Department </label>
+                            @Html.DropDownList("DepartmentId",new SelectList(Model.AttendanceMastersKeyValues.DepartmentKeyValues,"DepartmentId", "DepartmentName", Model.AttendanceRoster.DepartmentId),"All Departments",htmlAttributes: new { @class = "form-select" ,@name="DepartmentId", @onchange = "GetEmployeeOfDepartments()"})
+                        </div>
+                            <div class="col-md-6">
+                                <label class="form-label required" for="">Select Shift</label>
+                                @Html.DropDownList("ShiftCode",new SelectList(Model.AttendanceMastersKeyValues.ShiftKeyValues,"ShiftCode", "ShiftName", Model.AttendanceRoster.ShiftCode!=null?Model.AttendanceRoster.ShiftCode.Trim():""),"Select Shift",htmlAttributes: new { @class = "form-select" ,@name="ShiftCode", @required="required"})
+                            </div>
+                        <div class="col-md-12">
+                            <label class="form-label" for="multicol-last-name">Employees</label>
+                            <div class="col mt-2">
+                                <div class="form-check form-check-inline">
+                                    <input name="EmployeesSelection"
+                                           class="form-check-input"
+                                           type="radio"
+                                           value="1"
+                                           id="EmployeesSelection_1"
+                                    @((Model.AttendanceRoster.EmployeesSelection == null || Model.AttendanceRoster.EmployeesSelection == 1) ? Html.Raw("checked=\'checked\'") : "") />
+                                    <label class="form-check-label" for="collapsible-address-type-home">All</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input name="EmployeesSelection"
+                                           class="form-check-input"
+                                           type="radio"
+                                           value="2"
+                                           id="EmployeesSelection_2"
+                                    @(Model.AttendanceRoster.EmployeesSelection == 2 ? Html.Raw("checked=\'checked\'") : "") />
+                                    <label class="form-check-label" for="collapsible-address-type-office">Custom</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12" id="dvEmployee" style="display:none;">
+                            <label for="TagifyUserList" class="form-label">Select Employees</label>
+                            @Html.DropDownList("RosterEmployeeID",new SelectList(Model.AttendanceMastersKeyValues.EmployeeKeyValues,"EmployeeId", "EmployeeNameCode"),"All Employees",htmlAttributes: new { @class="select2 form-select select2-hidden-accessible", @multiple="multiple"})
+                        </div>
+                        <div class="col-md-6">
+                                <label class="form-label required" for="formtabs-birthdate">Start Date</label>
+                            <input type="text" required
+                                   id="StartDate"
+                                   name="StartDate"
+                                       value="@(Model.AttendanceRoster.StartDate == null ? "" : ((DateTime)Model.AttendanceRoster.StartDate).ToString("dd-MMM-yyyy"))"
+                                   class="form-control flatpickr-date1"
+                                   placeholder="DD-MMM-YYYY" />
+                        </div>
+                        <div class="col-md-6">
+                                <label class="form-label required" for="formtabs-birthdate">End Date</label>
+                            <input type="text"
+                                       id="EndDate" required
+                                   name="EndDate"
+                                   value="@(Model.AttendanceRoster.EndDate == null ? "" : ((DateTime)Model.AttendanceRoster.EndDate).ToString("dd-MMM-yyyy"))"
+                                   class="form-control flatpickr-date1"
+                                   placeholder="DD-MMM-YYYY" />
+                        </div>
+                    </div>
+
+                    <div class="pt-4">
+                        <input type="hidden" id="RosterEmployeeIDs" name="RosterEmployeeIDs" class="form-control" value="@Model.AttendanceRoster.RosterEmployeeIDs" />
+                            <input type="hidden" id="UnitId" name="UnitId" class="form-control" value="@Model.AttendanceRoster.UnitId" />
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/AttendanceRosterUI/Roster'">Cancel</button>
+                        <input type="hidden" id="RosterId" name="RosterId" value="@Model.AttendanceRoster.RosterId" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script src="../../assets/vendor/libs/tagify/tagify.js"></script>
+<script src="../../assets/js/forms-tagify.js"></script>
+<script src="~/customjs/commonfunction.js"></script>
+
+@section scripts {
+
+   
+    <script type="text/javascript">
+        $(document).ready(function () {
+            jQuery(".List").dataTable();
+            jQuery(".flatpickr-date1").flatpickr({
+                //monthSelectorType: 'static',
+                dateFormat: "d-M-Y"
+            });
+
+            if (@Model.AttendanceRoster.RosterId != 0) {
+                $("#List").hide();
+                $("#Add").show();
+            }
+            else {
+                $("#Add").hide();
+                $("#List").show();
+            }
+            if ("@Model.DisplayMessage.Trim().ToUpper()" != "_BLANK") {
+
+                var sMsg = "@Model.DisplayMessage.Trim().Replace("<br>","\r\n")"
+                if (sMsg.toUpperCase() == "SUCCESS") {
+                    sMsg = "Transaction Successful!";
+                    $successalert("", sMsg);
+                    window.location.href = "/AttendanceRosterUI/Roster";
+                }
+                else {
+                    $erroralert("Transaction Failed!", "errror<br>" + sMsg);
+                }
+                ResetForm();
+            }
+            GetEmployeeOfDepartments();
+            if ("@Model.AttendanceRoster.EmployeesSelection"==2)
+            {
+                $('#dvEmployee').show();
+                jQuery("#RosterEmployeeIDs").val().split(',').forEach(function (v) {
+                    options.find(c => c.value == v).selected = true;
+                });
+               
+            }
+            if('@Model.AttendanceRoster.ShiftCode'!='null')
+            {
+                jQuery("#ShiftCode").val('@(Model.AttendanceRoster.ShiftCode!=null?Model.AttendanceRoster.ShiftCode.Trim():"")');
+                jQuery("#ShiftCode").change();
+            }
+        });
+
+        $(':radio[name=EmployeesSelection]').change(function () {
+             var value = $(this).val();          
+            if (value == '2') {
+                $('#dvEmployee').show();
+            }
+            else
+            {
+                $('#dvEmployee').hide();
+            }
+        });
+
+
+        function ResetForm() {
+            jQuery("#AttendanceRosterForm")[0].reset();
+        }
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+
+        $("#RosterEmployeeID").change(function () {
+            var select = document.getElementById('RosterEmployeeID');
+            var selected = [...select.options]
+                .filter(option => option.selected)
+                .map(option => option.value);
+            // alert(selected);
+            jQuery("#RosterEmployeeIDs").val(selected);
+        });
+
+        function GetEmployeeOfDepartments() {
+            var unitId = jQuery("#UnitId").val();
+            var departmentId = jQuery("#DepartmentId").val();
+          
+            if (departmentId == "")
+            {
+                departmentId='0';
+            }
+            jQuery("#RosterEmployeeID").html("")
+            if (departmentId != "") {
+                var formParam = unitId + "&" + departmentId + "&true";
+                BlockUI();
+                jQuery.ajax({
+                    type: "GET",
+                    url: '/EmployeeAttendanceUI/EmployeeKeyValue/' + formParam,
+                    //data: formParam,
+                    success: function (response) {
+                        UnblockUI();
+                        PopulateDropDown('RosterEmployeeID', response, '@Model.AttendanceRoster.RosterEmployeeIDs', 'employeeId', 'employeeNameCode', 'All Employees')
+                    },
+                    failure: function (response) {
+                        UnblockUI();
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+        }
+
+        function DeleteRosterDetails(eRosterId)
+        {
+            if(!confirm('Are you sure you would like to delete?'))
+                return false;
+            jQuery.ajax({
+                type: "GET",
+                url: '/AttendanceRosterUI/DeleteRosterDetails/' + eRosterId,
+                //data: formParam,
+                success: function (response) {
+                    UnblockUI();
+                    
+                    if(response.displayMessage.toUpperCase()=="SUCCESS")
+                        $successalert("Transaction Successful")
+                    else if(response.displayMessage.toUpperCase() != "_blank")
+                        $erroralert("Transaction Failed", response.displayMessage);
+
+                    window.location.href="Roster";
+                   // PopulateDropDown('RosterEmployeeID', response, '@Model.AttendanceRoster.RosterEmployeeIDs', 'employeeId', 'employeeName', 'All Employees')
+                },
+                failure: function (response) {
+                    UnblockUI();
+                    $erroralert("Transaction Failed", response.responseText);
+                },
+                error: function (response) {
+                    $erroralert("Transaction Failed", response.responseText);
+                }
+            });
+        }
+    </script>
+    }

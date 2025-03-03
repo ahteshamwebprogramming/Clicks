@@ -1,0 +1,436 @@
+﻿@import url('https://fonts.cdnfonts.com/css/corbert?styles=37648');
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+.noPad {
+    padding: 0 !important;
+}
+
+#loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 120px;
+    height: 120px;
+    margin: -76px 0 0 -76px;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #e63c3f;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+.main-bg {
+    background: url(../images/bbok-bg.jpg) no-repeat;
+    background-size: 123.5%;
+    height: 100vh;
+    width: 100%;
+    background-position: 50% 0;
+    overflow: hidden;
+}
+
+#bgLeft {
+    display: none;
+    text-align: center;
+}
+
+#loginBackground {
+    display: none;
+    text-align: center;
+}
+
+#logo {
+    display: none;
+    text-align: center;
+}
+
+.left-bg {
+    background: url(../images/circle.png) no-repeat;
+    background-size: 43%;
+    width: 100%;
+    height: 100vh;
+    background-position: -43.5% 0;
+}
+
+#bgRight {
+    display: none;
+    text-align: center;
+}
+
+#wel-come {
+    display: none;
+    text-align: center;
+}
+
+#username_div {
+    display: none;
+    text-align: center;
+}
+
+#password_div, #old-password, #new-password, #conf-password {
+    display: none;
+    text-align: center;
+}
+
+#old-password-error, #new-password-error, #conf-password-error {
+    display: none;
+}
+
+#login {
+    display: none;
+    text-align: center;
+}
+
+.right-bg {
+    background: url(../images/right-bg.png) no-repeat;
+    background-size: 29%;
+    width: 100%;
+    height: 100vh;
+    background-position: top right;
+}
+
+.login-form {
+    background-color: #fff;
+    width: 33.33%;
+    margin: 0 auto;
+    border-radius: 35px;
+    position: absolute;
+    top: 12%;
+    padding-bottom: 35px;
+    min-height: 500px;
+}
+
+.forgot-form {
+    background-color: #fff;
+    width: 33.33%;
+    margin: 0 auto;
+    border-radius: 35px;
+    position: absolute;
+    top: 33%;
+    padding-bottom: 35px;
+    height: 420px;
+    -webkit-box-shadow: 15px 15px 5px 0px rgba(0,0,0,0.17);
+    -moz-box-shadow: 15px 15px 5px 0px rgba(0,0,0,0.17);
+    box-shadow: 15px 15px 5px 0px rgba(0,0,0,0.17);
+}
+
+.change-pass-form {
+    background-color: #fff;
+    width: 33.33%;
+    margin: 0 auto;
+    border-radius: 35px;
+    position: absolute;
+    top: 12%;
+    padding-bottom: 35px;
+    height: 575px;
+    -webkit-box-shadow: 15px 15px 5px 0px rgba(0,0,0,0.17);
+    -moz-box-shadow: 15px 15px 5px 0px rgba(0,0,0,0.17);
+    box-shadow: 15px 15px 5px 0px rgba(0,0,0,0.17);
+}
+
+.welcome {
+    font-family: 'Corbert', sans-serif;
+    font-size: 30px;
+    font-weight: bolder;
+    color: #370466;
+}
+
+.forgot-ttl {
+    font-family: 'Corbert', sans-serif;
+    font-size: 30px;
+    font-weight: bolder;
+    color: #370466;
+    padding-top: 30px;
+}
+
+.login-form-cont {
+    margin: 2.5rem 6rem 0;
+    background: #f6f6f6;
+    padding: 0 25px 0 25px;
+    border-radius: 35px;
+}
+
+.save-pass {
+    margin: 2.5rem 6rem 0;
+    background: #f6f6f6;
+    padding: 0;
+    border-radius: 35px;
+    background: none;
+    margin-top: 1rem;
+    font-size: 13.5px;
+    line-height: 15px;
+    color: #9411c2;
+}
+
+.username {
+    border: 0;
+    font-family: 'Corbert', sans-serif;
+    letter-spacing: 1px;
+    width: 100%;
+    font-size: 16px;
+    color: #2a3240;
+}
+
+.back-img-user {
+    padding: 15px 0 15px 40px;
+    background: url(../images/user.svg) no-repeat 0 12px !important;
+    background-size: 25px 25px !important;
+}
+
+.back-img-password {
+    padding: 15px 0 15px 40px;
+    background: url(../images/password.svg) no-repeat 0 12px !important;
+    background-size: 25px 25px !important;
+}
+
+    .back-img-user input, .back-img-password input {
+        background: #f6f6f6
+    }
+
+    .back-img-password span {
+        background: url(../images/hide-pass.svg) no-repeat 0 12px !important;
+        background-size: 25px 25px !important;
+        background-position: right !important;
+    }
+
+.password {
+    border: 0;
+    font-family: 'Corbert', sans-serif;
+    letter-spacing: 1px;
+    width: 100%;
+    font-size: 16px;
+    color: #2a3240;
+    /*padding: 15px 0 15px 40px;*/
+
+    background: url(../images/hide-pass.svg) no-repeat 0 12px !important;
+    background-size: 25px 25px !important;
+    background-position: right !important;
+    color: #2a3240;
+}
+
+    .username:focus, .password:focus {
+        outline: none;
+    }
+
+.pass {
+    background: url(../images/password.svg) no-repeat 0 12px !important;
+    background-size: 25px 25px !important;
+    display: block;
+}
+
+.rem-pass {
+    display: inline-block;
+    line-height: 17px;
+    margin-bottom: 2px;
+}
+
+.forget-pass {
+    font-size: 12px
+}
+
+.login-btn {
+    margin: 2.5rem 6rem 0;
+    background: #e63c3f;
+    padding: 10px 25px;
+    border-radius: 35px;
+    border: 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    color: #fff;
+}
+
+
+    .login-btn button {
+        background: none;
+        border: 0;
+    }
+
+.animate-bottom {
+    position: relative;
+    -webkit-animation-name: animatebottom;
+    -webkit-animation-duration: .5s;
+    animation-name: animatebottom;
+    animation-duration: .5s;
+    animation-delay: 0s
+}
+
+@-webkit-keyframes animatebottom {
+    from {
+        bottom: -100px;
+        opacity: 0
+    }
+
+    to {
+        bottom: 0px;
+        opacity: 1
+    }
+}
+
+@keyframes animatebottom {
+    from {
+        bottom: -100px;
+        opacity: 0
+    }
+
+    to {
+        bottom: 0;
+        opacity: 1
+    }
+}
+
+.animate-top {
+    position: relative;
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: .5s;
+    animation-name: animatetop;
+    animation-duration: .5s;
+}
+
+@-webkit-keyframes animatetop {
+    from {
+        top: -100px;
+        opacity: 0
+    }
+
+    to {
+        top: 0px;
+        opacity: 1
+    }
+}
+
+@keyframes animatetop {
+    from {
+        top: -10px;
+        opacity: 0
+    }
+
+    to {
+        top: 0;
+        opacity: 1
+    }
+}
+
+
+
+@media screen and (max-device-width: 480px) and (orientation: portrait) {
+    .login-form {
+        width: 80%;
+        left: 0;
+    }
+
+    .main-bg {
+        background-size: cover;
+    }
+
+    .login-form-cont {
+        margin: 2.5rem 2rem 0;
+    }
+
+    .save-pass {
+        margin: 2.5rem 2rem 0;
+        font-size: 11px;
+    }
+
+        .save-pass table td {
+            font-size: 12px;
+        }
+
+    #logo {
+        padding-top: 5px;
+    }
+}
+
+@media screen and (max-device-width: 740px) and (orientation: landscape) {
+    .main-bg {
+        overflow: scroll;
+    }
+
+    .login-form {
+        width: 60%;
+        left: 0;
+    }
+
+    .main-bg {
+        background-size: cover;
+    }
+
+    .login-form-cont {
+        margin: 2.5rem 2rem 0;
+    }
+
+    .save-pass {
+        margin: 2.5rem 2rem 0;
+        font-size: 11px;
+    }
+
+    #logo {
+        padding-top: 5px;
+    }
+}
+
+@media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+    .login-form {
+        width: 70%;
+        left: 0%;
+    }
+
+    .main-bg {
+        background-size: cover;
+    }
+
+    .login-form-cont {
+        margin: 2.5rem 2rem 0;
+    }
+
+    .save-pass {
+        margin: 2.5rem 2rem 0;
+        font-size: 11px;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .login-form {
+        left: 0%;
+    }
+
+    .main-bg {
+        background-size: cover;
+    }
+
+    .login-form-cont {
+        margin: 2.5rem 6rem 0;
+    }
+
+    .save-pass {
+        margin: 2.5rem 6rem 0;
+        font-size: 11px;
+    }
+}
+
+

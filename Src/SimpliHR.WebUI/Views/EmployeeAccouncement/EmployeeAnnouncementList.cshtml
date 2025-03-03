@@ -1,0 +1,193 @@
+﻿@model SimpliHR.Infrastructure.Models.EmployeeSocialActivity.EmployeeAnnouncementDTO
+<link href="~/customcss/dashboard.css" rel="stylesheet" />
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Announcement/</span> View Announcement</h4>
+    <div class="row">
+
+
+        <div class="col-lg-8 mb-4" id="div_PartialView">
+        </div>
+
+
+        <div class="col-md-4 col-lg-4 mb-4">
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                    <div class="card-body row">
+                        <div id="div_TodayMeetings"></div>
+                    </div>
+                </div>
+                <div class="card pink-bg mb-4">
+                    <div class="card-body pt-5 pb-4 mt-5">
+                        <div class="pink-bg-cont mb-3 pt-3"><img src="../../assets/img/illustrations/take-break.png" alt=""></div>
+                        <div class="pink-bg-cont"><button class="btn btn-outline-primary rounded-pill border-0 text-dark fw-bold mt-3 p-3 px-5" style="background: #fff;">Take a Break</button></div>
+                        <div class="pink-bg-cont text-center"><div class="mt-4 mb-4 fw-bold">Unwind. Recharge.<br> Enjoy your personal time.</div></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div id="div_quickaccessView">
+                    </div>
+                    @*  <div class="card-body" style="padding: 23px 25px">
+                    <h5 class="col-6 col-md-6 mt-2 fw-bold text-dark">Quick access</h5>
+                    <div class="d-inline-block me-2"><img src="../../assets/img/icon-1.png" width="100%" height="auto" alt=""></div>
+                    <div class="d-inline-block me-2"><img src="../../assets/img/icon-2.png" width="100%" height="auto" alt=""></div>
+                    <div class="d-inline-block me-2"><img src="../../assets/img/icon-3.png" width="100%" height="auto" alt=""></div>
+                    <div class="d-inline-block me-2"><img src="../../assets/img/icon-4.png" width="100%" height="auto" alt=""></div>
+                    <div class="d-inline-block"><img src="../../assets/img/icon-5.png" width="100%" height="auto" alt=""></div>
+                    </div> *@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mainPage">
+    <input type="hidden" asp-for="encEmployeeAnnouncementId" />
+    <input type="hidden" asp-for="Source" />
+</div>
+
+
+@section scripts {
+    <script src="~/customjs/socialactivity/AnnouncementListViewAll.js"></script>
+    <script type="text/javascript">
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            let encEmployeeAnnouncementId = $(".mainPage").find("[name='encEmployeeAnnouncementId']").val();
+            let Source = $(".mainPage").find("[name='Source']").val();
+            if (encEmployeeAnnouncementId != undefined && encEmployeeAnnouncementId != null && encEmployeeAnnouncementId != "") {
+
+                if (history.replaceState) {
+                    var cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                    window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+                }
+
+                AnnouncementDetails(encEmployeeAnnouncementId, Source);
+            }
+            else {
+                if (Source == "card") {
+                    fetchPartialViewAnnouncementCard();
+                }
+                else {
+                    fetchPartialViewAnnouncementList();
+                }
+            }
+        });
+
+        $(document).ready(function () {
+
+
+            QuickAccess();
+            TodayMeetings();
+
+            //let encEmployeeNewsId = $(".mainPage").find("[name='encEmployeeNewsId']").val();
+            //if (encEmployeeNewsId != undefined && encEmployeeNewsId != null && encEmployeeNewsId != "") {
+            //    NewsDetails(encEmployeeNewsId);
+            //}
+            //else {
+            //    fetchPartialViewNewsList();
+            //}
+
+            //$(".List").DataTable({
+            //    "order": []
+            //});
+
+
+        });
+
+        function TodayMeetings() {
+
+            let inputDTO = {};
+            inputDTO.Summary = "";
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/Employee/TodayMeetingEvents',
+                data: JSON.stringify(inputDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#div_TodayMeetings').html(data);
+                    UnblockUI();
+                },
+                error: function (result) {
+                    alert(result.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+        function RefreshMeetings() {
+
+            let inputDTO = {};
+            inputDTO.Summary = "";
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/Employee/GoogleCalendarEvents',
+                data: JSON.stringify(inputDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#div_TodayMeetings').html(data);
+                    UnblockUI();
+                },
+                error: function (result) {
+                    alert(result.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+        function QuickAccess() {
+
+            let inputDTO = {};
+            inputDTO.QuickAccessId = "";
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/Employee/QuickAccess',
+                data: JSON.stringify(inputDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#div_quickaccessView').html(data);
+                    UnblockUI();
+                },
+                error: function (result) {
+                    alert(result.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+        function downloadAttachment(fileId, filename) {
+            // AJAX request to download the file
+            $.ajax({
+                url: '/EmployeeAccouncement/DownloadFile/' + fileId,
+                method: 'GET',
+                xhrFields: {
+                    responseType: 'blob' // Set the response type to blob
+                },
+                success: function (data) {
+                    // Create a temporary anchor element to trigger the download
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(data);
+                    a.href = url;
+                    a.download = filename; // Set the filename for download
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    //$successalert("Success!", "Downloaded succesfully.");
+                },
+                error: function (xhr, status, error) {
+                    $erroralert("Oops!", 'Error downloading file:' + xhr.responseText);
+                }
+            });
+        }
+
+
+    </script>
+}

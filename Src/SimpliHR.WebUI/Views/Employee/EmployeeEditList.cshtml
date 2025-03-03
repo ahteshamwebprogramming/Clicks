@@ -1,0 +1,225 @@
+﻿@model SimpliHR.Infrastructure.Models.ProfileEditAuth.EmployeeEditApprovalViewModel
+@{
+    //Layout = null;
+    ViewData["Title"] = "Employee Dashboard";
+}
+
+
+
+
+<!-- / Navbar -->
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">User / View /</span> Account</h4>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="table-responsive text-nowrap mb-4">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td><strong>Ticket</strong></td>
+                                    <td>Employee</td>
+                                    <td><strong>Department</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>@((Model != null && Model.EmployeeEditTicketDetails != null) ? Model.EmployeeEditTicketDetails.TicketId : "")</strong></td>
+                                    <td>@((Model != null && Model.EmployeeEditTicketDetails != null) ? Model.EmployeeEditTicketDetails.EmployeeName : "")</td>
+                                    <td>@((Model != null && Model.EmployeeEditTicketDetails != null) ? Model.EmployeeEditTicketDetails.Department : "")</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    @{
+                        if (Model != null && Model.EmployeeEditTicketDetails != null && Model.EmployeeEditTicketDetails.SourceScreen != null)
+                        {
+                            if (Model.EmployeeEditTicketDetails.SourceScreen == "ClientAdminNeedAction")
+                            {
+                                @Html.Partial("_employeeEditList/_clientAdminNeedAction",Model)
+                            }
+                            else if (Model.EmployeeEditTicketDetails.SourceScreen == "ClientAdminCompleted")
+                            {
+                                @Html.Partial("_employeeEditList/_clientAdminCompleted",Model)
+                            }
+                            else if (Model.EmployeeEditTicketDetails.SourceScreen == "EmployeeProfile")
+                            {
+                                @Html.Partial("_employeeEditList/_employeeProfile",Model)
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+
+        <!-- /Modal -->
+    </div>
+    <!-- / Content -->
+
+
+</div>
+<!-- Content wrapper -->
+@section scripts {
+
+    @*    <script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $(".List").dataTable();
+
+            $("[ctrl^=chk_parent_]").change(function () {
+                let tabName = $(this).attr("ctrl").split("parent_")[1];
+
+                if (tabName == "alltab") {
+                    if (this.checked) {
+                        $("[ctrl^=chk_child_]").prop("checked", true);
+                    }
+                    else {
+                        $("[ctrl^=chk_child_]").prop("checked", false);
+                    }
+                }
+                else {
+                    if (this.checked) {
+                        $("[ctrl='chk_child_" + tabName + "']").prop("checked", true);
+                    }
+                    else {
+                        $("[ctrl='chk_child_" + tabName + "']").prop("checked", false);
+                    }
+                }
+
+            });
+
+
+            //if (displayMessage.trim().toLowerCase() == "false") {
+            //    alert(displayMessage);
+            //}
+
+
+
+
+        });
+
+        function Approve(TicketId, idValue, currObj,sAction) {
+            let inputDTO = {};
+            var sUrl = "/Employee/ApproveEmployeeEditDetails"
+            var data
+            if(sAction=="Add" || sAction=="Delete")
+            {
+                sUrl = "/Employee/ApproveEmployeeDetailsAddDelete";
+                inputDTO.ActionId = idValue;
+                inputDTO.ActionStatus = 2;
+                //data = inputDTO;
+            }
+            else
+            {
+                inputDTO.EmployeeValidationId = idValue;
+                //var data = JSON.stringify(inputDTO);
+            }
+                
+
+            inputDTO.TicketId = TicketId;
+            
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                url: sUrl,
+                //contentType: 'application/json',
+                data: inputDTO,
+                success: function (data) {
+                    UnblockUI();
+                    $(currObj).parent().html('<span style="color:green">Approved</span>');
+                    $successalert("Success!", "Saved succesfully.");
+                },
+                error: function (error) {
+                    $erroralert("Error!", error.responseText + '!'); UnblockUI();
+                    UnblockUI();
+                }
+            });
+        }
+        function Reject(TicketId, idValue, currObj, sAction) {
+            let inputDTO = {};
+            var sUrl = "/Employee/RejectEmployeeEditDetails"
+            
+            if (sAction == "Add" || sAction == "Delete") {
+                sUrl = "/Employee/ApproveEmployeeDetailsAddDelete";
+                inputDTO.ActionId = idValue;
+                inputDTO.ActionStatus = 3;
+            }
+            else
+                inputDTO.EmployeeValidationId = idValue;
+            inputDTO.TicketId = TicketId;
+            
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                url: sUrl,
+                //contentType: 'application/json',
+                data: inputDTO,
+                success: function (data) {
+                    UnblockUI();
+                    $(currObj).parent().html('<span style="color:red">Rejected</span>');
+                    $successalert("Success!", "Saved succesfully.");
+                },
+                error: function (error) {
+                    $erroralert("Error!", error.responseText + '!'); UnblockUI();
+                    UnblockUI();
+                }
+            });
+        }
+        function Cancel(TicketId, idValue, currObj, sAction) {
+            let inputDTO = {};
+            var sUrl = "/Employee/CancelEmployeeEditDetails"
+
+            if (sAction == "CancelAddDel") {
+                sUrl = "/Employee/ApproveEmployeeDetailsAddDelete";
+                inputDTO.ActionId = idValue;
+                inputDTO.ActionStatus = 1;
+            }
+            else
+                inputDTO.EmployeeValidationId = idValue;
+            inputDTO.TicketId = TicketId;
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                url: sUrl,
+                //contentType: 'application/json',
+                data: inputDTO,
+                success: function (data) {
+                    UnblockUI();
+                    $(currObj).parent().html('<span style="color:orange">Cancelled</span>');
+                    $successalert("Success!", "Cancelled succesfully.");
+                },
+                error: function (error) {
+                    $erroralert("Error!", error.responseText + '!'); UnblockUI();
+                    UnblockUI();
+                }
+            });
+        }
+
+        function ViewAttachment(base64Image,fieldName,ext,tag)
+        {
+            
+            jQuery("#downloadAttachment").attr("href", base64Image);
+            jQuery("#downloadAttachment").attr("download", fieldName + (tag != '' ? '_' : '') + tag + '.' + ext);
+            if (ext == "pdf") {
+               jQuery("#uploadedObject").data(base64Image)
+               jQuery("#vwAttachment").modal('show');
+            }
+            else if (",png,jpeg,jpg,bmp,gif,tiff,".indexOf("," + ext + ",") >=0 ) {
+                jQuery("#uploadedImage").attr("src", base64Image)
+                jQuery("#vwAttachment").modal('show');
+            }
+
+        }
+
+    </script>
+
+    
+
+}

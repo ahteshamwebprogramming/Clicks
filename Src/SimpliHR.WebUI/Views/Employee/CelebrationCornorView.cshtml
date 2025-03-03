@@ -1,0 +1,329 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeDashboardVM
+@{
+    ViewData["Title"] = "CelebrationCornorView";
+    Layout = "~/Views/Shared/_LayoutVertical.cshtml";
+}
+
+<style>
+    .nav-link {
+        padding: 7px 0 !important;
+        margin: 0 20px !important;
+    }
+
+    .nav-tabs .nav-item .nav-link:not(.active) {
+        background-color: #fff;
+    }
+
+    .nav-align-top .nav-tabs .nav-link.active {
+        border-bottom: 4px solid #7965D3;
+        box-shadow: none;
+    }
+
+    .nav-tabs:not(.nav-fill):not(.nav-justified) .nav-link, .nav-pills:not(.nav-fill):not(.nav-justified) .nav-link {
+        width: auto;
+    }
+
+    .birthday-txt {
+        font-size: 12px;
+        line-height: 16px;
+    }
+
+    .birthday-img {
+        font-size: 12px;
+        line-height: 16px
+    }
+
+    .birthday-txt-cont {
+        order: 1;
+    }
+
+    .birthday-img-cont {
+        order: 2;
+        text-align: right;
+    }
+
+    .nav-align-top .nav-tabs ~ .tab-content {
+        box-shadow: none !important;
+    }
+
+    .upcoming-table td {
+        padding: 0.725rem 1.25rem;
+    }
+
+    .upcoming {
+        font-size: 12px;
+    }
+
+        .upcoming th {
+            text-transform: capitalize;
+        }
+
+    .welcome-onboard {
+        border-radius: 20px 20px 0 0 !important;
+        background-color: #7A65D3;
+        font-size: 12px;
+    }
+
+        .welcome-onboard h4 {
+            color: #fff;
+        }
+
+    .new-employee-list {
+        border-radius: 0 0 20px 20px !important;
+        padding: 0;
+    }
+
+    .new-employee-list-element {
+        padding: 20px 25px;
+        border-bottom: 1px solid #d9dee3;
+    }
+
+        .new-employee-list-element:last-child {
+            padding: 20px 25px;
+            border-bottom: none;
+        }
+
+    .line-height-16 {
+        line-height: 16px;
+    }
+
+    .tab-content {
+        padding-bottom: 0 !important;
+    }
+    
+</style>
+<link href="~/customcss/dashboard.css" rel="stylesheet" />
+<div class="container-xxl flex-grow-1 container-p-y">
+    <!--h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Announcement/</span> View Announcement</h4-->
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card" style="min-height: 910px;">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="nav-align-top">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item">
+                                        <button type="button"
+                                                class="nav-link active"
+                                                role="tab"
+                                                data-bs-toggle="tab"
+                                                data-bs-target="#navs-top-home"
+                                                aria-controls="navs-top-home"
+                                                aria-selected="true">
+                                            Birthday
+                                        </button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button type="button"
+                                                class="nav-link"
+                                                role="tab"
+                                                data-bs-toggle="tab"
+                                                data-bs-target="#navs-top-profile"
+                                                aria-controls="navs-top-profile"
+                                                aria-selected="false">
+                                            Work Anniversaries
+                                        </button>
+                                    </li>
+                                </ul>
+                                <div class="tab-content border-top">
+                                    <div class="tab-pane fade show active" id="navs-top-home" role="tabpanel">
+                                        <div class="row">
+                                            <div class="col-md-9 birthday-txt-cont">
+                                                <div><strong>Today's Birthday Stars!</strong></div>
+                                                <div class="birthday-txt">Wishing a very happy birthday to all our amazing team members celebrating this month.</div>
+                                            </div>
+                                            <div class="col-md-3 birthday-img-cont">
+                                                <div><img src="../../assets/img/illustrations/birthday-img.png" alt="" style="margin-top: -21px;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-4">
+                                            @if (Model.EmployeeBirthDays.Where(x => x.IsCurrent > 0) != null)
+                                            {
+                                                if (Model.EmployeeBirthDays.Count > 0)
+                                                {
+                                                    foreach (var item in Model.EmployeeBirthDays.Where(x => x.IsCurrent > 0))
+                                                    {
+                                                        <div class="col-6 col-md-2 mb-3">
+                                                            <div class="text-center mb-2"><img src="@(item.Base64ProfileImage == null ? "logo_1.jpg" : item.Base64ProfileImage)" class="rounded-circle" width="65" height="65" alt=""></div>
+                                                            <div class="text-center text-dark"><small><strong>@item.EmployeeName</strong></small></div>
+                                                            <div class="text-center smaller-font">@item.JobTitle</div>
+                                                        </div>
+                                                    }
+                                                }
+                                            }
+
+                                        </div>
+                                        <div class="mt-3 mb-3"><strong>Upcoming Birthdays</strong></div>
+                                        <div class="upcoming-table">
+                                            <table class="table border-top upcoming List">
+                                                <thead>
+                                                    <tr style="background: #e8e6f4;">
+                                                        <th width="40%">Employee Name</th>
+                                                        <th>Location</th>
+                                                        <th>Designation</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (Model.EmployeeBirthDays != null)
+                                                        @foreach (var item in Model.EmployeeBirthDays.Where(x => x.IsCurrent <= 0))
+                                                        {
+                                                            <tr>
+                                                                <td>@item.EmployeeName</td>
+                                                                <td>@item.Location</td>
+                                                                <td>@item.JobTitle</td>
+                                                                <td>@(item.DOB == null ? "" : ((DateTime)item.DOB).ToString("dd-MMM-yyyy"))</td>
+                                                                @*   <th>@(item.IsActive == true ? "Active" : "Inactive")</th>*@
+
+
+                                                            </tr>
+                                                        }
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                    <div class="tab-pane fade" id="navs-top-profile" role="tabpanel">
+                                        <div class="row">
+                                            <div class="col-md-9 birthday-txt-cont">
+                                                <div><strong>Work Anniversaries Today</strong></div>
+                                                <div class="birthday-txt">Today we celebrate the dedication and contributions of our team members.</div>
+                                            </div>
+                                            <div class="col-md-3 birthday-img-cont">
+                                                <div><img src="../../assets/img/illustrations/anniversaries-img.png" alt="" style="margin-top: -21px;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            @if (Model.EmployeeAnnivesary.Where(x => x.IsCurrent > 0) != null)
+                                            {
+                                                if (Model.EmployeeAnnivesary.Count > 0)
+                                                {
+                                                    foreach (var item in Model.EmployeeAnnivesary.Where(x => x.IsCurrent > 0))
+                                                    {
+                                                        <div class="col-6 col-md-2 mb-3">
+                                                            <div class="text-center mb-2"><img src="@(item.Base64ProfileImage == null ? "logo_1.jpg" : item.Base64ProfileImage)" class="rounded-circle" width="65" height="65" alt=""></div>
+                                                            <div class="text-center text-dark"><small><strong>@item.EmployeeName</strong></small></div>
+                                                            <div class="text-center smaller-font">@item.JobTitle</div>
+                                                        </div>
+                                                    }
+
+                                                }
+                                            }
+
+                                        </div>
+                                        <div class="mt-3 mb-3"><strong>Upcoming Work Anniversaries</strong></div>
+                                        <div class="upcoming-table">
+                                            <table class="table border-top upcoming List">
+                                                <thead>
+                                                    <tr style="background: #e8e6f4;">
+                                                        <th width="40%">Employee Name</th>
+                                                        <th>Location</th>
+                                                        <th>Designation</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (Model.EmployeeAnnivesary != null)
+                                                        @foreach (var item in Model.EmployeeAnnivesary.Where(x => x.IsCurrent <= 0))
+                                                        {
+                                                            <tr>
+                                                                <td>@item.EmployeeName</td>
+                                                                <td>@item.Location</td>
+                                                                <td>@item.JobTitle</td>
+                                                                <td>@(item.DOJ == null ? "" : ((DateTime)item.DOJ).ToString("dd-MMM-yyyy"))</td>
+                                                                @*   <th>@(item.IsActive == true ? "Active" : "Inactive")</th>*@
+
+
+                                                            </tr>
+                                                        }
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-lg-4 mb-4">
+            <div class="col-lg-12">
+                <div class="card welcome-onboard">
+                    <div class="card-body row pb-0">
+                        <div class="pe-md-4 text-white">
+                            <h4 class="text-white">Welcome on board</h4>
+                            <div>We’re delighted to welcome you to our team.<br> Together, we will achieve amazing results!</div>
+                            <div class="pt-3 text-center"><img src="../../assets/img/illustrations/onboard.png" width="100%" height="auto" alt=""></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card new-employee-list mb-4">
+                    @if (Model.EmployeeOnBoardings.Where(x => x.IsCurrent > 0) != null)
+                    {
+                        if (Model.EmployeeOnBoardings.Count > 0)
+                        {
+                            foreach (var item in Model.EmployeeOnBoardings)
+                            {
+                                <div class="new-employee-list-element">
+                                    <div class="float-start me-2"><img src="@(item.Base64ProfileImage == null ? "logo_1.jpg" : item.Base64ProfileImage)" class="rounded-circle" width="54" height="54" alt=""></div>
+                                    <div class="float-start">
+                                        <div class="fw-bold line-height-16"><span>@item.EmployeeName</span></div>
+                                        <div><small>@item.JobTitle </small></div>
+                                        <div class="smaller-font text-muted">@(item.DOJ == null ? "" : ((DateTime)item.DOJ).ToString("dd-MMM-yyyy"))</div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+                <div class="card">
+                    <div id="div_quickaccessView">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+
+    <script type="text/javascript">
+
+
+        $(document).ready(function () {
+            $(".List").dataTable();
+
+            QuickAccess();
+        });
+
+        function QuickAccess() {
+
+            let inputDTO = {};
+            inputDTO.QuickAccessId = "";
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/Employee/QuickAccess',
+                data: JSON.stringify(inputDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#div_quickaccessView').html(data);
+                    UnblockUI();
+                },
+                error: function (result) {
+                    alert(result.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+    </script>
+}
+

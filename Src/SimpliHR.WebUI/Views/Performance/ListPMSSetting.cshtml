@@ -1,0 +1,197 @@
+﻿@model SimpliHR.Infrastructure.Models.Performace.PerformanceSettingViewModel
+@{
+    ViewData["Title"] = "PMS Setting";
+}
+<link href="~/assets/css/exitclearance.css" rel="stylesheet" />
+<style>
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Exit/</span> Employees</h4>
+    <div class="row">
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="card">
+                <div class="card-body">
+                    <input type="button" class="btn btn-primary btn-sm mb-3" value="Add Framework Setting" style="float:right;margin-bottom:5px;" onclick="window.location.href='/Performance/PerformanceSettings'" />
+                    <div class="clearfix"></div>
+                    <div class="table-responsive text-nowrap">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Review Period From</th>
+                                    <th>Review Period To</th>
+                                    <th>Assesment Periodicity</th>
+                                    <th>Rollout</th>
+                                    <th>Mechanism</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    if (Model != null)
+                                    {
+                                        if (Model.PerformanceSettingWithChildEntityList != null)
+                                        {
+                                            if (Model.PerformanceSettingWithChildEntityList.Count > 0)
+                                            {
+                                                foreach (var item in Model.PerformanceSettingWithChildEntityList)
+                                                {
+                                                    <tr>
+                                                        <td>@(((DateTime)item.ReviewPeriodFrom).ToString("dd-MMM-yyyy"))</td>
+                                                        <td>@(((DateTime)item.ReviewPeriodTo).ToString("dd-MMM-yyyy"))</td>
+                                                        <td>@item.AssesmentPeriodicity</td>
+                                                        <td>@item.RollOut</td>
+                                                        <td>@item.Mechanism</td>
+
+                                                        <td>
+                                                            <a class="dropdown-item d-inline" href="#" onclick="window.location.href='/Performance/PerformanceSettings?ePerformanceSettingId=@item.ePerformanceSettingId'"><i class="bx bx-edit-alt me-1"></i></a>
+                                                            <a class="dropdown-item d-inline" href="#" onclick="DeletePMSSetting('@item.ePerformanceSettingId')"><i class="bx bx-trash me-1"></i></a>
+                                                            <input type="button" class="btn btn-primary btn-sm" value="PMS Masters" onclick="window.location.href='/Performance/PMSMastersPage?ePerformanceSettingId=@item.ePerformanceSettingId'" />
+                                                            <input type="button" class="btn btn-primary btn-sm" value="Training Need Masters" onclick="window.location.href='/TrainingNeedMaster/TrainingNeedMaster?ePerformanceSettingId=@item.ePerformanceSettingId'" />
+                                                        </td>
+                                                        @* <td>
+                                    <input type="button" class="btn btn-primary btn-sm" value="Edit" onclick="window.location.href='/Performance/PerformanceSettings?ePerformanceSettingId=@item.ePerformanceSettingId'" />
+                                    <input type="button" class="btn btn-primary btn-sm" value="Delete" onclick="viewEmployeeResignDetails_Manager(@item.PerformanceSettingId)" />
+                                    </td>*@
+                                                    </tr>
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="div_ViewResignDetailsPartial">
+                        @*@Html.Partial("_employee/_employeeresignDetailsEmployeeWise")*@
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //initDates();
+            //$("[name='recoverycheck']").click(function () {
+            //    if ($(this).is(":checked")) {
+            //        $(this).parent().find("span").show();
+            //    }
+            //    else {
+            //        $(this).parent().find("span").hide();
+            //    }
+            //});
+        });
+        //function viewEmployeeResignDetails_Manager(ResignationListId) {
+        //    var resignationListDTO = {};
+        //    resignationListDTO.ResignationListId = ResignationListId;
+        //    $.ajax({
+        //        type: "POST",
+        //        contentType: "application/json; charset=utf-8",
+        //        url: '/ExitManagement/ViewEmployeeResignDetails_Manager',
+        //        data: JSON.stringify(resignationListDTO),
+        //        cache: false,
+        //        dataType: "html",
+        //        success: function (data, textStatus, jqXHR) {
+        //            $('#div_ViewResignDetailsPartial').html(data);
+        //            initDates();
+        //        },
+        //        error: function (result) {
+        //            alert(result.responseText);
+        //        }
+        //    });
+        //}
+        //function remove(currDiv) {
+        //    $(currDiv).parent().parent().parent().remove();
+        //}
+
+        //function initDates() {
+        //    $(".flatpickr-date").flatpickr({
+        //        //monthSelectorType: 'static',
+        //        dateFormat: "d-M-Y"
+        //    });
+        //    $(".select2").select2();
+        //    $("select").select2();
+        //    $("select").addClass("select2");
+        //}
+
+        //function SaveResignationDetailsByManager() {
+        //    let data = $("#div_ViewResignDetailsPartial");
+        //    let inputDTO = new FormData();
+        //    inputDTO.append("ResignationListId", data.find("[name='ResignationListId']").val());
+        //    inputDTO.append("EmployeeId", data.find("[name='EmployeeId']").val());
+        //    inputDTO.append("ResignationDateManager", moment(data.find("[name='ResignationDateManager']").val()).format('YYYY-MM-DD'));
+        //    inputDTO.append("LastWorkingDateManager", moment(data.find("[name='LastWorkingDateManager']").val()).format('YYYY-MM-DD'));
+        //    inputDTO.append("NoticePeriodWaiveOff", data.find("[name='NoticePeriodWaiveOff']").is(':checked') ? true : false);
+        //    inputDTO.append("EligibleToHire", data.find("[name='EligibleToHire']").is(':checked') ? true : false);
+        //    inputDTO.append("ManagerRemarks", data.find("[name='ManagerRemarks']").val());
+        //    inputDTO.append("DocumentFile", $("#DocumentFile")[0].files[0]);
+        //    inputDTO.append("ReasonForLeavingManager", data.find("[name='ReasonForLeaving']").val());
+
+
+
+        //    BlockUI();
+        //    $.ajax({
+        //        type: "POST",
+        //        url: '/ExitManagement/SaveResignationDetailsByManager',
+        //        data: inputDTO,
+        //        cache: false,
+        //        processData: false,
+        //        contentType: false,
+        //        success: function (data) {
+        //            $successalert("Success!", "Data Saved");
+        //            UnblockUI();
+        //        },
+        //        error: function (result) {
+        //            $erroralert("Error!", result.responseText);
+        //            UnblockUI();
+        //        }
+        //    });
+        //}
+
+
+        function DeletePMSSetting(ePerformanceSettingId) {
+
+            Swal.fire({ title: 'Are you sure?', text: "This will get deleted permanently!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, delete it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+
+                    var inputDTO = {};
+                    inputDTO.encPerformanceSettingId = ePerformanceSettingId;
+                    BlockUI();
+                    $.ajax({
+                        type: "POST",
+                        url: '/Performance/DeletePMSSetting',
+                        contentType: 'application/json',
+                        data: JSON.stringify(inputDTO),
+                        success: function (data) {
+                            UnblockUI();
+                            $successalert("", "Transaction Successful!");
+                            setTimeout(function () {
+                                window.location.href = "/Performance/ListPMSSetting";
+                            }, 2000);
+                        },
+                        error: function (error) {
+                            $erroralert("Error!", error.responseText + '!'); UnblockUI();
+                            UnblockUI();
+                        }
+                    });
+                }
+            });
+
+
+        }
+
+    </script>
+}
+
+
+

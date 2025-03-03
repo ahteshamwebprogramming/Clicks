@@ -1,0 +1,177 @@
+﻿@model SimpliHR.Infrastructure.Models.Leave.EmployeeLeaveDetailsDTO
+@{
+    ViewData["Title"] = "LeaveApply";
+    Model.DisplayMessage += "";
+}
+
+<style>
+
+
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Leave /</span> Apply
+    </h4>
+    
+    <div class="card" >
+ @*       <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Leave /</span> Apply Leave
+        </h4>*@
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="View" onclick="javascript:window.location.href='/Leave/LeaveView/'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" enctype="multipart/form-data" asp-controller="Leave" asp-action="SaveEmployeeLeaveDetails">
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name"  >Leave Type</label>
+                        <select class="form-select" id="LeaveTypeId" required name="LeaveTypeId" onchange="javascript:PopulateLeaveBalance(this.value)" data-allow-clear="true" data-select2-id="multicol-country" aria-hidden="true">
+                        <option selected>Select an option</option>
+                     @*   @Html.DropDownListFor(x => x.LeaveTypeId,new SelectList(Model.LeaveAttributeKeyValues.LeaveTypeKeyValues,"LeaveTypeId", "LeaveType", Model.LeaveTypeId),"Select an option",htmlAttributes: new { @class = "select2 form-select d-md-inline-block" , @required="required"})*@
+                        @if (Model.LeaveAttributeKeyValues.LeaveTypeKeyValues != null)
+                            foreach (var item in Model.LeaveAttributeKeyValues.LeaveTypeKeyValues)
+                            {
+                                if (item.LeaveTypeId == Model.LeaveTypeId)
+                                {
+                                    <option value="@item.LeaveTypeId" selected> @item.LeaveType</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.LeaveTypeId"> @item.LeaveType</option>
+                                }
+
+                            }
+                            </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Leave Balance</label>
+                        <input type="number" id="leaveBalance" name="leaveBalance" readonly class="form-control" value="0">
+
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Start Date</label>
+                        <input type="date" id="StartDate" name="StartDate" required maxlength="50" class="form-control" placeholder="End Date">
+
+                    </div>
+                    <div class="col-md-6 required">
+                        <label class="form-label" for="multicol-last-name">End Date</label>
+                        <input type="date" id="EndDate" name="EndDate" required maxlength="50" onchange="getObject(this);" class="form-control" placeholder="End Date">
+
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">No Of Leave</label>
+                        <input type="number" id="NoOfLeave" name="NoOfLeave" readonly class="form-control" value="0">
+
+                    </div>
+                    <div class="col-md-6" id="isbillupload" style="display:none;" >
+                        <label class="form-label" for="multicol-last-name">Upload Bill</label>
+                        <input class="form-control" type="file" id="formFile" name="formFile" />
+
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label" for="multicol-last-name">Remarks</label>
+                        <input type="text" id="Remarks" name="Remarks" class="form-control" placeholder="Remarks">
+
+                    </div>
+                   
+                </div>
+                <div class="pt-4">
+                  
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                   @* <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/Leave/LeaveApply/'">Cancel</button>*@
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+
+@section scripts {
+    <script src="../../customjs/CommonFunction.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                alert("@Model.DisplayMessage")
+            }
+            
+        });
+
+        function getObject(object) {
+
+            $(":submit").removeAttr("disabled");
+            $("#txtenddate").datepicker('option', 'minDate', date);
+            //  console.log(object);
+          //  var date1 = $("#StartDate").val();
+          //  var date2 = $("#EndDate").val();
+            var date1 = new Date($("#StartDate").val());
+            var date2 = new Date($("#EndDate").val());
+           // alert(date1);
+            const diffTime = Math.abs(date2 - date1);
+          //  alert(diffTime);
+            if (date1 >  date2) {
+                $(":submit").attr("disabled", true);
+              alert("End date cannot be less than Start date");
+              return;
+            }
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+           // diffDays =diffDays +1;
+          
+            var tDays= diffDays + 1;
+           // alert(tDays);
+            if (parseInt($("#leaveBalance").val()) < tDays) {
+                $(":submit").attr("disabled", true);
+                $("#NoOfLeave").val(0);
+                alert("you can take maximum no of leave : " + $("#leaveBalance").val());
+                return;
+            }
+            $("#NoOfLeave").val(tDays);
+           
+        }
+     
+        function PopulateLeaveBalance(leaveTypeId) {
+            //var objDDL = countryDDL
+           // jQuery("#CountryId").attr("disabled", true)
+            jQuery("#leaveBalance").val(0);
+            jQuery.ajax({
+                type: "GET",
+                url: "/Leave/GetLeaveBalance",
+                data: { leaveTypeId: leaveTypeId },
+                success: function (response) {
+
+                    $("#leaveBalance").val(response.leaveBalance.toFixed(2));
+
+                    if (response.isBill) 
+                        $("#isbillupload").show();                                             
+                       else
+                        $("#isbillupload").hide();
+                     
+                  
+                   
+                      
+                   
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+    </script>
+    }
+
+

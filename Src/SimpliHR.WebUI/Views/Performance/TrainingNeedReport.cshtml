@@ -1,0 +1,120 @@
+﻿@{
+    ViewData["Title"] = "Training Needs";
+}
+@model SimpliHR.Infrastructure.Models.Performace.TrainingNeedReportListViewModel
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Performance/</span> Training Report</h4>
+
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label>Select Period</label>
+                            <select class="form-control" name="PerformanceSettingId">
+                                @{
+                                    if (Model != null && Model.PerformanceSettingList != null)
+                                    {
+                                        foreach (var item in Model.PerformanceSettingList)
+                                        {
+                                            <option value="@item.PerformanceSettingId">@item.ReviewPeriodFrom.ToString("dd-MMM-yyyy") - @item.ReviewPeriodTo.ToString("dd-MMM-yyyy")</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div id="div_ViewPartial">
+                        @*@Html.Partial("_employee/_employeeresignDetailsEmployeeWise")*@
+                    </div>
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            ListPartialView();
+            $("[name='PerformanceSettingId']").change(function () {
+                ListPartialView();
+            });
+        });
+
+
+
+        //function publishPerformance(PerformanceEmployeeDataId) {
+        //    var inputDTO = {
+        //        PerformanceEmployeeDataId: PerformanceEmployeeDataId
+        //    };
+        //    BlockUI();
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/Performance/PublishPerformace",
+        //        contentType: 'application/json',
+        //        data: JSON.stringify(inputDTO),
+        //        success: function (data) {
+        //            UnblockUI();
+        //            $successalert("Success!", "Saved succesfully.");
+        //            window.location.href = "/Performance/MISView";
+        //        },
+        //        error: function (error) {
+        //            $erroralert("Error!", error.responseText + '!'); UnblockUI();
+        //            UnblockUI();
+        //        }
+        //    });
+        //}
+
+        function ListPartialView() {
+            //let performanceSettingId = $("[name='PerformanceSettingId']").val();
+            var inputDTO = {};
+            inputDTO.PerformanceSettingId = $("[name='PerformanceSettingId']").val();
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/Performance/TrainingNeedReport_ListPartialView',
+                data: JSON.stringify(inputDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    UnblockUI();
+                    $('#div_ViewPartial').html(data);
+                    $(".table").dataTable({
+                        "order": [],
+                        "pageLength": 10,
+                        responsive: true,
+                        dom: 'Bfrtip',
+                        buttons: [
+                            'csv', 'excel'
+                        ]
+                    }); sss
+                    UnblockUI();
+                },
+                error: function (result) {
+                    //alert(result);
+                    UnblockUI();
+                }
+            });
+        }
+
+    </script>
+    }
+
+
+

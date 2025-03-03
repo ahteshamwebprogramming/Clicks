@@ -1,0 +1,336 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.TaxSlabDetailsDTO
+@{
+    ViewData["Title"] = "TaxSlabs";
+}
+
+<style>
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 18px;
+    }
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll /</span> Tax Slabs</h4>
+
+    <div class="card" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <button class="btn btn-secondary create-new btn-primary" tabindex="0" aria-controls="DataTables_Table_0" type="button" onclick="AddView()" style="float:right;">
+                <span>
+                    <i class="bx bx-plus me-sm-1"></i>
+                    <span class="d-none d-sm-inline-block">Add Record</span>
+                </span>
+            </button>
+            <!--input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" /-->
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <div class="row g-3">
+                    <div class="col-sm-12">
+                        @*    <label class="form-label d-block" for="address">For Aged</label> *@
+                        <div class="form-check d-sm-inline-block">
+                            <input name="AgeGroup"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="1" onclick="onAgeClick(this);"
+                                   id="GroupId1" checked />
+                            <label class="form-check-label" for="defaultRadio1"> Less than 60 years</label>
+                        </div>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="AgeGroup"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="2" onclick="onAgeClick(this);"
+                                   id="GroupId2" />
+                            <label class="form-check-label" for="defaultRadio2"> 60 to 80 years</label>
+                        </div>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="AgeGroup"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="3" onclick="onAgeClick(this);"
+                                   id="GroupId3" />
+                            <label class="form-check-label" for="defaultRadio2">More than 80 years</label>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+                            <th>Regime</th>
+                            <th>FY</th>
+                            <th>Amount From</th>
+                            <th>Amount To</th>
+                            <th>Tax (In %)</th>
+                            <th>Cess Tax</th>
+                            <th class="text-center" style="width:100px">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model.TaxSlabDetailsList != null)
+                            @foreach (var item in Model.TaxSlabDetailsList)
+                            {
+                                <tr>
+
+                                    <td>@item.Regime</td>
+                                    <td>@item.FY</td>
+
+                                    <td>@item.AmtFrom</td>
+                                    <td>@item.AmtTo</td>
+                                    <td>@item.TaxPercentage</td>
+                                    <td>@item.CessTax</td>
+                                    @*<th>@(item.IsActive == true ? "Active" : "Inactive")</th>*@
+                                    <td class="text-center">
+                                        <a class="dropdown-item" style="display:inline" href="/SalaryComponents/GetTaxSlabInfo/@item.EncryptedId"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item" style="display:inline" href="#" onclick="DeleteRecord('@item.EncryptedId')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/SalaryComponents/TaxSlabs/'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/SalaryComponents/SaveTaxSlab">
+                <div class="row g-3">
+                    <div class="col-sm-12">
+                        <label class="form-label d-block" for="address">For Aged</label>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="AgeGroupId"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="1"
+                                   id="AgeGroupId1" checked />
+                            <label class="form-check-label" for="defaultRadio1"> Less than 60 years</label>
+                        </div>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="AgeGroupId"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="2"
+                                   id="AgeGroupId2" />
+                            <label class="form-check-label" for="defaultRadio2"> 60 to 80 years</label>
+                        </div>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="AgeGroupId"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="3"
+                                   id="AgeGroupId3" />
+                            <label class="form-check-label" for="defaultRadio2">More than 80 years</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label d-block" for="address">Regime</label>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="Regime"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="New"
+                                   id="defaultRadio1" checked />
+                            <label class="form-check-label" for="defaultRadio1">New</label>
+                        </div>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="Regime"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="Old"
+                                   id="defaultRadio2" />
+                            <label class="form-check-label" for="defaultRadio2"> Old </label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">finance year</label>
+                        <select class="form-select" id="selFY" name="FY" aria-label="">
+                            <option value="0">Select an option</option>
+                            <option value="2023-24">FY 2023 - 2024</option>
+                            <option value="2024-25" selected>FY 2024 - 2025</option>
+                            <option value="2025-26">FY 2025 - 2026</option>
+
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Amount From</label>
+                        <input type="number" id="AmtFrom" name="AmtFrom" required maxlength="10" value="@Model.AmtFrom" class="form-control">
+                        @*<span asp-validation-for="LeaveType" class="text-danger"></span>*@
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Amount To</label>
+                        <input type="number" id="AmtTo" name="AmtTo" required maxlength="10" value="@Model.AmtTo" class="form-control">
+                        @*<span asp-validation-for="LeaveType" class="text-danger"></span>*@
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Tax (In Percentage)</label>
+                        <input type="number" id="TaxPercentage" required name="TaxPercentage" value="@Model.TaxPercentage" class="form-control">
+                        @*<span asp-validation-for="LeaveType" class="text-danger"></span>*@
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name"> Cess Tax</label>
+                        <input type="number" id="CessTax" required name="CessTax" value="@Model.CessTax" class="form-control">
+                        @*<span asp-validation-for="LeaveType" class="text-danger"></span>*@
+                    </div>
+
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" id="hdnFY" name="FY" value="@Model.FY">
+                    <input type="hidden" id="SlabID" name="SlabID" value="@Model.SlabID">
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/SalaryComponents/TaxSlabs/'">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <div class="modal-body">
+                    <button type="button" class="btn-close" name="btnPopupClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-4">
+                    </div>
+                    <form id="showAlert" class="row g-3" onsubmit="return false">
+                        <div class="col-12 text-center" id="errorDiv">
+                            <p id="errorPara" class="error" style="color:red"></p>
+                        </div>
+                        <div class="col-12 text-center" id="successDiv">
+                            <p id="successPara" class="error" style="color:black"></p>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="popupBtnDiv" class="col-12 text-center">
+                    @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                    <button type="reset" name="btnPopupClose"
+                            class="btn btn-label-secondary btn-reset mt-3"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                        Close
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script src="../../customjs/CommonFunction.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            jQuery(".List").dataTable();
+
+            if ("@Model.AgeGroupId" == 1) {
+                $("#GroupId1").prop('checked', true);
+                $("#AgeGroupId1").prop('checked', true);
+            }
+            else if ("@Model.AgeGroupId" == 2) {
+                $("#GroupId2").prop('checked', true);
+                $("#AgeGroupId2").prop('checked', true);
+            }
+            else if ("@Model.AgeGroupId" == 3) {
+                $("#GroupId3").prop('checked', true);
+                $("#AgeGroupId3").prop('checked', true);
+            }
+            else
+                $("#GroupId1").prop('checked', true);
+            $("#AgeGroupId1").prop('checked', true);
+
+
+            //$("#Add").show();
+            if (@Model.SlabID != 0 || @Model.HttpStatusCode!= 200) {
+                $("#List").hide();
+                $("#Add").show();
+                if ("@Model.AgeGroupId" == 1) {
+                    $("#AgeGroupId1").prop('checked', true);
+                }
+                else if ("@Model.AgeGroupId" == 2) {
+                    $("#AgeGroupId2").prop('checked', true);
+                }
+                else if ("@Model.AgeGroupId" == 3) {
+                    $("#AgeGroupId3").prop('checked', true);
+                }
+                else
+                    $("#AgeGroupId1").prop('checked', true);
+
+            }
+
+
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                if ("@Model.HttpStatusCode" == 200) {
+                    $successalert("", "@Model.DisplayMessage");
+                }
+                else {
+                    $erroralert("Transaction Failed!", "@Model.DisplayMessage");
+                }
+                // $successalert("Tax Slab", "@Model.DisplayMessage");
+            }
+
+
+        });
+
+        $('#selFY').val($('#hdnFY').val().trim());
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+
+        function DeleteRecord(id) {
+            // event.preventDefault();
+            url = $(this).attr('href');
+            history.pushState({ key: url }, '', url);
+            Swal.fire({ title: 'Are you sure?', text: "This will get deleted permanently!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, delete it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    window.location.href = "/SalaryComponents/DeleteTaxSlab/" + id;
+                }
+            });
+            return false;
+        }
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                if (sMsg.toUpperCase() == "SUCCESS") {
+                    sMsg = "Ticket Created Successfully";
+                    jQuery("#successDiv").show();
+                    jQuery("#successPara").html(sMsg);
+
+                    // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                }
+                else {
+                    jQuery("#errorDiv").show();
+                    jQuery("#errorPara").html(sMsg);
+                }
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+        function onAgeClick(e) {
+            var id = e.value;
+            window.location = '@Url.Action("GetTaxList", "SalaryComponents", new { ageGroupId = "ID" })'.replace("ID", parseInt(id));
+        }
+    </script>
+}
+

@@ -1,0 +1,106 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeMasterDTO
+@{
+    ViewData["Title"] = "SalaryTemplates";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Add Employee /</span> Bulk Data</h4>
+    <div class="row">
+        <!-- User Content -->
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <!-- User Pills -->
+
+            <div class="nav-align-top mb-4">
+
+                <div class="tab-content text-center">
+                    <div class="info-container" >
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-1">
+                                   
+
+                                    <div class="mb-3">
+                                        <label class="form-label required me-3 mt-4" for="username">
+                                            Download Employee Personal Data Template (xlsx)
+                                        </label>
+
+                                        
+                                        <a href="/EmployeeProfile/BulkUpload/AddEmployeeTemplate.xlsm" download>
+                                            Download
+                                            </a>
+                                       
+                                        @*<button type="button" class="btn btn-primary me-2" onclick="DownloadTemplate();">
+                                            Download
+                                        </button>*@
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Modal -->
+                            <!-- /Modal -->
+                            <!-- /Current Plan -->
+                        </div>
+                    </div>
+                    <div class="info-container" >
+                        <form id="uploadTemplate" method="post" enctype="multipart/form-data" asp-controller="ExcelUD" asp-action="UploadEmployeeDataToAdd">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12 mb-1">
+                                        <div class="mb-3">
+                                            <label for="formFile" class="form-label required" for="username">
+                                                Upload Employee Template (xlsx)
+                                            </label>
+                                            <input class="form-control" type="file" id="formFile" name="formFile" style="width:310px; margin:0 auto" />
+                                        </div>
+
+                                        <div class="col-12 text-center">
+                                            <button type="submit" class="btn btn-primary me-2 mt-2" onclick="return BlockedUI();">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal -->
+                                <!-- /Modal -->
+                                <!-- /Current Plan -->
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!--/ User Pills -->
+
+        </div>
+        <!--/ User Content -->
+    </div>
+
+
+</div>
+
+@section scripts {
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if ("@Model.DisplayMessage.ToUpper()" != "_BLANK" )
+            {
+                if ("@Model.DisplayMessage.ToUpper()" == "SUCCESS")
+                    $successalert("Data saved successfully");
+                else
+                    $successalert("Transaction Failed", "@Model.DisplayMessage")
+            }           
+        });
+
+
+        function BlockedUI() {
+
+            if ($('#formFile').get(0).files.length === 0) {
+
+                $erroralert("Please select the template");
+                return false;
+            }
+            else
+            {
+                BlockUI();
+            }
+        }
+    </script>
+}
+

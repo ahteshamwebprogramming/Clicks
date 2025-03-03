@@ -1,0 +1,453 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.ListRoleMenuMappingDTO
+@{
+    ViewData["Title"] = "Role Menu Mapping";
+    //Model.DisplayMessage += "";
+    //Layout = null;
+}
+
+<link rel="stylesheet" href="~/assets/vendor/css/pages/wizard-ex-checkout.css" />
+
+<!-- Helpers -->
+<script src="~/assets/vendor/js/helpers.js"></script>
+<style>
+    .helptext{
+        font-size:12px;
+    }
+    div.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+        line-height: 1;
+    }
+
+    input.error {
+        border: 1px solid red;
+    }
+
+    select.error {
+        border: 1px solid red;
+    }
+
+    span.error {
+        color: red;
+    }
+
+    .tree {
+        --spacing: 1.5rem;
+        --radius: 10px;
+        padding: 20px
+    }
+
+        .tree li {
+            display: block;
+            position: relative;
+            padding-left: calc(2 * var(--spacing) - var(--radius) - 2px);
+            padding-bottom: 5px;
+            padding-top: 2px;
+        }
+
+        .tree ul {
+            margin-left: calc(var(--radius) - var(--spacing));
+            padding-left: 0;
+        }
+
+            .tree ul li {
+                border-left: 2px solid #ddd;
+            }
+
+                .tree ul li:last-child {
+                    border-color: transparent;
+                }
+
+                .tree ul li::before {
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    top: calc(var(--spacing) / -2);
+                    left: -2px;
+                    width: calc(var(--spacing) + 2px);
+                    height: calc(var(--spacing) + 1px);
+                    border: solid #ddd;
+                    border-width: 0 0 2px 2px;
+                }
+
+        .tree summary {
+            display: block;
+            cursor: pointer;
+            padding-bottom: 15px;
+            padding-top: 2px;
+        }
+
+            .tree summary::marker,
+            .tree summary::-webkit-details-marker {
+                display: none;
+            }
+
+            .tree summary:focus {
+                outline: none;
+            }
+
+            .tree summary:focus-visible {
+                outline: 1px dotted #000;
+            }
+
+            .tree li::after,
+            .tree summary::before {
+                content: '';
+                display: block;
+                position: absolute;
+                top: calc(var(--spacing) / 2 - var(--radius));
+                left: calc(var(--spacing) - var(--radius) - 1px);
+                width: calc(2 * var(--radius));
+                height: calc(2 * var(--radius));
+                border-radius: 50%;
+                background: #ddd;
+            }
+
+            .tree summary::before {
+                z-index: 1;
+                /*background: #697a8d url('assets/img/expand-collapse.svg') 0 0;*/
+                background: #697a8d url('../../assets/img/expand-collapse.svg') 0 0;
+            }
+
+        .tree details[open] > summary::before {
+            background-position: calc(-2 * var(--radius)) 0;
+        }
+
+    .selectName {
+        padding: 10px 0;
+    }
+
+    .selectMain {
+        padding-top: 20px;
+    }
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Roles /</span> Role Mapping</h4>
+    <!-- Checkout Wizard -->
+    <div id="wizard-checkout" class="bs-stepper wizard-icons wizard-icons-example mt-2">
+        <div class="container selectMain" name="divMapRoles">
+            <div class="row">
+                <div class="col-4">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-4 selectName required">
+                                Designation
+                            </div>
+                            <div class="col-8">
+                                @Html.DropDownListFor(x => x.jobTitles, new SelectList(Model.jobTitles, "JobTitleId", "JobTitle", Model.jobTitles), "Select", htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible", @required = "true" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-4 selectName required">
+                                Department
+                            </div>
+                            <div class="col-8">
+                                @Html.DropDownListFor(x => x.Departments, new SelectList(Model.Departments, "DepartmentId", "DepartmentName", Model.Departments), "Select", htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible", @required = "true" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-4 selectName required">
+                                Role
+                            </div>
+                            <div class="col-8">
+                                @Html.DropDownListFor(x => x.Roles, new SelectList(Model.Roles, "RoleId", "RoleName", Model.Roles), "Select", htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible", @required = "true" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="button" class="btn btn-primary btn-sm" value="Map" name="MapRoles" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tree_2_1" class="tree-demo jstree jstree-1 jstree-default">
+        </div>
+
+        @*<ul class="tree">
+        <li id="ULmain0">
+        <details open="">
+        <summary><input type="checkbox"> Dashboard</summary>
+        </details>
+        </li>
+        <li id="ULmain1">
+        <details>
+        <summary><input type="checkbox"> Layout</summary>
+        <ul>
+        <li>
+        <input type="checkbox"> Vartical
+        </li>
+        </ul>
+        <ul>
+        <li>
+        <details open="">
+        <summary><input type="checkbox"> Master </summary>
+        </details>
+        </li>
+        </ul>
+        </details>
+        </li>
+
+        </ul>*@
+
+        <ul class="tree">
+            <li>
+                <details open="">
+                    <summary>                        <input id="chkAll" onclick="CheckAll(this,&quot;div&quot;)" type="checkbox"> HRM                    </summary>
+                    <ul id="ULmain">
+                        <li id="ULmain0"><input menuid="1" id="chkAll_0" onclick="CheckAll(this,'div0')" type="checkbox"> Dashboard</li>
+                        <li id="ULmain1">
+                            <details open="" id="ULmaind1">
+                                <summary><input menuid="2" id="chkAll_1" onclick="CheckAll(this,'div1')" type="checkbox"> Layout</summary>
+                                <ul>
+                                    <li><input menuid="3" id="chkAll_2_1" onclick="CheckAll(this,'div2')" type="checkbox"> Horizontal </li>
+                                    <li><input menuid="4" id="chkAll_3_1" onclick="CheckAll(this,'div3')" type="checkbox"> Vartical </li>
+                                </ul>
+                            </details>
+                        </li>
+                        <li id="ULmain4"><details open="" id="ULmaind4"><summary><input menuid="5" id="chkAll_4" onclick="CheckAll(this,'div4')" type="checkbox"> Master</summary><ul><li><input menuid="6" id="chkAll_5_4" onclick="CheckAll(this,'div5')" type="checkbox"> Country </li></ul><ul><li><input menuid="7" id="chkAll_6_4" onclick="CheckAll(this,'div6')" type="checkbox"> State </li></ul><ul><li><input menuid="8" id="chkAll_7_4" onclick="CheckAll(this,'div7')" type="checkbox"> City </li></ul><ul><li><input menuid="9" id="chkAll_8_4" onclick="CheckAll(this,'div8')" type="checkbox"> Blood Group </li></ul><ul><li><input menuid="10" id="chkAll_9_4" onclick="CheckAll(this,'div9')" type="checkbox"> Academic </li></ul><ul><li><input menuid="11" id="chkAll_10_4" onclick="CheckAll(this,'div10')" type="checkbox"> Department </li></ul><ul><li><input menuid="12" id="chkAll_11_4" onclick="CheckAll(this,'div11')" type="checkbox"> Job Title </li></ul><ul><li><input menuid="13" id="chkAll_12_4" onclick="CheckAll(this,'div12')" type="checkbox"> Bank </li></ul><ul><li><input menuid="14" id="chkAll_13_4" onclick="CheckAll(this,'div13')" type="checkbox"> ID Type </li></ul><ul><li><input menuid="15" id="chkAll_14_4" onclick="CheckAll(this,'div14')" type="checkbox"> Band </li></ul><ul><li><input menuid="16" id="chkAll_15_4" onclick="CheckAll(this,'div15')" type="checkbox"> Marital Status </li></ul><ul><li><input menuid="17" id="chkAll_16_4" onclick="CheckAll(this,'div16')" type="checkbox"> Module </li></ul><ul><li><input menuid="18" id="chkAll_17_4" onclick="CheckAll(this,'div17')" type="checkbox"> Religion </li></ul><ul><li><input menuid="19" id="chkAll_18_4" onclick="CheckAll(this,'div18')" type="checkbox"> Resource </li></ul><ul><li><input menuid="20" id="chkAll_19_4" onclick="CheckAll(this,'div19')" type="checkbox"> Role </li></ul><ul><li><input menuid="21" id="chkAll_20_4" onclick="CheckAll(this,'div20')" type="checkbox"> Salary Components </li></ul><ul><li><input menuid="22" id="chkAll_21_4" onclick="CheckAll(this,'div21')" type="checkbox"> Shift </li></ul><ul><li><input menuid="23" id="chkAll_22_4" onclick="CheckAll(this,'div22')" type="checkbox"> Holidays List </li></ul><ul><li><input menuid="24" id="chkAll_23_4" onclick="CheckAll(this,'div23')" type="checkbox"> Leave Type </li></ul><ul><li><input menuid="25" id="chkAll_24_4" onclick="CheckAll(this,'div24')" type="checkbox"> Work Location </li></ul></details></li>
+                        <li id="ULmain25"><details open="" id="ULmaind25"><summary><input menuid="26" id="chkAll_25" onclick="CheckAll(this,'div25')" type="checkbox"> Client Management</summary></details></li>
+                    </ul>
+                </details>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            resetErrors();
+            getAllMenus();
+
+            $("[name='jobTitles']").change(function () {
+                getAllMenus();
+            });
+
+            $("[name='Roles']").change(function () {
+                getAllMenus();
+            });
+            $("[name='Departments']").change(function () {
+                getAllMenus();
+            });
+
+            $("[name='MapRoles']").click(function () {
+
+                if (!ValidateMapRoles()) {
+                    return;
+                }
+                let Menus = [];
+                $(".tree").find("input[type='checkbox']").each(function () {
+                    if ($(this).is(":checked")) {
+                        let menuId = $(this).attr("menuid");
+                        Menus.push(menuId);
+                    }
+                });
+                let jobTitleId = $("[name='jobTitles']").val();
+                let roleId = $("[name='Roles']").val();
+                let departmentId = $("[name='Departments']").val();
+
+                if (Menus.length == 0) {
+                    $erroralert("Transaction Failed!", "Please select atleast one menu");
+                    // alert("Please select atleast one menu");
+                }
+                BlockUI();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/Roles/MapRoles/",
+                    data: { JobTitleId: jobTitleId, RoleId: roleId, DepartmentId: departmentId, Menus: Menus },
+                    cache: false,
+                    dataType: "json",
+                    success: function (data) {
+                        $successalert("", "Transaction Successful!");
+                        // alert("Mapped Successfully");
+                        UnblockUI();
+                        //sessionStorage.setItem('AllMenus', JSON.stringify(data));
+                        //handleSample1();
+                    },
+                    error: function (result) {
+                        UnblockUI();
+                        $erroralert("Transaction Failed!", result.responseText);
+                    }
+                });
+            });
+        });
+
+        function getAllMenus() {
+            let jobTitleId = $("[name='jobTitles']").val();
+            let roleId = $("[name='Roles']").val();
+            let departmentId = $("[name='Departments']").val();
+            jQuery.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: "/Roles/fetchAllMenuItems/",
+                data: { JobTitleId: jobTitleId, RoleId: roleId, DepartmentId: departmentId },
+                cache: false,
+                dataType: "json",
+                success: function (data) {
+                    // alert(JSON.stringify(data));
+                    sessionStorage.setItem('AllMenus', JSON.stringify(data));
+                    // jQuery.unblockUI();
+                    //handleSample1();
+                    handleSample2();
+                },
+                error: function (result) {
+                    $erroralert("Transaction Failed!", "Session has expired");
+                    // alert("Session has expired");
+                    window.location.href = "/Account/Login";
+                }
+            });
+        }
+
+        function handleSample1() {
+
+            $('.tree').empty();
+            var data = sessionStorage.getItem('AllMenus');
+            var data1 = sessionStorage.getItem('AllMenus');
+            var data2 = sessionStorage.getItem('AllMenus');
+
+
+
+            for (var y = 0; y < jQuery.parseJSON(data).length; y++) {
+                if (jQuery.parseJSON(data)[y].parentMenuId == '0') {
+                    $('.tree').append("<li id=ULmain" + y + "><details open id='ULmaind" + y + "'></details></li>");
+                    $('#ULmaind' + y).append('<summary><input ' + (jQuery.parseJSON(data)[y].checked == true ? "checked" : "") + ' menuid="' + jQuery.parseJSON(data)[y].menuId + '" id=chkAll_' + y + ' onclick="CheckAll(this,\'div' + y + '\')" type="checkbox" /> ' + jQuery.parseJSON(data)[y].menuName + '</summary>');
+                    for (var x = 0; x < jQuery.parseJSON(data1).length; x++) {
+                        if (jQuery.parseJSON(data)[y].menuId == jQuery.parseJSON(data1)[x].parentMenuId) {
+                            $('#ULmaind' + y).append('<ul><li><details open><summary><input ' + (jQuery.parseJSON(data)[x].checked == true ? "checked" : "") + ' menuid="' + jQuery.parseJSON(data)[x].menuId + '" id=chkAll_' + x + '_' + y + ' onclick="CheckAll(this,\'div' + (x) + '\')" type="checkbox" /> ' + jQuery.parseJSON(data1)[(x)].menuName + ' </summary></details></li></ul>');
+                        }
+                    }
+                }
+            }
+            //jQuery.unblockUI();
+        }
+
+        function handleSample2() {
+
+            $('.tree').empty();
+            var data = sessionStorage.getItem('AllMenus');
+            var data1 = sessionStorage.getItem('AllMenus');
+            var data2 = sessionStorage.getItem('AllMenus');
+
+            $('.tree').append("<li><details open><summary><input id='chkAll' onclick='CheckAll(this,\"div\")' type='checkbox'/> HRM</summary><ul id='ULmain'></ul></details></li>");
+            for (var y = 0; y < jQuery.parseJSON(data).length; y++) {
+                if (jQuery.parseJSON(data)[y].parentMenuId == '0') {
+                    $('#ULmain').append("<li id=ULmain" + y + "></li>");
+                    if ($.trim(jQuery.parseJSON(data)[y].pageLink) == "#") {
+                        $('#ULmain' + y).append("<details open id='ULmaind" + y + "'></details>");
+                        $('#ULmaind' + y).append('<summary><input ' + (jQuery.parseJSON(data)[y].checked == true ? "checked" : "") + ' menuid="' + jQuery.parseJSON(data)[y].menuId + '" id=chkAll_' + y + ' onclick="CheckAll(this,\'div' + y + '\')" type="checkbox" /> ' + jQuery.parseJSON(data)[y].menuName + '<span class="helptext">' + jQuery.parseJSON(data)[y].role + ' </span><ul> </ul></summary>');
+                    }
+                    else {
+                        $('#ULmain' + y).append('<input ' + (jQuery.parseJSON(data)[y].checked == true ? "checked" : "") + ' menuid="' + jQuery.parseJSON(data)[y].menuId + '" id=chkAll_' + y + ' onclick="CheckAll(this,\'div' + y + '\')" type="checkbox" /> ' + jQuery.parseJSON(data)[y].menuName + '<span class="helptext">' + jQuery.parseJSON(data)[y].role + '</span>');
+                    }
+                    for (var x = 0; x < jQuery.parseJSON(data1).length; x++) {
+                        if (jQuery.parseJSON(data)[y].menuId == jQuery.parseJSON(data1)[x].parentMenuId) {
+                            $('#ULmaind' + y).append('<li><input ' + (jQuery.parseJSON(data)[x].checked == true ? "checked" : "") + ' menuid="' + jQuery.parseJSON(data)[x].menuId + '" id=chkAll_' + x + '_' + y + ' onclick="CheckAll(this,\'div' + (x) + '\')" type="checkbox" /> ' + jQuery.parseJSON(data1)[(x)].menuName + '<span class="helptext">' + jQuery.parseJSON(data1)[(x)].role + ' </span></li>');
+                        }
+                    }
+                }
+            }
+            //jQuery.unblockUI();
+        }
+
+        function CheckAll(qw, divid) {
+            //  alert('checkall');
+            var checkedValue = "";
+            var tab = qw.id; // table with id tbl1
+
+            var len = tab.length;
+
+            for (var i = 0; i < len; i++) {
+
+                if ($('#' + qw.id).is(':checked')) {
+                    $('#' + qw.id).closest('li').find(':checkbox').attr('checked', true).change();
+                    //$('#' + divid.id).addClass('jstree-wholerow-clicked');
+                    // checkedValue = checkedValue + elems[i].value;
+
+                    let pid = qw.id.split('_')[2];
+                    if (pid != undefined) {
+                        $("#chkAll_" + pid).attr('checked', true).change();
+                    }
+
+                }
+                else {
+                    //alert('yy');
+                    $('#' + qw.id).closest('li').find(':checkbox').attr('checked', false).change();
+                    $('#' + qw.id).closest('li').find(':checkbox').removeAttr('checked').change();
+                    //$('#' + divid.id).removeClass('jstree-wholerow-clicked');
+                }
+
+
+            }
+        }
+
+        function ValidateMapRoles() {
+            var isValid = true;
+            let divname = "divMapRoles";
+
+            var inputs = $("div[name='" + divname + "']").find($('input[required]'));
+            var selects = $("div[name='" + divname + "']").find($('select[required]'));
+
+            //inputs.each(function () {
+            //    if ($.trim($(this).val()) == "") {
+            //        if (!$(this).hasClass("error")) {
+            //            var name = $(this).attr('name');
+            //            $(this).addClass("error");
+            //            $('<label id="' + name + '-error" class="error" for="' + name + '">This field is required</label>').insertAfter(this);
+            //        }
+            //        isValid = false;
+            //    }
+            //});
+            selects.each(function () {
+                if ($.trim($(this).val()) == "") {
+                    if (!$(this).hasClass("error")) {
+                        var name = $(this).attr('name');
+                        $(this).addClass("error");
+
+                        $(this).parent().append('<span id="' + name + '-error" class="error" for="' + name + '">This field is required</span>');
+
+                        //$('<span id="' + name + '-error" class="error" for="' + name + '">This field is required</span>').insertAfter(this);
+                    }
+                    isValid = false;
+                }
+            });
+            return isValid;
+        }
+        function resetErrors() {
+            $("input[type='text']").on('change paste click focus blur', function () {
+                $(this).parent().find(".error").hide();
+            });
+            $("select").on('change paste click focus blur', function () {
+                $(this).parent().find(".error").hide();
+            });
+
+            $('select[required]').change(function () {
+                if ($(this).hasClass("error")) {
+                    $(this).removeClass("error");
+                    var name = $(this).attr('name');
+                    $("#" + name + "-error").remove();
+                }
+            });
+
+        }
+
+
+    </script>
+}

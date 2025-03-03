@@ -1,0 +1,130 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.PolicyDocumentsSubCategoryMasterDTO
+@{
+    ViewData["Title"] = "Sub Category";
+    Model.DisplayMessage += "";
+    //Layout = null;
+}
+
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Client Policies /</span> Policy Sub Categories</h4>
+    <div class="card" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table table-bordered List" id="List">
+                    <thead>
+                        <tr>
+                            @* <th></th>*@
+                            <th>Category</th>
+                            <th>Sub Category</th>
+                            @*   <th>Status</th>*@
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.PolicyDocumentsSubCategoryMasterList != null)
+                            @foreach (var item in Model.PolicyDocumentsSubCategoryMasterList)
+                            {
+                                <tr>
+                                    @* <td></td>*@
+                                    <td>@item.PolicyDocumentsCategoryName</td>
+                                    <td>@item.PolicyDocumentsSubCategory</td>
+                                    @*  <th>@(item.IsActive == true ? "Active" : "Inactive")</th>*@
+                                  @*   <th>
+                                        <a class="btn btn-primary" onclick="EditRecord('PolicyDocumentsSubCategory','/PolicyDocumentsSubCategory/GetPolicyDocumentsSubCategoryInfo','@item.EncryptedId','@item.IsActive')">Edit</a>
+                                        <button class="btn btn-primary" onclick="DeleteRecord('PolicyDocumentsSubCategory','@item.PolicyDocumentsSubCategory','/PolicyDocumentsSubCategory/DeletePolicyDocumentsSubCategory','@item.EncryptedId','@item.IsActive')"> Delete</button>
+                                    </th> *@
+
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="#" onclick="EditRecord('PolicyDocumentsSubCategory','/PolicyDocumentsSubCategory/GetPolicyDocumentsSubCategoryInfo','@item.EncryptedId','@item.IsActive')"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="#" onclick="DeleteRecord('PolicyDocumentsSubCategory','@item.PolicyDocumentsSubCategory','/PolicyDocumentsSubCategory/DeletePolicyDocumentsSubCategory','@item.EncryptedId','@item.IsActive')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="List" onclick="javascript:window.location.href='/PolicyDocumentsSubCategory/PolicyDocumentsSubCategory'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/PolicyDocumentsSubCategory/SavePolicyDocumentsSubCategory" class="">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-country">Category</label>
+                        <div class="position-relative">
+                            <select id="multicol-country" asp-for="PolicyDocumentsCategoryId" name="PolicyDocumentsCategoryId" required class="select2 form-select select2-hidden-accessible clearForm" data-allow-clear="true" data-select2-id="multicol-country" tabindex="-1" aria-hidden="true">
+                                <option value="">Select</option>
+                                @if (Model.PolicyDocumentCategoryList != null)
+                                {
+                                    @foreach (var item in Model.PolicyDocumentCategoryList)
+                                    {
+                                        if (item.PolicyDocumentsCategoryId == Model.PolicyDocumentsCategoryId)
+                                        {
+                                            <option value="@item.PolicyDocumentsCategoryId" selected> @item.PolicyDocumentsCategory</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.PolicyDocumentsCategoryId"> @item.PolicyDocumentsCategory</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                            @*<span asp-validation-for="CountryId" class="text-danger"></span>*@
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Sub Category</label>
+                        <input type="text" id="PolicyDocumentsSubCategory" asp-for="PolicyDocumentsSubCategory" name="PolicyDocumentsSubCategory" required maxlength="100" value="@Model.PolicyDocumentsSubCategory" class="form-control clearForm" placeholder="Sub Category">
+                        @*<span asp-validation-for="StateName" class="text-danger"></span>*@
+                    </div>
+
+
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" id="StaPolicyDocumentsSubCategoryIdteId" name="PolicyDocumentsSubCategoryId" value="@Model.PolicyDocumentsSubCategoryId">
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/PolicyDocumentsSubCategory/PolicyDocumentsSubCategory'">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script src="../../customjs/CommonFunction.js"></script>
+
+
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            Init("@Model.PolicyDocumentsSubCategoryId", "@Model.DisplayMessage", "@Model.HttpStatusCode");
+
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                if ("@Model.HttpStatusCode" == 200) {
+                    $successalert("", "@Model.DisplayMessage");
+                }
+                else {
+                    $erroralert("Transaction Failed!", "@Model.DisplayMessage");
+                }
+                
+            }
+        });
+
+    </script>
+    }

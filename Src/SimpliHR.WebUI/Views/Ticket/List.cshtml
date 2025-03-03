@@ -1,0 +1,807 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeTicketsViewDTO
+@{
+    //Layout = null;
+    ViewData["Title"] = "Ticket List";
+}
+<!-- / Navbar -->
+<!-- Content wrapper -->
+<!-- Content -->
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Ticket /</span> List</h4>
+    <div class="row">
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="nav-align-top mb-4">
+                @*   <div class="row g-3">
+                <div class="col-md-4 form-check">
+
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked >
+                <label class="form-check-label" for="flexRadioDefault1">
+                My Tickets
+                </label>
+
+
+                </div>
+                <div class="col-md-4 form-check">
+
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                <label class="form-check-label" for="flexRadioDefault1">
+                Assigned To Me
+                </label>
+
+
+                </div>
+                <div class="col-md-4 form-check">
+
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3">
+                <label class="form-check-label" for="flexRadioDefault1">
+                Actioned By Me
+                </label>
+
+
+                </div>
+                </div> *@
+
+                <ul class="nav nav-pills mb-3" role="tablist">
+                    <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#assignedToMe" aria-controls="View" aria-selected="false">
+                            Assigned To Me
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="nav-link " role="tab" data-bs-toggle="tab" data-bs-target="#myTickets" aria-controls="Apply" aria-selected="true">
+                            My Tickets
+                        </button>
+                    </li>                  
+                    <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#actionedByMe" aria-controls="View" aria-selected="false">
+                            Actioned By Me
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade" id="myTickets" role="tabpanel">
+                        <div>
+                           @*  <form method="post" action="/Ticket/GetMyTicketsList"> *@
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6 form-group">
+                                            <label class="form-label">Ticket Module</label>
+                                            <select class="form-control" id="myticketmodule" name="ModuleId">
+                                                <option value="0">Select</option>
+                                                <option value="1">Leave</option>
+                                                <option value="2">Attendance</option>
+                                                <option value="3">CompOff</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="form-label">Ticket Status</label>
+                                            <select class="form-control" id="myticketstatus" name="Status">
+                                            <option value="100">Select</option>
+                                                <option value="0">Pending</option>
+                                                <option value="1">Completed</option>
+                                                <option value="2">Rejected</option>
+                                                <option value="98">Cancelled</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-12 form-group">
+                                            <input type="button" onclick="MyTickets();" class="btn btn-primary" value="Search" />
+                                        </div>
+                                    </div>
+                                </div>
+                          @*   </form> *@
+                        </div>
+                        <div class="row" style="margin-top:12px;">
+                            <div class="table-responsive text-nowrap mb-4">
+                                <table class="datatables-ajax table" id="tblmyticketlist">
+                                    <thead>
+                                        <tr>
+                                            <th>Sr.No</th>
+                                            <td>Ticket No</td>
+                                            <td>Employee Name</td>
+                                            <td>Type</td>
+                                            <td>Status</td>
+                                            <td>Updated On</td>
+                                            <td>Action</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="mytickettbl">
+                                    </tbody>
+                                  
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade show active" id="assignedToMe" role="tabpanel">
+                        <form method="post" action="/Ticket/GetToMeList">
+                            <div class="">
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6 form-group">
+                                            <label class="form-label">Ticket Number</label>
+                                            <input class="form-control" name="TicketId" type="text" />
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="form-label">Ticket Type</label>
+                                            <select class="form-control" id="assignMeModule" name="ModuleId">
+                                                <option value="0">Select</option>
+                                                <option value="1">Leave</option>
+                                                <option value="2">Attendance</option>
+                                                <option value="3">CompOff</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="form-label">Period From</label>
+                                            <input class="form-control flatpickr-date1" name="StartDate" type="text" />
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="form-label">Period To</label>
+                                            <input class="form-control flatpickr-date1" name="EndDate" type="text" />
+                                        </div>
+                                        <div class="col-md-12 form-group">
+                                            <input type="submit" class="btn btn-primary" value="Search" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="row" style="margin-top:12px;">
+                            <div class="table-responsive text-nowrap mb-4">
+                                <table class="datatables-ajax table List">
+                                    <thead>
+                                        <tr>
+                                            <td>Sr.No</td>
+                                            <th><input type="checkbox" class="form-check-input" onclick="CheckAll(this)"> All</th>
+                                            <td>Ticket No</td>
+                                            <td>Employee Name</td>
+                                            <td>Type</td>
+                                            <td>Status</td>
+                                            <td>Updated On</td>
+                                            <td></td>
+
+                                        </tr>
+                                    </thead>
+                                    @if (Model.EmployeeToMeTickets != null)
+                                        if (Model.EmployeeToMeTickets.Count > 0)
+                                        {
+                                            var iCtr = 1;
+                                            <tbody>
+                                                @{
+
+                                                    foreach (var item in @Model.EmployeeToMeTickets)
+                                                    {
+                                                                                    @if (item.TicketId != "0")
+                                                        {
+
+                                                                                        <tr>
+                                                                                            <td>@iCtr</td>
+                                                                                            <td> <input type="checkbox" id="Id_@iCtr" value="@item.Id" class="form-check-input" /></td>
+                                                                                            @if (item.TicketType == "Att")
+                                                                {
+                                                                                                <td><a href="#" data-bs-toggle="modal" data-bs-target="#attModule" onclick="ViewAttRecord('@item.TicketId',2)">@item.TicketId</a></td>
+                                                                }
+                                                                else
+                                                                {
+                                                                                                <td><a href="#" data-bs-toggle="modal" data-bs-target="#exLargeModal" onclick="ViewRecord('@item.TicketId',1)">@item.TicketId</a></td>
+                                                                }
+
+                                                                                            <td>@item.EmployeeName</td>
+                                                                                            <td>@item.TicketType</td>
+                                                                                            <td>@item.Status</td>
+                                                                                            <td>@item.CreatedOn.ToString("dd-MMM-yy")</td>
+                                                                                            <td> <input type="hidden" id="Type_@iCtr" value="@item.Type" /></td>
+
+                                                                                        </tr>
+                                                        }
+                                                        iCtr++;
+                                                    }
+                                                }
+
+                                            </tbody>
+                                        }
+                                </table>
+                                <div class="col-12 d-flex justify-content-between mt-3 mb-3">
+                                    <button class="btn btn-primary btn-prev" onclick="RegulerizeSelected('A')">
+
+                                        <span class="align-middle d-sm-inline-block d-none">Approve</span>
+                                    </button>
+
+                                    <button class="btn btn-primary" onclick="RegulerizeSelected('R')">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Reject</span>
+
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="tab-pane fade" id="actionedByMe" role="tabpanel">
+                     @*    <form method="post" action="/Ticket/GetByMeList"> *@
+                            <div class="">
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6 form-group">
+                                            <label class="form-label">Ticket Module</label>
+                                            <select class="form-control" id="getByMemodule" name="ModuleId">
+                                                <option value="0">Select</option>
+                                                <option value="1">Leave</option>
+                                                <option value="2">Attendance</option>
+                                                <option value="3">CompOff</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="form-label">Ticket Status</label>
+                                            <select class="form-control" id="getByMestatus" name="Status">
+                                                <option value="100">Select</option>
+                                                <option value="0">Pending</option>
+                                                <option value="1">Completed</option>
+                                                <option value="2">Rejected</option>
+                                                <option value="98">Cancelled</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-12 form-group">
+                                            <input type="button" onclick="ActionedByMe();" class="btn btn-primary" value="Search" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @* </form> *@
+                        <div class="row" style="margin-top:12px;">
+                            <div class="table-responsive text-nowrap mb-4">
+                                <table class="datatables-ajax table" id="tblMeTickets">
+                                    <thead>
+                                        <tr>
+                                            <th>Sr No</th>
+                                            <td>Ticket No</td>
+                                            <td>Employee Name</td>
+                                            <td>Type</td>
+                                            <td>Status</td>
+                                            <td>Updated On</td>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ByMeTicketstbl">
+                                    </tbody>
+                                    @* @if (Model.EmployeeByMeTickets != null)
+                                        if (Model.EmployeeByMeTickets.Count > 0)
+                                        {
+                                            var iCtr = 1;
+                                            <tbody>
+                                                @{
+
+                                                    foreach (var item in @Model.EmployeeByMeTickets)
+                                                    {
+
+
+                                                                                        <tr>
+                                                                                            <td>@iCtr</td>
+                                                                                            <td><a href="#" data-bs-toggle="modal" data-bs-target="#exLargeModal" onclick="ViewRecord('@item.TicketId')">@item.TicketId</a></td>
+                                                                                            <td>@item.EmployeeName</td>
+                                                                                            <td>@item.TicketType</td>
+                                                                                            <td>@item.Status</td>
+                                                                                            <td>@item.CreatedOn.ToString("dd-MMM-yy")</td>
+
+
+
+
+                                                                                        </tr>
+                                                        iCtr++;
+
+                                                    }
+                                                }
+
+                                            </tbody>
+                                        } *@
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="modal fade" id="exLargeModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-xl" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header border-bottom">
+                                <div><h5 class="card-title mb-sm-0 me-2">Ticket Details</h5></div>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-datatable table-responsive text-nowrap">
+                                    <table class="datatables-ajax table" id="SummaryList">
+                                        <thead>
+                                            <tr>
+                                                <th>Ticket Id</th>
+                                                <th>Type</th>
+                                                <th>From</th>
+                                                <th>To</th>
+                                                <th>Status</th>
+                                                @*  <th>Remarks</th> *@
+                                                <th>Applied On</th>
+                                                <th>Appr/Rej By</th>
+                                                <th>Appr/Rej On</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="myleavetbl">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="attModule" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-xl" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header border-bottom">
+                                <div><h5 class="card-title mb-sm-0 me-2">Ticket Details</h5></div>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-datatable table-responsive text-nowrap">
+                                    <table class="datatables-ajax table" id="AttSummaryList">
+                                        <thead>
+                                            <tr>
+                                                <th>Ticket Id</th>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                                <th>Reason</th>                                     
+                                                <th>Appr/Rej By</th>
+                                                <th>Appr/Rej On</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="myattttbl">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+        <!-- /Modal -->
+    </div>
+    <!-- / Content -->
+</div>
+<!-- Content wrapper -->
+@section scripts {
+
+    @*    <script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $(".flatpickr-date1").flatpickr({
+                dateFormat: "d-M-Y"
+            });
+
+            $(".List").dataTable();
+
+               
+        });
+
+       
+
+        function CheckAll(regularizeAll) {
+            isAllChecked = regularizeAll.checked;
+            for (iCtr = 1; iCtr <= @Model.EmployeeToMeTickets.Count; iCtr = iCtr + 1) {
+                //  alert(isAllChecked);
+                chkBox = jQuery("#Id_" + iCtr)
+                if (chkBox != undefined) {
+                    isChecked = chkBox.is(":checked")
+
+                    if (isAllChecked && !isChecked) {
+
+                        chkBox.attr('checked', true).change();
+                    }
+                    else if (!isAllChecked && isChecked) {
+                        // alert(isChecked);
+                        chkBox.attr('checked', false).change();
+                    }
+                }
+            }
+        }
+
+        function ViewRecord(ticketId, moduleId) {
+
+           // alert(ticketId);
+           // alert(moduleId);
+          //  jQuery("#ModuleId")
+          //  var moduleId = $('#myticketmodule').val();
+
+          //  alert(value);
+           // return;
+            if (ticketId != null) {
+                jQuery("#myleavetbl").html("")
+
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/Leave/GetLeaveTicketDetails",
+                    data: { ticketId: ticketId, moduleId: moduleId },
+                    success: function (response) {
+
+                        var status = 'pending';
+                        var aprdate = '';
+                        var aprBy = '', remarks = '';
+                        if (response != null) {
+                            if (response.employeeLeaveList.length > 0) {
+                                //  $("#Add").show();
+
+                                for (var i = 0; i < response.employeeLeaveList.length; i++) {
+
+                                 
+
+                                        if (response.employeeLeaveList[i].leaveStatus == 1)
+                                            status = 'Pending';
+                                        else if (response.employeeLeaveList[i].leaveStatus == 0)
+                                            status = 'Approved';
+                                        else if (response.employeeLeaveList[i].leaveStatus == 98)
+                                        status = 'Rejected/Reversaled';
+                                        else if (response.employeeLeaveList[i].leaveStatus == 90)
+                                            status = 'Reversal';
+
+
+                                        //   const offset = response.employeeLeaveList[i].startDate.getTimezoneOffset()
+                                        var sdate = response.employeeLeaveList[i].startDate.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                        sdate = sdate.slice(0, 10);
+                                        var edate = response.employeeLeaveList[i].endDate.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                        edate = edate.slice(0, 10);
+                                        var adate = response.employeeLeaveList[i].createdOn.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                        adate = adate.slice(0, 10);
+                                        if (response.employeeLeaveList[i].approvedOn != null) {
+                                            aprdate = response.employeeLeaveList[i].approvedOn.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                            aprdate = aprdate.slice(0, 10);
+                                        }
+                                        else
+                                            aprdate = '';
+
+
+
+                                        if (response.employeeLeaveList[i].approvedBy == null) {
+                                            aprBy = '';
+                                        }
+                                        else
+                                            aprBy = response.employeeLeaveList[i].approvedBy;
+
+                                        if (response.employeeLeaveList[i].reason == null) {
+                                            remarks = '';
+                                        }
+                                        else
+                                            remarks = response.employeeLeaveList[i].reason;
+
+
+                                        //  return response.employeeLeaveList[i].startDate.toISOString().split('T')[0]
+
+                                        $("#myleavetbl").append('<tr><td>' + response.employeeLeaveList[i].ticketId + '</td><td>' + response.employeeLeaveList[i].leaveTypeCode + '</td><td>' + sdate + '</td><td>' + edate + '</td><td>' + status + '</td>><td>' + adate + '</td><td>' + aprBy + '</td><td>' + aprdate + '</td></tr>');
+                                  
+                                }
+                            }
+                        }
+                    },
+                    failure: function (response) {
+                        $erroralert("Error!", "errror<br>" + response.responseText);
+                    },
+                    error: function (response) {
+                        $erroralert("Error!", "errror<br>" + response.responseText);
+                    }
+
+                });
+            }
+        }
+
+        function ViewAttRecord(ticketId, moduleId) {
+
+            if (ticketId != null) {
+                jQuery("#myattttbl").html("")
+
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/Leave/GetLeaveTicketDetails",
+                    data: { ticketId: ticketId, moduleId: moduleId },
+                    success: function (response) {
+
+                        var status = 'pending';
+                        var aprdate = '';
+                        var aprBy = '', remarks = '';
+                        if (response != null) {
+                            if (response.employeeLeaveList.length > 0) {
+                                //  $("#Add").show();
+
+                                for (var i = 0; i < response.employeeLeaveList.length; i++) {
+
+
+                                   
+
+                                        //   const offset = response.employeeLeaveList[i].startDate.getTimezoneOffset()
+                                        var sdate = response.employeeLeaveList[i].startDate.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                        sdate = sdate.slice(0, 10);
+
+                                        if (response.employeeLeaveList[i].approvedOn != null) {
+                                            aprdate = response.employeeLeaveList[i].approvedOn.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                            aprdate = aprdate.slice(0, 10);
+                                        }
+                                        else
+                                            aprdate = '';
+
+
+
+                                        if (response.employeeLeaveList[i].approvedBy == null) {
+                                            aprBy = '';
+                                        }
+                                        else
+                                            aprBy = response.employeeLeaveList[i].approvedBy;
+
+                                        if (response.employeeLeaveList[i].reason == null) {
+                                            remarks = '';
+                                        }
+                                        else
+                                            remarks = response.employeeLeaveList[i].reason;
+
+
+                                        //  return response.employeeLeaveList[i].startDate.toISOString().split('T')[0]
+
+                                        $("#myattttbl").append('<tr><td>' + response.employeeLeaveList[i].ticketId + '</td><td>' + sdate + '</td><td>' + response.employeeLeaveList[i].remarks + '</td><td>' + remarks + '</td>><td>' + aprBy + '</td><td>' + aprdate + '</td></tr>');
+                                   
+                                }
+                            }
+                        }
+                    },
+                    failure: function (response) {
+                        $erroralert("Error!", "errror<br>" + response.responseText);
+                    },
+                    error: function (response) {
+                        $erroralert("Error!", "errror<br>" + response.responseText);
+                    }
+
+                });
+            }
+        }
+
+        function DeleteRecord(Id) {
+            // event.preventDefault();
+           
+          //  url = $(this).attr('href');
+          //  history.pushState({ key: url }, '', url);
+           // alert(jQuery("#myticketmodule").val());
+            var moduleId = jQuery("#myticketmodule").val();
+
+            Swal.fire({ title: 'Are you sure?', text: "This will get cancel permanently!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, cancel it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    jQuery.ajax({
+                        type: "GET",
+                        url: "/Leave/DeleteTicket",
+                        data: { Id: Id, moduleId: moduleId },
+                        success: function (data) {
+                            //alert(data)
+                            UnblockUI();
+                         
+                            $successalert("", data);
+                            
+                        },
+                        error: function (result) {
+                            var x = 1;
+                            $erroralert("Error!", "errror<br>" + result.responseText);
+                            UnblockUI();
+                        }
+                    });
+                    window.location.href = "/Ticket/List";
+                }
+            });
+
+            return false;
+        }
+
+
+        function RegulerizeSelected(actionType) {
+            var rowData = {};
+            var formData = {};
+            var isData = false;
+            var dataCollection = new Array();
+            var results = new Array();          
+            var iCtr = 0;
+            var sValidMsg = "";           
+
+            if (@Model.EmployeeToMeTickets.Count> 0) {
+                for (iCtr = 1; iCtr <= @Model.EmployeeToMeTickets.Count; iCtr = iCtr + 1) {
+                    isChecked = jQuery("#Id_" + iCtr).is(":checked")
+
+                    if (isChecked) {
+
+                        var sRemark = jQuery("#Type_" + iCtr).val();
+                        if (sRemark != "")
+                            sRemark = sRemark.replace(",", "{#~#}")
+                        rowData.LeaveIds = rowData.LeaveIds != undefined ? rowData.LeaveIds + "," + jQuery("#Id_" + iCtr).val() : jQuery("#Id_" + iCtr).val();
+                        rowData.ActionRemarks = rowData.ActionRemark = rowData.ActionRemark != undefined ? rowData.ActionRemark + "," + sRemark : sRemark + "";
+                        isData = true;
+                    }
+                }
+            }
+
+            if (isData) {
+                rowData.ActionType = actionType;
+                dataCollection.push(rowData)
+            }
+            else
+                $erroralert("Transaction Failed!", "Please select the pending request to Approve / Reject");
+          
+
+            if (dataCollection.length > 0) {
+
+                BlockUI();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/Leave/TicketRegularizeProcessing",
+                    data: { userAction: rowData },
+                    success: function (data) {
+                        //alert(data)
+                        UnblockUI();
+                        // var sMsg = data.displayMessage  //.Trim().Replace("< br > ", "\r\n")
+                        // $successalert("", data);
+                      //  if (data.toUpperCase() == "SUCCESS") {
+                            $successalert("", "Transaction Successful!");
+                            //jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                       // }
+                         window.location.href = "/Ticket/List"
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        $erroralert("Error!", "errror<br>" + result.responseText);
+                        UnblockUI();
+                    }
+                });
+
+            }
+            
+
+        }
+
+        function MyTickets() {
+
+            if ($.fn.DataTable.isDataTable('#tblmyticketlist')) {
+                $('#tblmyticketlist').DataTable().destroy();
+            }
+             $('#tblmyticketlist tbody').empty();
+          // jQuery("#mytickettbl").html("");
+          //  $('#mytickettbl').dataTable().destroy();
+           // $('#mytickettbl tbody').empty();
+            var columns = [];
+
+              jQuery.ajax({
+                    type: "GET",
+                url: "/Ticket/GetMyTickets",
+                data: { moduleId: jQuery("#myticketmodule").val(), status: jQuery("#myticketstatus").val() },
+                    success: function (response) {
+                   
+                        var moduleid = jQuery("#myticketmodule").val();
+                     
+                        if (response != null) {                      
+                            if (response.employeeTickets.length > 0) {                          
+                            if (response.employeeTickets[0].ticketId != "0") {
+
+                                    for (var i = 0; i < response.employeeTickets.length; i++) {
+
+
+                                        var cdate = response.employeeTickets[i].createdOn.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                        cdate = cdate.slice(0, 10);
+
+                                        if (moduleid == "1") {
+
+                                            var ticketId = '<a href="#" data-bs-toggle="modal" data-bs-target="#exLargeModal" onclick="ViewRecord(\'' + response.employeeTickets[i].ticketId + '\',' + jQuery("#myticketmodule").val() + ')"> ' + response.employeeTickets[i].ticketId + '</a>';
+                                            if (response.employeeTickets[i].statusId == 1) {
+                                                var action = '<a class="dropdown-item d-inline" href="#" onclick="DeleteRecord(' + response.employeeTickets[i].id + ')"><i class="bx bx-trash me-1"></i></a>'
+
+                                                $("#mytickettbl").append('<tr><td>' + (i + 1) + '</td><td>' + ticketId + '</td><td>' + response.employeeTickets[i].employeeName + '</td><td>' + response.employeeTickets[i].ticketType + '</td><td>' + response.employeeTickets[i].status + '</td><td>' + cdate + '</td><td>' + action + '</td></tr>');
+                                            }
+                                            else {
+                                                $("#mytickettbl").append('<tr><td>' + (i + 1) + '</td><td>' + ticketId + '</td><td>' + response.employeeTickets[i].employeeName + '</td><td>' + response.employeeTickets[i].ticketType + '</td><td>' + response.employeeTickets[i].status + '</td><td>' + cdate + '</td><td></td></tr>');
+                                            }
+
+                                            $("#tblmyticketlist").dataTable();
+                                        }
+                                        else if (moduleid == "2") {
+
+                                            var ticketId = '<a href="#" data-bs-toggle="modal" data-bs-target="#attModule" onclick="ViewAttRecord(\'' + response.employeeTickets[i].ticketId + '\',' + jQuery("#myticketmodule").val() + ')"> ' + response.employeeTickets[i].ticketId + '</a>';
+                                            if (response.employeeTickets[i].statusId == 1) {
+                                                var action = '<a class="dropdown-item d-inline" href="#" onclick="DeleteRecord(' + response.employeeTickets[i].id + ')"><i class="bx bx-trash me-1"></i></a>'
+
+                                                $("#mytickettbl").append('<tr><td>' + (i + 1) + '</td><td>' + ticketId + '</td><td>' + response.employeeTickets[i].employeeName + '</td><td>' + response.employeeTickets[i].ticketType + '</td><td>' + response.employeeTickets[i].status + '</td><td>' + cdate + '</td><td>' + action + '</td></tr>');
+                                            }
+                                            else {
+                                                $("#mytickettbl").append('<tr><td>' + (i + 1) + '</td><td>' + ticketId + '</td><td>' + response.employeeTickets[i].employeeName + '</td><td>' + response.employeeTickets[i].ticketType + '</td><td>' + response.employeeTickets[i].status + '</td><td>' + cdate + '</td><td></td></tr>');
+                                            }
+                                            $("#tblmyticketlist").dataTable();
+                                        }
+
+
+
+                                    }
+
+
+
+
+                                }
+                            }
+                        }
+                    },
+                    failure: function (response) {
+                        $erroralert("Error!", "errror<br>" + response.responseText);
+                    },
+                    error: function (response) {
+                        $erroralert("Error!", "errror<br>" + response.responseText);
+                    }
+
+                });
+           
+        }
+
+        function ActionedByMe() {
+
+            if ($.fn.DataTable.isDataTable('#tblMeTickets')) {
+                $('#tblMeTickets').DataTable().destroy();
+            }
+            $('#tblMeTickets tbody').empty();
+
+            jQuery.ajax({
+                type: "GET",
+                url: "/Ticket/ActionedByMe",
+                data: { moduleId: jQuery("#getByMemodule").val(), status: jQuery("#getByMestatus").val() },
+                success: function (response) {
+
+                    var moduleid = jQuery("#getByMemodule").val();
+                    if (response != null) {
+                        if (response.employeeByMeTickets.length > 0) {
+
+                            for (var i = 0; i < response.employeeByMeTickets.length; i++) {
+
+                                var cdate = response.employeeByMeTickets[i].createdOn.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                cdate = cdate.slice(0, 10);
+
+                              //  alert(cdate);
+                              //  var ticketId = '<a href="#" data-bs-toggle="modal" data-bs-target="#exLargeModal" onclick="ViewRecord(1)" > ' + response.employeeByMeTickets[i].ticketId + '</a>'
+
+                                // alert(ticketId);
+
+                              //  $("#ByMeTicketstbl").append('<tr><td>' + (i + 1) + '</td><td>' + ticketId + '</td><td>' + response.employeeByMeTickets[i].employeeName + '</td><td>' + response.employeeByMeTickets[i].ticketType + '</td><td>' + response.employeeByMeTickets[i].status + '</td><td>' + cdate + '</td></tr>');
+
+                                if (moduleid == "1") {
+
+                                    var ticketId = '<a href="#" data-bs-toggle="modal" data-bs-target="#exLargeModal" onclick="ViewRecord(\'' + response.employeeByMeTickets[i].ticketId + '\',' + jQuery("#getByMemodule").val() + ')"> ' + response.employeeByMeTickets[i].ticketId + '</a>';
+                                   
+                                        $("#ByMeTicketstbl").append('<tr><td>' + (i + 1) + '</td><td>' + ticketId + '</td><td>' + response.employeeByMeTickets[i].employeeName + '</td><td>' + response.employeeByMeTickets[i].ticketType + '</td><td>' + response.employeeByMeTickets[i].status + '</td><td>' + cdate + '</td></tr>');
+                                   
+
+                                    $("#tblMeTickets").dataTable();
+                                }
+                                else if (moduleid == "2") {
+
+                                    var ticketId = '<a href="#" data-bs-toggle="modal" data-bs-target="#attModule" onclick="ViewAttRecord(\'' + response.employeeByMeTickets[i].ticketId + '\',' + jQuery("#getByMemodule").val() + ')"> ' + response.employeeByMeTickets[i].ticketId + '</a>';
+                                    
+                                        $("#ByMeTicketstbl").append('<tr><td>' + (i + 1) + '</td><td>' + ticketId + '</td><td>' + response.employeeByMeTickets[i].employeeName + '</td><td>' + response.employeeByMeTickets[i].ticketType + '</td><td>' + response.employeeByMeTickets[i].status + '</td><td>' + cdate + '</td></tr>');
+                                   
+                                    $("#tblMeTickets").dataTable();
+                                }
+                            }
+                           // $("#tblMeTickets").dataTable();
+                        }
+                    }
+                },
+                failure: function (response) {
+                    $erroralert("Error!", "errror<br>" + response.responseText);
+                },
+                error: function (response) {
+                    $erroralert("Error!", "errror<br>" + response.responseText);
+                }
+
+            });
+
+        }
+
+
+    </script>
+
+
+}

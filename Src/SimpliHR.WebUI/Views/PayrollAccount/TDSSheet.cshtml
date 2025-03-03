@@ -1,0 +1,22 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.SalaryProcessInputs
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>TDSSheet</title>
+</head>
+<body>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+           // window.location.href = "/PayrollSalary/TDSSheetDownload";
+            window.open('/PayrollSalary/TDSSheetDownload', '_blank');
+        });
+    </script>
+</body>
+</html>

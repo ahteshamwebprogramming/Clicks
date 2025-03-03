@@ -1,0 +1,206 @@
+﻿@model SimpliHR.Infrastructure.Models.Exit.ExitViewModel
+
+<style>
+    .section-resignationdetails input {
+        color: green !important;
+    }
+
+    .section-resignationdetails textarea {
+        color: green !important;
+    }
+
+    textarea {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        font-size: 16px;
+        line-height: 1.5;
+        resize: none; /* Prevent manual resizing */
+        overflow: hidden; /* Hide scrollbars */
+    }
+
+    .tagify.tagify-email-list:hover .tagify__tag__removeBtn {
+        display: none !important;
+    }
+
+</style>
+
+<div class="row mt-5">
+    <div class="col-md-12">
+        <div style="padding: 20px;border: 2px solid green;" class="mb-5 section-resignationdetails">
+            <div class="float-end"><i class="fa-solid fa-xmark" onclick="remove(this)"></i></div>
+            <div class="row g-3">
+                <h4 style="text-decoration: underline;">Resignation Details By Employee</h4>
+                <div class="col-md-4">
+                    <label class="form-label required" for="multicol-last-name">Employee Code</label>
+                    <input type="text" class="form-control form-control-plaintext" readonly value="@(Model==null?"":Model.ResignationDetails==null?"":Model.ResignationDetails.EmployeeCode)" placeholder="">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label required" for="multicol-last-name">Employee Name</label>
+                    <input type="text" class="form-control  form-control-plaintext" readonly value="@(Model==null?"":Model.ResignationDetails==null?"":Model.ResignationDetails.EmployeeName)" placeholder="">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label required" for="multicol-last-name">Resignation Date</label>
+                    <input type="text" class="form-control  form-control-plaintext" readonly value="@(Model==null?"":Model.ResignationDetails==null?"":Model.ResignationDetails.ResignationDate==null ? "" : ((DateTime)Model.ResignationDetails.ResignationDate).ToString("dd-MMM-yyyy"))" placeholder="-">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label required" for="multicol-last-name">Last Working Day</label>
+                    <input type="text" class="form-control  form-control-plaintext" readonly value="@(Model==null?"":Model.ResignationDetails==null?"":Model.ResignationDetails.LastWorkingDate==null ? "" : ((DateTime)Model.ResignationDetails.LastWorkingDate).ToString("dd-MMM-yyyy"))" placeholder="-">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label required" for="multicol-last-name">Reason For Leaving</label>
+                    <input type="text" class="form-control form-control-plaintext" readonly value="@(Model==null?"":Model.ResignationDetails==null?"":Model.ResignationDetails.ReasonForLeaving)" placeholder="-">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label required" for="multicol-last-name">Comments</label>
+                    <textarea class="form-control form-control-plaintext auto-resize" readonly>@(Model == null ? "" : Model.ResignationDetails == null ? "" : Model.ResignationDetails.EmployeeComments)</textarea>
+                </div>
+            </div>
+        </div>
+        <div style="padding: 20px;border: 2px solid green;" class="mb-5 section-resignationdetails">
+            <div class="float-end"><i class="fa-solid fa-xmark" onclick="remove(this)"></i></div>
+            <div class="row g-3">
+                <h4 style="text-decoration: underline;">Resignation Details By Manager</h4>
+
+                <div class="col-md-4">
+                    <label class="form-label required" for="multicol-last-name">Resignation Date</label>
+                    <input type="text" class="form-control  form-control-plaintext" readonly value="@(Model==null?"":Model.ResignationDetails==null?"":Model.ResignationDetails.ResignationDateManager==null ? "" : ((DateTime)Model.ResignationDetails.ResignationDateManager).ToString("dd-MMM-yyyy"))" placeholder="-">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label required" for="multicol-last-name">Last Working Day</label>
+                    <input type="text" class="form-control  form-control-plaintext" readonly value="@(Model==null?"":Model.ResignationDetails==null?"":Model.ResignationDetails.LastWorkingDateManager==null ? "" : ((DateTime)Model.ResignationDetails.LastWorkingDateManager).ToString("dd-MMM-yyyy"))" placeholder="-">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label required" for="multicol-last-name">Notice Period Waive Off</label>
+                    <input type="text" class="form-control form-control-plaintext" readonly value="@(Model == null ? "No" : Model.ResignationDetails == null ? "No" : Model.ResignationDetails.NoticePeriodWaiveOff == false ? "No" : "Yes")" placeholder="-">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label required" for="multicol-last-name">Eligible To Hire</label>
+                    <input type="text" class="form-control form-control-plaintext" readonly value="@(Model == null ? "No" : Model.ResignationDetails == null ? "No" : Model.ResignationDetails.EligibleToHire == false ? "No" : "Yes")" placeholder="-">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label required" for="multicol-last-name">Reason For Leaving</label>
+                    <input type="text" class="form-control form-control-plaintext" readonly value="@(Model==null?"":Model.ResignationDetails==null?"":Model.ResignationDetails.ReasonForLeavingManager)" placeholder="">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label required" for="multicol-last-name">Document</label>
+                    <br />
+                    @{
+                        if (Model != null && Model.ResignationDetails != null && Model.ResignationDetails.DocumentName != null)
+                        {
+                            <a href="javascript:void(0)" onclick="DownloadResignationDocumentM('@Model.ResignationDetails.encResignationListId','@Model.ResignationDetails.DocumentName')">@(Model == null ? "No Document Uploaded" : Model.ResignationDetails == null ? "No Document Uploaded" : Model.ResignationDetails.DocumentName == null ? "No Document Uploaded" : Model.ResignationDetails.DocumentName)</a>
+                        }
+                        else
+                        {
+                            <input type="text" class="form-control form-control-plaintext" readonly placeholder="No Document Uploaded">
+                        }
+                    }
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label required" for="multicol-last-name">Remarks</label>
+                    <textarea class="form-control form-control-plaintext auto-resize" readonly>@(Model == null ? "" : Model.ResignationDetails == null ? "" : Model.ResignationDetails.ManagerRemarks == null ? "" : Model.ResignationDetails.ManagerRemarks)</textarea>
+                </div>
+            </div>
+        </div>
+        <form method="post" style="padding: 20px;border: 2px solid green;@((Model!=null && Model.ResignationDetails!=null && Model.ResignationDetails.AdminApproval!=0) ? "pointer-events: none;" : "")" id="AdminDetails">
+            <div class="float-end"><i class="fa-solid fa-xmark" onclick="remove(this)"></i></div>
+            <div class="row g-3">
+                <h4 style="text-decoration: underline;">Resignation Details By Admin</h4>
+                <div class="col-md-6">
+                    <label class="form-label required" for="multicol-last-name">Resignation Date</label>
+                    <input type="text" id="ResignationDateAdmin" name="ResignationDateAdmin" required class="form-control flatpickr-date" value="@(Model == null ? "" : Model.ResignationDetails == null ? "" : Model.ResignationDetails.ResignationDateAdmin == null ?
+                    (
+
+                    Model.ResignationDetails.ResignationDateManager==null ? "" :
+
+                    ((DateTime)Model.ResignationDetails.ResignationDateManager).ToString("dd-MMM-yyyy")
+
+
+                    )
+                    : ((DateTime)Model.ResignationDetails.ResignationDateAdmin).ToString("dd-MMM-yyyy"))" placeholder="DD-MMM-YYYY">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label required" for="multicol-last-name">Last working Date</label>
+                    <input type="text" id="LastWorkingDateAdmin" name="LastWorkingDateAdmin" required class="form-control flatpickr-date" value="@(Model==null?"":Model.ResignationDetails==null?"":Model.ResignationDetails.LastWorkingDateAdmin==null ?
+
+
+(
+
+    Model.ResignationDetails.LastWorkingDateManager==null ? "" : ((DateTime)Model.ResignationDetails.LastWorkingDateManager).ToString("dd-MMM-yyyy")
+
+)
+
+                    : ((DateTime)Model.ResignationDetails.LastWorkingDateAdmin).ToString("dd-MMM-yyyy"))" placeholder="DD-MMM-YYYY">
+                </div>
+                <div class="col-md-6">
+                    <input type="checkbox" id="NoticePeriodWaiveOffAdmin" name="NoticePeriodWaiveOffAdmin" class="form-check-input" @(Model == null ? "" : Model.ResignationDetails == null ? "" : Model.ResignationDetails.AdminApproval == 0 ? (Model.ResignationDetails.NoticePeriodWaiveOff == true ? "checked" : "") : (Model.ResignationDetails.NoticePeriodWaiveOffAdmin == true ? "checked" : "")) />
+                    <label for="NoticePeriodWaiveOffAdmin" class="form-label">Notice Period Waived Off</label>
+                </div>
+                <div class="col-md-6">
+                    <input type="checkbox" id="EligibleToHireAdmin" name="EligibleToHireAdmin" class="form-check-input" @(Model == null ? "" : Model.ResignationDetails == null ? "" : Model.ResignationDetails.AdminApproval == 0 ? (Model.ResignationDetails.EligibleToHire == true ? "checked" : "") : (Model.ResignationDetails.EligibleToHireAdmin == true ? "checked" : "")) /> <label for="EligibleToHireAdmin" class="form-label">Eligible to Rehire</label>
+                </div>
+                <div class="col-md-6">
+                    <input type="checkbox" class="form-check-input" id="ActiveExitInterview" name="ActivateExitInterview" @(Model == null ? "" : Model.ResignationDetails == null ? "" : Model.ResignationDetails.ActivateExitInterview == false ? "" : "checked") /> <label for="ActiveExitInterview" class="form-label">Activate Exit Interview</label>
+                </div>
+                <div class="col-md-6">
+                    <input type="checkbox" class="form-check-input" id="ClearanceByPass" name="ClearanceByPass" @(Model == null ? "" : Model.ResignationDetails == null ? "" : Model.ResignationDetails.ClearanceByPass == false ? "" : "checked") /> <label class="form-label" for="ClearanceByPass">Skip Clearance Process</label>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label required" for="multicol-last-name">Reason for Leaving</label>
+                    @Html.DropDownList("ReasonForLeaving", new SelectList(Model.ExitReasonList, "KeyName", "KeyValue", Model.ResignationDetails.ReasonForLeavingAdmin == null ? Model.ResignationDetails.ReasonForLeavingManager : Model.ResignationDetails.ReasonForLeavingAdmin), "Select Reason", htmlAttributes: new { @class = "dbcol select2 form-select select2-hidden-accessible", @required = "required" })
+                </div>
+                <div class="col-sm-6">
+                    <label for="formFile" class="form-label">Documents</label>
+                    <input class="form-control" type="file" id="DocumentFileAdmin" name="DocumentFileAdmin" minlength="100" filemaxsize="10" />
+                    <div class="col-md-12">
+                        @{
+                            if (Model != null && Model.ResignationDetails != null && Model.ResignationDetails.DocumentNameAdmin != null)
+                            {
+                                <tags class="tagify tagify-email-list" tabindex="-1" name="attachmentTag_@Model.ResignationDetails.ResignationListId" style="cursor:pointer;pointer-events:all" onclick="DownloadResignationDocumentA('@Model.ResignationDetails.encResignationListId','@Model.ResignationDetails.DocumentNameAdmin')">
+                                    <tag title="@Model.ResignationDetails.DocumentNameAdmin" contenteditable="false" spellcheck="false" tabindex="-1" class="tagify__tag tagify--noAnim" value="@Model.ResignationDetails.DocumentNameAdmin">
+                                        <x title="" class="tagify__tag__removeBtn" role="button" aria-label="remove tag" style="display:inherit"></x>
+                                        <div>
+                                            <span class="tagify__tag-text">@Model.ResignationDetails.DocumentNameAdmin</span>
+                                        </div>
+                                    </tag>
+                                    <span contenteditable="" tabindex="0" data-placeholder="​" aria-placeholder="" class="tagify__input" role="textbox" aria-autocomplete="both" aria-multiline="false">
+                                    </span>
+                                </tags>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label required" for="multicol-last-name">LWD Policy</label>
+                    <input type="text" id="LWDPolicy" name="LWDPolicy" value="@(Model == null ? "" : Model.ResignationDetails == null ? "" : Model.ResignationDetails.LWDPolicy)" required maxlength="50" class="form-control flatpickr-date1" placeholder="" oninput="validateLWDPolicyInput(this)" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="multicol-last-name"> Remarks</label>
+                    <textarea class="form-control auto-resize" required id="txtRemarks" name="AdminRemarks" rows="2" maxlength="255" oninput="validateAdminCommentInput(this)">@(Model == null ? "" : Model.ResignationDetails == null ? "" : Model.ResignationDetails.AdminRemarks)</textarea>
+                    @{
+                        if (Model != null && Model.ResignationDetails != null && Model.ResignationDetails.ManagerApproval == 1 && Model.ResignationDetails.AdminApproval == 0)
+                        {
+                            <span name="EmployeeCommentsCharacterHelp" style="color:red">Max 255 characters allowed</span>
+                        }
+                    }
+
+                </div>
+
+            </div>
+            <div class="pt-4">
+
+                @{
+                    if (Model != null && Model.ResignationDetails != null && Model.ResignationDetails.ManagerApproval == 1 && Model.ResignationDetails.AdminApproval == 0)
+                    {
+                        <input type="button" class="btn btn-primary me-sm-3 me-1" onclick="SaveResignationDetailsByAdmin()" value="Approve" />
+                        <input type="button" class="btn btn-danger me-sm-3 me-1" onclick="RejectResignationByAdmin()" value="Reject" />
+                    }
+                }
+
+
+                <input type="hidden" name="EmployeeId" value="@(Model==null?0:Model.ResignationDetails==null?0:Model.ResignationDetails.EmployeeId)" />
+                <input type="hidden" name="ResignationListId" value="@(Model==null?0:Model.ResignationDetails==null?0:Model.ResignationDetails.ResignationListId)" />
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,121 @@
+﻿@model SimpliHR.Infrastructure.Models.ProjectTracker.ProjectViewModel
+
+<link rel="stylesheet" href="../../assets/vendor/css/pages/app-chat.css" />
+
+
+<style>
+    .nav-tabs:not(.nav-fill):not(.nav-justified) .nav-link, .nav-pills:not(.nav-fill):not(.nav-justified) .nav-link {
+        width: 100% !important;
+    }
+
+    .card-body .projectdates, .card-body .priority {
+        font-size: 0.8rem !important;
+    }
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="col-md-12">
+        <h4 class="fw-bold py-3 mb-4" style="display:inline-block"><span style="color: #a1acb8 !important;" class="fw-light">Project Tracker/</span> Projects</h4>
+        <button type="button" class="btn btn-primary btn-sm mb-3" style="float:right;margin-bottom:5px;" onclick="window.location.href='/ProjectTracker/AddProject'"><i class="bx bx-plus me-0 me-sm-1"></i>Add Project</button>
+    </div>
+    @* <h4 class="fw-bold py-3 mb-4"><span style="color: #a1acb8 !important;" class="fw-light">Project Tracker /</span> Projects</h4> *@
+
+
+    <!-- Navbar pills -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <ul id="projectNav" class="nav nav-pills flex-column flex-sm-row">
+                    <li class="nav-item">
+                        <a class="nav-link active" onclick="setActive(this,'ApprovalPending');" href="javascript:void(0)"><i class="bx bx-user me-1"></i> Approval Pending</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="setActive(this,'Incomplete');" href="javascript:void(0)"><i class="bx bx-group me-1"></i> Incomplete Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="setActive(this,'Completed');" href="javascript:void(0);"><i class="bx bx-grid-alt me-1"></i> Completed Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="AllProjectsNav" onclick="setActive(this,'All');" href="javascript:void(0)"><i class="bx bx-link-alt me-1"></i> All Projects</a>
+                    </li>
+                </ul>
+                <div>
+                    <input type="hidden" id="projectNavValue" />
+                    <input type="search" onchange="ProjectListPartialView()" class="form-control border" placeholder="Search... project name" aria-controls="DataTables_Table_0" id="ProjectSearchKeyword" name="ProjectSearchKeyword" value="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ Navbar pills -->
+    <!-- Project Cards -->
+
+
+    <div id="div_ViewProjectListPartial">
+        @* @Html.Partial("_projectList1/_projects", Model) *@
+    </div>
+    <div id="div_ViewProjectDetailsPartial">
+    </div>
+    <input type="hidden" asp-for="Source" />
+    <input type="hidden" asp-for="encProjectId" />
+    <!--/ Project Cards -->
+</div>
+@section scripts {
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+    <script src="../../assets/js/app-chat.js"></script>
+    <script src="~/customjs/projecttracker/projectlist1.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+
+            if ($("[name='encProjectId']").val() != "") {
+                ViewProjectDetails($("[name='encProjectId']").val());
+            }
+
+            if ($("[name='Source']").val() == "md") {
+                $("#AllProjectsNav").click();
+            }
+            else {
+                ProjectListPartialView();
+            }
+        });
+
+        function edit(encId) {
+            window.location.href = "/ProjectTracker/AddProject/" + encId
+        }
+
+        function deleteRecord(encEmployeeAnnouncementId) {
+            Swal.fire({ title: 'Are you sure?', text: "This will get deleted permanently!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, delete it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    BlockUI();
+                    var inputDTO = {
+                        "encEmployeeAnnouncementId": encEmployeeAnnouncementId
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "/EmployeeAccouncement/DeleteRecord",
+                        contentType: 'application/json',
+                        data: JSON.stringify(inputDTO),
+                        success: function (data) {
+                            $successalert("", "Transaction Successful!");
+
+                            setTimeout(function () {
+                                window.location.href = '/EmployeeAccouncement/EmployeeAnnouncements';
+                            }, 1000);
+
+                            UnblockUI();
+                        },
+                        error: function (error) {
+                            $erroralert("Transaction Failed!", error.responseText + '!');
+                            UnblockUI();
+                        }
+                    });
+                }
+            });
+        }
+
+
+
+    </script>
+}

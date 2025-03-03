@@ -1,0 +1,324 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.SalaryProcessInputs
+@{
+    ViewData["Title"] = "ProfTaxReport";
+}
+
+@using System.Data
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Reports /</span> Professional Tax Report</h4>
+
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <form id="showAlert" class="row g-3" onsubmit="return false">
+                    <div class="modal-body">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center mb-4">
+                        </div>
+
+                        <div class="col-12 text-center" id="successDiv">
+                            <p id="errorPara" class="error" style="color:red"></p>
+                        </div>
+                        <div class="col-12 text-center" id="errorDiv">
+                            <p id="successPara" class="error" style="color:black"></p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 text-center">
+                        @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                        <button type="reset" id="btnClose"
+                                class="btn btn-label-secondary btn-reset mt-3"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                            Close
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" id="Add">
+        <div id="wizard-checkout" class="bs-stepper wizard-icons wizard-icons-example mt-2">
+            <div class="container selectMain">
+
+                <div class="card-body">
+
+                    <!--<h5 class="card-header">Roster Details</h5>-->
+                    <form method="post" action="/Reports/ExportPT">
+                        @*   <div class="row g-3" id="errorDiv"><p id="errorPara" class="error" style="color:red"></p></div>*@
+                        <div class="row g-3">
+                            <div class="col-md-6">
+
+                                @*  <label class="form-control" id="lblyear" for="">2023</label>*@
+                                <select class="form-select" id="selyr" name="Year" aria-label="Default select example">
+                                    <option value="0" selected>Select an option</option>
+                                    @if (Model.Years != null)
+                                    {
+                                        @foreach (var item in Model.Years)
+                                        {
+                                            if (item == Model.Year)
+                                            {
+                                                <option value="@item" selected> @item</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item"> @item</option>
+                                            }
+
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+                            <div class="col-md-6">
+
+                                <select class="form-select" id="selmth" name="Month" aria-label="Default select example">
+                                    <option value="0" selected>Select an option</option>
+
+                                    @if (Model.SalMonths != null)
+                                    {
+                                        @foreach (var item in Model.SalMonths)
+                                        {
+                                            if (item.ID == Model.Month)
+                                            {
+                                                <option value="@item.ID" selected> @item.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.ID"> @item.Name</option>
+                                            }
+
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <div class="pt-4">
+                            <input type="hidden" class="dbcol" id="CrrMonth" name="CrrMonth" />
+                            <button type="submit" class="btn btn-primary" onclick="return BlockedUI()">Show</button>
+
+                        </div>
+                    </form>
+                    <form method="post" asp-action="ExportPTReport" asp-controller="Reports">
+                        <input type="hidden" name="PTSheet" /> <br />
+                        <input type="submit" id="btnSubmit" style="background-color: #2ea44f;border: 1px solid rgba(27, 31, 35, .15); color: #fff;box-shadow: rgba(27, 31, 35, .1) 0 1px 0; font-size: 14px; padding: 6px 16px;line-height: 20px; display:none;" value="Download" />
+                    </form>
+                    <div class="card-datatable table-responsive text-nowrap">
+                        <table class="datatables-ajax table List" id="List">
+                            <thead>
+                                <tr>
+                                    <th>Employee Code</th>
+                                    <th>Employee Name</th>
+                                    <th>DOJ</th>
+                                    <th>Designation</th>
+                                    <th>Department</th>
+                                    <th>Location</th>
+                                    <th>Total Days</th>
+                                    <th>Paid Days</th>
+                                    <th>Total Earnings(Rs)</th>
+                                    <th>PT Amount(Rs)</th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.objPTDSet.Tables.Count > 0)
+                                    @if (Model.objPTDSet.Tables[0].Rows.Count > 0)
+                                    {
+                                        // string? isDecimal;
+                                        foreach (DataRow row in Model.objPTDSet.Tables[0].Rows)
+                                        {
+                                            //isDecimal = string.Format("{0:#,#.00}", @row["Gross Pay"]);
+                                            <tr>
+                                                <td>@row["EmployeeCode"]</td>
+                                                <td>@row["employeename"]</td>
+                                                <td>@row["DOJ"]</td>
+                                                <td>@row["JobTitle"]</td>
+                                                <td>@row["Department"]</td>
+                                                <td>@row["CityName"]</td>
+                                                <td>@row["TotalDays"]</td>
+                                                <td>@row["PaidDays"]</td>
+                                                <td>@string.Format("{0:#,#.00}", row["totalEarning"])</td>
+                                                <td>@string.Format("{0:#,#.00}", row["ProfessinalTax"])</td>
+                                            </tr>
+                                        }
+                                    }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+       
+
+        <div id="DvPTGrid" style="align-content:center; width:100%; display:none;">
+            <br />
+            <div style="float: left;">(Professional Tax Contributions Summary Report for the month of Feb @Model.Year)</div>
+            <table cellspacing="2" cellpadding="10" align="center" border="1" style="width: 100%;">
+                <tr>
+
+
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Sr. No</strong></td>
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Employee Code</strong></td>
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Employee Name</strong></td>
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Date Of Joining</strong></td>
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Designation</strong></td>
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Department</strong></td>
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Location</strong></td>
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Total Days</strong></td>
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Paid Days</strong></td>
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Total Earnings(Rs)</strong></td>
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>PT Amount(Rs)</strong></td>
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Unit</strong></td>
+
+                </tr>
+                @if (Model.objPTDSet.Tables.Count > 0)
+                    @if (Model.objPTDSet.Tables[0].Rows.Count > 0)
+                    {
+
+                        @foreach (DataRow row in Model.objPTDSet.Tables[0].Rows)
+                        {
+
+                            <tr>
+                                @foreach (DataColumn col in Model.objPTDSet.Tables[0].Columns)
+                                {
+                                    <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;text-align: right;">@row[col.ColumnName]</td>
+                                }
+                                @*
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.EmployeeCode</td>
+                    <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.EmployeeName</td>
+                    <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.SelectedRegime</td>
+                    <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.RegimeType</td> *@
+
+                            </tr>
+                        }
+                    }
+
+                @if (Model.objPTDSet.Tables.Count > 1)
+                    @if (Model.objPTDSet.Tables[1].Rows.Count > 0)
+                    {
+                        <tr>
+                            <td colspan="7" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;text-align: right;"><strong>Grand Totals</strong></td>
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff; text-align: right;"><strong>@Model.objPTDSet.Tables[1].Rows[0]["TotalDays"]</strong></td>
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff; text-align: right;"><strong>@Model.objPTDSet.Tables[1].Rows[0]["TotalPaidDays"]</strong></td>
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff; text-align: right;"><strong>@Model.objPTDSet.Tables[1].Rows[0]["TotalAmt"]</strong></td>
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff; text-align: right;"><strong>@Model.objPTDSet.Tables[1].Rows[0]["TotalPT"]</strong></td>
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"></td>
+                        </tr>
+                    }
+
+
+            </table>
+
+        </div>
+
+   
+
+
+</div>
+@section scripts {
+
+
+    <script type="text/javascript">
+
+        jQuery(document).ready(function () {
+
+            $(".List").dataTable();
+            $("input[name='PTSheet']").val($("#DvPTGrid").html());
+            //alert(@Model.SalMonths.Count);
+
+            if ("@Model.Year" != "") {
+                jQuery("#selyr").val("@Model.Year");
+                jQuery("#selmth").val("@Model.Month");
+            }
+
+
+            if ("@Model.DisplayMessage.Trim().ToUpper()" != "_BLANK") {
+                $successalert("Report", "@Model.DisplayMessage");
+
+            }
+
+            if (@Model.objPTDSet.Tables.Count> 0) {
+
+                jQuery("#btnSubmit").show();
+               // jQuery("#DvPTGrid").show();
+            }
+        });
+
+        function BlockedUI() {
+
+
+            year = jQuery("#selyr").val();
+            month = jQuery("#selmth").val();
+            //alert(year);
+            //return false;
+
+            BlockUI();
+            if (year == 0) {
+                UnblockUI();
+                // jQuery("#btnSubmit").hide();
+                $erroralert("Validation", "Please select the year");
+
+                return false;
+            }
+            if (month == 0) {
+                UnblockUI();
+                //  jQuery("#btnSubmit").hide();
+                $erroralert("Validation", "Please select the month");
+
+                return false;
+            }
+
+
+
+
+        }
+
+
+
+        //const monthNames = ["January", "February", "March", "April", "May", "June",
+        //    "July", "August", "September", "October", "November", "December"
+        //];
+
+
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                // if (sMsg.toUpperCase() == "SUCCESS") {
+                // sMsg = "Earnnig component created/updated successfully";
+                jQuery("#successDiv").show();
+                jQuery("#successPara").html(sMsg);
+
+                // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                //  }
+                //else {
+                //    jQuery("#errorDiv").show();
+                //    jQuery("#errorPara").html(sMsg);
+                //}
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+
+
+
+
+
+
+    </script>
+}
+
+

@@ -1,0 +1,21 @@
+@model SimpliHR.Infrastructure.Models.Employee.EmployeeUploadDocumentDTO
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   
+    <div class="row"><a href="@Model.Base64Document" download="@Model.FieldName.@Model.DocumentType">Click to Download the image</a></div>
+    @if (@Model.DocumentType=="pdf")
+    {
+        <div class="row" style="width:90%;height:90%"><object id="object" data="@Model.Base64Document" type="application/pdf"></object></div>
+    }
+    else if (",png,jpeg,jpg,bmp,gif,tiff,".Contains("," + @Model.DocumentType + ","))
+    {
+        <div class="row"><input type="image" style="width:90%;height:90%" src="@Model.Base64Document" /></div>
+    }  
+</body>
+</html>

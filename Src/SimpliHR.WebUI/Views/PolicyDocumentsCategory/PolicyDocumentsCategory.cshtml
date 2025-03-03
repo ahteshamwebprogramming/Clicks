@@ -1,0 +1,116 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.PolicyDocumentsCategoryMasterDTO
+@{
+    ViewData["Title"] = "Policy Documents Category";
+    Model.DisplayMessage += "";
+    //Layout = null;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Client Policies /</span> Policy Category </h4>
+    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table table-bordered List" id="List">
+                    <thead>
+                        <tr>
+                            <th>Policy Documents Category</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.PolicyDocumentsCategoryMasterList != null)
+                            @foreach (var item in Model.PolicyDocumentsCategoryMasterList)
+                            {
+                                <tr>
+                                    <td>@item.PolicyDocumentsCategory</td>
+                                    @* <th>
+                                        <a class="btn btn-primary" href="/PolicyDocumentsCategory/GetPolicyDocumentsCategoryInfo/@item.EncryptedId">Edit</a>
+                                        <button class="btn btn-primary" onclick="DeleteRecord('@item.PolicyDocumentsCategory','@item.EncryptedId')"> Delete</button>
+                                    </th> *@
+
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="/PolicyDocumentsCategory/GetPolicyDocumentsCategoryInfo/@item.EncryptedId"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="#" onclick="DeleteRecord('@item.PolicyDocumentsCategory','@item.EncryptedId')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/PolicyDocumentsCategory/PolicyDocumentsCategory'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/PolicyDocumentsCategory/SavePolicyDocumentsCategory">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Policy Documents Category</label>
+                        <input type="text" id="PolicyDocumentsCategory" required name="PolicyDocumentsCategory" maxlength="100" value="@Model.PolicyDocumentsCategory" class="form-control" placeholder="Policy Documents Category">
+                        <span asp-validation-for="PolicyDocumentsCategory" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" id="PolicyDocumentsCategoryId" name="PolicyDocumentsCategoryId" value="@Model.PolicyDocumentsCategoryId">
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/PolicyDocumentsCategory/PolicyDocumentsCategory'">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+            if (@Model.PolicyDocumentsCategoryId != 0 || @Model.HttpStatusCode!= 200) {
+                $("#List").hide();
+                $("#Add").show();
+            }
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                if ("@Model.HttpStatusCode" == 200) {
+                    $successalert("", "@Model.DisplayMessage");
+                }
+                else {
+                    $erroralert("Transaction Failed!", "@Model.DisplayMessage");
+                }
+            }
+
+        });
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+            $("#PolicyDocumentsCategory").val("");
+        }
+
+        function DeleteRecord(policyDocumentsCategory, policyDocumentsCategoryId) {
+            // event.preventDefault();
+            url = $(this).attr('href');
+            history.pushState({ key: url }, '', url);
+           
+            Swal.fire({ title: 'Are you sure?', text: "This will get deleted permanently!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, delete it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    window.location.href = "/PolicyDocumentsCategory/DeletePolicyDocumentsCategory/" + policyDocumentsCategoryId;
+                }
+            });
+
+            return false;
+        }
+
+    </script>
+    }

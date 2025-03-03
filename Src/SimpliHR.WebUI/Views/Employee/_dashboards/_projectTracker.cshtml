@@ -1,0 +1,226 @@
+﻿@model SimpliHR.Infrastructure.Models.ProjectTracker.ProjectViewModel
+<style>
+    .progress {
+        --bs-progress-height: 0.80rem;
+    }
+
+    .avatar-group .avatar {
+        margin-left: -0.8rem;
+    }
+
+    .avatar-xl {
+        width: 4.5rem;
+        height: 4.5rem;
+    }
+
+    .avatar-lg {
+        width: 4rem;
+        height: 4rem;
+    }
+
+    .avatar-md {
+        width: 3rem;
+        height: 3rem;
+    }
+</style>
+<div class="col-md-12 col-lg-12">
+    <div class="card project-tracker-widget">
+        <div class="card-body">
+            <div class="row">
+                <h5 class="col-6 col-md-6 mt-2 fw-bold text-dark">Project Tracker</h5>
+                <small class="col-6 col-md-6 mt-2 text-end fw-bold"><a href="/ProjectTracker/ProjectList1/@Model.Source" class="text-decoration-underline">All projects</a></small>
+            </div>
+
+            @{
+                if (Model != null && Model.ProjectWithChildList != null)
+                {
+                    foreach (var item in Model.ProjectWithChildList)
+                    {
+                        <div class="row">
+                            <div class="col-md-10 mt-2">
+                                <div class="row">
+                                    <small class="col-6 col-md-8 mt-2"><a style="color:inherit" href="/ProjectTracker/ProjectList1/@Model.Source-@item.encProjectID">@item.ProjectName</a></small>
+
+                                    @{
+                                        DateTime targetDate = item.EndDate;
+                                        DateTime currentDate = DateTime.Now;
+                                        TimeSpan difference = targetDate - currentDate;
+                                        int daysLeft = (int)difference.TotalDays;
+                                        if (daysLeft < 0)
+                                        {
+                                            <small style="color:red" class="col-6 col-md-4 mt-2 text-end">Due on @(item.EndDate.ToString("dd-MMM-yyyy"))</small>
+                                        }
+                                        else
+                                        {
+                                            <small class="col-6 col-md-4 mt-2 text-end">Due on @(item.EndDate.ToString("dd-MMM-yyyy"))</small>
+                                        }
+                                    }
+
+
+                                    <div class="col-md-12 mt-2">
+                                        <div class="progress">
+                                            @{
+                                                decimal completePercent;
+                                                if (item.TotalMilestones == 0)
+                                                {
+                                                    // Calculate progress based on time elapsed
+                                                    DateTime startDate = item.StartDate;
+                                                    DateTime endDate = item.EndDate;
+                                                    DateTime currentDate1 = DateTime.Now;
+
+                                                    // Calculate total project duration and time elapsed
+                                                    TimeSpan totalDuration = endDate - startDate;
+                                                    TimeSpan timeElapsed = currentDate1 - startDate;
+
+                                                    completePercent = (decimal)(timeElapsed.TotalDays / totalDuration.TotalDays) * 100;
+                                                    //Cap at 100%
+                                                    completePercent = completePercent > 100 ? 100 : completePercent;
+                                                }
+                                                else
+                                                {
+                                                    completePercent = (item.CompletedMilestones == null ? 0 : (decimal)item.CompletedMilestones) * 100;
+                                                    completePercent = (item.TotalMilestones != null && item.TotalMilestones != 0) ? (completePercent == 0 ? 0 : completePercent / (item.TotalMilestones == null ? 0 : (decimal)item.TotalMilestones)) : 0;
+                                                }
+
+                                                completePercent = Math.Round(completePercent);
+                                            }
+                                            <div class="progress-bar" role="progressbar" style="width: @completePercent%;height: 13px;" aria-valuenow="@completePercent" aria-valuemin="0" aria-valuemax="100">
+                                                @completePercent%
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2" style="margin-top:2rem !important">
+                                <div class="d-flex align-items-center">
+                                    <ul class="list-unstyled d-flex align-items-center avatar-group mb-0 zindex-2">
+
+                                        @{
+                                            if (Model != null && Model.ProjectWithChildList != null && Model.ProjectMembersWithChild != null)
+                                            {
+                                                var members = Model.ProjectMembersWithChild.Where(x => x.ProjectID == item.ProjectID);
+                                                if (members != null && members.Any())
+                                                {
+                                                    int membersToShow = 3;
+                                                    int membersShown = 0;
+                                                    var approver = members.Where(x => x.RoleType == "Approver");
+                                                    var collaborator = members.Where(x => x.RoleType == "Collaborator");
+                                                    if (approver != null && approver.Any())
+                                                    {
+                                                        foreach (var itemMember in approver)
+                                                        {
+                                                            if (membersShown < membersToShow)
+                                                            {
+                                                                <li data-bs-toggle="tooltip"
+                                                                    data-popup="tooltip-custom"
+                                                                    data-bs-placement="top"
+                                                                    title="@itemMember.EmployeeName (Approver)"
+                                                                    class="avatar avatar-sm pull-up">
+                                                                    <img class="rounded-circle" src="@(String.IsNullOrEmpty(itemMember.UserProfileImagePath)?"../../assets/img/avatars/12.png" : itemMember.UserProfileImagePath)" alt="Avatar" />
+                                                                </li>
+                                                                membersShown += 1;
+                                                            }
+                                                        }
+                                                    }
+                                                    if (collaborator != null && collaborator.Any())
+                                                    {
+                                                        foreach (var itemMember in collaborator)
+                                                        {
+                                                            if (membersShown < membersToShow)
+                                                            {
+                                                                <li data-bs-toggle="tooltip"
+                                                                    data-popup="tooltip-custom"
+                                                                    data-bs-placement="top"
+                                                                    title="@itemMember.EmployeeName (Collaborator)"
+                                                                    class="avatar avatar-sm pull-up">
+                                                                    <img class="rounded-circle" src="@(String.IsNullOrEmpty(itemMember.UserProfileImagePath)?"../../assets/img/avatars/12.png" : itemMember.UserProfileImagePath)" alt="Avatar" />
+                                                                </li>
+                                                                membersShown += 1;
+                                                            }
+                                                        }
+                                                    }
+                                                    int membersLeft = members.Count() - membersToShow;
+                                                    if (membersLeft > 0)
+                                                    {
+                                                        <li><small class="">@membersLeft More</small></li>
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    </ul>
+                                </div>
+
+
+
+
+
+
+
+
+
+                            </div>
+                        </div>
+                    }
+                }
+            }
+
+            @* <div class="row mt-3">
+            <div class="col-md-9 mt-2">
+            <div class="row">
+            <small class="col-6 col-md-8 mt-2">Toyota Motors pitch</small>
+            <small class="col-6 col-md-4 mt-2 text-end">Due on 16 Apr</small>
+            <div class="col-md-12 mt-2">
+            <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 55%;height: 10px;" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100">
+            55%
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            <div class="col-md-3 mt-3">
+            <small>Garg, Swati Sharma, Vivek Jain</small>
+            </div>
+            </div> *@
+            @* <div class="row mt-4">
+            <div class="col-md-9 mt-2">
+            <div class="row">
+            <small class="col-6 col-md-8 mt-2">Toyota Motors pitch</small>
+            <small class="col-6 col-md-4 mt-2 text-end">Due on 16 Apr</small>
+            <div class="col-md-12 mt-2">
+            <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 75%;height: 10px;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+            75%
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            <div class="col-md-3 mt-3">
+            <small>Garg, Swati Sharma, Vivek Jain</small>
+            </div>
+            </div>
+            <div class="row mt-4 mb-4">
+            <div class="col-md-9 mt-2">
+            <div class="row">
+            <small class="col-6 col-md-8 mt-2">Toyota Motors pitch</small>
+            <small class="col-6 col-md-4 mt-2 text-end">Due on 16 Apr</small>
+            <div class="col-md-12 mt-2">
+            <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 85%;height: 10px;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">
+            85%
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            <div class="col-md-3 mt-3">
+            <small>Garg, Swati Sharma, Vivek Jain</small>
+            </div>
+            </div> *@
+        </div>
+    </div>
+</div>
+
+<input type="hidden" asp-for="Source" />

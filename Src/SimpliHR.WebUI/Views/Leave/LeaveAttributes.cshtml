@@ -1,0 +1,505 @@
+﻿@model SimpliHR.Infrastructure.Models.Leave.LeaveAttributeDTO
+
+@{
+    ViewData["Title"] = "LeaveAttributes";
+}
+
+<link rel="stylesheet" href="~/assets/vendor/libs/pickr/pickr-themes.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/sweetalert2/sweetalert2.css" />
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+
+
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Leave /</span> Leave Policy</h4>
+    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary btn-sm" value="Add Record" onclick="AddView()" style="float:right;" />
+        @*    <input type="button" id="alert" value="show alert" class="btn btn-success btn-sm" />*@
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+                            <th>Leave Policy</th>
+                            <th>Type</th>
+                            <th>Max Limit/Year</th>
+                            <th>Max Limit/Month</th>
+                            <th>Accural Type</th>
+                            <th>Annual Accrual Cap</th>
+                            <th>Max Request</th>
+                          @*  <th>Include Weekendse</th>*@
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.LeaveAttributeList != null)
+                            @foreach (var item in Model.LeaveAttributeList)
+                            {
+                                <tr>
+                                    <td>@(item.PolicyName)</td>
+                                    <td>@(item.LeaveTypeId == null ? "" : Model.LeaveAttributeKeyValues.LeaveTypeKeyValues.Where(x => x.LeaveTypeId == item.LeaveTypeId).Select(x => x.LeaveTypeCode).FirstOrDefault())</td>
+                                    <td>@(item.MaxLimitPerYear)</td>
+                                    <td>@(item.MaxLimitPerMonth)</td>
+                                    <td>@(item.AccuralType == null ? "" : item.AccuralType.Trim() == "MO" ? "Monthly" : item.AccuralType.Trim() == "DA" ? "Daily" : item.AccuralType.Trim() == "QU" ? "Quaterly" : item.AccuralType.Trim() == "AN" ? "Anually" : "")</td>
+                                    <td>@(item.MaxAccuralLimit)</td>
+                                    <td>@(item.MaxAvailLimit)</td>
+                                   @* <td>@(item.WeekOffType == null ? "" : item.WeekOffType == 1 ? "Start" : item.WeekOffType == 2 ? "End" : item.WeekOffType == 3 ? "Both" : item.WeekOffType == 4 ? "Start And Between" : item.WeekOffType == 5 ? "End And Between" : item.WeekOffType == 6 ? "Start End Between" : item.WeekOffType == 7 ? "None" : "")</td>*@
+                                   @*  <th>
+                                        <a class="btn btn-primary btn-sm" href="/Leave/GetLeaveAttributeInfo/@item.EncryptedId">Edit</a>
+                                        <button class="btn btn-danger btn-sm" onclick="DeleteRecord('@item.AccuralType','@item.EncryptedId')"> Delete</button>
+                                    </th> *@
+
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="/Leave/GetLeaveAttributeInfo/@item.EncryptedId"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="#" onclick="DeleteRecord('@item.AccuralType','@item.EncryptedId')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/Leave/LeaveAttributes/'" style="float:right" />
+            <div style="clear:both"></div>
+            <form class="card-body" method="post" asp-action="LeaveAttributes" asp-controller="Leave">
+                <div class="row g-3 mt-3">
+
+
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="">Policy Name</label>
+                        <input class="form-control" type="text" value="@(Model.PolicyName==null ? "" : Model.PolicyName)" asp-for="PolicyName" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="formtabs-birthdate">Leave Type</label>
+                        @Html.DropDownListFor(x => x.LeaveTypeId,new SelectList(Model.LeaveAttributeKeyValues.LeaveTypeKeyValues,"LeaveTypeId", "LeaveType", Model.LeaveTypeId),"Select Option",htmlAttributes: new { @class = "select2 form-select d-md-inline-block" , @required="required",@onchange="leavetypechangevent()"})
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="">Calender Year</label>
+                        @Html.DropDownListFor(x => x.CalenderYearId,new SelectList(Model.LeaveAttributeKeyValues.LeaveCalenderYearKeyValue,"LeaveYearId", "CalendarName", Model.CalenderYearId),"Select Option",htmlAttributes: new { @class = "select2 form-select d-md-inline-block" , @required="required"})
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="">Applicability</label>
+                        <select class="select2 form-select d-md-inline-block">
+                           @*  <option>--All--</option> *@
+                            <option>All Employees</option>
+                            <option>Department</option>
+                            <option>Roles</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="">Maximum Accrual Limit  <span id="spnMaxAccuralLimitRange"></span></label>
+                        <input class="form-control" id="MaxAccuralLimit" onkeyup=enforceMinMax(this) onKeyPress="if(this.value.length==3) return false;" type="number" value="@(Model.MaxAccuralLimit==null ? "" : Model.MaxAccuralLimit)" asp-for="MaxAccuralLimit" />
+                    </div>
+                    @*<div class="col-md-6" style="display:none">
+                    <label class="form-label" for="formtabs-birthdate">Policy Name</label>
+                    @Html.DropDownListFor(x => x.PolicyId,new SelectList(Model.LeaveAttributeKeyValues.PolicyDocumentKeyValues,"PolicyDocumentsMasterId", "PolicyDocument", Model.PolicyId),"Policies",htmlAttributes: new { @class = "select2 form-select d-md-inline-block" , @required="required"})
+
+                    </div>*@
+                    <div class="col-md-6">
+                        <label class="form-label" for="">Annual Accrual Cap</label>
+                        <input class="form-control" id="MaxLimitPerYear" type="number" oninput="return onLeaveCap(this);" onKeyPress="if(this.value.length==3) return false;" value="@(Model.MaxLimitPerYear==null ? "" : Model.MaxLimitPerYear)" asp-for="MaxLimitPerYear" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="">Monthly Accrual Cap</label>
+                        <input class="form-control" type="number" id="MaxLimitPerMonth" onKeyPress="if(this.value.length==4) return false;" value="@(Model.MaxLimitPerMonth==null ? "" : Model.MaxLimitPerMonth)" asp-for="MaxLimitPerMonth" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="formtabs-birthdate">Accrual Mechanism</label>
+                        <select id="" class="select2 form-select d-md-inline-block" data-allow-clear="" asp-for="AccuralType">
+                            <option value="S">Select Option</option>
+                            <option value="DA">Daily</option>
+                            <option value="MO">Monthly</option>
+                            <option value="QU">Quarterly</option>
+                            <option value="HF">Half Yearly</option>
+                            <option value="AN">Annually</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="">Max Leaves per Request</label>
+                        <input class="form-control" type="number" onKeyPress="if(this.value.length==3) return false;" value="@(Model.MaxAvailLimit==null ? "" : Model.MaxAvailLimit)" asp-for="MaxAvailLimit" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="formtabs-birthdate">Credit Limit</label>
+                        <select id="" class="select2 form-select d-md-inline-block" data-allow-clear="" asp-for="CreditLimit">
+                            <option value="S">Select Option</option>
+                            <option value="AD">Advanced</option>
+                            <option value="EA">Earned</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="">Min Leaves per Request</label>
+                        <input class="form-control" type="number" onKeyPress="if(this.value.length==3) return false;" value="@(Model.MinAvailLimit==null ? "" : Model.MinAvailLimit)" asp-for="MinAvailLimit" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="formtabs-birthdate">Include Weekends</label>
+                        <select id="" class="select2 form-select d-md-inline-block" data-allow-clear="" asp-for="WeekOffType">
+                            <option value="0">Select Option</option>
+                            <option value="1">Included</option>
+                            <option value="2">Excluded</option>
+                           
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="">Annual Request Limit</label>
+                        <input class="form-control" id="NoOfTimesAvailLimit" type="number" onKeyPress="if(this.value.length==3) return false;" value="@(Model.NoOfTimesAvailLimit==null ? "" : Model.NoOfTimesAvailLimit)" asp-for="NoOfTimesAvailLimit" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="formtabs-birthdate">Avail From Type</label>
+                        <div class="row g-3">
+                            <div class="col-md-5">
+
+                                <select id="" class="select2 form-select d-inline-block" data-allow-clear="" asp-for="AvailFromType">
+                                    <option value="0">Select Option</option>
+                                    <option value="1">Date of Joining</option>
+                                    <option value="2">Date of Confirmation</option>
+                                </select>
+                            </div>
+                            <div class="col-md-5 monthCount">
+                                <div class="d-inline-block me-2">+</div>
+                                <select id="" class="select2 form-select d-inline-block" data-allow-clear="" asp-for="NoOfMonth">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                Month/s
+                            </div>
+                        </div>
+
+                        <style>
+                            .monthCount .select2-container {
+                                width: 90% !important
+                            }
+                        </style>
+
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="formtabs-birthdate">Intervening Holidays</label>
+                        <select id="" class="select2 form-select d-md-inline-block" data-allow-clear="" asp-for="InterveningHolidays">
+                            <option value="0">Select Option</option>
+                            <option value="1">Included</option>
+                            <option value="2">Excluded</option>
+                           @* <option value="1">Start</option>
+                            <option value="2">End</option>
+                            <option value="3">Both</option>
+                            <option value="4">Start And Between</option>
+                            <option value="5">End And Between</option>
+                            <option value="6">Start End Between</option>
+                            <option value="7">None</option>*@
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="">Maximum Rollover</label>
+                        <input class="form-control" onKeyPress="if(this.value.length==3) return false;" type="number" value="0" />
+                    </div>
+                </div>
+                <div class="row g-3 mt-3">
+                    <div class="col-md-6">
+                        <input type="checkbox" class="form-check-input" asp-for="IsRoundOff" /> <label class="form-label" for="">Rounding Mechanism</label>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="checkbox" class="form-check-input" name="IsCarryForward" asp-for="IsCarryForward" />  <label class="form-label" for="">Carry Forward</label>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" id="CarryForward" for="" style="display:none;">Carry Forward Limit</label>
+                        <input class="form-control" id="txtCarryForward" name="CarryForwardLimit" type="text" style="display:none;" onKeyPress="if(this.value.length==3) return false;" value="@(Model.CarryForwardLimit==null ? "" : Model.CarryForwardLimit)" />
+
+
+                        <div class="" style="display:none" id="divCarryForwardExpiryDate">
+                            <label class="form-label" for="multicol-last-name" style="">Carry Forward Expiry Date</label>
+                            <input type="text" id="" name="" required maxlength="100" style="" class="form-control flatpickr-date1" value="" placeholder="DD-MMM-YYYY">
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-3">
+                        <input type="checkbox" class="form-check-input" asp-for="IsNegativeBalance" /> <label class="form-label" for="">Allow Negative Balance</label>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" id="NegativeBalance" for="" style="display:none;">Negative Balance Limit</label>
+                        <input class="form-control" id="txtNegativeBalance" name="NegativeBalanceLimit" type="number" style="display:none;" onKeyPress="if(this.value.length==3) return false;" value="@(Model.NegativeBalanceLimit==null ? "" : Model.NegativeBalanceLimit)" />
+                    </div>
+                    <div class="col-md-3">
+                        <input type="checkbox" class="form-check-input" asp-for="IsBillRequired" />  <label class="form-label" for="">Invoice Required for Leave</label>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" id="BillRequired" for="" style="display:none;">Min Leave No For Bill</label>
+                        <input class="form-control" type="text" id="txtBillRequired" name="MinLeaveNoForBill" style="display:none;" onKeyPress="if(this.value.length==4) return false;" value="@(Model.MinLeaveNoForBill==null ? "" : Model.MinLeaveNoForBill)" />
+                    </div>
+                    <div class="col-md-6">
+                        <input type="checkbox" class="form-check-input" asp-for="IsHalfDay" /> <label class="form-label" for="">Half-Day Leave Allowed</label>
+                    </div>
+                    <div class="col-md-6" style="display:none">
+                        <input type="checkbox" class="form-check-input" asp-for="IsApplyAdmin" /> <label class="form-label" for="">Admin Approval Needed</label>
+                    </div>
+                    <div class="col-md-6" style="display:none">
+                        <input type="checkbox" class="form-check-input" asp-for="Ispaternity" />  <label class="form-label" for="">Is Paternity</label>
+                    </div>
+                    <div class="col-md-6" >
+                        <input type="checkbox" class="form-check-input" asp-for="IsClubbing" /> <label class="form-label" for="">Clubbing</label>
+                    </div>
+
+                    <div class="col-md-6" style="display:none">
+                        <input type="checkbox" class="form-check-input" asp-for="Ismternity" /> <label class="form-label" for="">Is Maternity</label>
+                    </div>
+                    <div class="col-md-12">
+                        <input type="hidden" id="LeaveAttributeId" name="LeaveAttributeId" value="@Model.LeaveAttributeId">
+                        <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                        <button type="button" class="btn btn-label-secondary" onclick="javascript:window.location.href='/Leave/LeaveAttributes/'">Cancel</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/assets/vendor/libs/pickr/pickr.js"></script>
+    <script src="~/assets/js/forms-pickers.js"></script>
+    <script src="~/assets/vendor/libs/sweetalert2/sweetalert2.js"></script>
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //appalert('success','','');
+            $("#alert").click(function () {
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'You clicked the button!',
+                    icon: 'success',
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    },
+                    buttonsStyling: false
+                });
+                Swal.fire({
+                    title: 'Info!',
+                    text: 'You clicked the button!',
+                    icon: 'info',
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false
+                });
+                Swal.fire({
+                    title: 'Warning!',
+                    text: ' You clicked the button!',
+                    icon: 'warning',
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false
+                });
+                Swal.fire({
+                    title: 'Error!',
+                    text: ' You clicked the button!',
+                    icon: 'error',
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false
+                });
+                Swal.fire({
+                    title: 'Question!',
+                    text: ' You clicked the button!',
+                    icon: 'question',
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false
+                });
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    customClass: {
+                        confirmButton: 'btn btn-primary me-3',
+                        cancelButton: 'btn btn-label-secondary'
+                    },
+                    buttonsStyling: false
+                }).then(function (result) {
+                    if (result.value) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: 'Your file has been deleted.',
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            }
+                        });
+                    }
+                });
+
+
+            });
+
+            $(".flatpickr-date1").flatpickr({
+                //monthSelectorType: 'static',
+                dateFormat: "d-M-Y"
+            });
+            $(".List").dataTable();
+            if (@Model.LeaveAttributeId != 0 || @Model.HttpStatusCode!= 200) {
+                $("#List").hide();
+                $("#Add").show();
+            }
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                $successalert("", "@Model.DisplayMessage");
+            }
+
+        });
+
+        function onLeaveCap(e) {
+            if ($("#MaxAccuralLimit").val() != "") {
+                if (e.value > parseInt($("#MaxAccuralLimit").val())) {
+                    $erroralert("Transaction Failed!", "Annual accrual cap cannot exceed from Max accrual limit");
+                    $("#MaxLimitPerYear").val('');
+                    $("#MaxLimitPerMonth").val('');
+                    return;
+
+                }
+                else {
+                    $("#MaxLimitPerMonth").val(parseFloat(e.value / 12).toFixed(2));
+                    $("#NoOfTimesAvailLimit").val(e.value);
+                    $("#MaxLimitPerMonth").prop('readonly', true);
+                    $("#NoOfTimesAvailLimit").prop('readonly', true);
+                    //Math.round(e.value / 12));
+                }
+            }
+           // alert(e.value);
+        }
+        function ListView() {
+        }
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+
+        function DeleteRecord(accuraltype, leaveAttributeId) {
+            // event.preventDefault();
+            url = $(this).attr('href');
+            history.pushState({ key: url }, '', url);
+            if (confirm("Sure want to delete this record?")) {
+                window.location.href = "/Leave/DeleteLeaveAttribute/" + leaveAttributeId;
+            }
+            return false;
+        }
+        $('#IsCarryForward').change(function () {
+            if (this.checked == true) {
+                $('#txtCarryForward').show();
+                $('#CarryForward').show();
+                $("#divCarryForwardExpiryDate").show();
+            }
+            else {
+                $('#CarryForward').hide();
+                $('#txtCarryForward').hide();
+                $("#divCarryForwardExpiryDate").hide();
+            }
+
+        });
+        $('#IsNegativeBalance').change(function () {
+            if (this.checked == true) {
+                $('#NegativeBalance').show();
+                $('#txtNegativeBalance').show();
+            }
+            else {
+                $('#txtNegativeBalance').hide();
+                $('#NegativeBalance').hide();
+            }
+
+        });
+        $('#IsBillRequired').change(function () {
+            if (this.checked == true) {
+                $('#BillRequired').show();
+                $('#txtBillRequired').show();
+            }
+
+            else {
+                $('#BillRequired').hide();
+                $('#txtBillRequired').hide();
+            }
+
+        });
+
+        function leavetypechangevent() {
+            $("#spnMaxAccuralLimitRange").text("");
+
+            let leavetypeId = $("#LeaveTypeId").val();
+            if (leavetypeId == undefined) {
+                return false;
+            }
+            else if (leavetypeId == null) {
+                return false;
+            }
+            else if ($.trim(leavetypeId) == "") {
+                return false;
+            }
+            else if ($.trim(leavetypeId) == "0") {
+                return false;
+            }
+            jQuery.ajax({
+                type: "GET",
+                url: "/Leave/GetLeaveTypeAttributes",
+                data: { LeaveTypeId: leavetypeId },
+                success: function (response) {
+                    if (response != null) {
+                        if (response.length > 0) {
+                            if (response[0].maxLeaveRange != null) {
+                                $("#MaxAccuralLimit").attr("max", response[0].maxLeaveRange);
+                            }
+                            if (response[0].minLeaveRange != null) {
+                                $("#MaxAccuralLimit").attr("min", response[0].minLeaveRange);
+                            }
+                            if (response[0].maxLeaveRange != null && response[0].minLeaveRange != null) {
+                                $("#spnMaxAccuralLimitRange").text("(Range between " + response[0].minLeaveRange + " to " + response[0].maxLeaveRange + ")");
+                            }
+                        }
+                    }
+
+
+                },
+                failure: function (response) {
+                    $erroralert("Error!", "errror<br>" + response.responseText);
+                },
+                error: function (response) {
+                    $erroralert("Error!", "errror<br>" + response.responseText);
+                }
+
+            });
+        }
+        function enforceMinMax(el) {
+            if (el.value != "") {
+                if (parseInt(el.value) < parseInt(el.min)) {
+                    el.value = el.min;
+                }
+                if (parseInt(el.value) > parseInt(el.max)) {
+                    el.value = el.max;
+                }
+            }
+        }
+    </script>
+    }
+
+
+

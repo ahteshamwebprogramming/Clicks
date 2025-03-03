@@ -1,0 +1,69 @@
+﻿@model SimpliHR.Infrastructure.Models.ITDeclaration.ItDeclaration80CinvestmentDTO
+
+
+
+<input type="hidden" value="@(Model==null ? 0 : Model.ItDeclaration80CinvestmentsId==null ? 0 :  Model.ItDeclaration80CinvestmentsId)" name="ItDeclaration80CinvestmentsId" />
+
+<div class="col-md-8 mb-3">
+    <select class="form-select" data-style="btn-default" name="InvestmentType">
+        <option value="0" selected>Select an Investment</option>
+
+        @{
+            var a = Model.Investment80CmasterDTOs.Where(x => x.IsActive == true).Select(x => x.Optgroup).Distinct();
+            foreach (var item in a)
+            {
+                <optgroup label="@item" style="font-weight:800">
+                    @{
+                        var b = Model.Investment80CmasterDTOs.Where(x => x.Optgroup == item && x.IsActive == true);
+                        foreach (var item1 in b)
+                        {
+                            if (Model != null && Model.InvestmentType == item1.Investment80Cid)
+                            {
+                                <option selected value="@item1.Investment80Cid">@item1.Investment80C</option>
+                            }
+                            else
+                            {
+                                <option value="@item1.Investment80Cid">@item1.Investment80C</option>
+                            }
+                        }
+                    }
+                </optgroup>
+            }
+        }
+        @*<optgroup label="80C" style="font-weight:800">
+        <option value="1">Life Insurance Premium</option>
+        <option value="1">Public Provident Fund</option>
+        <option value="1">Unit-Linked Insurance Plan</option>
+        <option value="1">National Savings Certificates</option>
+        <option value="1">ELSS Tax Saving Mutual Fund</option>
+        <option value="1">Children Tution Fees</option>
+        <option value="1">Sukanya Samriddhi Deposit Scheme</option>
+        <option value="1">Employees Provident Fund (EPF)</option>
+        <option value="1">Tax Saver Fixed Deposits</option>
+        <option value="1">National Pension Scheme (NPS)</option>
+        <option value="1">Senior Citizens Savings Scheme</option>
+        <option value="1">5 Year fixed deposit in Scheduled Banks</option>
+        <option value="1">Term Deposit in Post Office</option>
+        <option value="1">Infrastructure Bonds</option>
+        <option value="1">Stamp Duty and Registration Fee on Buying House Property</option>
+        <option value="1">Interest on National Savings Certificates</option>
+        <option value="1">NABARD Rural Bonds</option>
+        </optgroup>
+        <optgroup label="80CCC">
+        <option value="1">Contribution to annuity plan of LIC</option>
+        </optgroup>
+        <optgroup label="80CCD(1)">
+        <option value="1">National Pension Scheme</option>
+        </optgroup>*@
+    </select>
+</div>
+<div class="col-md-3 mb-3">
+    <div class="input-group">
+        <span class="input-group-text" id="basic-addon11">₹</span>
+        <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="" name="Value" value="@(Model==null ? "" : Model.Value)">
+    </div>
+</div>
+<div class="col-md-1 mb-3">
+    <div class="float-end"><i class="fa-solid fa-xmark" onclick="remove80CInvestmentsForm(this,@(Model==null ? 0 : Model.ItDeclaration80CinvestmentsId==null ? 0 :  Model.ItDeclaration80CinvestmentsId))"></i></div>
+    <div class="clearfix"></div>
+</div>

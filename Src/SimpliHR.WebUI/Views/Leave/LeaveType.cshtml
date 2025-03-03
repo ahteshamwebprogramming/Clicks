@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewData["Title"] = "LeaveType";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Leave /</span> Leave Type</h4>
+    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+
+                            <th>Leave Type Code</th>
+                            <th>Leave Type</th>
+                            <th>Applicable For</th>
+                            @* <th>Status</th>*@
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/Leave/LeaveType/'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="#">
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Leave Type Code</label>
+                        <input type="text" id="LeaveTypeCode" name="LeaveTypeCode" required maxlength="10" onKeyPress="if(this.value.length==3) return false;" class="form-control" placeholder="Leave Type Code">
+                        @*<span asp-validation-for="LeaveTypeCode" class="text-danger"></span>*@
+                    </div> <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Leave Type</label>
+                        <input type="text" id="LeaveType" name="LeaveType" required maxlength="100" class="form-control" placeholder="Leave Type">
+                        @*<span asp-validation-for="LeaveType" class="text-danger"></span>*@
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Applicable For</label>
+                        <select id="LegendType" name="LegendType" class="select2 form-select" required data-allow-clear="true">
+                            <option value="S">Select</option>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                            <option value="B">Both</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label d-block" for="address">Is CompOff Leave Type</label>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="isBufferTimeAllowed"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="True"
+                                   id="defaultRadio1" />
+                            <label class="form-check-label" for="defaultRadio1">Yes</label>
+                        </div>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="isBufferTimeAllowed"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="False"
+                                   id="defaultRadio2" checked />
+                            <label class="form-check-label" for="defaultRadio2"> No </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="pt-4">
+
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/Leave/LeaveType/'">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+  
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+
+
+        });
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+
+
+    </script>
+    }

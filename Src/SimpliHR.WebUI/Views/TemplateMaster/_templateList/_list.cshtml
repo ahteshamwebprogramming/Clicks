@@ -1,0 +1,35 @@
+﻿@model List<SimpliHR.Infrastructure.Models.Master.TemplateMasterDynamicDTO>
+
+<div class="table-responsive text-nowrap">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Form Name</th>
+                <th>Form Type</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (Model != null)
+                {
+                    if (Model.Count > 0)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.FormName</td>
+                                <td>@item.FormType </td>
+                                <td>
+                                    <input type="button" value="View" class="btn btn-primary btn-sm" onclick="ViewForm(@item.TemplateMasterDynamicId)" />
+                                    <input type="button" value="Edit" class="btn btn-primary btn-sm" onclick="window.location.href='/TemplateMaster/CreateTemplate?encId=@(SimpliHR.Infrastructure.Helper.CommonHelper.EncryptURL(item.TemplateMasterDynamicId.ToString()))'" />
+                                    <input type="button" value="Delete" class="btn btn-primary btn-sm" />
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>

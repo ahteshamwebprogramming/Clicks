@@ -1,0 +1,259 @@
+@model SimpliHR.Infrastructure.Models.Payroll.Fom16DocViewModel
+@{
+    ViewData["Title"] = "Employee Form 16 Upload";
+    int iCtrNo = 1;
+}
+<link rel="stylesheet" href="../../assets/vendor/libs/tagify/tagify.css" />
+<!-- Content wrapper -->
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll /</span> Form 16 Search</h4>
+    <!-- Location  -->
+
+    <div id="tableInfo">
+        <div class="card">
+            <div class="card-body">
+                <div class="modal fade" id="vwAttachment" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-xl modal-simple modal-pricing">
+                        <div class="modal-content p-3 p-md-5">
+                            <div class="modal-body">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                </button>
+                                <div>
+                                    <div class="row"><a id="downloadAttachment" download="">Click to Download the image</a></div>
+                                    <div class="row" style="width:90%;height:90%"><object id="uploadedObject" data="" type="application/pdf"></object></div>
+                                    <div class="row"><input id="uploadedImage" type="image" src="" /></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="" class="containerdiv">
+                    <form id="UploadForm16">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="formFile" class="form-label required" for="form16ZipFile">
+                                    Employee Name
+                                </label>
+                                @Html.DropDownList("EmployeeId", new SelectList(Model.EmployeeKeyValues, "EmployeeId", "EmployeeNameCode", Model.Form16Doc.EmployeeId), "Select Option", htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible", @name = "EmployeeId", @required = "required" })
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="FinYear required">Finance Year</label>
+                                <select id="FinYear" required>
+                                    <option>2023-2024</option>
+                                    <option selected>2024-2025</option>
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="pt-4">
+                            <button type="button" class="btn btn-primary mb-2" onclick="return ValidateAndGetForm16Details()">Search</button>
+                            <button type="button" class="btn btn-primary mb-2" onclick="ResetForm()">Reset</button>
+                        </div>
+                    </form>
+                </div>                
+                <div class="table-responsive text-nowrap mt-2" id="tableDiv">
+                   
+                    <table class="datatables-ajax table List" id="form16DetailTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Employee Name</th>
+                                <th>PAN</th>
+                                <th>File Name</th>
+                                <td>Year</td>
+                                <td>View Form16</td>
+                                <td>Delete</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model.Form16DocList)
+                        {
+                            <tr>
+                                    <td>@iCtrNo</td>
+                                    <td>@item.EmployeeName</td>
+                                    <td>@item.Pannumber</td>
+                                    <td>@item.DocName</td>
+                                    <td>@item.FinYear</td>
+                                    <td><a href="javascript:void(0)" id="Form16_@item.FormId" onclick="ViewAttachment('@item.AttachmentBase64String','Form16','pdf')">Form16</a></td>
+                                <td>Delete</td>
+                            </tr>
+                            iCtrNo += 1;
+                        }
+                       </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<input type="hidden" id="Longitude" name="Longitude" class="form-control" />
+<input type="hidden" id="Latitude" name="Latitude" class="form-control" />
+
+<!-- Content wrapper -->
+<script src="../../assets/vendor/libs/tagify/tagify.js"></script>
+<script src="../../assets/js/forms-tagify.js"></script>
+<script src="~/customjs/commonfunction.js"></script>
+<script src="~/customjs/common.js"></script>
+<script src="~/customjs/employeevalidation.js"></script>
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            jQuery("#tableDiv").hide();
+
+        });
+
+        function ValidateAndGetForm16Details() {
+            let formData = new FormData();
+            if (!ValidForm("UploadForm16")) {
+                return false;
+            }
+            else {
+                formData.append("EmployeeId", jQuery("#EmployeeId").val());
+                formData.append("FinYear", jQuery("#FinYear").val());
+            }
+            BlockUI();
+            jQuery.ajax({
+                type: "POST",
+                url: "/PayrollAccount/Form16Search",
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                dataType: "json",
+                success: function (data) {
+                    UnblockUI();
+                    if (data.form16DocList.length == 0 && data.displayMessage.toLowerCase() == "_blank") {
+                        $htmlalert("Error", "Transaction Failed!", "Data not found");
+                        jQuery("#form16DetailTable tr").slice(1).remove();
+                        jQuery("#tableDiv").hide();
+                    }
+                    else if(data.form16DocList.length > 0 && data.displayMessage.toLowerCase() == "_blank") {
+                        keyAttr = "formId"
+                        var tableCols = ["employeeName","pannumber","docName","finYear","docAttachment","Action"];
+                        jQuery("#tableDiv").show();
+                        PopulateTable("form16DetailTable", data.form16DocList, tableCols, keyAttr)
+                        if (data.displayMessage.toLowerCase() != "_blank")
+                            $htmlalert("Error", "Transaction Failed!", data.displayMessage);
+                    }
+                    else if (data.displayMessage.toLowerCase() != "_blank") {
+                        $htmlalert("Error", "Transaction Failed!", data.displayMessage);
+                                jQuery("#form16NotFoundTable tr").slice(1).remove()
+                    }
+                },
+                error: function (result) {
+                    UnblockUI();
+                    var x = 1;
+                    // jQuery("#FormName").val("");
+                    // MoveNext(formID);
+                }
+            });
+        }
+
+        function PopulateTable(tableID, tableData, tableCols, keyAttr) {
+            // alert("List");
+            var tableCtrl = jQuery("#" + tableID)
+            //var tBody = jQuery('<tbody>')
+            //jQuery("#" + tableID + " tbody").remove();
+            //jQuery("#" + tableID + " tr").each(function () {
+            //    this.parentNode.removeChild(this);
+            //});
+            jQuery("#" + tableID + " tr").slice(1).remove()
+            var iCtr = 1;
+            tableData.forEach(function (row) {
+                var tr = $('<tr>');
+                tr.append('<td>' + iCtr + '</td>');
+                tableCols.forEach(function (attr) {
+                    if (attr.toUpperCase() == "ACTION")
+                        tr.append('<th><Button class="btn btn-primary" onclick = "DeleteForm16(\'' + row.formId + '\')" > Delete </Button></th>');
+                    else if (attr.toUpperCase() == "DOCATTACHMENT")
+                        tr.append('<td><a href="javascript:void(0)" id="Form16_' + row[keyAttr] + '" onclick="ViewAttachment(\'' + row.attachmentBase64String + '\',\'' + row.docName + '\',\'pdf\')" >Form16</a></td>');
+                    else
+                        tr.append('<td>' + row[attr] + '</td>');
+                });
+                tableCtrl.append(tr);
+                iCtr++;
+            });
+        }
+
+        function CapitalizeSmallFirstLetter(sStr, sChange) {
+            var string = sStr;
+            if (sChange == "S")
+                newString = string[0].toLowerCase() + string.slice(1);
+            else
+                newString = string[0].toUpperCase() + string.slice(1);
+
+            return newString
+        }
+
+        function ViewAttachment(base64Image, fieldName, ext) {
+            jQuery("#downloadAttachment").attr("href", base64Image);
+            jQuery("#downloadAttachment").attr("download", fieldName + ".pdf");
+            if (ext == "pdf") {
+                //jQuery("#uploadedObject").data(base64Image)
+                jQuery("#uploadedObject").attr("data", base64Image);
+                jQuery("#vwAttachment").modal('show');
+            }
+            else if (",png,jpeg,jpg,bmp,gif,tiff,".indexOf("," + ext + ",") >= 0) {
+                jQuery("#uploadedImage").attr("src", base64Image)
+                jQuery("#vwAttachment").modal('show');
+            }
+        }
+
+        function DeleteForm16(formId)
+        {
+            if (confirm("Sure want to delete this?"))
+            {
+                let formData = new FormData();
+                if (!ValidForm("UploadForm16")) {
+                    return false;
+                }
+                else {
+                    formData.append("EmployeeId", jQuery("#EmployeeId").val());
+                    formData.append("FinYear", jQuery("#FinYear").val());
+                    formData.append("FormId", formId);
+                }
+                BlockUI();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/PayrollAccount/DeleteForm16",
+                    data: formData,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    dataType: "json",
+                    success: function (data) {
+                        UnblockUI();
+                        if (data.form16DocList.length == 0 && data.displayMessage.toLowerCase() == "_blank") {                  
+                            $htmlalert("Error", "Transaction Failed!", "Data not found");
+                            jQuery("#form16DetailTable tr").slice(1).remove();
+                            jQuery("#tableDiv").hide();
+                        }
+                        else if (data.form16DocList.length > 0 && data.displayMessage.toLowerCase() == "_blank") {
+                            keyAttr = "formId"
+                            var tableCols = ["employeeName", "pannumber", "docName", "finYear", "docAttachment", "Action"];
+                            jQuery("#tableDiv").show();
+                            PopulateTable("form16DetailTable", data.form16DocList, tableCols, keyAttr)
+                            if (data.displayMessage.toLowerCase() != "_blank")
+                                $htmlalert("Error", "Transaction Failed!", data.displayMessage);
+                        }
+                        else if (data.displayMessage.toLowerCase() != "_blank") {
+                            $htmlalert("Error", "Transaction Failed!", data.displayMessage);
+                        }
+                    },
+                    error: function (result) {
+                        UnblockUI();
+                        var x = 1;
+                        // jQuery("#FormName").val("");
+                        // MoveNext(formID);
+                    }
+                });
+            }
+        }
+    </script>
+    }

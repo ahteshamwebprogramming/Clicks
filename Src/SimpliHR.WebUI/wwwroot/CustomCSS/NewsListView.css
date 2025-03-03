@@ -1,0 +1,121 @@
+﻿/*NEWS CONTAINER VIEW*/
+.news-main .select2-container--default .select2-selection--single .select2-selection__arrow b {
+    top: 35%;
+    left: -15px !important;
+}
+
+.news-container {
+    display: flex;
+    flex-wrap: nowrap;
+  
+}
+
+    .news-container .box {
+        width: 20%;
+    }
+
+    .news-container .box1 {
+        width: 80%;
+        padding: 4px 16px 4px 12px;
+    }
+    .news-container .box2 {
+        width: 16.5%;
+    }
+
+    .news-container .box3 {
+        width: 80%;
+        padding: 4px 16px 4px 12px;
+    }
+    .news-container span {
+        font-size: 11px;
+        font-weight: bold;
+        display: block;
+        line-height: 21px;
+    }
+
+.news-ttl {
+    font-size: 16px;
+    line-height: 25px
+}
+
+.news-short-cont {
+    line-height: 18px;
+    font-size: 12.5px;
+}
+
+.news-author-name {
+    line-height: 16px;
+}
+
+.news-catg-name {
+    font-size: 13px;
+}
+
+.blue-font {
+    color: #696CFF;
+}
+
+.light-style .select2-container--default .select2-selection--single .select2-selection__clear {
+    display: none;
+}
+
+.light-style .select2-container--default .select2-selection {
+    border: 0
+}
+
+.news-search .form-control {
+    border: 1px solid #d9dee3!important;
+    border-radius: 10px;
+}
+
+@media screen and (max-device-width: 480px) and (orientation: portrait) {
+    .serch {
+        width: 40%;
+    }
+
+        .serch input {
+            width: 88%;
+        }
+
+    .light-blue-bg {
+        padding: 5%
+    }
+
+    #content {
+        flex: 0 0 800px;
+    }
+
+    .login-data {
+        padding: 80px 50px 80px 50px;
+    }
+
+    .login-form input {
+        padding: 25.5px 20px 25.5px 20px;
+    }
+
+    .news-short-cont-list, .news-author-name-list, .news-catg-name-list {
+        display: none;
+    }
+
+    .news-container .box {
+        width: 30%;
+    }
+
+    .news-container .box1 {
+        width: 70%;
+        padding: 9px 12px 9px 7px;
+    }
+
+    .news-ttl {
+        font-size: 13px;
+        line-height: 14px;
+    }
+
+    .news-container span {
+        font-size: 10px;
+        line-height: 20px;
+    }
+    .news-container span:nth-child(2) {
+        font-size:16px !important;
+    }
+}

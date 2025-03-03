@@ -1,0 +1,34 @@
+﻿<div class="modal fade" id="editpopup" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-simple modal-edit-user">
+        <div class="modal-content p-3 p-md-5">
+            <div class="modal-body">
+                <button type="button" class="btn-close" id="closeeditpopup" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-4">
+                    <h3>Edit User Information</h3>
+                    <p>Updating user details require approval from HR.</p>
+                </div>
+                <form id="editUserForm" class="row g-3" onsubmit="return false">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" name="OldLabel" for="modalEditUserFirstName"></label>
+                        <input type="text" readonly id="modalEditUserFirstName" name="OldValue" class="form-control form-control-plaintext" placeholder="" />
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" name="NewLabel" for="modalEditUserLastName"></label>
+                        <input type="text" id="modalEditUserLastName" name="NewValue" class="form-control" placeholder="" />
+                    </div>
+                    <div class="col-12" name="divAttachment" style="">
+                        <label class="form-label" for="modalEditUserName">Attach Document</label>
+                        <input type="file" id="modalEditUserName" name="attachment" class="form-control" placeholder="" />
+                    </div>
+                    <input type="hidden" name="ChangeType" />
+                    <div class="col-12 text-center">
+                        <button type="submit" class="btn btn-primary me-sm-3 me-1" onclick="SubmitTemp()">Submit</button>
+                        <button type="reset" id="reseteditpopup" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

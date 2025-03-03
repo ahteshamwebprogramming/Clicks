@@ -1,0 +1,142 @@
+﻿@model SimpliHR.Infrastructure.Models.StatutoryComponent.StatutoryComponentsLabourWelfareFundDTO
+<style>
+    table tbody tr td {
+        padding: 5px;
+    }
+</style>
+
+<div class="card" style="width: fit-content;padding: 25px;" id="WelfareFundEditDiv">
+    <h5>@(Model == null ? "" : Model.SelectedUnit == null ? "" : Model.SelectedUnit.UnitName) (@(Model == null ? "" : Model.SelectedUnit == null ? "" : Model.SelectedUnit.Address),@(Model == null ? "" : Model.SelectedUnit == null ? "" : Model.SelectedUnit.City == null ? "" : Model.SelectedUnit.City.CityName)) &nbsp;&nbsp;&nbsp;   <i class="fa fa-save hvr-grow" onclick="SaveLabourWelfareFundData()"></i></h5>
+    <input type="hidden" id="StatutoryComponentsLabourWelfareFundId" value="@(Model == null ? "0" : Model.StatutoryComponentsLabourWelfareFundId == null ? "0" : Model.StatutoryComponentsLabourWelfareFundId)" />
+    <table>
+        <tbody>
+            <tr>
+                <td>Employee's Contribution</td>
+                <td style="width:5px"></td>
+                <td>₹ <input asp-for="EmployeesContribution" type="number" class="form-control" style="display:inline;width:auto" value="@(Model == null ? "0" : Model.EmployeesContribution == null ? "0" : Model.EmployeesContribution)" /> </td>
+            </tr>
+            <tr>
+                <td>Employer's Contribution</td>
+                <td style="width:5px"></td>
+                <td>₹ <input asp-for="EmployersContribution" type="number" class="form-control" style="display:inline;width:auto" value="@(Model == null ? "0" : Model.EmployersContribution == null ? "0" : Model.EmployersContribution)" /></td>
+            </tr>
+            <tr>
+                <td>Deduction Cycle</td>
+                <td style="width:5px"></td>
+                <td>
+
+                   @* <select class="form-control" id="DeductionCycle1" onchange="initializeLabourWelfareFundEditxx()">
+                        <option selected>--Select--</option>
+                        <option>Montly</option>
+                        <option>Qualterly</option>
+                    </select>*@
+
+                    <select class="form-control" asp-for="DeductionCycle">
+                        @{
+                            if (Model == null)
+                            {
+                                <option selected>--Select--</option>
+                                <option>Montly</option>
+                                <option>Qualterly</option>
+                                <option>Half Yearly</option>
+                                <option>Annually</option>
+                            }
+                            else
+                            {
+                                if (Model.DeductionCycle == null)
+                                {
+                                    <option selected>--Select--</option>
+                                    <option>Montly</option>
+                                    <option>Qualterly</option>
+                                    <option>Half Yearly</option>
+                                    <option>Annually</option>
+                                }
+                                else
+                                {
+                                    <option>--Select--</option>
+                                    if (Model.DeductionCycle.Trim() == "Montly")
+                                    {
+                                        <option value="Montly" selected>Montly</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="Montly">Montly</option>
+                                    }
+                                    if (Model.DeductionCycle.Trim() == "Qualterly")
+                                    {
+                                        <option selected value="Qualterly">Qualterly</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="Qualterly">Qualterly</option>
+                                    }
+                                    if (Model.DeductionCycle.Trim() == "Half Yearly")
+                                    {
+                                        <option selected value="Half Yearly">Half Yearly</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="Half Yearly">Half Yearly</option>
+                                    }
+                                    if (Model.DeductionCycle.Trim() == "Annually")
+                                    {
+                                        <option selected value="Annually">Annually</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="Annually">Annually</option>
+                                    }
+                                }
+
+                            }
+
+
+                        }
+                        @* <option>Montly</option>
+                        <option>Qualterly</option>
+                        <option>Half Yearly</option>
+                        <option>Annually</option>*@
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Status</td>
+                <td style="width:5px"></td>
+                <td>
+                    @{
+                        if (Model != null)
+                        {
+                            if (Model.IsActive != null)
+                            {
+                                if (Model.IsActive == true)
+                                {
+                                    <span name="LabourWelfareFundEnabled" style=""><span style="color:green;">Enabled</span> <a onclick="disbaleLabourWelfareFund()" class="hvr-grow" style="color:red" href="javascipt:void(0)">(Disbale)</a></span>
+                                }
+                                else
+                                {
+                                    <span name="LabourWelfareFundDisabled"><span style="color:red;">Disabled</span> <a class="hvr-grow" onclick="enableLabourWelfareFund()" href="javascipt:void(0)">(Enable)</a></span>
+                                }
+                            }
+                            else
+                            {
+                                <span name="LabourWelfareFundDisabled"><span style="color:red;">Disabled</span> <a class="hvr-grow" onclick="enableLabourWelfareFund()" href="javascipt:void(0)">(Enable)</a></span>
+                            }
+                        }
+                        else
+                        {
+                            <span name="LabourWelfareFundDisabled"><span style="color:red;">Disabled</span> <a class="hvr-grow" onclick="enableLabourWelfareFund()" href="javascipt:void(0)">(Enable)</a></span>
+                        }
+                    }
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+@*<script>
+    $(document).ready(function () {
+        $("#DeductionCycle").change(function () {
+            alert("h");
+        });
+    });
+</script>*@

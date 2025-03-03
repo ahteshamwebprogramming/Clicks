@@ -1,0 +1,1693 @@
+﻿@model SimpliHR.Infrastructure.Models.ClientManagement.ClientSettingDTO
+
+
+
+
+@if (Model.ModuleIds == null)
+{
+    if (Model.ClientId == -1)
+    {
+        <ul class="menu-inner py-1">
+            <!-- Dashboards -->
+            <li class="menu-item active open">
+                <a href="~/Admin/index" class="menu-link">
+                    <div data-i18n="Dashboard">Dashboard</div>
+                </a>
+            </li>
+
+            <!-- Layouts -->
+            <li class="menu-item" id="liLayout">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-layout"></i>
+                    <div data-i18n="Layouts">Layouts</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item" style="display:none">
+                        <a href="layouts-collapsed-menu.html" class="menu-link">
+                            <div data-i18n="Collapsed menu">Collapsed menu</div>
+                        </a>
+                    </li>
+                    <li class="menu-item" style="display:none">
+                        <a href="layouts-content-navbar.html" class="menu-link">
+                            <div data-i18n="Content navbar">Content navbar</div>
+                        </a>
+                    </li>
+                    <li class="menu-item" style="display:none">
+                        <a href="layouts-content-navbar-with-sidebar.html" class="menu-link">
+                            <div data-i18n="Content nav + Sidebar">Content nav + Sidebar</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/Admin/ChangeVtH" class="menu-link">
+                            <div data-i18n="Horizontal">Horizontal</div>
+                        </a>
+                    </li>
+                    <li class="menu-item" style="display:none">
+                        <a href="layouts-without-menu.html" class="menu-link">
+                            <div data-i18n="Without menu">Without menu</div>
+                        </a>
+                    </li>
+                    <li class="menu-item" style="display:none">
+                        <a href="layouts-without-navbar.html" class="menu-link">
+                            <div data-i18n="Without navbar">Without navbar</div>
+                        </a>
+                    </li>
+                    <li class="menu-item" style="display:none">
+                        <a href="layouts-fluid.html" class="menu-link">
+                            <div data-i18n="Fluid">Fluid</div>
+                        </a>
+                    </li>
+                    <li class="menu-item" style="display:none">
+                        <a href="layouts-container.html" class="menu-link">
+                            <div data-i18n="Container">Container</div>
+                        </a>
+                    </li>
+                    <li class="menu-item" style="display:none">
+                        <a href="layouts-blank.html" class="menu-link">
+                            <div data-i18n="Blank">Blank</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- Master -->
+            <li class="menu-item" id="liMaster">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-layout"></i>
+                    <div data-i18n="Master">Master</div>
+                </a>
+
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="/Country/Country" class="menu-link">
+                            <div data-i18n="Country">Country</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/State/State" class="menu-link">
+                            <div data-i18n="State">State</div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item">
+                        <a href="/City/City" class="menu-link">
+                            <div data-i18n="City">City</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/BloodGroup/BloodGroup" class="menu-link">
+                            <div data-i18n="Blood Group">Blood Group</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/Academic/Academic" class="menu-link">
+                            <div data-i18n="Academic">Academic</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/Department/Department" class="menu-link">
+                            <div data-i18n="Department">Department</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/JobTitle/JobTitle" class="menu-link">
+                            <div data-i18n="Job Title">Job Title</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/Bank/Bank" class="menu-link">
+                            <div data-i18n="Bank">Bank</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/IDType/IDType" class="menu-link">
+                            <div data-i18n="ID Type">ID Type</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/Band/Band" class="menu-link">
+                            <div data-i18n="Band">Band</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/MaritalStatus/MaritalStatus" class="menu-link">
+                            <div data-i18n="Marital Status">Marital Status</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/Module/Module" class="menu-link">
+                            <div data-i18n="Module">Module</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/Religion/Religion" class="menu-link">
+                            <div data-i18n="Religion">Religion</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/Resource/Resource" class="menu-link">
+                            <div data-i18n="Resource">Resource</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/Role/Role" class="menu-link">
+                            <div data-i18n="Role">Role</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/SalaryComponents/SalaryComponent" class="menu-link">
+                            <div data-i18n="Salary Components">Salary Components</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/Shift/Shift" class="menu-link">
+                            <div data-i18n="Shift">Shift</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/HolidaysList/HolidaysList" class="menu-link">
+                            <div data-i18n="Holidays List">Holidays List</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/LeaveType/LeaveType" class="menu-link">
+                            <div data-i18n="Leave Type">Leave Type</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/WorkLocation/WorkLocation" class="menu-link">
+                            <div data-i18n="Work Location">Work Location</div>
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+
+
+
+           <li class="menu-header small text-uppercase" id="liClientMgr">
+                <span class="menu-header-text">Client Management</span>
+            </li>
+            <li class="menu-item" id="liClient">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-user-pin"></i>
+                    <div data-i18n="Client">Client</div>
+                </a>
+                <ul class="menu-sub">
+
+                    <li class="menu-item">
+                        <a href="/ClientManagement/Dashboard" class="menu-link">
+                            <div data-i18n="List">Dashboard</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/ClientManagement/SettingView" class="menu-link">
+                            <div data-i18n="Setting">Setting</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/ClientManagement/Add" class="menu-link">
+                            <div data-i18n="Add">Add</div>
+                        </a>
+                </ul>
+            </li>
+            @*
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">Employee Management</span>
+            </li>
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-user"></i>
+                    <div data-i18n="Employee">Employee</div>
+                </a>
+                <ul class="menu-sub">
+
+                    <li class="menu-item">
+                        <a href="/Employee/Employee" class="menu-link">
+                            <div data-i18n="Dashboard">Dashboard</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/Employee/EmployeeDetail" class="menu-link">
+                            <div data-i18n="Add">Add</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="/Employee/E_Joinee" class="menu-link">
+                            <div data-i18n="E Joinee">E Joinee</div>
+                        </a>
+                    </li>
+                    @* <li class="menu-item">
+            <a href="/EmployeeManagement/E_Employee" class="menu-link">
+            <div data-i18n="E Employee">E Employee</div>
+            </a>
+            </li>*@
+            @*</ul>
+            </li>
+
+
+
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-calendar"></i>
+                    <div data-i18n="Attendance">Attendance</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Apply">Apply</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="List">List</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Office Time">Office Time</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-time"></i>
+                    <div data-i18n="Shift">Shift</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Add">Add</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="List">List</div>
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-calendar-event"></i>
+                    <div data-i18n="Leave">Leave</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Apply">Apply</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="List">List</div>
+                        </a>
+                    </li>
+
+                </ul>
+            </li>*@
+
+
+            <li class="menu-item" id="liPerformance">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-check-shield"></i>
+                    <div data-i18n="Performance">Performance</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Goals">goals</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Appraisal">appraisals</div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Feedback">feedback</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Achievements">achievements</div>
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+
+
+            <li class="menu-item" id="liBenefits">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-gift"></i>
+                    <div data-i18n="Benefits">Benefits</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Payroll">payroll</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Compensation ">compensation </div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Administration">administration</div>
+                        </a>
+                    </li>
+
+
+                </ul>
+            </li>
+
+            <li class="menu-item" id="liRecruitment">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-male-female"></i>
+                    <div data-i18n="Recruitment">Recruitment</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Job openings">job openings</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Applications">applications </div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Scheduling Interview">scheduling </div>
+                        </a>
+                    </li>
+
+
+                </ul>
+            </li>
+
+            <li class="menu-item" id="liLearning">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-book-content"></i>
+                    <div data-i18n="Learning ">Learning </div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Courses">courses</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Skill Assessments">skill assessments </div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Training">training  </div>
+                        </a>
+                    </li>
+
+
+                </ul>
+            </li>
+
+            <li class="menu-item" id="liRewards">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-award"></i>
+                    <div data-i18n="Rewards ">Rewards </div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Rewards ">rewards </div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Recognition">Recognition</div>
+                        </a>
+                    </li>
+
+
+
+                </ul>
+            </li>
+
+            <li class="menu-item" id="liCompliance">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-bar-chart-square"></i>
+                    <div data-i18n="Compliance">Compliance </div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Compliance ">Compliance  </div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Legal">Legal</div>
+                        </a>
+                    </li>
+
+
+
+                </ul>
+            </li>
+
+            <li class="menu-item" id="liRoles">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-check-shield"></i>
+                    <div data-i18n="Roles & Permissions">Roles & Permissions</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="/Roles/RoleMenuMapping" class="menu-link">
+                            <div data-i18n="Roles">Roles</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Permission">Permission</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">Reports and Analytics</span>
+            </li>
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bxs-report"></i>
+                    <div data-i18n="Report">Report</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Report 1">Report 1</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Report 2">Report 2</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu-item">
+                <a href="#l" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-map-alt"></i>
+                    <div data-i18n="Analytics">Analytics </div>
+                </a>
+            </li>
+
+
+
+
+            <!-- Charts & Maps -->
+            <!-- Misc -->
+            <li class="menu-header small text-uppercase"><span class="menu-header-text">Misc</span></li>
+            <li class="menu-item">
+                <a href="#" target="_blank" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-support"></i>
+                    <div data-i18n="Support">Support</div>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#"
+                   target="_blank"
+                   class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-file"></i>
+                    <div data-i18n="Documentation">Documentation</div>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#"
+                   target="_blank"
+                   class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-spreadsheet"></i>
+                    <div data-i18n="Policies">Policies</div>
+                </a>
+            </li>
+        </ul>
+    }
+}
+
+else if (Model.MenuStyle == "V")
+{
+    <ul class="menu-inner py-1">
+        <!-- Dashboards -->
+        <li class="menu-item active open">
+            <a href="~/Admin/index" class="menu-link">
+                <div data-i18n="Dashboard">Dashboard</div>
+            </a>
+        </li>
+
+        <!-- Layouts -->
+        @* <li class="menu-item" id="liLayout">
+    <a href="javascript:void(0);" class="menu-link menu-toggle">
+    <i class="menu-icon tf-icons bx bx-layout"></i>
+    <div data-i18n="Layouts">Layouts</div>
+    </a>
+    <ul class="menu-sub">
+    <li class="menu-item" style="display:none">
+    <a href="layouts-collapsed-menu.html" class="menu-link">
+    <div data-i18n="Collapsed menu">Collapsed menu</div>
+    </a>
+    </li>
+    <li class="menu-item" style="display:none">
+    <a href="layouts-content-navbar.html" class="menu-link">
+    <div data-i18n="Content navbar">Content navbar</div>
+    </a>
+    </li>
+    <li class="menu-item" style="display:none">
+    <a href="layouts-content-navbar-with-sidebar.html" class="menu-link">
+    <div data-i18n="Content nav + Sidebar">Content nav + Sidebar</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Admin/ChangeVtH" class="menu-link">
+    <div data-i18n="Horizontal">Horizontal</div>
+    </a>
+    </li>
+    <li class="menu-item" style="display:none">
+    <a href="layouts-without-menu.html" class="menu-link">
+    <div data-i18n="Without menu">Without menu</div>
+    </a>
+    </li>
+    <li class="menu-item" style="display:none">
+    <a href="layouts-without-navbar.html" class="menu-link">
+    <div data-i18n="Without navbar">Without navbar</div>
+    </a>
+    </li>
+    <li class="menu-item" style="display:none">
+    <a href="layouts-fluid.html" class="menu-link">
+    <div data-i18n="Fluid">Fluid</div>
+    </a>
+    </li>
+    <li class="menu-item" style="display:none">
+    <a href="layouts-container.html" class="menu-link">
+    <div data-i18n="Container">Container</div>
+    </a>
+    </li>
+    <li class="menu-item" style="display:none">
+    <a href="layouts-blank.html" class="menu-link">
+    <div data-i18n="Blank">Blank</div>
+    </a>
+    </li>
+    </ul>
+    </li>*@
+        <!-- Master -->
+        @* <li class="menu-item" id="liMaster">
+    <a href="javascript:void(0);" class="menu-link menu-toggle">
+    <i class="menu-icon tf-icons bx bx-layout"></i>
+    <div data-i18n="Master">Master</div>
+    </a>
+
+    <ul class="menu-sub">
+    <li class="menu-item">
+    <a href="/Country/Country" class="menu-link">
+    <div data-i18n="Country">Country</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/State/State" class="menu-link">
+    <div data-i18n="State">State</div>
+    </a>
+    </li>
+
+    <li class="menu-item">
+    <a href="/City/City" class="menu-link">
+    <div data-i18n="City">City</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/BloodGroup/BloodGroup" class="menu-link">
+    <div data-i18n="Blood Group">Blood Group</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Academic/Academic" class="menu-link">
+    <div data-i18n="Academic">Academic</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Department/Department" class="menu-link">
+    <div data-i18n="Department">Department</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/JobTitle/JobTitle" class="menu-link">
+    <div data-i18n="Job Title">Job Title</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Bank/Bank" class="menu-link">
+    <div data-i18n="Bank">Bank</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/IDType/IDType" class="menu-link">
+    <div data-i18n="ID Type">ID Type</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Band/Band" class="menu-link">
+    <div data-i18n="Band">Band</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/MaritalStatus/MaritalStatus" class="menu-link">
+    <div data-i18n="Marital Status">Marital Status</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Module/Module" class="menu-link">
+    <div data-i18n="Module">Module</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Religion/Religion" class="menu-link">
+    <div data-i18n="Religion">Religion</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Resource/Resource" class="menu-link">
+    <div data-i18n="Resource">Resource</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Role/Role" class="menu-link">
+    <div data-i18n="Role">Role</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/SalaryComponents/SalaryComponent" class="menu-link">
+    <div data-i18n="Salary Components">Salary Components</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Shift/Shift" class="menu-link">
+    <div data-i18n="Shift">Shift</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/HolidaysList/HolidaysList" class="menu-link">
+    <div data-i18n="Holidays List">Holidays List</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/LeaveType/LeaveType" class="menu-link">
+    <div data-i18n="Leave Type">Leave Type</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/WorkLocation/WorkLocation" class="menu-link">
+    <div data-i18n="Work Location">Work Location</div>
+    </a>
+    </li>
+
+    </ul>
+    </li>*@
+
+        @{
+            if (Model.ModuleIds.Split(",").ToArray().Contains("12"))
+            {
+                <li class="menu-header small text-uppercase" id="liClientMgr">
+                    <span class="menu-header-text">Client Management</span>
+                </li>
+                <li class="menu-item" id="liClient">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons bx bx-user-pin"></i>
+                        <div data-i18n="Client">Client</div>
+                    </a>
+                    <ul class="menu-sub">
+                        @*</li>*@
+                        <li class="menu-item">
+                            <a href="/ClientManagement/Dashboard" class="menu-link">
+                                <div data-i18n="List">Dashboard</div>
+                            </a>
+                        </li>
+
+                        <li class="menu-item">
+                            <a href="/ClientManagement/Add" class="menu-link">
+                                <div data-i18n="Add">Add</div>
+                            </a>
+                    </ul>
+                </li>
+            }
+        }
+
+
+
+
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Employee Management</span>
+        </li>
+        <li class="menu-item">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-user"></i>
+                <div data-i18n="Employee">Employee</div>
+            </a>
+            <ul class="menu-sub">
+
+                <li class="menu-item">
+                    <a href="/Employee/Employee" class="menu-link">
+                        <div data-i18n="Dashboard">Dashboard</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/Employee/EmployeeDetail" class="menu-link">
+                        <div data-i18n="Add">Add</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/Employee/E_Joinee" class="menu-link">
+                        <div data-i18n="E Joinee">E Joinee</div>
+                    </a>
+                </li>
+                @*<li class="menu-item">
+            <a href="/EmployeeManagement/E_Employee" class="menu-link">
+            <div data-i18n="E Employee">E Employee</div>
+            </a>
+            </li>*@
+            </ul>
+        </li>
+
+
+
+        <li class="menu-item">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-calendar"></i>
+                <div data-i18n="Attendance">Attendance</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <div data-i18n="Apply">Apply</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <div data-i18n="List">List</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <div data-i18n="Office Time">Office Time</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="menu-item">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-time"></i>
+                <div data-i18n="Shift">Shift</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <div data-i18n="Add">Add</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <div data-i18n="List">List</div>
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+        <li class="menu-item">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-calendar-event"></i>
+                <div data-i18n="Leave">Leave</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <div data-i18n="Apply">Apply</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <div data-i18n="List">List</div>
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+
+        @if (Model.ModuleIds.Split(",").Contains("15"))
+        {
+            <li class="menu-item" id="liPerformance">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-check-shield"></i>
+                    <div data-i18n="Performance">Performance</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Goals">goals</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Appraisal">appraisals</div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Feedback">feedback</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Achievements">achievements</div>
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+        }
+
+        @if (Model.ModuleIds.Split(",").Contains("16"))
+        {
+            <li class="menu-item" id="liBenefits">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-gift"></i>
+                    <div data-i18n="Benefits">Benefits</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Payroll">payroll</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Compensation ">compensation </div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Administration">administration</div>
+                        </a>
+                    </li>
+
+
+                </ul>
+            </li>
+        }
+        @if (Model.ModuleIds.Split(",").Contains("17"))
+        {
+            <li class="menu-item" id="liRecruitment">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-male-female"></i>
+                    <div data-i18n="Recruitment">Recruitment</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Job openings">job openings</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Applications">applications </div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Scheduling Interview">scheduling </div>
+                        </a>
+                    </li>
+
+
+                </ul>
+            </li>
+        }
+        @if (Model.ModuleIds.Split(",").Contains("18"))
+        {
+            <li class="menu-item" id="liLearning">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-book-content"></i>
+                    <div data-i18n="Learning ">Learning </div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Courses">courses</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Skill Assessments">skill assessments </div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Training">training  </div>
+                        </a>
+                    </li>
+
+
+                </ul>
+            </li>
+        }
+        @if (Model.ModuleIds.Split(",").Contains("19"))
+        {
+            <li class="menu-item" id="liRewards">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-award"></i>
+                    <div data-i18n="Rewards ">Rewards </div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Rewards ">rewards </div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Recognition">Recognition</div>
+                        </a>
+                    </li>
+
+
+
+                </ul>
+            </li>
+        }
+
+        @if (Model.ModuleIds.Split(",").Contains("20"))
+        {
+            <li class="menu-item" id="liCompliance">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-bar-chart-square"></i>
+                    <div data-i18n="Compliance">Compliance </div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Compliance ">Compliance  </div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Legal">Legal</div>
+                        </a>
+                    </li>
+
+
+
+                </ul>
+            </li>
+        }
+
+        @if (Model.ModuleIds.Split(",").Contains("21"))
+        {
+            <li class="menu-item" id="liRoles">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-check-shield"></i>
+                    <div data-i18n="Roles & Permissions">Roles & Permissions</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="/Roles/RoleMenuMapping" class="menu-link">
+                            <div data-i18n="Roles">Roles</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Permission">Permission</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        }
+
+        @if (Model.ModuleIds.Split(",").Contains("22"))
+        {
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">Reports and Analytics</span>
+            </li>
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bxs-report"></i>
+                    <div data-i18n="Report">Report</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Report 1">Report 1</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Report 2">Report 2</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu-item">
+                <a href="#l" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-map-alt"></i>
+                    <div data-i18n="Analytics">Analytics </div>
+                </a>
+            </li>
+        }
+
+
+
+        <!-- Charts & Maps -->
+        <!-- Misc -->
+        <li class="menu-header small text-uppercase"><span class="menu-header-text">Misc</span></li>
+        <li class="menu-item">
+            <a href="@Model.SupportLink" target="_blank" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-support"></i>
+                <div data-i18n="Support">Support</div>
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="@Model.DocumentLink"
+               target="_blank"
+               class="menu-link">
+                <i class="menu-icon tf-icons bx bx-file"></i>
+                <div data-i18n="Documentation">Documentation</div>
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="@Model.PoliciesLink"
+               target="_blank"
+               class="menu-link">
+                <i class="menu-icon tf-icons bx bx-spreadsheet"></i>
+                <div data-i18n="Policies">Policies</div>
+            </a>
+        </li>
+    </ul>
+
+}
+
+
+else
+{
+    <ul class="menu-inner">
+        <!-- Dashboards -->
+        <li class="menu-item active">
+            <a href="~/Admin/index" class="menu-link">
+                @* <i class="menu-icon tf-icons bx bx-home-circle"></i>*@
+                <div data-i18n="Dashboard">Dashboard</div>
+            </a>
+        </li>
+
+
+        <!-- Layouts -->
+        @*   <li class="menu-item">
+    <a href="javascript:void(0)" class="menu-link menu-toggle">
+    <i class="menu-icon tf-icons bx bx-layout"></i>
+    <div data-i18n="Layout">Layout</div>
+    </a>
+
+    <ul class="menu-sub">
+    <li class="menu-item" style="display:none">
+    <a href="layouts-without-menu.html" class="menu-link">
+    <i class="menu-icon tf-icons bx bx-menu"></i>
+    <div data-i18n="Without menu">Without menu</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Admin/ChangeHtV" class="menu-link">
+    <i class="menu-icon tf-icons bx bx-vertical-center"></i>
+    <div data-i18n="Vertical">Vertical</div>
+    </a>
+    </li>
+    <li class="menu-item" style="display:none">
+    <a href="layouts-fluid.html" class="menu-link">
+    <i class="menu-icon tf-icons bx bx-fullscreen"></i>
+    <div data-i18n="Fluid">Fluid</div>
+    </a>
+    </li>
+    <li class="menu-item" style="display:none">
+    <a href="layouts-container.html" class="menu-link">
+    <i class="menu-icon tf-icons bx bx-exit-fullscreen"></i>
+    <div data-i18n="Container">Container</div>
+    </a>
+    </li>
+    <li class="menu-item" style="display:none">
+    <a href="layouts-blank.html" class="menu-link">
+    <i class="menu-icon tf-icons bx bx-square-rounded"></i>
+    <div data-i18n="Blank">Blank</div>
+    </a>
+    </li>
+    </ul>
+    </li>*@
+
+        <!-- Master -->
+        @* <li class="menu-item">
+    <a href="javascript:void(0)" class="menu-link menu-toggle">
+    <i class="menu-icon tf-icons bx bx-layout"></i>
+    <div data-i18n="Masters">Masters</div>
+    </a>
+
+    <ul class="menu-sub">
+    <li class="menu-item">
+    <a href="/Country/Country" class="menu-link">
+
+    <div data-i18n="Country">Country</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/State/State" class="menu-link">
+
+    <div data-i18n="State">State</div>
+    </a>
+    </li>
+
+    <li class="menu-item">
+    <a href="/City/City" class="menu-link">
+
+    <div data-i18n="City">City</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/BloodGroup/BloodGroup" class="menu-link">
+    <div data-i18n="Blood Group">Blood Group</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Academic/Academic" class="menu-link">
+    <div data-i18n="Academic">Academic</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Department/Department" class="menu-link">
+    <div data-i18n="Department">Department</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/JobTitle/JobTitle" class="menu-link">
+    <div data-i18n="Job Title">Job Title</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Bank/Bank" class="menu-link">
+    <div data-i18n="Bank">Bank</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/IDType/IDType" class="menu-link">
+    <div data-i18n="ID Type">ID Type</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Band/Band" class="menu-link">
+    <div data-i18n="Band">Band</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/MaritalStatus/MaritalStatus" class="menu-link">
+    <div data-i18n="Marital Status">Marital Status</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Module/Module" class="menu-link">
+    <div data-i18n="Module">Module</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Religion/Religion" class="menu-link">
+    <div data-i18n="Religion">Religion</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Resource/Resource" class="menu-link">
+    <div data-i18n="Resource">Resource</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Role/Role" class="menu-link">
+    <div data-i18n="Role">Role</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/SalaryComponents/SalaryComponent" class="menu-link">
+    <div data-i18n="Salary Components">Salary Components</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/Shift/Shift" class="menu-link">
+    <div data-i18n="Shift">Shift</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/HolidaysList/HolidaysList" class="menu-link">
+    <div data-i18n="Holidays List">Holidays List</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/LeaveType/LeaveType" class="menu-link">
+    <div data-i18n="Leave Type">Leave Type</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/WorkLocation/WorkLocation" class="menu-link">
+    <div data-i18n="Work Location">Work Location</div>
+    </a>
+    </li>
+    </ul>
+    </li> *@
+        <!-- Client Management -->
+        @* <li class="menu-item">
+    <a href="javascript:void(0)" class="menu-link menu-toggle">
+    <i class="menu-icon tf-icons bx bx-user-pin"></i>
+    <div data-i18n="Client Management">Client Management</div>
+    </a>
+    <ul class="menu-sub">
+
+    <li class="menu-item">
+    <a href="/ClientManagement/Dashboard" class="menu-link">
+
+    <div data-i18n="Dashboard">Dashboard</div>
+    </a>
+    </li>
+    <li class="menu-item">
+    <a href="/ClientManagement/Add" class="menu-link">
+
+    <div data-i18n="Add">Add</div>
+    </a>
+    </li>
+    </ul>
+    </li>*@
+        <!-- Employee Management -->
+        <li class="menu-item">
+            <a href="javascript:void(0)" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-user"></i>
+                <div data-i18n="Employee Management">Employee Management</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons bx bx-user"></i>
+                        <div data-i18n="Employee">Employee</div>
+                    </a>
+                    <ul class="menu-sub">
+                        <li class="menu-item">
+                            <a href="/Employee/Employee" class="menu-link">
+                                <div data-i18n="Dashboard">Dashboard</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="/Employee/EmployeeDetail" class="menu-link">
+                                <div data-i18n="Add">Add</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="/Employee/E_Joinee" class="menu-link">
+                                <div data-i18n="E Joinee">E Joinee</div>
+                            </a>
+                        </li>
+                        @*<li class="menu-item">
+                    <a href="/EmployeeManagement/E_Employee" class="menu-link">
+                    <div data-i18n="E Employee">E Employee</div>
+                    </a>
+                    </li>*@
+
+                    </ul>
+                </li>
+
+
+                <li class="menu-item">
+                    <a href="app-kanban.html" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-timer"></i>
+                        <div data-i18n="Office Time">Office Time</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons bx bx-calendar"></i>
+                        <div data-i18n="Attendance">Attendance</div>
+                    </a>
+                    <ul class="menu-sub">
+                        <li class="menu-item">
+                            <a href="#" class="menu-link">
+                                <div data-i18n="Apply">Apply</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link">
+                                <div data-i18n="List">List</div>
+                            </a>
+
+                        </li>
+
+                    </ul>
+                </li>
+                <li class="menu-item">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons bx bx-time"></i>
+                        <div data-i18n="Shift">Shift</div>
+                    </a>
+                    <ul class="menu-sub">
+                        <li class="menu-item">
+                            <a href="#" class="menu-link">
+                                <div data-i18n="Add">Add</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link">
+                                <div data-i18n="List">List</div>
+                            </a>
+
+                        </li>
+
+                    </ul>
+                </li>
+                <li class="menu-item">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons bx bx-calendar-event"></i>
+                        <div data-i18n="Leave">Leave</div>
+                    </a>
+                    <ul class="menu-sub">
+                        <li class="menu-item">
+                            <a href="#" class="menu-link">
+                                <div data-i18n="Apply">Apply</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="#" class="menu-link">
+                                <div data-i18n="List">List</div>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+
+                <!-- Pages -->
+                @if (Model.ModuleIds.Split(",").Contains("16"))
+                {
+                    <li class="menu-item">
+                        <a href="javascript:void(0)" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-gift"></i>
+                            <div data-i18n="Benefits">Benefits</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Compensation ">compensation </div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Administration">administration</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+                <!-- Components -->
+                <!-- Cards -->
+                @if (Model.ModuleIds.Split(",").Contains("15"))
+                {
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-collection"></i>
+                            <div data-i18n="Performance">Performance</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="cards-basic.html" class="menu-link">
+                                    <div data-i18n="Goals">goals</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="cards-advance.html" class="menu-link">
+                                    <div data-i18n="Appraisal">appraisals</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="cards-statistics.html" class="menu-link">
+                                    <div data-i18n="Feedback">feedback</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="cards-analytics.html" class="menu-link">
+                                    <div data-i18n="Achievements">achievements</div>
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </li>
+                }
+                @if (Model.ModuleIds.Split(",").Contains("21"))
+                {
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-check-shield"></i>
+                            <div data-i18n="Roles & Permissions">Roles & Permission</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="/Roles/RoleMenuMapping" class="menu-link">
+                                    <div data-i18n="Roles">Roles</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Permission">Permission</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </li>
+
+
+
+
+        <!-- Forms -->
+        @if (Model.ModuleIds.Split(",").Contains("17"))
+        {
+            <li class="menu-item">
+                <a href="javascript:void(0)" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-male-female"></i>
+                    <div data-i18n="Recruitment">Recruitment </div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-male-female"></i>
+                            <div data-i18n="Recruitment">Recruitment</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Job openings">job openings</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Applications">applications </div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Scheduling Interview">scheduling </div>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+
+                </ul>
+            </li>
+        }
+        @if (Model.ModuleIds.Split(",").Contains("18"))
+        {
+            <!-- Tables -->
+            <li class="menu-item">
+                <a href="javascript:void(0)" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-book-content"></i>
+                    <div data-i18n="Learning">Learning </div>
+                </a>
+                <ul class="menu-sub">
+                    <!-- Tables -->
+
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-book-content"></i>
+                            <div data-i18n="Learning">Learning</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Courses">courses</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Skill Assessments">skill assessments </div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Training">training  </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        }
+        @if (Model.ModuleIds.Split(",").Contains("20"))
+        {
+            <!-- Charts & Maps -->
+            <li class="menu-item">
+                <a href="javascript:void(0)" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-bar-chart-square"></i>
+                    <div data-i18n="Compliance">Compliance</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-bar-chart-square"></i>
+                            <div data-i18n="Compliance">Compliance</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="charts-apex.html" class="menu-link">
+                                    <div data-i18n="Compliance ">Compliance  </div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="charts-chartjs.html" class="menu-link">
+                                    <div data-i18n="Legal">Legal</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </li>
+        }
+
+        @if (Model.ModuleIds.Split(",").Contains("19"))
+        {
+            <!-- Charts & Maps -->
+            <li class="menu-item">
+                <a href="javascript:void(0)" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-award"></i>
+                    <div data-i18n="Rewards">Rewards </div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-award"></i>
+                            <div data-i18n="Rewards">Rewards</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Rewards ">rewards </div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Recognition">Recognition</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </li>
+        }
+
+        @if (Model.ModuleIds.Split(",").Contains("22"))
+        {
+            <!-- Charts & Maps -->
+            <li class="menu-item">
+                <a href="javascript:void(0)" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bxs-report"></i>
+                    <div data-i18n="Reports  and Analytics">Reports  and Analytics </div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bxs-report"></i>
+                            <div data-i18n="Report">Report</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Report 1">Report 1</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Report 2">Report 2</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </li>
+        }
+
+
+
+        <!-- Misc -->
+        <li class="menu-item">
+            <a href="javascript:void(0)" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-shape-circle"></i>
+                <div data-i18n="Misc">Misc</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="@Model.SupportLink" target="_blank" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-support"></i>
+                        <div data-i18n="Support">Support</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="@Model.DocumentLink"
+                       target="_blank"
+                       class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-file"></i>
+                        <div data-i18n="Documentation">Documentation</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="@Model.PoliciesLink"
+                       target="_blank"
+                       class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-spreadsheet"></i>
+                        <div data-i18n="Policies">Policies</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+}

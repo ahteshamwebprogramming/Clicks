@@ -1,0 +1,202 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.LanguageUnitMasterDTO
+@{
+    ViewData["Title"] = "LanguageUnitMaster";
+    Layout = "~/Views/Shared/_LayoutVertical.cshtml";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Company Structure /</span> Language Master</h4>
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <form id="showAlert" class="row g-3" onsubmit="return false">
+                    <div class="modal-body">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center mb-4">
+                        </div>
+
+                        <div class="col-12 text-center" id="successDiv">
+                            <p id="errorPara" class="error" style="color:red"></p>
+                        </div>
+                        <div class="col-12 text-center" id="errorDiv">
+                            <p id="successPara" class="error" style="color:black"></p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 text-center">
+                        @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                        <button type="reset" id="btnClose"
+                                class="btn btn-label-secondary btn-reset mt-3"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                            Close
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Language/s From List" onclick="javascript:window.location.href='/Language/AssignUnitLanguage/'" style="float:right;margin-right: 5px;" />
+            <button class="btn btn-secondary create-new btn-primary" tabindex="0" aria-controls="DataTables_Table_0" type="button" onclick="AddView()" style="float:right;margin-right: 5px;">
+                <span>
+                   @*  <i class="bx bx-plus me-sm-1"></i> *@
+                    <span class="d-none d-sm-inline-block">Add Language</span>
+                </span>
+            </button>
+            <!--input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" /-->
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+
+                            <th>Language</th>
+                            @*<th>Status</th>*@
+                            <th class="text-center" style="width:100px">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.LanguageUnitMasterList != null)
+                            @foreach (var item in Model.LanguageUnitMasterList)
+                            {
+                                <tr>
+
+                                    <td>@item.Language</td>
+                                    @*<th>@(item.IsActive == true ? "Active" : "Inactive")</th>*@
+
+                                    <td class="text-center">
+                                        <a class="dropdown-item d-inline" href="/Language/GetUnitLanguageInfo/@item.EncryptedId"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="#" onclick="DeleteRecord('@item.Language','@item.EncryptedId')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                    @* <th>
+                            <a class="btn btn-primary" href="/Bank/GetBankInfo/@item.EncryptedId">Edit</a>
+                            <button class="btn btn-primary" onclick="DeleteRecord('@item.BankName','@item.EncryptedId')"> Delete</button>
+                            </th> *@
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/Language/LanguageUnitMaster/'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/Language/SaveUnitLanguage">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Language</label>
+                        <input type="text" id="Language" name="Language" required maxlength="50" value="@Model.Language" class="form-control" placeholder="Language">
+                        @*  <span asp-validation-for="BankName" class="text-danger"></span> *@
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" id="LanguageId" name="LanguageId" value="@Model.LanguageId">
+                    <input type="hidden" id="LanguageParentId" name="LanguageParentId" value="@Model.LanguageParentId">
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1" onclick="return BlockedUI();">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/Language/LanguageUnitMaster/'">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts {
+
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+            if (@Model.LanguageId != 0 || @Model.HttpStatusCode!= 200) {
+                $("#List").hide();
+                $("#Add").show();
+            }
+            else {
+                ClearInputs();
+            }
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                if ("@Model.HttpStatusCode" == 200) {
+                    $successalert("", "@Model.DisplayMessage");
+                }
+                else {
+                    $erroralert("Transaction Failed!", "@Model.DisplayMessage");
+                }
+            }
+
+        });
+        function ClearInputs() {
+            $("#Language").val("");
+
+        }
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+
+        function DeleteRecord(langName, langId) {
+            // event.preventDefault();
+            url = $(this).attr('href');
+            history.pushState({ key: url }, '', url);
+            // if (confirm("Sure want to delete Language '" + langName + "'?")) {
+            //     window.location.href = "/Language/DeleteUnitLanguage/" + langId;
+            // }
+            Swal.fire({ title: 'Are you sure?', text: "This will get deleted permanently!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, delete it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    window.location.href = "/Language/DeleteUnitLanguage/" + langId;
+                }
+            });
+            return false;
+        }
+
+
+        function BlockedUI() {
+
+            BlockUI();
+            if (jQuery("#Language").val() == '') {
+                $erroralert("Validation", "Please insert the Language Name");
+                //  ShowServerMessage("Please insert the Bank Name");
+                UnblockUI();
+                return false;
+            }
+
+
+        }
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                // if (sMsg.toUpperCase() == "SUCCESS") {
+                // sMsg = "Earnnig component created/updated successfully";
+                jQuery("#successDiv").show();
+                jQuery("#successPara").html(sMsg);
+
+                // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                //  }
+                //else {
+                //    jQuery("#errorDiv").show();
+                //    jQuery("#errorPara").html(sMsg);
+                //}
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+    </script>
+}
+

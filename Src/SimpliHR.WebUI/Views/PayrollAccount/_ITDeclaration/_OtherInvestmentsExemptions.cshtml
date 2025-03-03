@@ -1,0 +1,77 @@
+﻿@model SimpliHR.Infrastructure.Models.ITDeclaration.ItDeclarationOtherInvestmentExemptionDTO
+
+
+<input type="hidden" value="@(Model==null ? 0 : Model.ItDeclarationOtherInvestmentExemptionId==null ? 0 :  Model.ItDeclarationOtherInvestmentExemptionId)" name="ItDeclarationOtherInvestmentExemptionId" />
+
+
+<div class="col-md-8 mb-3">
+    <select class="form-select" data-style="btn-default" name="OtherInvestmentExemptionId">
+        <option selected value="0">Select an Investment</option>
+        @{
+            var a = Model.otherInvestmentExemptionDTOs.Where(x => x.IsActive == true).Select(x => x.Optgroup).Distinct();
+            foreach (var item in a)
+            {
+                <optgroup label="@item" style="font-weight:800">
+
+                    @{
+                        var b = Model.otherInvestmentExemptionDTOs.Where(x => x.Optgroup == item && x.IsActive == true);
+                        foreach (var item1 in b)
+                        {
+                            if (Model != null && Model.OtherInvestmentExemptionId == item1.OtherInvestmentExemptionId)
+                            {
+                                <option selected value="@item1.OtherInvestmentExemptionId">@item1.OtherInvestmentExemption1</option>
+                            }
+                            else
+                            {
+                                <option value="@item1.OtherInvestmentExemptionId">@item1.OtherInvestmentExemption1</option>
+                            }
+                            
+                        }
+                    }
+                </optgroup>
+            }
+        }
+        @*  <optgroup label="80CCD(1B)" style="font-weight:800">
+        <option value="1">Additional Excemption on Voluntary NPS</option>
+        </optgroup>
+        <optgroup label="80DD" style="font-weight:800">
+        <option value="1">Treatment of Dependent with Disablitiy</option>
+        <option value="1">Treatment of Dependent with Severe Disablitiy</option>
+        </optgroup>
+        <optgroup label="80DDB" style="font-weight:800">
+        <option value="1">Medical Expenditure for Self or Dependent</option>
+        <option value="1">Medical Expenditure for Self or Dependent for Senior Citizen</option>
+        <option value="1">Medical Expenditure for Self or Dependent for Very Senior Citizen</option>
+        </optgroup>
+        <optgroup label="80E" style="font-weight:800">
+        <option value="1">Interest Paid On Education Loan</option>
+        </optgroup>
+        <optgroup label="80EEA" style="font-weight:800">
+        <option value="1">Additional Interest on Housing Loan borrowed between 01-April-2019 to 31-March-2022</option>
+        </optgroup>
+        <optgroup label="80EEB" style="font-weight:800">
+        <option value="1">Interest on Elcetric Vehicle Loan borrowed between 01-April-2019 to 31-March-2023</option>
+        </optgroup>
+        <optgroup label="80G" style="font-weight:800">
+        <option value="1">Donation eligible for 100% Exemption</option>
+        <option value="1">Donation eligible for 50% Exemption</option>
+        </optgroup>
+        <optgroup label="80TTA" style="font-weight:800">
+        <option value="1">Interest From Savings Account</option>
+        </optgroup>
+        <optgroup label="80U" style="font-weight:800">
+        <option value="1">Permanent Physical Disability(Self)</option>
+        <option value="1">Permanent Physical Severe Disability(Self)</option>
+        </optgroup>*@
+    </select>
+</div>
+<div class="col-md-3 mb-3">
+    <div class="input-group">
+        <span class="input-group-text" id="basic-addon11">₹</span>
+        <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="" name="Value" value="@(Model==null ? "" : Model.Value)">
+    </div>
+</div>
+<div class="col-md-1 mb-3">
+    <div class="float-end"><i class="fa-solid fa-xmark" onclick="removeOtherInvestmentsForm(this,@(Model==null ? 0 : Model.ItDeclarationOtherInvestmentExemptionId==null ? 0 :  Model.ItDeclarationOtherInvestmentExemptionId))"></i></div>
+    <div class="clearfix"></div>
+</div>

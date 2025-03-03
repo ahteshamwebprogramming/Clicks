@@ -1,0 +1,109 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.SalaryProcessInputs
+@{
+    Layout = null;
+}
+@using System.Data
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>TDS Sheet</title>
+</head>
+<body>
+    <div style="margin: auto; text-align:center;">
+        <form method="post" asp-action="ExportTaxSheet" asp-controller="PayrollSalary">
+            <input type="hidden" name="TaxSheet" /> <br />
+            <input type="submit" id="btnSubmit" style="background-color: #2ea44f;border: 1px solid rgba(27, 31, 35, .15); color: #fff;box-shadow: rgba(27, 31, 35, .1) 0 1px 0; font-size: 14px; padding: 6px 16px;line-height: 20px;" value="Download" />
+        </form>
+
+        <div id="DvGrid" style="align-content:center;">
+            <table cellspacing="2" cellpadding="10" align="center" style="width: 50%;">
+
+                <tr>
+                    @if (Model.objDataSet.Tables[2].Rows.Count > 0)
+                    {
+                        <td colspan="4"><div style="padding: 20px 0;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f"> (Employee Taxsheet Details for the month of @Model.objDataSet.Tables[2].Rows[0]["Month"].ToString(), @Model.objDataSet.Tables[2].Rows[0]["Year"].ToString())</div></td>
+                    }
+                </tr>
+            </table><br />
+            <table cellspacing="2" cellpadding="10" border="1" align="center" style="width: 50%;">
+
+                @if (Model.objDataSet.Tables[1].Rows.Count > 0)
+                {
+                    string formatted = Convert.ToDateTime(@Model.objDataSet.Tables[1].Rows[0]["DOJ"]).ToString("dd-MM-yyyy");
+                    <tr>
+                        @*  <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"></td> *@
+                        <td colspan="2" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Emp.Code</strong></td>
+                        <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@Model.objDataSet.Tables[1].Rows[0]["EmployeeCode"]</td>
+                        <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Designation</strong></td>
+                        <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@Model.objDataSet.Tables[1].Rows[0]["JobTitle"]</td>
+                    </tr>
+                    <tr>
+                        @*  <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"></td> *@
+                        <td colspan="2" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Emp.Name</strong></td>
+                        <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@Model.objDataSet.Tables[1].Rows[0]["employeename"]</td>
+                        <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Department</strong></td>
+                        <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@Model.objDataSet.Tables[1].Rows[0]["DepartmentName"]</td>
+                    </tr>
+                    <tr>
+                        @*    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"></td> *@
+                        <td colspan="2" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Location</strong></td>
+                        <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@Model.objDataSet.Tables[1].Rows[0]["CityName"]</td>
+                        <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Date Of Joining</strong></td>
+                        <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@Model.objDataSet.Tables[1].Rows[0]["DOJ"]</td>
+                    </tr>
+                }
+            </table><br />
+            <table cellspacing="2" cellpadding="10" align="center" border="1" style="width: 50%;">
+                <tr>
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong> Sr.No</strong></td>
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Particulars</strong></td>
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Amount</strong></td>
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Actual</strong></td>
+                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Projected</strong></td>
+                </tr>
+                @if (Model.objDataSet.Tables[0].Rows.Count > 0)
+                {
+                    string? Amount, Actual, Projected;
+                    @foreach (DataRow row in Model.objDataSet.Tables[0].Rows)
+                    {
+                        Amount = string.Format("{0:#,#.00}", @row["Amount"]);
+                        Actual = string.Format("{0:#,#.00}", @row["Actual"]);
+                        Projected = string.Format("{0:#,#.00}", @row["Projected"]);
+                        <tr>
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["ID"]</td>
+                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["Particulars"]</td>
+                            <td align="right" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@(Amount.Trim() == ".00" ? "0" : Amount)</td>
+                            <td align="right" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@(Actual.Trim() == ".00" ? "0" : Actual)</td>
+                            <td align="right" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@(Projected.Trim() == ".00" ? "0" : Projected)</td>
+                        </tr>
+                    }
+                }
+
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("input[name='TaxSheet']").val($("#DvGrid").html());
+            // $("#btnSubmit").click(function () {
+            //     $("input[name='GridHtml']").val($("#Grid").html());
+            // });
+
+            // setTimeout(closeMe, 1000);
+            // function closeMe() {
+            //     window.close();
+            // }
+        });
+    </script>
+
+
+
+</body>
+</html>

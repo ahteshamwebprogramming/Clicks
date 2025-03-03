@@ -1,0 +1,279 @@
+@model SimpliHR.Infrastructure.Models.Leave.EmployeeLeaveDetailsDTO
+@{
+    ViewData["Title"] = "Regularize Leave";
+}
+<style>
+    .cont-no {
+        display: inline-block;
+        width: 58px;
+        font-size: 12px;
+    }
+
+    .circleBg {
+        padding: 5px 7px;
+        color: #fff;
+        border-radius: 20px;
+        display: inline-block;
+        width: 30px;
+        margin-bottom: 10px;
+    }
+
+</style>
+<link rel="stylesheet" href="../../assets/vendor/libs/tagify/tagify.css" />
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <!--Location Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Leave /</span> Regularize Leave</h4>
+        <!-- Location  -->
+        <div id="wizard-checkout" class="bs-stepper wizard-icons wizard-icons-example mt-2">
+            <div class="card">
+                <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+                        <h2>SimpliHR2.0</h2>
+                        <div class="modal-content p-3 p-md-5">
+                            <div class="modal-body">
+                                <button type="button" class="btn-close" name="btnPopupClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <div class="text-center mb-4">
+                                </div>
+                                <form id="showAlert" class="row g-3" onsubmit="return false">
+                                    <div class="col-12 text-center" id="successDiv">
+                                        <p id="errorPara" class="error" style="color:red"></p>
+                                    </div>
+                                    <div class="col-12 text-center" id="errorDiv">
+                                        <p id="successPara" class="error" style="color:black"></p>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div id="popupBtnDiv" class="col-12 text-center">
+                                @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                                <button type="reset" name="btnPopupClose"
+                                        class="btn btn-label-secondary btn-reset mt-3"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                    Close
+                                </button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive text-nowrap">
+                        <table class="datatables-ajax table List" >
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" class="form-check-input" onclick="CheckAll(this)">Select</th>
+
+                                    <th>Ticket No</th>
+                                    <th>Employee Name</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Leave Type</th>
+                                    <th>Status</th>
+                                    <th>Created On</th>
+                                    @*  <th>Reason</th>  <td>@item.Remarks</td>*@
+                                    <th>Document</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int iCtr = 1;
+                                    var showReason = false;                                   
+                                    var ctrlId = string.Empty;
+                                    if (Model.EmployeeAppliedList.Count != 0)
+                                    {
+                                        foreach (var item in Model.EmployeeAppliedList)
+                                        {
+                                            if (item.EmployeeId > 0)
+                                            {
+                                                showReason = false;
+                                                ctrlId = $"{item.EmployeeId}_{item.TicketId}";
+
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" id="LeaveId_@iCtr" value="@item.LeaveDetailsId" class="form-check-input"> 
+                                                    </td>
+                                                    <td>@item.TicketId </td>
+                                                    <td>@item.EmployeeName </td>
+                                                    <td>@item.StartDate.Value.ToString("dd-MMM-yy")</td>
+                                                    <td>@item.EndDate.Value.ToString("dd-MMM-yy")</td>
+                                                    <td>@item.LeaveType</td>
+                                                    <td>@((item.LeaveStatus == 0 && item.Lavel1 == 1) ? "Approved By Manager" : (item.LeaveStatus == 0 && item.Lavel2 == 1) ? "Approved" : item.Lavel1 == 0 ? "Pending" : (item.Lavel1 == 1 && item.Lavel2 == 0) ? "Partially Approved" : item.LeaveStatus == 90 ? "Reversal" : item.LeaveStatus == 98 ? "Reversal" : item.LeaveStatus == 99 ? "Rejected" : "")</td>
+                                                    <td>@item.CreatedOn.Value.ToString("dd-MMM-yy")</td>
+
+                                                    <td><a href="javascript:void(0)" onclick="downloadPolicy(@item.LeaveDetailsId)">@item.BillName</a></td>
+                                                    <td>
+                                                        <textarea type="text" id="ActionRemark_@iCtr" required cols="15" rows="2" maxlength="200"></textarea>
+                                                    </td>
+                                                </tr>
+                                            }
+                                            iCtr++;
+                                        }
+                                    }
+                                   
+                                }
+
+                            </tbody>
+                        </table>
+                        <div class="col-12 d-flex justify-content-between mt-3 mb-3">
+                            <button class="btn btn-primary btn-prev" onclick="RegulerizeSelected('A')">
+                               
+                                <span class="align-middle d-sm-inline-block d-none" >Approve</span>
+                            </button>
+
+                            <button class="btn btn-primary" onclick="RegulerizeSelected('R')">
+                                <span class="align-middle d-sm-inline-block d-none me-sm-1">Reject</span>
+                                
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- / Content -->
+</div>
+<!-- Content wrapper -->
+<script src="../../assets/vendor/libs/tagify/tagify.js"></script>
+<script src="../../assets/js/forms-tagify.js"></script>
+<script src="~/customjs/commonfunction.js"></script>
+<script src="~/customjs/common.js"></script>
+
+@section scripts {
+
+    <script type="text/javascript">
+
+        jQuery(document).ready(function () {
+
+            $(".List").dataTable();
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                $successalert("", "@Model.DisplayMessage");
+            }
+           
+          
+        });
+        function downloadPolicy(documentId) {
+            window.open("/Employee/DownloadPolicies?documentId=" + documentId, "_blank");
+        }
+        function CheckAll(regularizeAll) {
+            isAllChecked = regularizeAll.checked;
+            for (iCtr = 1; iCtr <= @Model.EmployeeAppliedList.Count; iCtr = iCtr + 1) {
+                chkBox = jQuery("#LeaveId_" + iCtr)
+                if (chkBox != undefined) {
+                    isChecked = chkBox.is(":checked")
+
+                    if (isAllChecked && !isChecked) {
+                        chkBox.attr('checked', true).change();
+                    }
+                    else if (!isAllChecked && isChecked) {
+                        chkBox.attr('checked', false).change();
+                    }
+                }
+            }
+        }
+
+        function RegulerizeSelected(actionType) {
+            //alert('Regularize')
+            var rowData = {};
+            var formData = {};
+            var isData = false;
+            var dataCollection = new Array();
+            var results = new Array();
+            //var formData = new FormData();
+            var iCtr = 0;
+            var sValidMsg = "";
+           // var isData = true;
+           
+            if (@Model.EmployeeAppliedList.Count> 0) {
+                for (iCtr = 1; iCtr <= @Model.EmployeeAppliedList.Count; iCtr = iCtr + 1) {
+                    isChecked = jQuery("#LeaveId_" + iCtr).is(":checked")
+                    
+                    if (isChecked) {
+
+                      
+                        var sRemark = jQuery("#ActionRemark_" + iCtr).val();
+                        if (sRemark != "")
+                            sRemark = sRemark.replace(",", "{#~#}")
+                        rowData.LeaveIds = rowData.LeaveIds != undefined ? rowData.LeaveIds + "," + jQuery("#LeaveId_" + iCtr).val() : jQuery("#LeaveId_" + iCtr).val();
+                        rowData.ActionRemarks = rowData.ActionRemark = rowData.ActionRemark != undefined ? rowData.ActionRemark + "," + sRemark : sRemark + "";
+                        isData = true;
+                    }
+                }
+            }
+          
+            if (isData) {
+                rowData.ActionType = actionType;
+                dataCollection.push(rowData)
+            }
+            else
+                $erroralert("Transaction Failed!", "Please select leave request to Approve / Reject");
+               //ShowServerMessage("Please select leave request to Approve/Reject")
+
+            if (dataCollection.length > 0) {
+
+                BlockUI();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/Leave/LeaveRegularizeProcessing",
+                    data: { userAction: rowData },
+                    success: function (data) {
+                        //alert(data)
+                        UnblockUI();
+                        // var sMsg = data.displayMessage  //.Trim().Replace("< br > ", "\r\n")
+                        $successalert("Regularize Leave", data);
+                        if (data.toUpperCase() == "SUCCESS") {
+                          jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                        }
+                        // window.location.href = "/EmployeeAttendanceUI/RegularizeAttendance"
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        $erroralert("Transaction Failed!", "errror<br>" + result.responseText);
+                        UnblockUI();
+                    }
+                });
+
+            }
+
+        }
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                if (sMsg.toUpperCase() == "SUCCESS") {
+                    sMsg = "Leave Regularized successfully";
+                    jQuery("#successDiv").show();
+                    jQuery("#successPara").html(sMsg);
+
+                    // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                }
+                else {
+                    jQuery("#errorDiv").show();
+                    jQuery("#errorPara").html(sMsg);
+                }
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+
+        function RediretToView() {
+            window.location.href = '/Leave/RegularizeLeave'
+        }
+
+
+</script>
+}
+    
+
+
+
+

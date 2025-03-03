@@ -1,0 +1,433 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.EmployeesSalaryDetailsDTO
+@{
+    ViewData["Title"] = "SalaryTemplates";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll /</span> Salary Templates</h4>
+    <div class="row">
+        <!-- User Content -->
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <!-- User Pills -->
+
+            <div class="nav-align-top mb-4">
+                <ul class="nav nav-pills mb-3" role="tablist">
+                    <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#epfTab-info" aria-controls="epfTab-info" aria-selected="true">
+                            Download Template (xlsx)
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#esiTab-info" aria-controls="esiTab-info" aria-selected="false">
+                            Upload Template (xlsx)
+                        </button>
+                    </li>
+                    @* <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#professionalTaxTab-info" aria-controls="professionalTaxTab-info" aria-selected="false">
+                                Employee's Salary Structure
+                            </button>
+                        </li>*@
+
+                    <!--li class="nav-item">
+                      <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-top-messages" aria-controls="navs-pills-top-messages" aria-selected="false">
+                        Messages
+                      </button>
+                    </li-->
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="epfTab-info" role="tabpanel">
+                        <div class="info-container" style="width:45%;margin:auto">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12 mb-1">
+                                        <div class="mb-3">
+                                            @*   <div class="col-sm-3">*@
+                                            <label class="form-label d-block" for="address"> Salary Components</label>
+                                            <div class="form-check d-sm-inline-block">
+                                                <input name="IsFixed" onclick="RadioClick(1);"
+                                                       class="form-check-input"
+                                                       type="radio"
+                                                       value="1"
+                                                       id="dComp" checked />
+                                                <label class="form-check-label" for="defaultRadio1">Fixed</label>
+                                            </div>
+                                            <div class="form-check d-sm-inline-block">
+                                                <input name="IsFixed" onclick="RadioClick(0);"
+                                                       class="form-check-input"
+                                                       type="radio"
+                                                       value="0"
+                                                       id="dComp" />
+                                                <label class="form-check-label" for="defaultRadio2"> Variable </label>
+                                            </div>
+                                        </div>
+                                        @*   </div>*@
+                                        <div class="mb-3">
+                                            <label class="form-label required" for="username">
+                                                Download Salary Template (xlsx)
+                                            </label>
+
+
+                                            <button type="button" class="btn btn-primary me-2 mt-2" onclick="DownloadTemplate();">
+                                                Download
+                                            </button>
+
+
+                                        </div>
+
+
+
+
+
+                                    </div>
+                                </div>
+                                <!-- Modal -->
+                                <!-- /Modal -->
+                                <!-- /Current Plan -->
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="tab-pane fade" id="esiTab-info" role="tabpanel" style="text-align:center;min-height:50vh;padding:7%">
+                        <div class="info-container" >
+                            <form id="uploadTemplate" enctype="multipart/form-data" asp-controller="ExcelUD" asp-action="UploadSalaryTemplate">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 mb-1">
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="">Year</label>
+                                                    @*  <label class="form-control" id="lblyear" for="">2023</label>*@
+                                                    <select class="form-select" id="selYear" onchange="javascript:PopulateYear(this.value)" aria-label="Default select example" required>
+                                                        <option value="0" selected>Select an option</option>
+                                                        @*<option value="2023" >2023</option>
+                                                        <option value="2024">2024</option>*@
+                                                        @if (Model.Years != null)
+                                                        {
+                                                            @foreach (var item in Model.Years)
+                                                            {
+                                                                if (item == Model.SalaryYear)
+                                                                {
+                                                                    <option value="@item" selected> @item</option>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <option value="@item"> @item</option>
+                                                                }
+
+                                                            }
+                                                        }
+                                                    </select>
+
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="">Month</label>
+                                                    <select class="form-select" id="selMonth" aria-label="Default select example" required onchange="javascript:PopulateMonth(this.value)">
+                                                        <option value="0" selected>Select an option</option>
+                                                       @* <option value="01">Jan</option>
+                                                        <option value="02">Feb</option>
+                                                        <option value="03">Mar</option>
+                                                        <option value="04">Apr</option>
+                                                        <option value="05">May</option>
+                                                        <option value="06">Jun</option>
+                                                        <option value="07">Jul</option>
+                                                        <option value="08">Aug</option>
+                                                        <option value="09">Sep</option>
+                                                        <option value="10">Oct</option>
+                                                        <option value="11" >Nov</option>
+                                                        <option value="12" >Dec</option>*@
+
+                                                        @if (Model.SalMonths != null)
+                                                        {
+                                                            @foreach (var item in Model.SalMonths)
+                                                            {
+                                                                if (item.ID == Model.SalaryMonth)
+                                                                {
+                                                                    <option value="@item.ID" selected> @item.Name</option>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <option value="@item.ID"> @item.Name</option>
+                                                                }
+
+                                                            }
+                                                        }
+                                                    </select>
+
+                                                </div>
+                                               
+                                            </div>
+                                            <div class="mb-3">
+                                                <br />
+                                                @*   <div class="col-sm-3">*@
+                                                <label class="form-label d-block" for="address"> Salary Components</label>
+                                                <div class="form-check d-sm-inline-block">
+                                                    <input name="IsFixed1" onclick="RadioClick(1);"
+                                                           class="form-check-input"
+                                                           type="radio"
+                                                           value="True"
+                                                           id="defaultRadio1" checked />
+                                                    <label class="form-check-label" for="defaultRadio1">Fixed</label>
+                                                </div>
+                                                <div class="form-check d-sm-inline-block">
+                                                    <input name="IsFixed1" onclick="RadioClick(0);"
+                                                           class="form-check-input"
+                                                           type="radio"
+                                                           value="False"
+                                                           id="defaultRadio2" />
+                                                    <label class="form-check-label" for="defaultRadio2"> Variable </label>
+                                                </div>
+                                                <div class="form-check d-sm-inline-block">
+                                                    <input name="IsFixed1" onclick="RadioClick(2);"
+                                                           class="form-check-input"
+                                                           type="radio"
+                                                           value="False"
+                                                           id="defaultRadio2" />
+                                                    <label class="form-check-label" for="defaultRadio3"> Arrears </label>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="formFile" class="form-label required" for="username">
+                                                    Upload Salary Template (xlsx)
+                                                </label>
+                                                <input class="form-control" type="file" id="formFile" name="formFile" />
+
+
+                                            </div>
+
+                                            <div class="col-12">
+                                                <button type="submit" class="btn btn-primary me-2 mt-2" onclick="BlockedUI();">Submit</button>
+
+                                                <input type="hidden" class="dbcol" id="Year" name="Year" />
+                                                <input type="hidden" class="dbcol" id="Month" name="Month" />
+                                                <input type="hidden" id="hdnfixed" name="isFixed" value="1">
+
+                                            </div>
+
+
+
+                                        </div>
+                                    </div>
+                                    <!-- Modal -->
+                                    <!-- /Modal -->
+                                    <!-- /Current Plan -->
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+
+
+
+                    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+                            <h2>SimpliHR2.0</h2>
+                            <div class="modal-content p-3 p-md-5">
+                                <div class="modal-body">
+                                    <button type="button" class="btn-close" name="btnPopupClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <div class="text-center mb-4">
+                                    </div>
+                                    <form id="showAlert" class="row g-3" onsubmit="return false">
+                                        <div class="col-12 text-center" id="errorDiv">
+                                            <p id="errorPara" class="error" style="color:red"></p>
+                                        </div>
+                                        <div class="col-12 text-center" id="successDiv">
+                                            <p id="successPara" class="error" style="color:black"></p>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div id="popupBtnDiv" class="col-12 text-center">
+                                    @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                                    <button type="reset" name="btnPopupClose"
+                                            class="btn btn-label-secondary btn-reset mt-3"
+                                            data-bs-dismiss="modal"
+                                            aria-label="Close">
+                                        Close
+                                    </button>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="ComponentsModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-xl" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header border-bottom">
+                                    <div><h5 class="card-title mb-sm-0 me-2">Alert Components Validation</h5></div>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="card-datatable table-responsive text-nowrap">
+                                        <table class="datatables-ajax table table-bordered" id="SummaryList">
+                                            <thead>
+                                                <tr>
+                                                    <th>Component</th>
+                                                    <th> Message</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.ComponentValidateList != null)
+                                                @foreach (var item in Model.ComponentValidateList)
+                                                    {
+                                                <tr>
+                                                    <td>@item.ComponentName</td>
+                                                    <td>@item.DisplayMessage</td>
+
+
+                                                </tr>
+                                                    }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="SalaryHeadsModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-xl" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header border-bottom">
+                                    <div><h5 class="card-title mb-sm-0 me-2">Salary Structure</h5></div>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="card-datatable table-responsive text-nowrap">
+                                        <table class="datatables-ajax table table-bordered" id="SummaryList">
+                                            <thead>
+                                                <tr>
+
+                                                    <th>Salary Heads</th>
+                                                    <th>Salary PayOut(Month)</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody id="myleavetbl">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*<input type="hidden" id="hdnfixed" name="isFixed" value="1" >*@
+
+                </div>
+            </div>
+            <!--/ User Pills -->
+
+        </div>
+        <!--/ User Content -->
+    </div>
+
+
+</div>
+
+@section scripts {
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                 if ("@Model.DisplayMessage" == "Component") {
+                jQuery("#ComponentsModal").modal('show');
+                 }
+                 else
+                    $successalert("Salary Templates", "@Model.DisplayMessage");
+            }
+        });
+
+        function RadioClick(param) {
+          
+            $('#hdnfixed').val(param)
+          
+        }
+        function PopulateYear(year) {
+          
+            $('#Year').val(year)
+          }
+
+        function PopulateMonth(month) {          
+            $('#Month').val(month)
+        }
+        function DownloadTemplate() {
+            var isFx = $('#hdnfixed').val();
+           // alert(isFx);
+
+            window.open("/ExcelUD/GetExcel?isFixed=" + $('#hdnfixed').val(), "_blank");
+        }
+
+        function BlockedUI() {
+
+            if ($('#formFile').get(0).files.length === 0) {
+                $erroralert("Validation", "Please select the template");
+               // ShowServerMessage("Please select the template");
+                return false;
+            }
+            else {
+                BlockUI();
+            }
+
+        }
+
+        function ViewRecord(employeeId) {
+            if (employeeId > 0) {
+                jQuery("#myleavetbl").html("")
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/ExcelUD/GetSalaryDetails",
+                    data: { employeeId: employeeId },
+                    success: function (response) {
+
+                        if (response != null) {
+
+                            // alert(response.length);
+                            for (var i = 0; i < response.length; i++) {
+                                $("#myleavetbl").append('<tr><td>' + response[i].componentName + '</td><td>' + response[i].amtPerMonth + '</td></tr>');
+                            }
+                        }
+                    },
+                    failure: function (response) {
+                        $erroralert("Error!", "errror<br>" + response.responseText);
+                    },
+                    error: function (response) {
+                        $erroralert("Error!", "errror<br>" + response.responseText);
+                    }
+
+                });
+            }
+        }
+
+
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                // if (sMsg.toUpperCase() == "SUCCESS") {
+                // sMsg = "Earnnig component created/updated successfully";
+                jQuery("#successDiv").show();
+                jQuery("#successPara").html(sMsg);
+
+                // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                //  }
+                //else {
+                //    jQuery("#errorDiv").show();
+                //    jQuery("#errorPara").html(sMsg);
+                //}
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+    </script>
+}
+

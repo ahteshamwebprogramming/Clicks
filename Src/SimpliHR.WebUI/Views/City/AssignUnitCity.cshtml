@@ -1,0 +1,195 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.UnitCityListVM
+@{
+    ViewData["Title"] = "AssignUnitCity";
+    Layout = "~/Views/Shared/_LayoutVertical.cshtml";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Company Structure /</span> City List</h4>
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <form id="showAlert" class="row g-3" onsubmit="return false">
+                    <div class="modal-body">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center mb-4">
+                        </div>
+
+                        <div class="col-12 text-center" id="successDiv">
+                            <p id="errorPara" class="error" style="color:red"></p>
+                        </div>
+                        <div class="col-12 text-center" id="errorDiv">
+                            <p id="successPara" class="error" style="color:black"></p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 text-center">
+                        @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                        <button type="reset" id="btnClose"
+                                class="btn btn-label-secondary btn-reset mt-3"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                            Close
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="card addShow" id="List">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Back" onclick="javascript:window.location.href='/City/UnitCity/'" style="float:right;margin-right: 5px;" />
+            <input type="button" class="btn btn-primary" value="Map City/s" onclick="SaveUnitCityFromMaster()" style="float:right;margin-right: 5px;" "        />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+                            <th>Country</th>
+                            <th>State</th>
+                            <th>City</th>
+            @foreach (var unit in Model.Units)
+            {
+                                <th>
+                                    <input type="checkbox" id="Unit_@unit.UnitID" class="form-check-input units" onclick="SelectUnit('@unit.UnitID',this)" />
+                    @unit.UnitName
+                                </th>
+            }
+
+                        </tr>
+                    </thead>
+                    <tbody>
+            @if (Model.CityMasterList != null)
+                @foreach (var item in Model.CityMasterList)
+                {
+                                <tr>
+                                    <td>
+                            @item.CountryName
+                                        <input id="CountryId" type="hidden" value="@item.CountryId" />
+                                    </td>
+                                    <td>
+                            @item.StateName
+                                        <input id="StateId" type="hidden" value="@item.StateId" />
+                                    </td>
+                                    <td>
+                            @item.CityName
+                                        <input id="CityId" type="hidden" value="@item.CityId" />
+                                    </td>
+                        @foreach (var unit in Model.Units)
+                        {
+                                        <td>
+                                            <input type="checkbox" id="Unit_@unit.UnitID+'_'+@item.CityId" data-unit="@unit.UnitID" value="@item.CityId" class="form-check-input unitClass_@unit.UnitID"
+                                @(Model.UnitCityList.Exists(x => x.CityId == item.CityId) ? "checked" : "") onclick="CheckAllSelected('@unit.UnitID','Unit_@unit.UnitID')" />
+                                        </td>
+                        }
+
+                                </tr>
+                }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+            @section scripts {
+
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $(".List").dataTable();
+            $('#select_all').on('click', function () {
+
+            });
+
+            $('.checkbox').on('click', function () {
+
+            });
+        });
+
+        function SelectUnit(unitId, id) {
+            var unitClass = 'unitClass_' + unitId
+            if (id.checked) {
+                jQuery('.' + unitClass).each(function () {
+                    this.checked = true;
+                });
+            } else {
+                jQuery('.' + unitClass).each(function () {
+                    this.checked = false;
+                });
+            }
+        }
+
+        function CheckAllSelected(unitId, idName) {
+            var unitClass = 'unitClass_' + unitId
+            if (jQuery('.' + unitClass + ':checked').length == jQuery('.' + unitClass).length) {
+                jQuery('#' + idName).prop("checked", true);
+            } else {
+                jQuery('#' + idName).prop("checked", false);
+            }
+        }
+
+        function SaveUnitCityFromMaster() {
+            var iCtr = 0, unitId = 0;
+            var unitCityListVM = {};
+            var unitCityList = new Array();
+            jQuery('.units').each(function () {
+                unitId = this.id.replace("Unit_", "");
+                if (!IsBlank(unitId)) {
+                    unitClass = "unitClass_" + unitId;
+                    jQuery('.' + unitClass).each(function () {
+                        if (this.checked) {
+                            // alert(unitId);
+                            // alert(this.value);
+                            var detailData = {};
+                            detailData.UnitId = unitId
+                            detailData.CityId = this.value;
+                            unitCityList.push(detailData)
+                        }
+                    });
+                }
+            });
+            // alert(unitStateList.length);
+            if (unitCityList.length > 0) {
+                unitCityListVM.unitCityList = unitCityList
+            }
+            else {
+                $successerror("Error", "No City/s selected to map");
+            }
+            BlockUI();
+            jQuery.ajax({
+                type: "POST",
+                url: "/City/SaveUnitCityFromMaster",
+                data: unitCityListVM,
+                success: function (data) {
+                    //alert(data)
+                    UnblockUI();
+                    // var sMsg = data.displayMessage  //.Trim().Replace("< br > ", "\r\n")
+                    if (data.displayMessage.toUpperCase() == "SUCCESS") {
+                        //jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                        $successalert("Success", "City/s mapped successfully to selected unit/s");
+                    }
+                    else {
+                        $successalert("Unit State", data.displayMessag);
+                    }
+
+                    window.location.href = "/City/UnitCity";
+                },
+                error: function (result) {
+                    var x = 1;
+                    $successerror("Error", "errror<br>" + result.responseText);
+                    UnblockUI();
+                }
+            });
+
+        }
+
+    </script>
+            }
+
+

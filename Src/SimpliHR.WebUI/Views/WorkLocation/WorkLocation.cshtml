@@ -1,0 +1,266 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.WorkLocationMasterDTO
+@{
+    ViewData["Title"] = "Work Location";
+    Model.DisplayMessage += "";
+    //Layout = null;
+}
+<style>
+    div.dataTables_wrapper .btn-group > .btn:not(:last-child):not(.dropdown-toggle) {
+        margin-right: 7px;
+    }
+
+    div.dataTables_wrapper .btn-group .btn-secondary {
+        background-color: #696cff;
+        border-color: #696cff;
+        box-shadow: 0 0.125rem 0.25rem 0 rgba(105, 108, 255, 0.4);
+    }
+
+        div.dataTables_wrapper .btn-group .btn-secondary:hover {
+            background-color: #595cd9 !important;
+            border-color: #595cd9 !important;
+            transform: none !important;
+        }
+
+    div.dataTables_wrapper div.dataTables_filter {
+        display: inline-block;
+        float: right;
+    }
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Company Structure /</span> Location</h4>
+    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            @*<input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />*@
+            <button type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="tooltip"
+                    data-bs-offset="0,4"
+                    data-bs-placement="right"
+                    data-bs-html="true"
+                    style="float:right;"
+                    onclick="AddView()"
+                    title="List all office locations where your company operates. Example: Mumbai, Delhi, Chennai.">
+                @*title="<i class='bx bx-trending-up bx-xs' ></i> <span>Add all existing departments within your company structure. For example: Marketing, Sales, HR.</span>">*@
+                @*<i class="bx bx-plus me-sm-1"></i>*@
+                Add Work Location
+            </button>
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+
+                            <th>Location</th>
+                            <th>Address</th>
+                            <th>Country</th>
+                            <th>State</th>
+                            @*<th>District</th>*@
+                            <th>City</th>
+                            <th>Pincode</th>
+                            @*<th>Status</th>*@
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.WorkLocationMasterList != null)
+                            @foreach (var item in Model.WorkLocationMasterList)
+                            {
+                                <tr>
+
+                                    <td>@item.Location</td>
+                                    <td>@item.Address</td>
+                                    <td>@item.CountryName</td>
+                                    <td>@item.StateName</td>
+                                    <td>@item.CityName</td>
+                                    <td>@item.Pincode</td>
+                                    @*<th>@(item.IsActive == true ? "Active" : "Inactive")</th>*@
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="#" onclick="EditRecord('Work Location','/WorkLocation/GetWorkLocationInfo','@item.EncryptedId','@item.IsActive')"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="#" onclick="DeleteRecord('Work Location','@item.Location','/WorkLocation/DeleteWorkLocation','@item.EncryptedId','@item.IsActive')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <button type="button" class="btn btn-primary addShow" onclick="javascript:window.location.href='/WorkLocation/WorkLocation/'" style="float:right"><i class='bx bx-list-ul me-sm-1'></i>List</button>
+            @* <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/WorkLocation/WorkLocation/'" style="float:right" /> *@
+            <div style="clear:both"></div>
+            <form method="post" action="/WorkLocation/SaveWorkLocation" id="WorkLocationForm">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Work Location</label>
+                        <input type="text" id="Location" name="Location" required value="@Model.Location" maxlength="50" class="form-control" placeholder="Location">
+                        @*<span asp-validation-for="Location" class="text-danger"></span>*@
+                    </div> <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Address</label>
+                        <input type="text" id="Address" name="Address" required value="@Model.Address" class="form-control" placeholder="Address">
+                        @*<span asp-validation-for="Address" class="text-danger"></span>*@
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Country</label>
+                        <div class="position-relative">
+                            <select id="CountryId" name="CountryId" required onchange="javascript:PopulateStateDDL(this.value)" class="select2 form-select select2-hidden-accessible" data-allow-clear="true" tabindex="-1" aria-hidden="true">
+                                <option value="0">Select</option>
+                                @if (Model.CountryList != null)
+                                    foreach (var item in Model.CountryList)
+                                    {
+                                        if (item.CountryId == Model.CountryId)
+                                        {
+                                            <option value="@item.CountryId" selected> @item.CountryName</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.CountryId"> @item.CountryName</option>
+                                        }
+
+                                    }
+                            </select>
+                            @*<span asp-validation-for="CountryId" class="text-danger"></span>*@
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">State</label>
+                        <div class="position-relative">
+                            <select id="StateId" name="StateId" required onchange="javascript:PopulateCityDDL(this.value)" class="select2 form-select select2-hidden-accessible" data-allow-clear="true" tabindex="-1" aria-hidden="true">
+                                <option value="0">Select</option>
+                            </select>
+                            @*<span asp-validation-for="StateId" class="text-danger"></span>*@
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">City</label>
+                        <div class="position-relative">
+                            <select id="CityId" name="CityId" required class="select2 form-select select2-hidden-accessible" data-allow-clear="true" data-select2-id="multicol-country" tabindex="-1" aria-hidden="true">
+                                <option value="0">Select</option>
+                            </select>
+                            @*<span asp-validation-for="CityId" class="text-danger"></span>*@
+                        </div>
+
+                    </div> <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Pincode</label>
+                        <input type="number" id="Pincode" name="Pincode" onKeyPress="if(this.value.length==6) return false;" required value="@Model.Pincode" class="form-control" placeholder="Pincode">
+                        @*<span asp-validation-for="Pincode" class="text-danger"></span>*@
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" id="WorkLocationId" name="WorkLocationId" value="@Model.WorkLocationId">
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/WorkLocation/WorkLocation/'">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+@* <input type="button" value="alert" onclick="testalert()" /> *@
+
+
+@section scripts {
+    <script src="../../customjs/CommonFunction.js"></script>
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+
+        // function testalert() {
+        //      $successalert("Transaction Successful!", "Employee Onboarded.");
+        //     $erroralert("Transaction Failed!!", "Duplicate Entry Found.");
+        // }
+
+        $(document).ready(function () {
+            // Init("@Model.WorkLocationId", "@Model.DisplayMessage","@Model.HttpStatusCode");
+            $(".List").dataTable();
+
+            if (@Model.WorkLocationId != 0 || @Model.HttpStatusCode!= 200) {
+                $("#List").hide();
+                $("#Add").show();
+                //  alert('bbb');
+            }
+            else {
+                //  alert('aaa');
+                ClearInputs();
+            }
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                if ("@Model.HttpStatusCode" == 200) {
+                    $successalert("", "@Model.DisplayMessage");
+                }
+                else {
+                    $erroralert("Transaction Failed!", "@Model.DisplayMessage");
+                }
+
+            }
+            $("#WorkLocationForm").find("[name='CountryId']").change();
+        });
+
+        function ClearInputs() {
+
+            $("#Pincode").val("");
+            $("#Address").val("");
+            $("#Location").val("");
+            $("#Address").val("");
+            $("#CountryId").prop('selectedIndex', 0);
+            $("#CountryId").val(0).change();
+
+            $("#CityId").prop('selectedIndex', 0);
+            $("#CityId").val(0).change();
+
+            $("#StateId").prop('selectedIndex', 0);
+            $("#StateId").val(0).change();
+
+        }
+        function PopulateStateDDL(countryId) {
+            //var objDDL = countryDDL
+            jQuery("#CountryId").attr("disabled", true)
+            jQuery("#StateId").html("");
+            // jQuery("#StateId").append("<option value='0'>Select</option>")
+            jQuery.ajax({
+                type: "GET",
+                url: "/WorkLocation/GetCounryStates",
+                data: { CountryId: countryId },
+                success: function (response) {
+                    PopulateDropDown("StateId", response, '@Model.StateId', 'stateId', 'stateName')
+                    jQuery("#CountryId").attr("disabled", false)
+                    jQuery("#StateId").change();
+                },
+                failure: function (response) {
+                    $erroralert("Populate State", "errror<br>" + response.responseText);
+                },
+                error: function (response) {
+                    $erroralert("Populate State", "errror<br>" + response.responseText);
+                }
+            });
+        }
+
+        function PopulateCityDDL(stateID) {
+
+            jQuery("#CountryId").attr("disabled", true)
+            jQuery("#StateId").attr("disabled", true)
+            jQuery("#CityId").html("")
+            // jQuery("#CityId").append("<option value='0'>Select</option>")
+            jQuery.ajax({
+                type: "GET",
+                url: "/WorkLocation/GetStateCities",
+                data: { StateId: stateID },
+                success: function (response) {
+                    PopulateDropDown("CityId", response, '@Model.CityId', 'cityId', 'cityName')
+                    jQuery("#StateId").attr("disabled", false)
+                    jQuery("#CountryId").attr("disabled", false)
+                },
+                failure: function (response) {
+                    $erroralert("Populate City", "errror<br>" + response.responseText);
+                },
+                error: function (response) {
+                    $erroralert("Populate City", "errror<br>" + response.responseText);
+                }
+            });
+        }
+
+    </script>
+}

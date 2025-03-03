@@ -1,0 +1,429 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* fonts  */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root {
+    --primary: #2a9fbc;
+    /* --secondry: #ffffff; */
+    --font: "Poppins", sans-serif;
+  }
+
+
+
+
+/* CSS Start here  */
+
+
+/* banner section start here  */
+
+.banner-price {
+    background: rgb(0, 0, 0);
+    color: white;
+    text-align: center;
+    padding-top: 7rem;
+    PADDING-BOTTOM: 7rem;
+}
+
+/* banner section End here  */
+
+
+
+/* <!-- Pricing table start here  --> */
+.price-first{
+    margin-top: 35px;
+}
+
+.table-one .price-a{
+    display: flex;
+    justify-content: space-between;
+}
+.price-a p{
+    background: #ffff;
+    color: black;
+    border-radius: 10px;
+    padding: 0px 20px;
+}
+.table-one .price-a h3{
+    font-size: 24px;
+}
+.price-b h1{
+    font-weight: 500;
+}
+.price-c h3{
+    font-size: 20px;
+}
+.price-table{
+    margin-bottom: 5rem;
+}
+
+.banner-price h1{
+    font-family: var(--font);
+    font-weight: 700;
+    font-size: 3rem;
+}
+.table-head {
+    text-align: center;
+    margin-top: 4rem;
+    font-family: var(--font);
+    margin-bottom: 2.3rem;
+}
+.table-head h2{
+font-weight: 700;
+font-size: 2rem;
+font-family: var(--font);
+}
+.table-one {
+    color: white;
+    background: var(--primary);
+    padding: 31px;
+    margin: auto;
+    border-bottom: 2px solid white;
+  font-family: var(--font);
+   
+}
+
+.table-price-main {
+    background: rgb(255, 255, 255);
+    box-shadow: 0px 0px 10px 0px rgb(0 0 0 / 16%);
+    border: 2px solid transparent;
+
+  
+}
+.second-main{
+    border: 2px solid black !important;
+}
+.second-main .table-one{
+    background-color: black;
+    
+  
+}
+ .second-main:hover{
+    border: 2px solid black !important;
+}
+ .get-btn-2 button{
+    background-color: black !important;
+    color: white;
+  
+}
+.get-btn-2 button:hover{
+    background-color: rgb(255, 255, 255) !important;
+    color: black !important;
+    border: 2px solid black !important;
+}
+.table-price-main:hover{
+    border: 2px solid var(--primary);
+}
+.table-two {
+    padding: 19px;
+}
+.price-a h4{
+    font-size: 1.3rem;
+    font-weight: 700;
+    padding-bottom: 5px;
+    font-family: var(--font);
+}
+.price-a .pd {
+    padding: 5px;
+}
+.price-a span{
+    padding-left: 7px;
+    font-family: var(--font);
+}
+.price-a h6{
+    text-align: center;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    font-family: var(--font);
+}
+
+
+.price-b h4{
+    padding-top: 15px;
+    padding-bottom: 5px;
+    font-family: var(--font);
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+.price-b .pd {
+    padding: 5px;
+}
+.price-b span{
+    padding-left: 7px;
+    font-family: var(--font);
+}
+.price-c h4{
+    padding-top: 15px;
+    padding-bottom: 5px;
+    font-family: var(--font);
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+.price-c .pd {
+    padding: 5px;
+}
+.price-c span{
+    padding-left: 7px;
+    font-family: var(--font);
+}
+.get-btn button {
+    background: var(--primary);
+    border: var(--primary);
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+    font-family: var(--font);
+    color: white;
+    border: 2px solid white;
+    font-weight: 600;
+}
+.get-btn button:hover {
+    background:white;
+   border: 2px solid var(--primary);
+    color: var(--primary);
+}
+/* <!-- Pricing table End here  --> */
+
+
+
+/* addon section start here  */
+.price-addon-sec {
+    background: #f4f4f4;
+    margin-bottom: 4rem;
+    padding: 3rem 0px;
+}
+.price-add-one{
+    box-shadow: 0px 0px 10px gray;
+}
+.price-ul_2 {
+    padding: 15px 15px 0px 15px;
+}
+.addon-head {
+    text-align: center;
+}
+.addon-head h2{
+    font-weight: 700;
+    font-size: 2.5rem;
+    font-family: var(--font);
+    padding-bottom: 2rem;
+    color: var(--primary);
+}
+.price-add-one ul {
+    list-style: none;
+    padding: 0;
+}
+.price-add-one .price-ul_1{
+    background: var(--primary);
+    padding: 20px;
+    color: white;
+    margin-bottom: 0px;
+}
+.price-add-one .price-ul_1 li h3{
+    font-size: 24px;
+    font-weight: 600;
+    font-family: var(--font);
+    padding-bottom: 1rem;
+}
+
+.price-add-one .price-ul_1 li h2{
+    font-size: 2.5rem;
+    font-weight: 600;
+    font-family: var(--font);
+}
+.price-add-one .price-ul_1 li p{
+  
+    font-weight: 500;
+    font-family: var(--font);
+}
+
+.price-ul_2 .p-d{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+ .price-ul_2 h2{
+    font-size: 24px;
+    font-weight: 600;
+    font-family: var(--font);
+ }
+ .price-ul_2 .p-d ul li {
+    margin-bottom: 12px;
+ }
+
+ .price-ul_2 .p-d ul li span{
+    padding-left: 10px;
+ }
+ .price-ul_2 .p-d ul li i{
+    background: var(--primary);
+    padding: 5px;
+    border-radius: 50px;
+    color: white;
+    font-size: 13px;
+ }
+
+ .price-addon-sm h2 {
+    font-size: 24px;
+    font-weight: 500;
+    font-family: var(--font);
+    text-align: center;
+    padding: 3rem 0rem;
+    background-color: var(--primary);
+    color: white;
+    font-weight: 700;
+}
+.price-addon-sm ul {
+    list-style: none;
+    padding: 0px 0px 27px 15px;
+}
+.price-addon-sm ul h3{
+    font-size: 20px;
+    font-weight: 600;
+    padding: 10px 0rem;
+    font-family: var(--font);
+    margin-bottom: 0;
+}
+.price-addon-sm ul li{
+    margin-bottom: 10px;
+}
+.price-addon-sm ul li i{
+    background: var(--primary);
+    padding: 5px;
+    border-radius: 50px;
+    color: white;
+    font-size: 13px;
+}
+.price-addon-sm ul li span{
+    padding-left: 10px;
+    font-family: var(--font);
+}
+
+.price-addon-sm ul a button{
+    border: beige;
+    background: var(--primary);
+    padding: 10px 10px;
+    margin-top: 17px;
+    border-radius: 5px;
+    color: white;
+    font-weight: 600;
+    font-family: var(--font);
+    border: 2px solid transparent;
+}
+.price-addon-sm ul a button:hover{
+    background-color: white;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+}
+.price-addon-sm {
+    margin-top: 3rem;
+    box-shadow: 0px 0px 10px gray;
+  
+}
+.price-addon-sm-2 h2{
+    background-color: black;
+}
+.price-addon-sm-2 ul li i {
+    background: black;
+   
+}
+.price-addon-sm-2 ul a button {
+    background: black;
+}
+.price-addon-sm-2 ul a button:hover {
+    background: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    border: 2px solid black
+}
+/* addon section end  here   */
+
+
+/* Expert start here  */
+.expert-head {
+    text-align: center;
+    font-family: var(--font);
+}
+.expert-head h2{
+    font-size: 2rem;
+    font-weight: 700;
+}
+.expert-one img{
+    width: auto;
+     height: 250px;
+}
+.expert-two img{
+    width: auto;
+     height: 100px;
+}
+
+.row.expertrw {
+    border-bottom: 2px solid #ff492c;
+}
+
+/* Expert End here  */
+
+
+
+/* FAQ section start here  */
+.faq-section {
+    padding: 2rem 0rem;
+    background: #f4f4f4;
+    margin-top: 3rem;
+}
+.faq-left {
+    border: 1px solid black;
+}
+.accordion-item {
+    background-color: var(--primary) !important;
+    border: 1px solid black !important;
+}
+.accordion-body {
+    padding: 10px !important;
+    color: white;
+    font-family: var(--font);
+}
+.accordion-button:not(.collapsed) {
+    color: #2a9fbc !important;
+    background-color: #ffffff !important;
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .125);
+    font-weight: 700;
+}
+.accordion-button:focus {
+    border-color: #ffffff !important;
+    box-shadow: unset !important;
+}
+button.accordion-button {
+    color: rgb(0, 0, 0) !important;
+    background: #ffffff !important;
+    font-family: var(--font);
+    font-weight: 700;
+}
+/* .accordion-button::after {
+    
+    filter: invert(1);
+} */
+.faq-section .faqs {
+    text-align: center;
+    font-family: var(--font);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+
+.faq-form-right {
+    background: #2a9fbc;
+    padding: 2rem 2rem 2rem 2rem;
+}
+.btnn-1{
+    text-align: left;
+}
+.faq-form-right.form-select {
+   
+    padding: .375rem 1.25rem .375rem .75rem !important;
+   
+}
+/* FAQ section End here  */

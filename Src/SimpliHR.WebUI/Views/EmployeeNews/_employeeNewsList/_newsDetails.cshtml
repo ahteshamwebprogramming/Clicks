@@ -1,0 +1,124 @@
+﻿@model SimpliHR.Infrastructure.Models.EmployeeSocialActivity.EmployeeNewsViewModel
+<link href="~/customcss/newsdetails.css" rel="stylesheet" />
+<div class="card" style="min-height: 1045px;">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="small mb-3 fw-bold float-start">From @((Model != null && Model.employeeNewsDTO != null) ? Model.employeeNewsDTO.PublicationName : "")</div>
+                <div class="small mb-3 fw-bold float-end">
+
+                    @{
+                        string returnURL = "";
+                        if (Model != null && Model.employeeNewsDTO != null && Model.employeeNewsDTO.Source != null)
+                        {
+                            string source = Model.employeeNewsDTO.Source;
+                            if (source == "md")
+                            {
+                                <a href="/Manager/Dashboard"><i class="fa-solid fa-circle-chevron-left"></i> Back</a>
+                            }
+                            else if (source == "ed")
+                            {
+                                <a href="/Employee/Dashboard"><i class="fa-solid fa-circle-chevron-left"></i> Back</a>
+                            }
+                            else if (source == "card")
+                            {
+                                <a href="/EmployeeNews/EmployeeNewsList?v=card"><i class="fa-solid fa-circle-chevron-left"></i> Back</a>
+                            }
+                            else if (source == "list")
+                            {
+                                <a href="/EmployeeNews/EmployeeNewsList?v=list"><i class="fa-solid fa-circle-chevron-left"></i> Back</a>
+                            }
+                        }
+                    }
+
+
+
+                </div>
+                <div class="clearfix"></div>
+                <h2 class="mb-2">@((Model != null && Model.employeeNewsDTO != null) ? Model.employeeNewsDTO.Title : "")</h2>
+                <div class="small mb-3 fw-bold">By @((Model != null && Model.employeeNewsDTO != null) ? Model.employeeNewsDTO.AuthorsName : "")</div>
+                <div>
+                    @{
+                        var timeDiff = (System.DateTime.Now - ((Model != null && Model.employeeNewsDTO != null) ? Model.employeeNewsDTO.CreatedDate : System.DateTime.Now));
+                        if (timeDiff != null)
+                        {
+                            if (timeDiff.Value.Days >= 1)
+                            {
+                                if (timeDiff.Value.Days > 1)
+                                {
+                                    <span>@(timeDiff.Value.Days) days ago</span>
+                                }
+                                else
+                                {
+                                    <span>@(timeDiff.Value.Days) day ago</span>
+                                }
+                            }
+                            else if (timeDiff.Value.Hours >= 1)
+                            {
+                                if (timeDiff.Value.Hours > 1)
+                                {
+                                    <span>@(timeDiff.Value.Hours) hours ago</span>
+                                }
+                                else
+                                {
+                                    <span>@(timeDiff.Value.Hours) hour ago</span>
+                                }
+                            }
+                            else
+                            {
+                                if (timeDiff.Value.Minutes > 1)
+                                {
+                                    <span>@(timeDiff.Value.Minutes) minutes ago</span>
+                                }
+                                else
+                                {
+                                    <span>@(timeDiff.Value.Minutes) minute ago</span>
+                                }
+                            }
+                        }
+                    } / @((Model != null && Model.employeeNewsDTO != null) ? (((DateTime)Model.employeeNewsDTO.CreatedDate).ToString("dd-MMM-yyyy hh:mm tt")) : System.DateTime.Now)
+                </div>
+                <small>
+                    <a href="" class="fw-bold">@((Model != null && Model.employeeNewsDTO != null) ? Model.employeeNewsDTO.CategoryTags : "")</a>
+                    &nbsp; &nbsp; <strong>|</strong> &nbsp; &nbsp;
+                    <span class="smaller-font">@((Model != null && Model.employeeNewsDTO != null) ? Model.employeeNewsDTO.Keywords : "")</span>
+                </small>
+                <div class="mt-4 news-dtls-pic"><img src="../@((Model != null && Model.employeeNewsDTO != null) ? Model.employeeNewsDTO.ImagePath : "")" class="rounded" width=auto" height="300" alt=""></div>
+                <div class="mt-4">
+
+                    @{
+                        if (Model != null && Model.employeeNewsDTO != null)
+                        {
+                            if (Model.employeeNewsDTO.ArticleType == 1)
+                            {
+                                @Html.Raw(Model.employeeNewsDTO.Description)
+                                <p>
+                                    @{
+                                        if (Model.employeeNewsDTO.ArticleLink != null)
+                                        {
+                                            if (Model.employeeNewsDTO.ArticleLink.Length > 90)
+                                            {
+                                                <a href="@Model.employeeNewsDTO.ArticleLink">@(Model.employeeNewsDTO.ArticleLink.Substring(0, 90))...</a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Model.employeeNewsDTO.ArticleLink">@(Model.employeeNewsDTO.ArticleLink)</a>
+                                            }
+                                        }
+                                    }
+                                </p>
+                            }
+                            else
+                            {
+                                @Html.Raw(Model.employeeNewsDTO.Article)
+                            }
+                        }
+                    }
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

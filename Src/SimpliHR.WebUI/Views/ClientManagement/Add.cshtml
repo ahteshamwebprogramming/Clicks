@@ -1,0 +1,691 @@
+﻿@model SimpliHR.Infrastructure.Models.ClientManagement.ClientDTO
+@{
+    Model.DisplayMessage += "";
+}
+
+@*Page CSS*@
+<link rel="stylesheet" href="~/assets/vendor/libs/bs-stepper/bs-stepper.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/bootstrap-select/bootstrap-select.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/select2/select2.css" />
+<style>
+
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+</style>
+@*Page CSS*@
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Client Operations /</span>Add New Client</h4>
+
+    <div class="row">
+
+        <!-- Default Wizard -->
+        <div class="col-12 mb-4">
+            @*   <small class="text-light fw-semibold">Basic</small>*@
+            <div class="bs-stepper wizard-numbered mt-2">
+                <div class="bs-stepper-header">
+                    <div class="step" data-target="#client-details">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">1</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Client Details</span>
+                                <span class="bs-stepper-subtitle">Setup Client Details</span>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line">
+                        <i class="bx bx-chevron-right"></i>
+                    </div>
+                    <div class="step" data-target="#client-settings">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">2</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Client Settings</span>
+                                <span class="bs-stepper-subtitle">Setup Client Settings</span>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line">
+                        <i class="bx bx-chevron-right"></i>
+                    </div>
+                    <div class="step" data-target="#unit-settings">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">3</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Client Unit</span>
+                                <span class="bs-stepper-subtitle">Setup Client Unit Settings</span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <div class="bs-stepper-content">
+                    <form id="clientpersonalinfoForm" onSubmit="return false">
+                        <!-- Client Details -->
+                        <div id="client-details" class="content">
+                            <div class="row g-3" id="errorDiv"><p id="errorPara" class="error" style="color:red"></p></div>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="CompanyName">Company/Client Name</label>
+                                    <input type="text" id="CompanyName" name="CompanyName" maxlength="100" required class="form-control" value="@Model.CompanyName" placeholder="Company Name" />
+
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="ClientName">Contact person</label>
+                                    <input type="text" id="ClientName" name="ClientName" maxlength="100" required class="form-control" value="@Model.ClientName" placeholder="Contact person" />
+                                    @* <span asp-validation-for="ClientName" class="text-danger"></span>*@
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="email">Email</label>
+                                    <input type="email" required
+                                           id="EmailId"
+                                           name="EmailId"
+                                           class="form-control"
+                                           placeholder="john.doe@email.com"
+                                           aria-label="john.doe" maxlength="100" />
+                                    @* <span asp-validation-for="EmailId" class="text-danger"></span>*@
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="contactnumber">Contact number</label>
+                                    <input type="number" id="ContactNumber" onKeyPress="if(this.value.length==12) return false;" maxlength="12" required name="ContactNumber" class="form-control" placeholder="Contact Number" />
+
+                                </div>
+
+
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-label-secondary btn-prev" disabled>
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next" style="visibility:hidden">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+
+                                    <button class="btn btn-primary" onclick="SaveClientInfo('clientpersonalinfoForm','/ClientManagement/SaveCllientInfo')">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Save and Move Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                    <!-- Profile Picture  -->
+                    <form id="clientsettinginfoForm" onSubmit="return false" enctype="multipart/form-data">
+                        <!-- Client Settings -->
+                        <div id="client-settings" class="content">
+                            <div class="row g-3" id="errorDiv"><p id="errorPara" class="error" style="color:red"></p></div>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                     <label for="formFile" class="form-label">Company logo</label>
+                                    <input class="form-control" type="file" accept="image/png, image/gif, image/jpeg" id="upload_file" name="upload_file" />
+                                   @*  <div class="container">
+                                        <div class="img-panel center">
+                                            <div class="button_outer">
+                                                <div class="btn_upload">
+                                                    <input type="file" id="upload_file" name="" required>
+                                                    Company logo
+                                                </div>
+                                                <div class="processing_bar"></div>
+                                                <div class="success_box center"></div>
+                                            </div>
+                                        </div>
+                                        <div class="error_msg"></div>
+                                        <div class="uploaded_file_view" id="uploaded_view">
+                                            <span class="file_remove">X</span>
+                                            <img id="profileimagepreview" src="@Model.Base64ProfileImage" "@((Model.Base64ProfileImage == null) ? " style=display:none" : Model.Base64ProfileImage.Trim() == "data:image/png;base64," ? " style=display:none" : "")" />
+                                        </div>
+
+
+                                    </div> *@
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="HeaderText">Header text</label>
+                                    <input type="text" id="HeaderText" name="HeaderText" class="form-control" placeholder="Header text" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="FooterText">Footer text</label>
+                                    <input type="text" id="FooterText" name="FooterText" class="form-control" placeholder="Footer text" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="SupportLink">Support link</label>
+                                    <input type="text" id="SupportLink" name="SupportLink" class="form-control" placeholder="Support link" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="address">Policies link</label>
+                                    <input type="text" id="PoliciesLink" name="PoliciesLink" class="form-control" placeholder="Policies link" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="address">Document link</label>
+                                    <input type="text" id="DocumentLink" name="DocumentLink" class="form-control" placeholder="Document link" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label d-block required" for="address">Menu style</label>
+                                    <div class="form-check d-sm-inline-block">
+                                        <input name="MenuStyle"
+                                               class="form-check-input"
+                                               type="radio"
+                                               value="V"
+                                               id="MenuStyle" checked />
+                                        <label class="form-check-label" for="defaultRadio1"> vertical &nbsp;&nbsp;</label>
+                                    </div>
+                                    <div class="form-check d-sm-inline-block">
+                                        <input name="MenuStyle"
+                                               class="form-check-input"
+                                               type="radio"
+                                               value="H"
+                                               id="MenuStyle" />
+                                        <label class="form-check-label" for="defaultRadio2"> horizontal </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="exampleFormControlSelect1" class="form-label required">Color themes</label>
+
+                                    @*  @Html.DropDownList("EnumDropDown",ViewBag.ColorList as SelectList, "Select Color Themes", new { @class = "form-select" })*@
+
+                                    @Html.DropDownList("ColorTheme",ViewBag.ColorList as SelectList, "Select Color Themes", new { @class = "form-select" })
+
+                                    @* <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                    <option selected>Select Color</option>
+
+                                    </select>*@
+                                </div>
+                                <div class="col-sm-12">
+                                    <label for="selectModuleIds" class="form-label required">Module mapping</label>
+                                    <div class="select2-dark">
+                                        <select id="selectModuleIds" name="selectModuleIds" required class="select2 form-select" multiple>
+                                            @if (Model.ModuleList != null)
+                                                foreach (var item in Model.ModuleList)
+                                                {
+
+                                                    <option value="@item.ModuleId"> @item.ModuleName</option>
+
+
+                                                }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <label for="selectIDTypes" class="form-label required">Document mapping</label>
+                                    <div class="select2-dark">
+                                        <select id="selectIDTypes" name="selectIDTypes" required class="select2 form-select" multiple>
+                                            @if (Model.IDTypeList != null)
+                                                foreach (var item in Model.IDTypeList)
+                                                {
+
+                                                    <option value="@item.IdentityId"> @item.IdentityName</option>
+
+
+                                                }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <input type="hidden" id="ClientId" name="ClientId" class="form-control" />
+                                    <input type="hidden" id="IDTypes" name="IDTypes" class="form-control" />
+                                    <input type="hidden" id="ModuleIds" name="ModuleIds" class="form-control" />
+                                    @* <button class="btn btn-success btn-submit" onclick="SaveClientSettingInfo('clientsettingForm','/ClientManagement/SaveClientSettingInfo')">Submit</button>*@
+                                    @*    <button class="btn btn-success btn-submit" >Submit</button>*@
+
+                                    <button class="btn btn-primary btn-next" style="visibility:hidden">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+
+                                    <button class="btn btn-primary" onclick="SaveClientSettingInfo('clientsettinginfoForm','/ClientManagement/SaveClientSettingInfo')">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Save and Move Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                    <form id="clientunitForm" method="post" action="/ClientManagement/SaveClientUnitInfo">
+                        <div id="unit-settings" class="content">
+                            <div class="row g-3" id="errorDiv"><p id="errorPara" class="error" style="color:red"></p></div>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="username">Company Name</label>
+
+                                    <input type="text" id="clientName" name="clientName" class="form-control" readonly placeholder="johndoe" />
+                                    @* <select id="selClientId" name="ClientID" class="select2 form-select" data-allow-clear="true">
+                                    <option value="">Select Client</option>
+                                    @if (Model.ClientList != null)
+                                    foreach (var item in Model.ClientList)
+                                    {
+                                    if (item.ClientId == Model.ClientId)
+                                    {
+                                    <option value="@item.ClientId" selected> @item.CompanyName</option>
+                                    }
+                                    else
+                                    {
+                                    <option value="@item.ClientId"> @item.CompanyName</option>
+                                    }
+
+                                    }
+                                    </select>*@
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="username">Unit Name</label>
+                                    <input type="text" id="UnitName" name="UnitName" class="form-control" required placeholder="johndoe" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="UnitName">Contact person</label>
+                                    <input type="text" id="ContactPerson" name="ContactPerson" required class="form-control" placeholder="johndoe" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="EmailID">Email</label>
+                                    <input type="email" id="EmailID" name="EmailID" class="form-control" required placeholder="john.doe@email.com" a-label="john.doe" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="EmailID">Email Display Name</label>
+                                    <input type="text" id="EmailDisplayName" name="EmailDisplayName" class="form-control" required placeholder="john.doe" a-label="john.doe" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="ContactNumber">Contact number</label>
+                                    <input type="number" id="ContactNumber" name="ContactNumber" class="form-control" required placeholder="1234567890" onKeyPress="if(this.value.length==10) return false;" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="address">GSTN </label>
+                                    <input type="text" id="GSTN" name="GSTN" class="form-control" required placeholder="1234567890" onKeyPress="if(this.value.length==15) return false;" />
+                                </div>
+                                <div class="col-sm-6">
+
+                                    <label class="form-label" for="contactnumber">TIN</label>
+                                    <input type="number" id="TIN" name="TIN" class="form-control" placeholder="1234567890" onKeyPress="if(this.value.length==11) return false;" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="address">Pan Card</label>
+                                    <input type="text" id="PanCard" name="PanCard" class="form-control" required placeholder="Pan Card" onKeyPress="if(this.value.length==10) return false;" />
+                                </div>
+                                <div class="col-sm-12">
+                                    <label class="form-label required" for="address">Unit Address</label>
+                                    <textarea id="Address" name="Address" rows="2" required class="form-control"></textarea>
+                                    @*  <input type="text" id="" class="form-control" placeholder="Unit Address" />*@
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="exampleFormControlSelect1" class="form-label required">Country</label>
+                                    <select class="form-select" id="CountryId" required name="CountryID" onchange="javascript:PopulateStateDDL(this.value)" data-allow-clear="true" data-select2-id="multicol-country" aria-hidden="true">
+                                        <option selected>Select Country</option>
+                                        @if (Model.CountryList != null)
+                                            foreach (var item in Model.CountryList)
+                                            {
+                                                if (item.CountryId == Model.CountryId)
+                                                {
+                                                    <option value="@item.CountryId" selected> @item.CountryName</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.CountryId"> @item.CountryName</option>
+                                                }
+
+                                            }
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="exampleFormControlSelect1" class="form-label required">State</label>
+                                    <select class="form-select" id="StateId" name="StateID" required onchange="javascript:PopulateCityDDL(this.value)" aria-label="Default select example" data-allow-clear="true" data-select2-id="multicol-country" aria-hidden="true">
+                                        <option selected>Select State</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="exampleFormControlSelect1" class="form-label required">City</label>
+                                    <select class="form-select" id="CityId" name="CityID" required aria-label="Default select example" data-allow-clear="true" data-select2-id="multicol-country" aria-hidden="true">
+                                        <option selected>Select City</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="address">Pincode</label>
+                                    <input type="number" id="Pincode" name="Pincode" required class="form-control" placeholder="400001" maxlength="12" onKeyPress="if(this.value.length==6) return false;" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="address">Confirmation Period (In Day)</label>
+                                    <input type="number" id="ConfirmationPeriod" name="ConfirmationPeriod" required class="form-control" placeholder="Confirmation Period" maxlength="12" onKeyPress="if(this.value.length==2) return false;" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="address">Notice Period (In Day)</label>
+                                    <input type="number" id="NoticePeriod" name="NoticePeriod" class="form-control" required placeholder="Confirmation Period" onKeyPress="if(this.value.length==2) return false;" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="address">Payroll Start Day</label>
+                                    <input type="number" id="PayrollStartDate" min="01" max="31" name="PayrollStartDate" required class="form-control flatpickr-date1" onKeyPress="if(this.value.length==2) return false;" />
+
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="address">Payroll End Day</label>
+                                    <input type="number" id="PayrollEndDate" min="01" max="31" name="PayrollEndDate" required class="form-control flatpickr-date1" onKeyPress="if(this.value.length==2) return false;" />
+
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label required" for="formtabs-birthdate">Weekly Off</label>
+                                    <div class="col mt-2">
+                                        <div class="form-check form-check-inline">
+                                            <input name="WeeklyOff"
+                                                   class="form-check-input"
+                                                   type="checkbox"
+                                                   value="1"
+                                                   id="WeeklyOff_1" />
+                                            <label class="form-check-label" for="collapsible-address-type-home">Monday</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input name="WeeklyOff"
+                                                   class="form-check-input"
+                                                   type="checkbox"
+                                                   value="2"
+                                                   id="WeeklyOff_2" />
+                                            <label class="form-check-label" for="collapsible-address-type-office">Tuesday</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input name="WeeklyOff"
+                                                   class="form-check-input"
+                                                   type="checkbox"
+                                                   value="3"
+                                                   id="WeeklyOff_3" />
+                                            <label class="form-check-label" for="collapsible-address-type-office">Wednesday</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input name="WeeklyOff"
+                                                   class="form-check-input"
+                                                   type="checkbox"
+                                                   value="4"
+                                                   id="WeeklyOff_4" />
+                                            <label class="form-check-label" for="collapsible-address-type-office">Thursday</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input name="WeeklyOff"
+                                                   class="form-check-input"
+                                                   type="checkbox"
+                                                   value="5"
+                                                   id="WeeklyOff_5" />
+                                            <label class="form-check-label" for="collapsible-address-type-office">Friday</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input name="WeeklyOff"
+                                                   class="form-check-input"
+                                                   type="checkbox"
+                                                   value="6"
+                                                   checked=""
+                                                   id="WeeklyOff_6" />
+                                            <label class="form-check-label" for="collapsible-address-type-office">Saturday</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input name="WeeklyOff"
+                                                   class="form-check-input"
+                                                   type="checkbox"
+                                                   value="7"
+                                                   checked=""
+                                                   id="WeeklyOff_7" />
+                                            <label class="form-check-label" for="collapsible-address-type-office">Sunday</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev" style="display:none;">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-submit" onclick="BlockUI();">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- /Default Wizard -->
+
+    </div>
+</div>
+
+@section scripts{
+
+    <script src="~/assets/vendor/js/template-customizer.js"></script>
+    <script src="~/assets/js/config.js"></script>
+
+    <!-- endbuild -->
+    <!-- Vendors JS -->
+    <script src="~/assets/vendor/libs/bs-stepper/bs-stepper.js"></script>
+    <script src="~/assets/vendor/libs/bootstrap-select/bootstrap-select.js"></script>
+    <script src="~/assets/vendor/libs/select2/select2.js"></script>
+
+
+    <!-- Main JS -->
+    <script src="~/assets/js/main.js"></script>
+
+    <!-- Page JS -->
+
+    <script src="~/assets/js/form-wizard-numbered.js"></script>
+    <script src="~/assets/js/form-wizard-validation.js"></script>
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script src="~/customjs/employeevalidation.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            //$("#upload_file").click(function () {
+            //    $("#profileimagepreview").hide();
+            //});
+            //if (jQuery("#profileimagepreview").prop("src") != "")
+            //    jQuery("#uploaded_view").addClass("show");
+            //$(".file_remove").click(function () {
+            //    $("#profileimagepreview").show();
+            //});
+
+
+            Init("@Model.ClientId", "@Model.DisplayMessage", "");
+
+            var countryId = ('@Model.CountryId' == '') ? 0 : '@Model.CountryId'
+            var stateId = ('@Model.StateId' == '') ? 0 : '@Model.StateId'
+            if (countryId > 0)
+                PopulateStateDDL(countryId);
+            if (stateId > 0)
+                PopulateCityDDL(stateId)
+
+            jQuery("#errorDiv").hide();
+            jQuery("#errorPara").html("");
+        });
+
+        //function MoveNext(formID) {
+        //    btnNext = jQuery("#" + formID).find('.btn-submit')
+        //    btnNext.trigger("click")
+        //}
+
+        // jQuery("#ClientId").val(20);
+        function PopulateStateDDL(countryId) {
+            //var objDDL = countryDDL
+            jQuery("#CountryId").attr("disabled", true)
+            jQuery("#StateId").html("")
+            jQuery.ajax({
+                type: "GET",
+                url: "/ClientManagement/GetCounryStates",
+                data: { CountryId: countryId },
+                success: function (response) {
+
+                    PopulateDropDown("StateId", response, '@Model.StateId', 'stateId', 'stateName')
+                    jQuery("#CountryId").attr("disabled", false)
+                },
+                failure: function (response) {
+                    $erroralert("Transaction Failed!", response.responseText);
+                },
+                error: function (response) {
+                    $erroralert("Transaction Failed!", response.responseText);
+                }
+            });
+        }
+
+        function PopulateCityDDL(stateID) {
+            //var objDDL = countryDDL
+            jQuery("#CountryId").attr("disabled", true)
+            jQuery("#StateId").attr("disabled", true)
+            jQuery("#CityId").html("")
+            jQuery.ajax({
+                type: "GET",
+                url: "/ClientManagement/GetStateCities",
+                data: { StateId: stateID },
+                success: function (response) {
+                    PopulateDropDown("CityId", response, '@Model.CityId', 'cityId', 'cityName')
+                    jQuery("#StateId").attr("disabled", false)
+                    jQuery("#CountryId").attr("disabled", false)
+                },
+                failure: function (response) {
+                    $erroralert("Transaction Failed!", response.responseText);
+                },
+                error: function (response) {
+                    $erroralert("Transaction Failed!", response.responseText);
+                }
+            });
+        }
+
+
+        function SaveClientInfo(formID, url) {
+
+            // var formData = jQuery("#employeepersonalinfoForm").serialize(); ;
+            if (!ValidForm(formID)) {
+                return false;
+            }
+            // jQuery("#ClientId").val(20);
+            formData = jQuery("#" + formID).serialize() + "&ClientId=" + jQuery("#ClientId").val();
+            var x = 1
+            BlockUI();
+            jQuery.ajax({
+                type: "POST",
+                //url: "/Employee/SaveEmployeePersonalInfo",
+                url: url,
+                data: formData,
+                cache: false,
+                contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                success: function (data) {
+                    UnblockUI();
+                    // jQuery.IsNumeric(data)?jQuery("#EmployeeId").val(data):"Print error message";
+                    if (formID == "clientpersonalinfoForm") {
+
+                        if (IsNumeric(data)) {
+
+                            jQuery("#ClientId").val(data);
+                            MoveNext("clientpersonalinfoForm")
+                        }
+                        else {
+                            jQuery("#errorDiv").show();
+                            jQuery("#errorPara").html(data);
+                        }
+                    }
+                },
+                error: function (result) {
+                    UnblockUI();
+                    var x = 1;
+                }
+            });
+        }
+
+
+        function SaveClientSettingInfo(formID, url) {
+
+            // var fileName = document.getElementById("fileName").value;
+           
+
+            jQuery("#clientName").val(jQuery("#CompanyName").val());
+            // var formData = jQuery("#employeepersonalinfoForm").serialize(); ;
+            if (!ValidForm(formID)) {
+                return false;
+            }
+            // jQuery("#ClientId").val(20);
+            formData = GetProfileImage();
+            BlockUI();
+            var x = 1
+
+            jQuery.ajax({
+                type: "POST",
+                //url: "/Employee/SaveEmployeePersonalInfo",
+                url: url,
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                dataType: "json",
+                success: function (data) {
+                    UnblockUI();
+                    // jQuery.IsNumeric(data)?jQuery("#EmployeeId").val(data):"Print error message";
+                    if (formID == "clientsettinginfoForm") {
+
+                        if (IsNumeric(data)) {
+                            //  jQuery("#ClientId").val(data);
+
+                            MoveNext("clientsettinginfoForm");
+                        }
+                        else {
+                            jQuery("#errorDiv").show();
+                            jQuery("#errorPara").html(data);
+                        }
+                    }
+                },
+                error: function (result) {
+                    UnblockUI();
+                    var x = 1;
+                    $erroralert("Transaction Failed!", result);
+                }
+            });
+        }
+
+        function GetProfileImage() {
+
+
+            let formData = new FormData();
+            formData.append("ProfileImageFile", jQuery("#upload_file")[0].files[0]);
+            formData.append("HeaderText", jQuery("#HeaderText").val());
+            formData.append("ClientId", jQuery("#ClientId").val());
+            formData.append("FooterText", jQuery("#FooterText").val());
+            formData.append("ColorTheme", jQuery("#ColorTheme").val());
+            formData.append("SupportLink", jQuery("#SupportLink").val());
+            formData.append("PoliciesLink", jQuery("#PoliciesLink").val());
+            formData.append("IDTypes", jQuery("#IDTypes").val());
+            formData.append("ModuleIds", jQuery("#ModuleIds").val());
+            formData.append("MenuStyle", jQuery("#MenuStyle").val());
+            formData.append("DocumentLink", jQuery("#DocumentLink").val());
+
+            return formData;
+        }
+
+
+        $("#selectModuleIds").change(function () {
+            var select = document.getElementById('selectModuleIds');
+            var selected = [...select.options]
+                .filter(option => option.selected)
+                .map(option => option.value);
+            //  alert(selected);
+
+            jQuery("#ModuleIds").val(selected);
+        });
+
+        $("#selectIDTypes").change(function () {
+            var select = document.getElementById('selectIDTypes');
+            var selected = [...select.options]
+                .filter(option => option.selected)
+                .map(option => option.value);
+            //  alert(selected);
+
+            jQuery("#IDTypes").val(selected);
+        });
+
+
+
+        function MoveNext(formID) {
+            btnNext = jQuery("#" + formID).find('.btn-next')
+            btnNext.trigger("click")
+        }
+
+    </script>
+}

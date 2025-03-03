@@ -1,0 +1,298 @@
+﻿@model SimpliHR.Infrastructure.Models.EmployeeSocialActivity.EmployeeAnnouncementViewModel
+@{
+    ViewData["Title"] = "Complaints";
+}
+<style>
+    span.totalVotes {
+        font-size: 11px;
+        margin-left: 5px;
+        color: #696cff;
+        white-space: nowrap;
+    }
+
+    div.poll-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    div.ops-icons i {
+    }
+
+        div.ops-icons i:hover {
+            cursor: pointer;
+            text-shadow: 0 0 black;
+        }
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Query Management/</span> Complaints</h4>
+    <div class="row">
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="card">
+                <div class="card-body">
+                    <button type="button" class="btn btn-primary btn-sm mb-3" style="float:right;margin-bottom:5px;" onclick="window.location.href='/QueryManagement/AddComplaint'"><i class="bx bx-plus me-0 me-sm-1"></i>Add Complaint</button>
+                    <div class="clearfix"></div>
+                    <div class="table-responsive text-nowrap">
+                        <table class="datatables-ajax table List">
+                            <thead>
+                                <tr>
+                                    <th>Complaint Number</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Assign To</th>
+                                    <th>Priority</th>
+                                    <th>Status</th>
+                                    <th>Complainant</th>
+                                    <th>Created Date</th>
+                                    <th>Due Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    if (Model != null)
+                                    {
+
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="div_ViewResignDetailsPartial">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type=button style="display:none" data-bs-toggle="modal" data-bs-target="#SurveyPollModal" id="btnSurveyPollModal" />
+<div class="modal fade" id="SurveyPollModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="poll-modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel2">Poll Chart</h5>
+                    <div class="ops-icons">
+                        <i class="fa-solid fa-file-pdf text-primary" style="margin-right: 10px;font-size: 18px;" onclick="printPollResult('donutCharts')"></i>
+                        @* <i class="fa-solid fa-file-excel text-primary" style="font-size: 18px;"></i> *@
+                    </div>
+                </div>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" id="SurveyPollAddQuestionDiv">
+                        <div id="donutCharts"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").DataTable({
+                "order": []
+            });
+        });
+
+        function edit(encEmployeeAnnouncementId) {
+            window.location.href = "/EmployeeAccouncement/AddEmployeeAnnouncements/" + encEmployeeAnnouncementId
+        }
+
+        function deleteRecord(encEmployeeAnnouncementId) {
+            Swal.fire({ title: 'Are you sure?', text: "This will get deleted permanently!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, delete it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    BlockUI();
+                    var inputDTO = {
+                        "encEmployeeAnnouncementId": encEmployeeAnnouncementId
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "/EmployeeAccouncement/DeleteRecord",
+                        contentType: 'application/json',
+                        data: JSON.stringify(inputDTO),
+                        success: function (data) {
+                            $successalert("", "Transaction Successful!");
+
+                            setTimeout(function () {
+                                window.location.href = '/EmployeeAccouncement/EmployeeAnnouncements';
+                            }, 1000);
+
+                            UnblockUI();
+                        },
+                        error: function (error) {
+                            $erroralert("Transaction Failed!", error.responseText + '!');
+                            UnblockUI();
+                        }
+                    });
+                }
+            });
+        }
+
+
+        function ShowChart(encEmployeeAnnouncementId) {
+            $("#donutCharts").empty();
+            BlockUI();
+            var inputDTO = {
+                "encEmployeeAnnouncementId": encEmployeeAnnouncementId
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/EmployeeAccouncement/GetPollData",
+                contentType: 'application/json',
+                data: JSON.stringify(inputDTO),
+                success: function (data) {
+                    $("#btnSurveyPollModal").click();
+
+                    if (data.length > 0) {
+                        data.forEach((v, i) => {
+                            let pollQuestion = v.pollQuestion;
+                            if (pollQuestion != null) {
+                                let chartId = "Chart_" + pollQuestion.surveyPollQuestionId;
+                                $("#donutCharts").append("<div class='qdiv'><h5>" + pollQuestion.question + "<span class='badge bg-label-primary text-muted totalVotes'>(Total Votes - " + pollQuestion.totalVotes + ")</span></h5><div id='" + chartId + "'></div></div>");
+
+                                let pollOptions = v.pollOptions;
+                                let labels = [];
+                                let series = [];
+                                pollOptions.forEach((vOptions, iOptions) => {
+                                    labels.push(vOptions.optionName);
+                                    let optionId = vOptions.surveyPollOptionId;
+                                    let responses = v.pollResponses.filter(x => x.optionId == optionId);
+                                    let seriesData = (responses.length * 100) / v.pollResponses.length;
+                                    series.push(seriesData);
+                                });
+                                if (v.pollResponses.length == 0) {
+                                    $("#" + chartId).append("<p>No votes yet</p>")
+                                }
+                                else {
+                                    createDonutChart(chartId, series, labels);
+                                }
+                            }
+                        });
+                    }
+                    UnblockUI();
+                },
+                error: function (error) {
+                    $erroralert("Transaction Failed!", error.responseText + '!');
+                    UnblockUI();
+                }
+            });
+        }
+
+        function createDonutChart(chartId, series, labels) {
+            var options = {
+                series: series,
+                chart: {
+                    type: 'donut',
+                },
+                labels: labels,
+                tooltip: {
+                    y: {
+                        formatter: function (value) {
+                            return value + '%';
+                        }
+                    }
+                },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+
+            var chart = new ApexCharts(document.querySelector("#" + chartId), options);
+            chart.render();
+        }
+
+
+        function printPollResult1(divId) {
+
+            var HTML_Width = $('#SurveyPollAddQuestionDiv').width();
+            var HTML_Height = $('#SurveyPollAddQuestionDiv').height();
+            var top_left_margin = 15;
+            var PDF_Width = HTML_Width + (top_left_margin * 2);
+            var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+            var canvas_image_width = HTML_Width;
+            var canvas_image_height = HTML_Height;
+
+            var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+            html2canvas($('#SurveyPollAddQuestionDiv')[0]).then(function (canvas) {
+                var imgData = canvas.toDataURL("image/jpeg", 1.0);
+                var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+                pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+                for (var i = 1; i <= totalPDFPages; i++) {
+                    pdf.addPage(PDF_Width, PDF_Height);
+                    pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
+                }
+                pdf.save("Polls.pdf");
+                // $(".html-content").hide();
+            });
+        }
+        function printPollResult(divId) {
+            // Get all child divs within the specified parent div
+            var divs = $('#' + divId).children('.qdiv');
+
+            // Define margin and dimensions for the PDF
+            var top_margin = 40;
+            var left_margin = 40;
+            var top_left_margin = 25;
+            var PDF_Width = 595.28; // A4 page width in pt (1 pt = 1/72 inch)
+            var PDF_Height = 841.89; // A4 page height in pt
+
+            var titleText = "Survey Poll Result";
+            var titleX = PDF_Width / 2; // Center horizontally
+            var titleY = top_left_margin; // Top margin
+            // Create a new jsPDF instance
+            var pdf = new jsPDF('p', 'pt', 'a4');
+
+            // Function to add each div to the PDF
+            function addDivToPDF(index) {
+                if (index >= divs.length) {
+                    pdf.save("Poll Charts.pdf");
+                    return;
+                }
+
+                html2canvas(divs[index]).then(function (canvas) {
+                    var imgData = canvas.toDataURL("image/jpeg", 1.0);
+                    var imgWidth = PDF_Width - (top_left_margin * 2);
+                    var imgHeight = canvas.height * imgWidth / canvas.width;
+
+                    if (index > 0) {
+                        pdf.addPage();
+                    }
+
+                    pdf.setFontSize(18);
+                    pdf.text(titleText, titleX, titleY, { align: 'center' });
+
+                    pdf.addImage(imgData, 'JPG', top_margin, left_margin, imgWidth, imgHeight);
+
+                    // Process the next div
+                    addDivToPDF(index + 1);
+                });
+            }
+
+            // Start the process with the first div
+            addDivToPDF(0);
+        }
+
+        
+
+    </script>
+}

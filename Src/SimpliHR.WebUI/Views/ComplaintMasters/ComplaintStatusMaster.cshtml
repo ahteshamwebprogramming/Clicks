@@ -1,0 +1,72 @@
+﻿@{
+    ViewData["Title"] = "Complaint Status Master";
+}
+
+<style>
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+
+    .tagify__tag-text {
+        white-space: nowrap !important;
+    }
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Complaint/</span> Status</h4>
+    <div class="row">
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="card">
+                <div class="card-body">
+                    <div class="clearfix"></div>
+
+                    <div id="div_AddPartial">
+                    </div>
+
+                    <div id="div_ListPartial">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+@section scripts {
+    <script src="../../customjs\masters\complaintStatusMaster.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            AddPartialView("");
+            ListPartialView();
+
+
+
+
+
+
+        });
+        function initErrorValidate() {
+            $("#AnnoucementTypeForm").find("[required]").on("focus blur click change", function () {
+
+                let currObj = $(this);
+                if (currObj[0].tagName == "SELECT") {
+                    currObj.parent().parent().find(".text-danger").text("");
+                    currObj.parent().parent().find(".text-danger").hide();
+                }
+                else {
+                    currObj.parent().find(".text-danger").text("");
+                    currObj.parent().find(".text-danger").hide();
+                }
+
+            });
+        }
+
+
+
+
+    </script>
+}

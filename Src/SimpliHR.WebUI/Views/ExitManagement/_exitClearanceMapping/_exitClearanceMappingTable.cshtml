@@ -1,0 +1,37 @@
+﻿@model List<SimpliHR.Infrastructure.Models.Exit.ExitClearanceMappingDTO>
+
+<div class="table-responsive text-nowrap">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>DepartmentName</th>
+                <th>Primary Clearance Person</th>
+                <th>Secondary Clearance Person</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (Model != null)
+                {
+                    if (Model.Count > 0)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.DepartmentName</td>
+                                <td>@item.PrimaryClearancePersonName</td>
+                                <td>@item.SecondaryClearancePersonName</td>
+                                <td>
+                                    <input type="button" class="btn btn-primary btn-sm" value="Edit" onclick="EditClearanceMapping(@item.ClearanceMappingId)" />
+                                    <input type="button" class="btn btn-primary btn-sm" value="Delete" onclick="DeleteClearanceMapping(@item.ClearanceMappingId)" />
+                                    <input type="button" class="btn btn-primary btn-sm" value="Manage Assets" onclick="ViewExitClearanceAssetMappingPopup(@item.ClearanceMappingId)" />
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>

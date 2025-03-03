@@ -1,0 +1,110 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.LoanMasterDTO
+@{
+    ViewData["Title"] = "SanctionMaster";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll/</span> Employees Salary Details</h4>
+    <div class="row">
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="card">
+                <div class="card-body">
+                    <div>
+                        <form id="ViewAttendanceForm" method="post" action="/ExcelUD/GetEmployeeSalaries">
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <label class="form-label" for=""> Year</label>
+                                    @*  <label class="form-control" id="lblyear" for="">2023</label>*@
+                                    <select class="form-select" id="selYear" name="Year" aria-label="Default select example">
+                                        <option value="0" selected>Select an option</option>
+
+                                        @if (Model.Years != null)
+                                        {
+                                            @foreach (var item in Model.Years)
+                                            {
+                                                if (item == Model.SalaryYear)
+                                                {
+                                                    <option value="@item" selected> @item</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item"> @item</option>
+                                                }
+
+                                            }
+                                        }
+                                    </select>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for=""> Month</label>
+                                    <select class="form-select" id="selMonth" name="Month" aria-label="Default select example" required>
+                                        <option value="0" selected>Select an option</option>
+
+                                        @if (Model.SalMonths != null)
+                                        {
+                                            @foreach (var item in Model.SalMonths)
+                                            {
+                                                if (item.ID == Model.SalaryMonth)
+                                                {
+                                                    <option value="@item.ID" selected> @item.Name</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.ID"> @item.Name</option>
+                                                }
+
+                                            }
+                                        }
+                                    </select>
+
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label" for=""> Employees</label>
+                                    <select class="form-select" id="selEmployee" name="Employee" aria-label="Default select example">
+                                        <option value="0" selected>--Select All--</option>
+
+                                        @if (Model.EmployeeMasterList != null)
+                                        {
+                                            @foreach (var item in Model.EmployeeMasterList)
+                                            {
+                                                if (item.EmployeeId == Model.Employee)
+                                                {
+                                                    <option value="@item.EmployeeId" selected> @item.EmployeeName</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.EmployeeId"> @item.EmployeeName</option>
+                                                }
+
+
+                                            }
+                                        }
+                                    </select>
+
+                                </div>
+
+                            </div>
+                            <div class="pt-4">
+
+                                @* <button type="button" class="btn btn-primary me-sm-3 me-1" onclick="getLocation();">View Attendance</button>*@
+                                <button type="submit" class="btn btn-primary btn-sm me-sm-3 me-1" onclick="return ValidateInputs()">Show Details</button>
+                            </div>
+                        </form>
+                    </div>
+                 
+
+
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+

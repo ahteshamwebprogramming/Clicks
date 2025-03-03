@@ -1,0 +1,764 @@
+﻿@model SimpliHR.Infrastructure.Models.ClientAdmin.ClientAdminDashboard
+@{
+    ViewData["Title"] = "Index";
+    //Layout = null;
+    //Layout = "~/Views/Shared/_LayoutHorizontal.cshtml";
+}
+<style type="text/css">
+
+
+    .disabled {
+        pointer-events: none;
+        opacity: 0.5;
+    }
+
+    modal-dialog {
+        max-width: 100%;
+        margin: 0;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 100vh;
+        display: flex;
+    }
+
+    .filterTextbox {
+        border-top: 0px;
+        border-left: 0px;
+        border-right: 0px;
+        background: transparent !important;
+        border-radius: 0px;
+        /* color: black; */
+        padding-left: 0px;
+    }
+
+    .filterSelect ~ span > span > span {
+        border-top: 0px !important;
+        border-left: 0px !important;
+        border-right: 0px !important;
+        background: transparent !important;
+        border-radius: 0px !important;
+        /* color: black; */
+        padding-left: 0px !important;
+    }
+
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+        <div class="col-4 mb-4" style="display:none">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="card-title d-flex align-items-start justify-content-between">
+                                <div class="avatar flex-shrink-0" style="height: auto;cursor: initial;">
+                                    @*<img src="../../assets/img/icons/unicons/paypal.png" alt="Credit Card" class="rounded" />*@
+                                    <i class="fa-solid fa-user" style="font-size:70px;color:#6668c5"></i>
+                                </div>
+                            </div>
+                            <span class="d-block mb-1">Total Employees</span>
+                            <h3 class="card-title text-nowrap mb-2">12</h3>
+                            @* <small class="text-danger fw-semibold"><i class="bx bx-down-arrow-alt"></i> -14.82%</small> *@
+                        </div>
+                        <div class="col-6">
+                            <canvas id="canvas" width="200" height="200" style="background:transparent;">
+                                Sorry, your browser does not support canvas.
+                            </canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 order-1 order-lg-1 mb-4 mb-4" style="display:none">
+            <div class="card" style="background-color: transparent;box-shadow: none;">
+                @* <div class="card-header" style="padding-top: 17px; padding-bottom: 17px;">
+                <h5 style="padding-bottom:0px;margin-bottom: 0px;">Filters</h5>
+                </div> *@
+                <div class="tab-content pt-0">
+                    <div class="tab-pane fade show active" id="navs-pills-browser" role="tabpanel">
+                        <div class="row" id="Filters">
+                            <div class="col">
+                                @* <label for="fromDate">From:</label> *@
+                                <input type="text" name="FromDate" class="form-control flatpickr-month-year filterTextbox" placeholder="From : Select Month and Year">
+                            </div>
+                            <!-- To Month and Year Input -->
+                            <div class="col">
+                                @* <label for="toDate">To:</label> *@
+                                <input type="text" name="ToDate" class="form-control flatpickr-month-year filterTextbox" placeholder="To : Select Month and Year">
+                            </div>
+                            <div class="col">
+                                @* <label for="toDate">Location</label> *@
+                                <select class="form-control select2 filterSelect" name="WorkLocation">
+                                    <option value="0">Select Location</option>
+                                    @{
+                                        if (Model != null && Model.WorkLocations != null)
+                                        {
+                                            foreach (var item in Model.WorkLocations)
+                                            {
+                                                <option value="@item.WorkLocationId">@item.Location</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="col">
+                                @* <label for="toDate">Department</label> *@
+                                <select class="form-control select2 filterSelect" name="Departments">
+                                    <option value="0">Select Department</option>
+                                    @{
+                                        if (Model != null && Model.Departments != null)
+                                        {
+                                            foreach (var item in Model.Departments)
+                                            {
+                                                <option value="@item.DepartmentId">@item.DepartmentName</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="col">
+                                <input type="button" class="btn btn-primary" value="Apply" onclick="GetChartsWithFilteredData()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8 mb-4 order-2" style="display:none">
+            <div class="card">
+                <div class="d-flex align-items-end row">
+                    <div class="col-sm-7">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">Day attendance! 🎉</h5>
+
+                            <p id="showAttendance"></p>
+                            <div id="ShowMarkAttendance">
+                                <a href="javascript:;" id="markAttendance" class="btn btn-sm btn-label-primary" onclick="OpenCameraScreen('InTime')">Clock IN</a>
+                            </div>
+                            <div id="ShowStopAttendance" style="display:none">
+                                <a href="javascript:;" id="StopAttendance" class="btn btn-sm btn-label-primary" onclick="OpenCameraScreen('OutTime')">Clock Out</a>
+                            </div>
+
+
+                            <table class="datatables-ajax table List" style="display:none" id="ListFaceAttendance">
+                                <thead>
+                                    <tr>
+                                        <th>Clock In</th>
+                                        <th>Clock Out</th>
+                                        <th>Duration</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>11</td><td>22</td><td>233</td></tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-5 text-center text-sm-left">
+                        <div class="card-body pb-0 px-0 px-md-4">
+                            <img src="../../assets/img/illustrations/man-with-laptop-light.png"
+                                 height="140"
+                                 alt="View Badge User"
+                                 data-app-dark-img="illustrations/man-with-laptop-dark.png"
+                                 data-app-light-img="illustrations/man-with-laptop-light.png" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade " id="openCameraScreen" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+                        <script type="text/javascript" src="~/WebCam/webcam.js"></script>
+                        <!-- Configure a few settings and attach camera -->
+                        <h1>SimpliHR-Face Attendace</h1>
+                        @*  <h2>SimpliHR2.0</h2>
+                        <h3>Demonstrates simple 320x240 capture &amp; display</h3>*@
+                        <div class="modal-content p-3 p-md-5 modal-dialog">
+                            @*<div class="back-img-user">
+                            <input name="EmployeeCode" id="EmployeeCode" type="text" class="username" placeholder="EmployeeCode">
+                            </div>*@
+                            <div id="my_camera"></div>
+                            <form>
+                                <input type="hidden" class="dbcol" id="InOutTime" name="InOutTime" />
+                                <input type=button value="Mark Attendance" onClick="MarkFaceAttendance()">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                            </form>
+
+                            <div id="results">Your captured image will appear here...</div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 order-3" style="display:none">
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-6 mb-4">
+                    <div class="card">
+                        <div class="card-body pb-0">
+                            <span class="d-block fw-semibold mb-1">Order</span>
+                            <h3 class="card-title mb-1">276k</h3>
+                        </div>
+                        <div id="orderChart" class="mb-3"></div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-6 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-title d-flex align-items-start justify-content-between">
+                                <div class="avatar flex-shrink-0">
+                                    <img src="../../assets/img/icons/unicons/wallet-info.png"
+                                         alt="Credit Card"
+                                         class="rounded" />
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn p-0"
+                                            type="button"
+                                            id="cardOpt6"
+                                            data-bs-toggle="dropdown"
+                                            aria-haspopup="true"
+                                            aria-expanded="false">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt6">
+                                        <a class="dropdown-item" href="javascript:void(0);">View More</a>
+                                        <a class="dropdown-item" href="javascript:void(0);">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <span>Sales</span>
+                            <h3 class="card-title text-nowrap mb-1">$4,679</h3>
+                            <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +28.42%</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Total Revenue -->
+        
+        <!--/ Total Revenue -->
+        
+    </div>
+
+    <div class="row">
+
+
+
+
+        <!-- Order Statistics -->
+        <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center justify-content-between pb-0">
+                    <div class="card-title mb-0">
+                        <h5 class="m-0 me-2">Employees By Gender</h5>
+                        @*<small class="text-muted">42.82k Total Sales</small>*@
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn p-0" type="button" id="orederStatistics" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="bx bx-dots-vertical-rounded"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orederStatistics">
+                            @* <a class="dropdown-item" href="javascript:void(0);">Select All</a> *@
+                            <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
+                            @* <a class="dropdown-item" href="javascript:void(0);">Share</a> *@
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        @* <div class="d-flex flex-column align-items-center gap-1">
+                        <h2 class="mb-2">50</h2>
+                        <span>Total</span>
+                        </div> *@
+                        <div id="EmployeesByGenderStats"></div>
+                    </div>
+                    <ul class="p-0 m-0" id="divEmployeesByGenderStats">
+                        <li class="d-flex mb-1 pb-1">
+                            <div class="avatar flex-shrink-0 me-3">
+                                <span class="avatar-initial rounded bg-label-primary">
+                                    <i class="bx bx-male"></i>
+                                </span>
+                            </div>
+                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                <div class="me-2">
+                                    <h6 class="mb-0">Male</h6>
+                                    @* <small class="text-muted">Mobile, Earbuds, TV</small> *@
+                                </div>
+                                <div class="user-progress" style="margin-right:10%">
+                                    <small class="fw-semibold" name="maleCount">0</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-1 pb-1">
+                            <div class="avatar flex-shrink-0 me-3">
+                                <span class="avatar-initial rounded" style="background-color: #ffdae0 !important; color: #eaa8b4 !important;"><i class="bx bx-female"></i></span>
+                            </div>
+                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                <div class="me-2">
+                                    <h6 class="mb-0">Female</h6>
+                                    @* <small class="text-muted">T-shirt, Jeans, Shoes</small> *@
+                                </div>
+                                <div class="user-progress" style="margin-right:10%">
+                                    <small class="fw-semibold" name="femaleCount">0</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-1 pb-1">
+                            <div class="avatar flex-shrink-0 me-3">
+                                <span class="avatar-initial rounded bg-label-secondary"><i class="bx bx-male-female"></i></span>
+                            </div>
+                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                <div class="me-2">
+                                    <h6 class="mb-0">Others</h6>
+                                    @* <small class="text-muted">T-shirt, Jeans, Shoes</small> *@
+                                </div>
+                                <div class="user-progress" style="margin-right:10%">
+                                    <small class="fw-semibold" name="otherCount">0</small>
+                                </div>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--/ Order Statistics -->
+        <!-- Expense Overview -->
+        <div class="col-md-6 col-lg-8 order-1 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <div class="card-title mb-0">
+                        <h5 class="m-0 me-2">Employees By Age and Gender</h5>
+                    </div>
+                </div>
+                <div class="card-body px-0">
+                    <div class="tab-content p-0">
+                        <div class="tab-pane fade show active" id="navs-tabs-line-card-income" role="tabpanel">
+                            <div class="d-flex p-4 pt-3">
+                                @* <div class="avatar flex-shrink-0 me-3">
+                                <img src="../../assets/img/icons/unicons/wallet.png" alt="User" />
+                                </div> *@
+                                @* <div>
+                                <small class="text-muted d-block">Total Balance</small>
+                                <div class="d-flex align-items-center">
+                                <h6 class="mb-0 me-1">$459.10</h6>
+                                <small class="text-success fw-semibold">
+                                <i class="bx bx-chevron-up"></i>
+                                42.9%
+                                </small>
+                                </div>
+                                </div> *@
+                            </div>
+                            <div id="EmployeeByAgeGenderStats" style="padding-left: 15px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/ Expense Overview -->
+        <!-- Activity Timeline -->
+        <div class="col-md-12 col-lg-12 order-4 order-lg-3" style="display:none">
+            <div class="card">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h5 class="card-title m-0 me-2">Wage Bill Trend</h5>
+
+                </div>
+                <div class="card-body">
+                    <div id="WageBillTrendChart"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center justify-content-between pb-0">
+                    <div class="card-title mb-0">
+                        <h5 class="m-0 me-2">Demographics</h5>
+                    </div>
+                    <div class="dropdown">
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="demographicChart"></div>
+                </div>
+            </div>
+        </div>
+        <!--/ Order Statistics -->
+        <!-- Expense Overview -->
+        <div class="col-md-6 col-lg-8 order-1 mb-4">
+            <div class="card h-100">
+                <div class="card-header py-3">
+                    <ul class="nav nav-pills" role="tablist">
+                        <li class="nav-item">
+                            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-EmployeesByTenure" aria-controls="navs-pills-browser" aria-selected="true" onclick="EmployeesByTenureRenderChart()">
+                                Employees By Tenure
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-EmployeesByQualification" aria-controls="navs-pills-os" aria-selected="false" onclick="EmployeesByQualificationRenderChart()">
+                                Employees By Qualification
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-EmployeesBySalaryBand" aria-controls="navs-pills-country" aria-selected="false" onclick="EmployeesBySalaryBandRenderChart()">
+                                Employees By Salary Band
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body px-0">
+                    <div class="tab-pane fade show active" id="navs-pills-EmployeesByTenure" role="tabpanel">
+                        <div class="tab-content p-0">
+                            <div class="tab-pane fade show active" id="navs-tabs-line-card-income" role="tabpanel">
+                                <div id="EmployeeByTenure"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade show active" id="navs-pills-EmployeesByQualification" role="tabpanel">
+                        <div class="tab-content p-0">
+                            <div class="tab-pane fade show active" id="navs-tabs-line-card-income" role="tabpanel">
+                                <div id="EmployeesByQualification"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade show active" id="navs-pills-EmployeesBySalaryBand" role="tabpanel">
+                        <div class="tab-content p-0">
+                            <div class="tab-pane fade show active" id="navs-tabs-line-card-income" role="tabpanel">
+                                <div id="EmployeesBySalaryBand"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-lg-12 order-4 order-md-4 order-lg-2 mb-4">
+            <div class="card">
+                <div class="row row-bordered g-0">
+                    <div class="col-md-12">
+                        <h5 class="card-header m-0 me-2 pb-3">Employee Headcount</h5>
+                        <div id="EmployeeHeadCount" class="px-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--/ Activity Timeline -->
+
+</div>
+
+<script src="../../assets/vendor/libs/jquery/jquery.js"></script>
+
+<script src="~/customjs/employeevalidation.js"></script>
+<script src="~/customjs/CommonFunction.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+<script src="https://js.api.here.com/v3/3.1/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://js.api.here.com/v3/3.1/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
+<script src="~/customjs/employee/clientadmin.js"></script>
+<script type="text/javascript">
+    var x;
+    StartAttendance();
+    //  getLocation();
+    // UpdateGPSLocation();
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let radius = canvas.height / 2;
+    ctx.translate(radius, radius);
+    radius = radius * 0.90;
+    setInterval(drawClock, 1000);
+    $(document).ready(function () {
+        initPage();
+        GetWageBillTrendChartData();
+        GetEmployeeList();
+        //EmployeeByGenderStatistics();
+        //EmployeeByAgeGenderStats();
+    });
+
+    function StartAttendance() {
+        //var startTime = sessionStorage.getItem("InTime");
+        //if (IsBlank(startTime))
+        //Get the starttime from session or from DB server
+        jQuery("#stopAttendance").removeClass("disabled");
+        GetUserLoginDetails('InTime');
+        //else
+        //    StartAttendanceTicker(startTime);
+    }
+
+    function PopulateFaceAttendanceTable(data, tableID) {
+        var tableCols = ['clockInTime', 'clockOutTime', 'stayDuration'];
+        var tableCtrl = jQuery("#" + tableID)
+        var tBody = jQuery('<tbody>')
+        jQuery("#" + tableID + " tbody tr").remove();
+
+        data.forEach(function (row) {
+            var tr = $('<tr>');
+            tableCols.forEach(function (attr) {
+                tr.append('<td><span>' + (IsBlank(row[attr]) == true ? "" : row[attr]) + '</span></td>');
+            });
+            tableCtrl.append(tr);
+        });
+    }
+
+    function GetUserLoginDetails(InOutTime) {
+        // BlockUI();
+        jQuery.ajax({
+            type: "GET",
+            url: "/EmployeeAttendanceUI/GetAttendaceTime/" + InOutTime,
+            success: function (data) {
+                //alert(data)
+                //   UnblockUI();
+                var sMsg = data.displayMessage  //.Trim().Replace("<br>", "\r\n")
+                if (sMsg.toUpperCase() == "SUCCESS") {
+                    if (data.faceRecognitionAttendanceList.length > 0) {
+                        jQuery('#ListFaceAttendance').attr('style', 'display:block');
+                        if (data.epochInOutTime != 0)
+                            StartAttendanceTicker(data.epochInOutTime);
+                    }
+
+                    PopulateFaceAttendanceTable(data.faceRecognitionAttendanceList, "ListFaceAttendance");
+
+                }
+                else
+                    $erroralert("Face Recognition", sMsg);
+            },
+            error: function (result) {
+                var x = 1;
+                alert("errror <br>" + result.responseText);
+                //      UnblockUI();
+            }
+        });
+    }
+
+    //function StopAttendance() {
+    //    //Mark the out punch and calculate hours
+    //    //if(confirm("Are you sure want to stop Attendance!"))
+    //    //{
+
+    //    clearInterval(x);
+    //    //jQuery("#markAttendance").bind('click');
+    //    //jQuery("#markAttendance").prop("disabled", true);
+    //    //jQuery("#stopAttendance").unbind('click');
+    //    //jQuery("#stopAttendance").prop("disabled", false);
+    //    //}
+    //}
+    function OpenCameraScreen(inOutTime) {
+        jQuery("#InOutTime").val(inOutTime);
+        jQuery("#openCameraScreen").modal('show');
+        Webcam.set({
+            width: 320,
+            height: 240,
+            image_format: 'jpeg',
+            jpeg_quality: 90
+        });
+        Webcam.attach('#my_camera');
+    }
+
+    function MarkFaceAttendance() {
+        // take snapshot and get image data
+        Webcam.snap(function (data_uri) {
+            // var startTime = new Date().getTime();
+
+            Webcam.upload(data_uri,
+                '/EmployeeAttendanceUI/MarkFaceAttendance',
+                function (code, data) {
+                    var ahVM = jQuery.parseJSON(data);
+                    //alert('Photo Matched : ' + text);
+                    if (ahVM.displayMessage.toUpperCase() == "SUCCESS") {
+                        // GPS location function
+                        UpdateGPSLocation();
+
+                        if (ahVM.faceRecognitionAttendanceList.length > 0) {
+                            jQuery('#ListFaceAttendance').attr('style', 'display:block');
+                        }
+                        PopulateFaceAttendanceTable(ahVM.faceRecognitionAttendanceList, "ListFaceAttendance");
+                        if (jQuery("#InOutTime").val().toUpperCase() == 'OUTTIME') {
+                            jQuery("#ShowMarkAttendance").attr("style", "display:inline");
+                            jQuery("#ShowStopAttendance").attr("style", "display:none");
+                            //StopAttendance();
+                            clearInterval(x);
+                            Webcam.reset();
+                            jQuery("#openCameraScreen").modal('hide');
+                            jQuery("#UserImage").val('');
+                            return;
+                        }
+                        else {
+                            jQuery("#ShowMarkAttendance").attr("style", "display:none");
+                            jQuery("#ShowStopAttendance").attr("style", "display:inline");
+                        }
+
+
+                        sessionStorage.setItem(jQuery("#InOutTime").val(), ahVM.epochInOutTime);
+                        StartAttendanceTicker(ahVM.epochInOutTime);
+                        Webcam.reset();
+                        jQuery("#UserImage").val('');
+                        jQuery("#openCameraScreen").modal('hide');
+                    }
+                    else {
+                        $erroralert(ahVM.displayMessage);
+                        Webcam.reset();
+                        jQuery("#UserImage").val('');
+                        jQuery("#openCameraScreen").modal('hide');
+                        document.getElementById("showAttendance").innerHTML = ahVM.displayMessage;
+                    }
+                });
+            // display results in page
+            document.getElementById('results').innerHTML =
+                '<br><h2>Here is your image:</h2>' +
+                '<img id="UserImage" name="UserImage" src="' + data_uri + '" />';
+        });
+    }
+    function StartAttendanceTicker(startTime) {
+        x = setInterval(function () {
+            var counterValue = StartCounter(startTime);
+            //sessionStorage.setItem(jQuery("#InOutTime").val(), ePOCHInOutTime);
+            if (counterValue == "EXPIRED") {
+                jQuery("#ShowMarkAttendance").attr("style", "display:none");
+                jQuery("#ShowStopAttendance").attr("style", "display:inline");
+                clearInterval(x);
+                document.getElementById("showAttendance").innerHTML = "Refresh";
+            }
+            else {
+                if (jQuery('#ShowStopAttendance').css('display') !== 'inline') {
+                    jQuery("#ShowMarkAttendance").attr("style", "display:none");
+                    jQuery("#ShowStopAttendance").attr("style", "display:inline");
+                }
+
+                document.getElementById("showAttendance").innerHTML = counterValue;
+            }
+        }, 1000);
+    }
+
+
+    // function getLocation() {
+    //     if (navigator.geolocation) {
+    //         navigator.geolocation.getCurrentPosition(showPosition);
+    //     }
+    // }
+
+    // function showPosition(position) {
+
+    //     //   Latitude=position.coords.latitude;
+    //    jQuery("#Latitude").val(position.coords.latitude);
+    //    jQuery("#Longitude").val(position.coords.longitude);
+    //     alert(jQuery("#Latitude").val());
+    //     alert(jQuery("#Longitude").val());
+
+    //     var platform = new H.service.Platform({
+    //         "apikey": "Q3LzLSGK1PSUYGyP8jbG8myhzLy6nobFjebRnhLFoB0"
+    //     });
+    //     var geocoder = platform.getSearchService();
+    //     if (navigator.geolocation) {
+    //         navigator.geolocation.getCurrentPosition(position => {
+    //             geocoder.reverseGeocode(
+    //                 {
+
+    //                     at: position.coords.latitude + "," + position.coords.longitude
+    //                   //  at: jQuery("#Latitude").val() + "," + jQuery("#Longitude").val()
+    //                 }, data => {
+    //                     // $("#lblGeoLocation").text(data.items[0].address.label);
+    //                     // $("#hdnCurrentLocation").val($("#lblGeoLocation").text());
+    //                     alert("The nearest address to your location is:\n" + data.items[0].address.label
+    //                 }, error => {
+    //                     console.error(error);
+    //                 }
+    //             );
+    //         });
+    //     } else {
+    //         console.error("Geolocation is not supported by this browser!");
+    //     }
+
+    //     // jQuery.ajax({
+    //     //     type: "GET",
+    //     //     url: "/EmployeeAttendanceUI/GetGPSLocation",
+    //     //     data: { latitude: jQuery("#Latitude").val(), longitude: jQuery("#Longitude").val() },
+    //     //     success: function (response) {
+
+    //     //     },
+    //     //     failure: function (response) {
+    //     //         $erroralert("Error!", "errror<br>" + response.responseText);
+    //     //     },
+    //     //     error: function (response) {
+    //     //         $erroralert("Error!", "errror<br>" + response.responseText);
+    //     //     }
+    //     // });
+
+    // }
+
+    function UpdateGPSLocation() {
+
+        var attendanceHistoryVM = {};
+
+        var platform = new H.service.Platform({
+            "apikey": "Q3LzLSGK1PSUYGyP8jbG8myhzLy6nobFjebRnhLFoB0"
+        });
+        var geocoder = platform.getSearchService();
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                geocoder.reverseGeocode(
+                    {
+
+                        at: position.coords.latitude + "," + position.coords.longitude
+                    }, data => {
+                        // $("#lblGeoLocation").text(data.items[0].address.label);
+                        // $("#hdnCurrentLocation").val($("#lblGeoLocation").text());
+                        //   alert("location is:\n" + data.items[0].address.label);
+
+                        if (data.items[0].address.label.length > 0) {
+                            // attendanceHistoryVM.HostName = jQuery("#EmployeeId").val();
+                            // attendanceHistoryVM.IPAddress = jQuery("#StartDate").val();
+                            attendanceHistoryVM.GPSLocation = data.items[0].address.label;
+                            attendanceHistoryVM.longitude = position.coords.longitude;
+                            attendanceHistoryVM.latitude = position.coords.latitude;
+                            //  BlockUI();
+                            jQuery.ajax({
+                                type: "POST",
+                                url: "/EmployeeAttendanceUI/SaveGPSLocation",
+                                data: { inputData: attendanceHistoryVM },
+                                success: function (data) {
+                                    //alert(data)
+                                    //  UnblockUI();
+                                    // var sMsg = data.displayMessage  //.Trim().Replace("<br>", "\r\n")
+                                    // $successalert("Mark Attendance", sMsg);
+                                    // if (sMsg.toUpperCase() == "SUCCESS") {
+                                    //     jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                                    // }
+
+
+                                },
+                                error: function (result) {
+                                    var x = 1;
+                                    $erroralert("Error!", "errror<br>" + result.responseText);
+                                    UnblockUI();
+                                }
+                            });
+
+                        }
+
+                    }, error => {
+                        console.error(error);
+                    }
+                );
+            });
+        } else {
+            console.error("Geolocation is not supported by this browser!");
+        }
+    }
+
+
+
+
+
+
+</script>

@@ -1,0 +1,108 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.ModuleMasterDTO
+
+@{
+    ViewData["Title"] = "Module";
+    Model.DisplayMessage += "";
+    //Layout = null;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Masters /</span> Module</h4>
+
+    <div class="card" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <button class="btn btn-secondary create-new btn-primary" tabindex="0" aria-controls="DataTables_Table_0" type="button" onclick="AddView()" style="float:right;">
+                <span>
+                    <i class="bx bx-plus me-sm-1"></i>
+                    <span class="d-none d-sm-inline-block">Add Record</span>
+                </span>
+            </button>
+            <!--input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" /-->
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+
+                            <th>Module Name</th>
+                            <th>Module Short Name</th>
+                            <th class="text-center" style="width:100px">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.ModuleMasterList != null)
+                            @foreach (var item in Model.ModuleMasterList)
+                            {
+                                <tr>
+
+                                    <td>@item.ModuleName</td>
+                                    <td>@item.ModuleShortName</td>
+                                    @*<th>@(item.IsActive == true ? "Active" : "Inactive")</th>*@
+                                    <td class="text-center">
+                                        <a class="dropdown-item" style="display:inline" href="#" onclick="EditRecord('Module','/Module/GetModuleInfo','@item.EncryptedId','@item.IsActive')"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item" style="display:inline" href="#" onclick="DeleteRecord('Module','@item.ModuleName','/Module/DeleteModule','@item.EncryptedId','@item.IsActive')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="List" onclick="javascript:window.location.href='/Module/Module/'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/Module/SaveModule">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" asp-for="ModuleName"></label>
+                        <input type="text" id="ModuleName required" required asp-for="ModuleName" maxlength="100" name="ModuleName" value="@Model.ModuleName" class="form-control clearForm" placeholder="Module">
+                        @* <span asp-validation-for="ModuleName" name="ModuleName" class="text-danger"></span>*@
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required" for="ModuleShortName">Module Short Name</label>
+                        <input type="text" id="ModuleShortName" required asp-for="ModuleShortName" maxlength="200" name="ModuleShortName" value="@Model.ModuleShortName" class="form-control clearForm" placeholder="Module">
+                        @*<span asp-validation-for="ModuleShortName" class="text-danger"></span>*@
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" id="ModuleId" name="ModuleId" class="clearForm" value="@Model.ModuleId">
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/Module/Module/'">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script src="../../customjs/CommonFunction.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            Init("@Model.ModuleId", "@Model.DisplayMessage", "@Model.HttpStatusCode");
+
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                if ("@Model.HttpStatusCode" == 200) {
+                    $successalert("", "@Model.DisplayMessage");
+                }
+                else {
+                    $erroralert("Transaction Failed!", "@Model.DisplayMessage");
+                }
+                // $successalert("Module", "@Model.DisplayMessage");
+            }
+        });
+
+    </script>
+}

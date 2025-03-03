@@ -1,0 +1,68 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeDirectoryCardDetailsDTO
+
+
+
+<div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="emp-pic">
+                <div class="text-center mb-2 me-3 "><img src="../../assets/img/avatars/1.png" class="rounded-circle" width="80" height="80" alt=""></div>
+            </div>
+            <div class="emp-cont">
+                <h5 class="mb-1">
+                    Aman Joshi</h4>
+                    <div><small>Android developer </small></div>
+            </div>
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            @if (Model.EmployeeCardDetails != null)
+            {
+                @if (Model.EmployeeCardDetails.Count != 0)
+                {
+
+                }
+            }
+            <table width="100%">
+                <tr>
+                    <td><small>Emp. Code</small></td>
+                    <td><small><strong>0942</strong></small></td>
+                </tr>
+                <tr>
+                    <td><small>Department </small></td>
+                    <td><small><strong>Development</strong></small></td>
+                </tr>
+                <tr>
+                    <td><small>Official Email</small></td>
+                    <td><small><strong>Aman.J@company.com</strong></small></td>
+                </tr>
+                <tr>
+                    <td><small>Personal Email</small></td>
+                    <td><small><strong>Aman.J@gamil.com</strong></small></td>
+                </tr>
+                <tr>
+                    <td><small>Mobile No.</small></td>
+                    <td><small><strong>8897420018</strong></small></td>
+                </tr>
+                <tr>
+                    <td><small>Emergency Contact Person Name</small></td>
+                    <td><small><strong>Gauri Aaman Joshi</strong></small></td>
+                </tr>
+                <tr>
+                    <td><small>Emergency Contact Person Number </small></td>
+                    <td><small><strong>8897427718</strong></small></td>
+                </tr>
+                <tr>
+                    <td><small>Blood Group</small></td>
+                    <td><small><strong>B+</strong></small></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,180 @@
+﻿@model SimpliHR.Infrastructure.Models.EmployeeSocialActivity.EmployeeAnnouncementViewModel
+<link href="~/customcss/newsdetails.css" rel="stylesheet" />
+
+<style>
+    /* Poll CSS */
+    .poll-que, .poll-result {
+        border: 1px solid #ececec;
+        border-radius: 20px;
+    }
+
+    .result-row {
+        border: 2px solid #ececec;
+        padding: 10px 15px;
+    }
+
+    .poll-container hr:last-child {
+        display: none;
+    }
+</style>
+
+<div class="card" style="min-height: 1045px;">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="small mb-3 fw-bold  float-start">@((Model != null && Model.EmployeeAnnouncementWithChild != null) ? Model.EmployeeAnnouncementWithChild.AnnouncementType : "")</div>
+                <div class="small mb-3 fw-bold float-end">
+                    @{
+                        string returnURL = "";
+                        if (Model != null && Model.EmployeeAnnouncementWithChild != null && Model.EmployeeAnnouncementWithChild.Source != null)
+                        {
+                            string source = Model.EmployeeAnnouncementWithChild.Source;
+                            if (source == "md")
+                            {
+                                <a href="/Manager/Dashboard"><i class="fa-solid fa-circle-chevron-left"></i> Back</a>
+                            }
+                            else if (source == "ed")
+                            {
+                                <a href="/Employee/Dashboard"><i class="fa-solid fa-circle-chevron-left"></i> Back</a>
+                            }
+                            else if (source == "card")
+                            {
+                                <a href="/EmployeeAccouncement/EmployeeAnnouncementList?v=card"><i class="fa-solid fa-circle-chevron-left"></i> Back</a>
+                            }
+                            else if (source == "list")
+                            {
+                                <a href="/EmployeeAccouncement/EmployeeAnnouncementList?v=list"><i class="fa-solid fa-circle-chevron-left"></i> Back</a>
+                            }
+                        }
+                    }
+
+                </div>
+                <div class="clearfix"></div>
+                <h2 class="mb-2" style="letter-spacing:.5px; line-height:40px">@((Model != null && Model.EmployeeAnnouncementWithChild != null) ? Model.EmployeeAnnouncementWithChild.Title : "")</h2>
+
+                <div>
+                    @{
+                        if (Model != null && Model.EmployeeAnnouncementWithChild != null)
+                        {
+                            DateTime publishDateTime = Model.EmployeeAnnouncementWithChild.PublishDate + Model.EmployeeAnnouncementWithChild.PublishTime;
+                            var timeDiff = (System.DateTime.Now - publishDateTime);
+                            if (timeDiff != null)
+                            {
+                                if (timeDiff.Days >= 1)
+                                {
+                                    if (timeDiff.Days > 1)
+                                    {
+                                        <span>@(timeDiff.Days) days ago</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@(timeDiff.Days) day ago</span>
+                                    }
+                                }
+                                else if (timeDiff.Hours >= 1)
+                                {
+                                    if (timeDiff.Hours > 1)
+                                    {
+                                        <span>@(timeDiff.Hours) hours ago</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@(timeDiff.Hours) hour ago</span>
+                                    }
+                                }
+                                else
+                                {
+                                    if (timeDiff.Minutes > 1)
+                                    {
+                                        <span>@(timeDiff.Minutes) minutes ago</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@(timeDiff.Minutes) minute ago</span>
+                                    }
+                                }
+                            }
+                        }
+
+                    } 
+                    
+                    @* / @((Model != null && Model.EmployeeAnnouncementWithChild != null) ? (((DateTime)(Model.EmployeeAnnouncementWithChild.PublishDate + Model.EmployeeAnnouncementWithChild.PublishTime)).ToString("dd-MMM-yyyy hh:mm tt")) : System.DateTime.Now) *@
+                </div>
+                <small><span class="smaller-font">@((Model != null && Model.EmployeeAnnouncementWithChild != null) ? Model.EmployeeAnnouncementWithChild.Keywords : "")</span></small>
+                <div class="mt-4 news-dtls-pic"><img src="../@((Model != null && Model.EmployeeAnnouncementWithChild != null) ? Model.EmployeeAnnouncementWithChild.ImagePath : "")" class="rounded" width=auto" height="300" alt=""></div>
+                <div class="mt-4">
+
+                    @{
+                        if (Model != null && Model.EmployeeAnnouncementWithChild != null)
+                        {
+
+                            @Html.Raw(Model.EmployeeAnnouncementWithChild.Description)
+
+                        }
+                    }
+
+                    @{
+                        if (Model != null && Model.SurveyPolls != null)
+                        {
+                            if (Model.SurveyPolls.Count > 0)
+                            {
+                                <div class="poll-que mt-4 mb-4 p-4">
+                                    <h4 style="margin-bottom:0!important">Your opinion matters!</h4>
+                                    <div class="bordered border-1 mt-3 poll-container">
+                                        @{
+                                            foreach (var item in Model.SurveyPolls)
+                                            {
+                                                if (item.PollQuestion != null)
+                                                {
+                                                    <div class="mb-4" name="pollQuestionID_@(item.PollQuestion.SurveyPollQuestionId)">
+                                                        <div class="mb-4"><h6>@(item.PollQuestion.Question)</h6></div>
+                                                        @{
+                                                            int? response = item.PollQuestion.Response;
+                                                            if (item.PollOptions != null)
+                                                            {
+                                                                foreach (var options in item.PollOptions)
+                                                                {
+                                                                    <div class="form-check mb-2 float-start me-3" style="@(response != null ? "pointer-events: none;" : "")">
+                                                                        <input name="vote_@item.PollQuestion.SurveyPollQuestionId" class="form-check-input" type="radio" @(options.SurveyPollOptionId == response ? "checked" : "") value="@options.SurveyPollOptionId">
+                                                                        <label class="form-check-label" for="defaultRadio2"> @options.OptionName </label>
+                                                                    </div>
+                                                                }
+                                                                <div class="clearfix"></div>
+                                                                if (response == null)
+                                                                {
+                                                                    <input type="button" name="btnVote" value="Vote" class="btn btn-primary mt-3" onclick="SubmitVote(@item.PollQuestion.SurveyPollQuestionId)">
+                                                                }
+                                                            }
+                                                        }
+
+                                                    </div>
+                                                    <hr />
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                        }
+                    }
+
+                    @{
+                        if (Model != null && Model.EmployeeAnnouncementFileUploadList != null)
+                        {
+                            foreach (var item in Model.EmployeeAnnouncementFileUploadList)
+                            {
+                                <div>
+                                    @*<a href="/EmployeeAccouncement/DownloadFile/@item.encEmployeeAnnouncementFileUploadsId"><i class="fa-solid fa-paperclip me-1"></i> Download the attached file (@item.UploadedFileName)</a>*@
+                                    <a href="javascript:void(0)" onclick="downloadAttachment('@item.encEmployeeAnnouncementFileUploadsId','@item.UploadedFileName')">
+                                        <i class="fa-solid fa-paperclip me-1"></i> Download the attached file (@item.UploadedFileName)
+                                    </a>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

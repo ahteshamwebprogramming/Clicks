@@ -1,0 +1,43 @@
+﻿@model SimpliHR.Infrastructure.Models.ClientManagement.ClientSettingDTO
+
+
+@{
+    if (!String.IsNullOrEmpty(Model.ClientLogo))
+    {
+        if (Model.RoleType=="M")
+        {
+            <a href="~/Manager/Dashboard" class="app-brand-link">
+                @* <img src="../../ClientLogo/@(Model.ClientLogo==null ? "logo_1.jpg" : Model.ClientLogo)" width="95" height="äuto" alt=""> *@
+                <img src="@(Model.Base64ProfileImage==null ? "logo_1.jpg" : Model.Base64ProfileImage)" width="65%" height="auto" alt="" />
+            </a>
+        }
+        else if (Model.RoleType == "U")
+        {
+            <a href="~/Employee/Dashboard" class="app-brand-link">
+                @* <img src="../../ClientLogo/@(Model.ClientLogo==null ? "logo_1.jpg" : Model.ClientLogo)" width="95" height="äuto" alt=""> *@
+                <img src="@(Model.Base64ProfileImage==null ? "logo_1.jpg" : Model.Base64ProfileImage)" width="65%" height="auto" alt="" />
+            </a>
+        }
+        else
+        {
+            <a href="~/Admin/index" class="app-brand-link">
+                @* <img src="../../ClientLogo/@(Model.ClientLogo==null ? "logo_1.jpg" : Model.ClientLogo)" width="95" height="äuto" alt=""> *@
+                <img src="@(Model.Base64ProfileImage==null ? "logo_1.jpg" : Model.Base64ProfileImage)" width="65%" height="auto" alt="" />
+            </a>
+        }
+    }
+    else
+    {
+        if (Model.ClientId == -1)
+        {
+            <a href="~/Admin/index" class="app-brand-link">
+                <img src="../../ClientLogo/logo_1.jpg" width="55%" height="auto" alt="">
+            </a>
+        }
+    }
+}
+
+
+
+
+

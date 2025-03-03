@@ -1,0 +1,100 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeMasterVM
+@{
+    //Layout = null;
+    ViewData["Title"] = "Employee Dashboard";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Employee /</span> Dashboard</h4>
+    <div class="card" id="List">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="javascript:window.location.href='/Employee/EmployeeDetail'" style="float:right;" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table table-bordered List">
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Employee Code</th>
+                            <th>Official Email</th>
+                            <th>Department</th>
+                            <th>HOD</th>
+                            <th>Manager</th>
+                            <th>DOJ</th>
+                            <th>DOB</th>
+                            <th>Employee Status</th>
+                            <th>Form Filling Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.EmployeeMasterList != null)
+                            foreach (var item in Model.EmployeeMasterList)
+                            {
+                                <tr>
+
+                                    <td>@item.EmployeeName</td>
+                                    <td>@item.EmployeeCode</td>
+                                    <td>@item.OfficialEmail</td>
+                                    <td>@Model.EmployeeMastersKeyValues.DepartmentKeyValues.Where(x => x.DepartmentId == item.DepartmentId).Select(r => r.DepartmentName).FirstOrDefault()</td>
+                                    <td>
+                                        @{
+                                            if (item.HODId != null)
+                                                Model.EmployeeMastersKeyValues.EmployeeKeyValues.Where(x => x.EmployeeId == item.HODId).Select(r => r.EmployeeName).FirstOrDefault().ToString();
+                                        }
+                                    </td>
+                                    <td>
+                                        @{
+                                            if (item.ManagerId != null)
+                                                Model.EmployeeMastersKeyValues.EmployeeKeyValues.Where(x => x.EmployeeId == item.ManagerId).Select(r => r.EmployeeName).FirstOrDefault().ToString();
+                                        }
+                                    </td>
+
+                                    <td>@(item.Doj == null ? "" : item.Doj.Value.ToString("dd-MMM-yyyy")) </td>
+                                    <td>@(item.Dob == null ? "" : @item.Dob.Value.ToString("dd-MMM-yyyy"))</td>
+                                    @* <td>@item.EmployeeStatus</td>*@
+                                    <td>@(item.EmployeeStatus == null ? "In Progress" : item.EmployeeStatus)</td>
+                                    @*<td>@(item.InfoFillingStatus == 0 ? "In Progress" : "Completed")</td>*@
+                                    @{
+                                        if (item.InfoFillingStatus == 0)
+                                        {
+                                            <span class="badge bg-label-warning me-1">In Progress</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-label-success me-1">Completed</span>
+                                        }
+                                    }
+                                    <td>
+                                        <button class="btn btn-primary" onclick="javascript:window.location.href='/Employee/EmployeeDetail?eEmployeeId=@item.EnycEmployeeId'">Edit</button>
+                                        <button class="btn btn-primary" onclick="javascript:alert('Implimentation Pending')">Delete</button>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section scripts {
+
+    @*    <script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $(".List").dataTable();
+            if (displayMessage.trim().toLowerCase() == "false") {
+                alert(displayMessage);
+            }
+        });
+
+
+
+    </script>
+
+
+}

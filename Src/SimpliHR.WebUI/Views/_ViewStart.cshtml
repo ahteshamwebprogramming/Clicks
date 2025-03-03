@@ -1,0 +1,26 @@
+﻿@using SimpliHR
+@namespace SimpliHR.WebUI.Views
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, SimpliHR
+
+
+@{
+
+    //Html.ViewContext.HttpContext.Current.Session["LoggedUserType"].ToString() == "superadmin" && Html.ViewContext.HttpContext.Current.Session["DEPTNM"].ToString() == "AlchemyAdmin")
+
+   string t =  Html.ViewContext.HttpContext.Session.GetString("MenuStyle");
+
+    //string t = SimpliHR.Webui.Modals.Account.ThemeType.themeO;
+
+    if (t == "H")
+    {
+        Layout = "~/Views/Shared/_LayoutHorizontal.cshtml";
+    }
+    else if (t == "V")
+    {
+        Layout = "~/Views/Shared/_LayoutVertical.cshtml";
+    }
+    else
+    //dynamic Layout;
+        Layout = "~/Views/Shared/_LayoutVertical.cshtml";
+}

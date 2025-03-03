@@ -1,0 +1,163 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeMasterDTO;
+@{
+    // Layout = null;
+    Model.DisplayMessage += "";
+}
+
+@*Page CSS*@
+<link rel="stylesheet" href="~/assets/vendor/libs/bs-stepper/bs-stepper.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/bootstrap-select/bootstrap-select.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/select2/select2.css" />
+
+@*Page CSS*@
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">E-Joinee</h4>
+
+    <!-- Invoice List Table -->
+    <div class="card">
+        <div class="row">
+            <div class="col-12">
+                <div class="bs-stepper">
+                    <div class="bs-stepper-content">
+                        <form method="post">
+                            <div class="row g-3">
+                                @*<div class="col-sm-6">
+                                    <h6><strong>I Want to</strong></h6>
+                                </div>
+                               <div class="col-sm-6" style="padding-left:30px">
+                                    <div class="row">
+                                        <div class="col-md mb-md-0 mb-2">
+                                            <div class="form-check custom-option" style="border: 0;">
+                                                <label class="form-check-label custom-option-content" for="customRadioTemp1">
+                                                    <input name="customRadioTemp"
+                                                           class="form-check-input"
+                                                           type="radio"
+                                                           value=""
+                                                           id="customRadioTemp1"
+                                                           checked />
+                                                    <span class="custom-option-header">
+                                                        <span class="h6 mb-0" style="line-height: 1.7;">Search/Edit</span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md mb-md-0 mb-2">
+                                            <div class="form-check custom-option" style="border: 0;">
+                                                <label class="form-check-label custom-option-content" for="customRadioTemp2">
+                                                    <input name="customRadioTemp"
+                                                           class="form-check-input"
+                                                           type="radio"
+                                                           value=""
+                                                           id="customRadioTemp2" />
+                                                    <span class="custom-option-header">
+                                                        <span class="h6 mb-0" style="line-height: 1.7;">Create</span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>*@
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">First Name</label>
+                                    <input type="text" id="" asp-for=FirstName class="form-control" value="@Model.FirstName" placeholder="First Name" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Middle Name</label>
+                                    <input type="text" id="" class="form-control" asp-for="MiddleName" value="@Model.MiddleName" placeholder="Middle Name" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Last Name</label>
+                                    <input type="text" id="" class="form-control" asp-for="LastName" value="@Model.FirstName" placeholder="Last Name" />
+                                </div>
+                              
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Gender</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" asp-for="GenderId" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">Male</option>
+                                        <option value="2">Female</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Date of Birth</label>
+                                    <input type="text" class="form-control flatpickr-date1" value="@Model.Dob" placeholder="YYYY-MM-DD" asp-for="Dob" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">SBU</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">Option 1</option>
+                                        <option value="2">Option 2</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Email</label>
+                                    <input type="email" id="email" class="form-control" placeholder="john.doe@email.com" value="@Model.EmailId" aria-label="john.doe" asp-for="EmailId" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Date of Joining</label>
+                                    <input type="text" class="form-control flatpickr-date1" placeholder="YYYY-MM-DD" asp-for="Doj" value="@Model.Doj" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Department</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example" asp-for="DepartmentId">
+                                        <option selected>Open this select menu</option>
+                                        @if (Model.EmployeeMastersKeyValues.DepartmentKeyValues != null)
+                                        {
+                                            foreach (var item in Model.EmployeeMastersKeyValues.DepartmentKeyValues)
+                                            {
+                                                <option value="@item.DepartmentId"> @item.DepartmentName</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Designation</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example" asp-for="JobTitleId">
+                                        <option selected>Open this select menu</option>
+                                        @if (Model.EmployeeMastersKeyValues.JobTitleKeyValues != null)
+                                        {
+                                            foreach (var item in Model.EmployeeMastersKeyValues.JobTitleKeyValues)
+                                            {
+                                                <option value="@item.JobTitleId"> @item.JobTitle</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <span class="align-middle d-sm-inline-block d-none">Reset</span>
+                                    </button>
+                                    <button class="btn btn-success btn-submit">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <!-- Vendors JS -->
+    <script src="~/assets/vendor/libs/bs-stepper/bs-stepper.js"></script>
+    <script src="~/assets/vendor/libs/bootstrap-select/bootstrap-select.js"></script>
+    <script src="~/assets/vendor/libs/select2/select2.js"></script>
+    <!-- Page JS -->
+    <script src="~/assets/js/form-wizard-numbered.js"></script>
+    <script src="~/assets/js/form-wizard-validation.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            let displayMessage = "@Model.DisplayMessage";
+            if (displayMessage.trim().toLowerCase() != "") {
+                alert(displayMessage);
+            }
+
+            $(".flatpickr-date1").flatpickr({
+                //monthSelectorType: 'static'
+            });
+        });
+    </script>
+}
+

@@ -1,0 +1,477 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>SimpliHR.WebUI</RootNamespace>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\Payroll\ReportsController.cs" />
+    <Compile Remove="Controllers\ProjectTracker\ProjectsController.cs" />
+    <Compile Remove="Modals\CommonFunction.cs" />
+    <Compile Remove="Pages\Index.cshtml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Pages\Index.cshtml" />
+    <Content Remove="Views\Attendance\ManualPunches - Copy.cshtml" />
+    <Content Remove="Views\Attendance\ViewAttendance.cshtml" />
+    <Content Remove="Views\EmployeeAttendanceUI\ViewAttendance - Copy.cshtml" />
+    <Content Remove="Views\PayrollSalary\SanctionMaster.cshtml" />
+    <Content Remove="Views\SalaryComponents\SalaryDeductions.cshtml" />
+    <Content Remove="Views\SalaryComponents\SalaryReimbursement.cshtml" />
+    <Content Remove="wwwroot\CustomJs\Employee\CommonDashboard.js" />
+    <Content Remove="wwwroot\CustomJs\ITDeclaration.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\CustomJs\Employee\CommonDashboard.js" />
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <Folder Include="SalaryTemplate\" />
+    <Folder Include="token.json\" />
+    <Folder Include="Views\PerformanceSetting\" />
+    <Folder Include="Views\Projects\" />
+    <Folder Include="wwwroot\assets\vendor\libs\bootstrap-daterangepicker\" />
+    <Folder Include="wwwroot\js\" />
+    <Folder Include="wwwroot\lib\bootstrap\" />
+    <Folder Include="wwwroot\lib\bootstrap\dist\js\" />
+    <Folder Include="wwwroot\lib\jquery-validation-unobtrusive\" />
+    <Folder Include="wwwroot\lib\jquery-validation\" />
+    <Folder Include="wwwroot\lib\jquery-validation\dist\" />
+    <Folder Include="wwwroot\lib\jquery\" />
+    <Folder Include="wwwroot\lib\jquery\dist\" />
+    <Folder Include="wwwroot\Bills\" />
+    <Folder Include="wwwroot\PolicyDocuments\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Debug\net6.0\MXFaceAPICall.dll" />
+    <None Include="Views\EmployeeAttendanceUI\ViewAttendance - Copy.cshtml" />
+    <None Include="Views\EmployeeAttendanceUI\ViewAttendance.cshtml" />
+    <None Include="Views\Bank\Bank.cshtml" />
+    <None Include="Views\BloodGroup\BloodGroup.cshtml" />
+    <None Include="Views\Module\Module.cshtml" />
+    <None Include="Views\PayrollSalary\StatutoryComponents.cshtml" />
+    <None Include="Views\PayrollSalary\_StatutoryComponent\_EPFEdit.cshtml" />
+    <None Include="Views\PayrollSalary\_StatutoryComponent\_EPFView.cshtml" />
+    <None Include="Views\PayrollSalary\ReimbursementComponent.cshtml" />
+    <None Include="Views\Shift\Shift.cshtml" />
+    <None Include="Views\StatutoryComponent1\StatutoryComponents.cshtml" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\.editorconfig" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\.gitignore" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\CONTRIBUTING.md" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\css\hover.css.map" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\Gruntfile.js" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\HISTORY.md" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_backward.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_bob.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_bounce-in.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_bounce-out.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_buzz-out.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_buzz.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_float.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_forward.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_grow-rotate.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_grow.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_hang.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_pop.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_pulse-grow.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_pulse-shrink.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_pulse.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_push.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_rotate.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_shrink.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_sink.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_skew-backward.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_skew-forward.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_skew.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_wobble-bottom.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_wobble-horizontal.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_wobble-skew.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_wobble-to-bottom-right.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_wobble-to-top-right.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_wobble-top.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\2d-transitions\_wobble-vertical.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_back-pulse.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_bounce-to-bottom.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_bounce-to-left.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_bounce-to-right.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_bounce-to-top.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_fade.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_radial-in.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_radial-out.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_rectangle-in.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_rectangle-out.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_shutter-in-horizontal.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_shutter-in-vertical.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_shutter-out-horizontal.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_shutter-out-vertical.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_sweep-to-bottom.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_sweep-to-left.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_sweep-to-right.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\background-transitions\_sweep-to-top.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\border-transitions\_border-fade.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\border-transitions\_hollow.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\border-transitions\_outline-in.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\border-transitions\_outline-out.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\border-transitions\_overline-from-center.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\border-transitions\_overline-from-left.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\border-transitions\_overline-from-right.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\border-transitions\_overline-reveal.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\border-transitions\_reveal.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\border-transitions\_ripple-in.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\border-transitions\_ripple-out.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\border-transitions\_round-corners.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\border-transitions\_trim.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\border-transitions\_underline-from-center.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\border-transitions\_underline-from-left.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\border-transitions\_underline-from-right.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\border-transitions\_underline-reveal.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\curls\_curl-bottom-left.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\curls\_curl-bottom-right.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\curls\_curl-top-left.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\curls\_curl-top-right.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-back.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-bob.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-bounce-out.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-bounce.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-buzz-out.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-buzz.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-down.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-drop.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-fade.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-float-away.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-float.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-forward.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-grow-rotate.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-grow.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-hang.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-pop.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-pulse-grow.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-pulse-shrink.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-pulse.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-push.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-rotate.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-shrink.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-sink-away.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-sink.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-spin.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-up.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-wobble-horizontal.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\icons\_icon-wobble-vertical.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\shadow-and-glow-transitions\_box-shadow-inset.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\shadow-and-glow-transitions\_box-shadow-outset.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\shadow-and-glow-transitions\_float-shadow.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\shadow-and-glow-transitions\_glow.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\shadow-and-glow-transitions\_grow-shadow.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\shadow-and-glow-transitions\_shadow-radial.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\shadow-and-glow-transitions\_shadow.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\speech-bubbles\_bubble-bottom.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\speech-bubbles\_bubble-float-bottom.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\speech-bubbles\_bubble-float-left.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\speech-bubbles\_bubble-float-right.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\speech-bubbles\_bubble-float-top.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\speech-bubbles\_bubble-left.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\speech-bubbles\_bubble-right.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\effects\speech-bubbles\_bubble-top.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\hover.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\_hacks.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\_mixins.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\less\_options.less" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\README.md" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_backward.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_bob.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_bounce-in.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_bounce-out.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_buzz-out.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_buzz.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_float.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_forward.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_grow-rotate.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_grow.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_hang.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_pop.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_pulse-grow.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_pulse-shrink.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_pulse.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_push.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_rotate.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_shrink.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_sink.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_skew-backward.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_skew-forward.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_skew.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_wobble-bottom.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_wobble-horizontal.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_wobble-skew.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_wobble-to-bottom-right.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_wobble-to-top-right.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_wobble-top.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\2d-transitions\_wobble-vertical.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_back-pulse.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_bounce-to-bottom.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_bounce-to-left.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_bounce-to-right.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_bounce-to-top.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_fade.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_radial-in.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_radial-out.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_rectangle-in.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_rectangle-out.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_shutter-in-horizontal.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_shutter-in-vertical.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_shutter-out-horizontal.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_shutter-out-vertical.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_sweep-to-bottom.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_sweep-to-left.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_sweep-to-right.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\background-transitions\_sweep-to-top.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\border-transitions\_border-fade.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\border-transitions\_hollow.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\border-transitions\_outline-in.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\border-transitions\_outline-out.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\border-transitions\_overline-from-center.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\border-transitions\_overline-from-left.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\border-transitions\_overline-from-right.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\border-transitions\_overline-reveal.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\border-transitions\_reveal.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\border-transitions\_ripple-in.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\border-transitions\_ripple-out.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\border-transitions\_round-corners.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\border-transitions\_trim.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\border-transitions\_underline-from-center.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\border-transitions\_underline-from-left.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\border-transitions\_underline-from-right.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\border-transitions\_underline-reveal.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\curls\_curl-bottom-left.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\curls\_curl-bottom-right.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\curls\_curl-top-left.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\curls\_curl-top-right.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-back.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-bob.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-bounce-out.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-bounce.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-buzz-out.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-buzz.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-down.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-drop.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-fade.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-float-away.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-float.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-forward.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-grow-rotate.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-grow.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-hang.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-pop.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-pulse-grow.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-pulse-shrink.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-pulse.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-push.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-rotate.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-shrink.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-sink-away.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-sink.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-spin.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-up.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-wobble-horizontal.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\icons\_icon-wobble-vertical.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\shadow-and-glow-transitions\_box-shadow-inset.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\shadow-and-glow-transitions\_box-shadow-outset.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\shadow-and-glow-transitions\_float-shadow.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\shadow-and-glow-transitions\_glow.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\shadow-and-glow-transitions\_grow-shadow.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\shadow-and-glow-transitions\_shadow-radial.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\shadow-and-glow-transitions\_shadow.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\speech-bubbles\_bubble-bottom.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\speech-bubbles\_bubble-float-bottom.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\speech-bubbles\_bubble-float-left.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\speech-bubbles\_bubble-float-right.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\speech-bubbles\_bubble-float-top.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\speech-bubbles\_bubble-left.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\speech-bubbles\_bubble-right.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\effects\speech-bubbles\_bubble-top.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\hover.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\_hacks.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\_mixins.scss" />
+    <None Include="wwwroot\assets\vendor\libs\Hover-master\scss\_options.scss" />
+    <None Include="wwwroot\CustomJs\Employee\CommonDashboard.js" />
+    <None Include="wwwroot\NewTheme\css\bootstrap-grid.css.map" />
+    <None Include="wwwroot\NewTheme\css\bootstrap-grid.min.css.map" />
+    <None Include="wwwroot\NewTheme\css\bootstrap-grid.rtl.css.map" />
+    <None Include="wwwroot\NewTheme\css\bootstrap-grid.rtl.min.css.map" />
+    <None Include="wwwroot\NewTheme\css\bootstrap-reboot.css.map" />
+    <None Include="wwwroot\NewTheme\css\bootstrap-reboot.min.css.map" />
+    <None Include="wwwroot\NewTheme\css\bootstrap-reboot.rtl.css.map" />
+    <None Include="wwwroot\NewTheme\css\bootstrap-reboot.rtl.min.css.map" />
+    <None Include="wwwroot\NewTheme\css\bootstrap-utilities.css.map" />
+    <None Include="wwwroot\NewTheme\css\bootstrap-utilities.min.css.map" />
+    <None Include="wwwroot\NewTheme\css\bootstrap-utilities.rtl.css.map" />
+    <None Include="wwwroot\NewTheme\css\bootstrap-utilities.rtl.min.css.map" />
+    <None Include="wwwroot\NewTheme\css\bootstrap.css.map" />
+    <None Include="wwwroot\NewTheme\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\NewTheme\css\bootstrap.rtl.css.map" />
+    <None Include="wwwroot\NewTheme\css\bootstrap.rtl.min.css.map" />
+    <None Include="wwwroot\NewTheme\image\ap-img-1.svg" />
+    <None Include="wwwroot\NewTheme\image\ap-img-2.svg" />
+    <None Include="wwwroot\NewTheme\image\ap-img-3.svg" />
+    <None Include="wwwroot\NewTheme\image\ap-img-4.svg" />
+    <None Include="wwwroot\NewTheme\image\AppStore.svg" />
+    <None Include="wwwroot\NewTheme\image\b-1.webp" />
+    <None Include="wwwroot\NewTheme\image\b-10.webp" />
+    <None Include="wwwroot\NewTheme\image\b-2.webp" />
+    <None Include="wwwroot\NewTheme\image\b-3.webp" />
+    <None Include="wwwroot\NewTheme\image\b-5.webp" />
+    <None Include="wwwroot\NewTheme\image\b-6.webp" />
+    <None Include="wwwroot\NewTheme\image\b-7.webp" />
+    <None Include="wwwroot\NewTheme\image\b-8.webp" />
+    <None Include="wwwroot\NewTheme\image\b-9.webp" />
+    <None Include="wwwroot\NewTheme\image\Bajaj-Capital.webp" />
+    <None Include="wwwroot\NewTheme\image\house-of-candy.webp" />
+    <None Include="wwwroot\NewTheme\image\img-cap-1.webp" />
+    <None Include="wwwroot\NewTheme\image\img-cap-2.webp" />
+    <None Include="wwwroot\NewTheme\image\img-cap-3.webp" />
+    <None Include="wwwroot\NewTheme\image\login-1.svg" />
+    <None Include="wwwroot\NewTheme\image\login-2.svg" />
+    <None Include="wwwroot\NewTheme\image\login-3.svg" />
+    <None Include="wwwroot\NewTheme\image\Paras-Buildtech-Zimyo.webp" />
+    <None Include="wwwroot\NewTheme\image\PlayStore.svg" />
+    <None Include="wwwroot\NewTheme\image\seahawk.webp" />
+    <None Include="wwwroot\NewTheme\image\shree-maruti-logo.webp" />
+    <None Include="wwwroot\NewTheme\image\Way-Logo-1.webp" />
+    <None Include="wwwroot\NewTheme\js\bootstrap.bundle.js" />
+    <None Include="wwwroot\NewTheme\js\bootstrap.bundle.js.map" />
+    <None Include="wwwroot\NewTheme\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\NewTheme\js\bootstrap.bundle.min.js.map" />
+    <None Include="wwwroot\NewTheme\js\bootstrap.esm.js" />
+    <None Include="wwwroot\NewTheme\js\bootstrap.esm.js.map" />
+    <None Include="wwwroot\NewTheme\js\bootstrap.esm.min.js" />
+    <None Include="wwwroot\NewTheme\js\bootstrap.esm.min.js.map" />
+    <None Include="wwwroot\NewTheme\js\bootstrap.js" />
+    <None Include="wwwroot\NewTheme\js\bootstrap.js.map" />
+    <None Include="wwwroot\NewTheme\js\bootstrap.min.js" />
+    <None Include="wwwroot\NewTheme\js\bootstrap.min.js.map" />
+    <None Include="wwwroot\NewTheme\js\jquery.js" />
+    <None Include="wwwroot\NewTheme\js\style.js" />
+    <None Include="wwwroot\NewTheme\slick-1.8.1\.gitignore" />
+    <None Include="wwwroot\NewTheme\slick-1.8.1\CONTRIBUTING.markdown" />
+    <None Include="wwwroot\NewTheme\slick-1.8.1\ISSUE_TEMPLATE.md" />
+    <None Include="wwwroot\NewTheme\slick-1.8.1\LICENSE" />
+    <None Include="wwwroot\NewTheme\slick-1.8.1\Makefile" />
+    <None Include="wwwroot\NewTheme\slick-1.8.1\README.markdown" />
+    <None Include="wwwroot\NewTheme\slick-1.8.1\slick\config.rb" />
+    <None Include="wwwroot\NewTheme\slick-1.8.1\slick\fonts\slick.svg" />
+    <None Include="wwwroot\NewTheme\slick-1.8.1\slick\slick-theme.less" />
+    <None Include="wwwroot\NewTheme\slick-1.8.1\slick\slick-theme.scss" />
+    <None Include="wwwroot\NewTheme\slick-1.8.1\slick\slick.js" />
+    <None Include="wwwroot\NewTheme\slick-1.8.1\slick\slick.less" />
+    <None Include="wwwroot\NewTheme\slick-1.8.1\slick\slick.min.js" />
+    <None Include="wwwroot\NewTheme\slick-1.8.1\slick\slick.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EPPlus" Version="7.0.0" />
+    <PackageReference Include="ExcelDataReader" Version="3.6.0" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+    <PackageReference Include="Fingers10.ExcelExport" Version="3.0.1" />
+    <PackageReference Include="Google.Apis.Calendar.v3" Version="1.68.0.3402" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.57" />
+    <PackageReference Include="iTextSharp" Version="5.5.13.3" />
+    <PackageReference Include="itextsharp.xmlworker" Version="5.5.13.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.28" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.39" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Exchange.WebServices" Version="2.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.18" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
+    <PackageReference Include="RestClient" Version="3.1024.23771" />
+    <PackageReference Include="RestSharp" Version="106.6.7" />
+    <PackageReference Include="System.Security.Permissions" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SimpliHR.Endpoints\Attendance\Attendance.csproj" />
+    <ProjectReference Include="..\SimpliHR.Endpoints\ClientManagement\ClientManagement.csproj" />
+    <ProjectReference Include="..\SimpliHR.Endpoints\EditEmployeeData\EditEmployeeData.csproj" />
+    <ProjectReference Include="..\SimpliHR.Endpoints\EmployeeSocialActivity\EmployeeSocialActivity.csproj" />
+    <ProjectReference Include="..\SimpliHR.Endpoints\Employee\Employee.csproj" />
+    <ProjectReference Include="..\SimpliHR.Endpoints\Exit\Exit.csproj" />
+    <ProjectReference Include="..\SimpliHR.Endpoints\Leave\Leave.csproj" />
+    <ProjectReference Include="..\SimpliHR.EndPoints\Login\Login.csproj" />
+    <ProjectReference Include="..\SimpliHR.Endpoints\MastersKeyValue\Common.csproj" />
+    <ProjectReference Include="..\SimpliHR.EndPoints\Masters\Masters.csproj" />
+    <ProjectReference Include="..\SimpliHR.Endpoints\Payroll\Payroll.csproj" />
+    <ProjectReference Include="..\SimpliHR.Endpoints\Performance\Performance.csproj" />
+    <ProjectReference Include="..\SimpliHR.Endpoints\ProfileEditAuth\ProfileEditAuth.csproj" />
+    <ProjectReference Include="..\SimpliHR.Endpoints\ProjectTracker\ProjectTracker.csproj" />
+    <ProjectReference Include="..\SimpliHR.Endpoints\QueryManagement\QueryManagement.csproj" />
+    <ProjectReference Include="..\SimpliHR.Endpoints\RolesAndPermissions\RolesAndPermissions.csproj" />
+    <ProjectReference Include="..\SimpliHR.Endpoints\StatutoryComponents\StatutoryComponents.csproj" />
+    <ProjectReference Include="..\SimpliHR.Infrastructure\SimpliHR.Infrastructure.csproj" />
+    <ProjectReference Include="..\SimpliHR.Services\SimpliHR.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Credentials.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Views\Employee\Employee - Copy.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\ExitManagement\ExitClearance - Copy.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\ProjectTracker\_projectList1\_projectView.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Roles\RoleMenuMapping_New.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\TrainingNeedMaster\TrainingNeedMaster.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\Credentials.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\CustomJs\Exit\ExitAdminView.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\CustomJs\ProjectTracker\AddProject.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+
+</Project>

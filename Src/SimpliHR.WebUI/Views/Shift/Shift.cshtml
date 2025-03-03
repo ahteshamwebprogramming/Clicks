@@ -1,0 +1,278 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.ShiftMasterDTO
+@{
+    ViewData["Title"] = "Shift";
+    Model.DisplayMessage += "";
+    //Layout = null;
+}
+<style>
+
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 18px;
+    }
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Attendance /</span> Shift</h4>
+
+    <div class="card" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+                            <th>Shift Name</th>
+                            <th>Policy</th>
+                            <th>In Time</th>
+                            <th>Out Time</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model.ShiftMasterList != null)
+                            @foreach (var item in Model.ShiftMasterList)
+                            {
+                                <tr>
+
+                                    <td>@item.ShiftName</td>
+                                  @*  <td>@item.PolicyId</td>*@
+                                    @if (@item.PolicyId == 1)
+                                    {
+                                        <td>Policy 1</td>
+                                    }
+                                    else if (@item.PolicyId == 2)
+                                    {
+                                        <td>Policy 2</td>
+                                    }
+                                    else if (@item.PolicyId == 3)
+                                    {
+                                        <td>Policy 3</td>
+                                    }
+                                    else
+                                    {
+                                        <td>Policy Name</td>
+                                    }
+                                    <td>@item.InTime</td>
+                                    <td>@item.OutTime</td>
+                                    @*<th>@(item.IsActive == true ? "Active" : "Inactive")</th>*@
+
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="/Shift/GetShiftInfo/@item.EncryptedId"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="/Shift/DeleteShift/@item.EncryptedId" onclick="return confirm('Are you sure you would like to delete?');"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                   @*  <th>
+                                        <a class="btn btn-primary" onclick="EditRecord('Shift','/Shift/GetShiftInfo','@item.EncryptedId','@item.IsActive')">Edit</a>
+                                        <button class="btn btn-primary" onclick="DeleteRecord('Shift','@item.ShiftName','/Shift/DeleteShift','@item.EncryptedId','@item.IsActive')"> Delete</button>
+                                    </th> *@
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div id="wizard-checkout" class="bs-stepper wizard-icons wizard-icons-example mt-2">
+            <div class="container selectMain">
+        <div class="card-body">
+
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/Shift/Shift/'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/Shift/SaveShift">
+                <div class="row g-3">
+                    
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Shift Name</label>
+                        <input type="text" id="ShiftName" name="ShiftName" required value="@Model.ShiftName" maxlength="100" class="form-control" placeholder="Shift Name">
+                        @*<span asp-validation-for="ShiftName" class="text-danger"></span>*@
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Shift code (eg. G-General, M-Mornnig, N-Night)</label>
+                        <input type="text" id="Shiftcode" name="ShiftCode" required value="@Model.ShiftCode" maxlength="100" class="form-control" onKeyPress="if(this.value.length==1) return false;" placeholder="Shift code">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">In Time (HH:MM)</label>
+                        <input type="time" id="InTime" name="InTime" required value="@Model.InTime" class="form-control" placeholder="In Time">
+                        @*<span asp-validation-for="InTime" class="text-danger"></span>*@
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Out Time (HH:MM)</label>
+                        <input type="time" id="OutTime" name="OutTime" required value="@Model.OutTime" class="form-control" placeholder="Out Time">
+                        @*<span asp-validation-for="OutTime" class="text-danger"></span>*@
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Include Before (Minutes)</label>
+                        <input type="number" id="IncludeBefore" maxlength="2" class="form-control" name="IncludeBefore" required value="@Model.IncludeBefore" onKeyPress="if(this.value.length==2) return false;" placeholder="Include Before">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Include After (Minutes)</label>
+                        <input type="number" id="IncludeAfter" maxlength="2" class="form-control" name="IncludeAfter" required value="@Model.IncludeAfter" onKeyPress="if(this.value.length==2) return false;" placeholder="Include After">
+                    </div>
+                   @* <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Buffer Of In Time (Minutes)</label>
+                        <input type="number" id="" maxlength="2" class="form-control" name="BufferOfInTime" required value="@Model.BufferOfInTime" placeholder="Buffer Of In Time">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Buffer Of Out Time  (Minutes)</label>
+                        <input type="number" id="" maxlength="2" class="form-control" name="BufferOfOutTime" required value="@Model.BufferOfOutTime" placeholder="Buffer Out Time">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">No of late Allowed</label>
+                        <input type="number" id="" maxlength="2" class="form-control" name="NoOfLateAllowed" required value="@Model.NoOfLateAllowed" placeholder="No of late Allowed">
+                    </div>*@
+                    <div class="col-sm-6">
+                        <label class="form-label d-block" for="address">Is Buffer Time Allowed</label>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="isBufferTimeAllowed" 
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="True"
+                                   id="isBuffer1" checked />
+                            <label class="form-check-label" for="defaultRadio1">Yes</label>
+                        </div>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="isBufferTimeAllowed" 
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="False"
+                                   id="isBuffer2" />
+                            <label class="form-check-label" for="defaultRadio2"> No </label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label class="form-label d-block" for="address">Is Flexi</label>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="IsFlexi"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="True"
+                                   id="IsFlexi1" checked />
+                            <label class="form-check-label" for="defaultRadio1">Yes</label>
+                        </div>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="IsFlexi"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="False"
+                                   id="IsFlexi2" />
+                            <label class="form-check-label" for="defaultRadio2"> No </label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label class="form-label d-block" for="address">Is Night Shift</label>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="IsNightShift"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="True"
+                                   id="IsNight1" />
+                            <label class="form-check-label" for="defaultRadio1">Yes</label>
+                        </div>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="IsNightShift"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="False"
+                                   id="IsNight2" checked />
+                            <label class="form-check-label" for="defaultRadio2"> No </label>
+                        </div>
+                    </div>
+
+                   
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" id="ShiftId" name="ShiftId" value="@Model.ShiftId">
+                    <input type="hidden" id="hdnPolicy" name="ShiftId" value="@Model.PolicyId">
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/Shift/Shift/'">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+            </div>
+        </div>
+    </div>
+
+   
+</div>
+
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script src="../../customjs/CommonFunction.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+          //  Init("@Model.ShiftId", "@Model.DisplayMessage","@Model.HttpStatusCode");
+
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                $successalert("", "@Model.DisplayMessage");
+            }
+        });
+
+      
+        if ("@Model.isBufferTimeAllowed"=="True") {           
+            $("#isBuffer1").prop("checked", true);
+        }
+        else {
+           
+            $("#isBuffer2").prop("checked", true);
+        }
+
+         if ("@Model.IsFlexi"=="True") {
+            $("#IsFlexi1").prop("checked", true);
+        }
+        else {
+
+            $("#IsFlexi2").prop("checked", true);
+        }
+        if ("@Model.IsNightShift" == "True") {
+            $("#IsNight1").prop("checked", true);
+        }
+        else {
+
+            $("#IsNight2").prop("checked", true);
+        }
+        //function ListView() {
+        //    $("#Add").hide();
+        //    $("#List").show();
+        //}
+        //function AddView() {
+        //    $("#Add").show();
+        //    $("#List").hide();
+
+        //}
+        if (@Model.ShiftId != 0) {
+            $("#List").hide();
+            $("#Add").show();
+           
+        }
+        else {
+            ClearInputs();
+        }
+       //alert(@Model.PolicyId));
+        $('#PolicyId').val(parseInt(@Model.PolicyId));
+
+
+        function ClearInputs() {
+            $("#ShiftName").val("");
+            $("#Shiftcode").val("");
+            $("#InTime").val("");
+            $("#OutTime").val("");
+            $("#IncludeBefore").val("");
+            $("#IncludeAfter").val("");           
+
+        }
+    </script>
+    }

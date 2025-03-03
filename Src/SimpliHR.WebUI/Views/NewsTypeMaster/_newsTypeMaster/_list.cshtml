@@ -1,0 +1,32 @@
+﻿@model SimpliHR.Infrastructure.Models.Master.NewsCategoryTagViewModel
+<div class="row" style="margin-top:25px;">
+    <div class="col-md-12">
+        <div class="table-responsive text-nowrap">
+            <table class="datatables-ajax table List">
+                <thead>
+                    <tr>
+                        <th>News Category Tag</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        if (Model != null && Model.NewsCategoryTagList != null)
+                        {
+                            foreach (var item in Model.NewsCategoryTagList)
+                            {
+                                <tr>
+                                    <td>@item.NewsCategoryTag</td>
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="#" onclick="AddPartialView('@item.encNewsCategoryTagId')"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="#" onclick="deleteRecord('@item.encNewsCategoryTagId')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,155 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.CityMasterDTO
+@{
+    ViewData["Title"] = "City";
+    Model.DisplayMessage += "";
+    //Layout = null;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Personal Details /</span> City</h4>
+    <div class="card" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <button class="btn btn-secondary create-new btn-primary" tabindex="0" aria-controls="DataTables_Table_0" type="button" onclick="AddView()" style="float:right;">
+                <span>
+                    <i class="bx bx-plus me-sm-1"></i>
+                    <span class="d-none d-sm-inline-block">Add Record</span>
+                </span>
+            </button>
+            <!--input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" /-->
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+                            <th>Country</th>
+                            <th>State</th>
+                            <th>City</th>
+                            <th class="text-center" style="width:100px">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.CityMasterList != null)
+                            @foreach (var item in Model.CityMasterList)
+                            {
+                                <tr>
+
+                                    <td>@item.CountryName</td>
+                                    <td>@item.StateName</td>
+                                    <td>@item.CityName</td>
+                                    <td class="text-center">
+                                        <a class="dropdown-item" style="display:inline" href="#" onclick="EditRecord('City','/City/GetCityInfo','@item.EncryptedCityId','@item.IsActive')"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item" style="display:inline" href="#" onclick="DeleteRecord('City','@item.CityName','/City/DeleteCity','@item.EncryptedCityId','@item.IsActive')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="List" onclick="javascript:window.location.href='/City/City'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/City/SaveCity">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label" for="multicol-country">Country</label>
+                        <div class="position-relative">
+                            <select id="CountryId" name="CountryId" required onchange="javascript:PopulateStateDDL(this.value)" class="form-select clearForm" tabindex="-1" aria-hidden="true">
+                                <option value="">Select</option>
+                                @if (Model.CountryList != null)
+                                    @foreach (var item in Model.CountryList)
+                                    {
+                                        if (item.CountryId == Model.CountryId)
+                                        {
+                                            <option value="@item.CountryId" selected> @item.CountryName</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.CountryId"> @item.CountryName</option>
+                                        }
+
+                                    }
+                            </select>
+                            @*<span asp-validation-for="CountryId" class="text-danger"></span>*@
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="multicol-country">State</label>
+                        <div class="position-relative">
+                            <select id="StateId" name="StateId" required class="form-select clearForm" data-allow-clear="true" data-select2-id="multicol-country" tabindex="-1" aria-hidden="true">
+                                <option value="">Select</option>
+                            </select>
+                            @*<span asp-validation-for="StateId" class="text-danger"></span>*@
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="multicol-last-name">City</label>
+                        <input type="text" id="CityName" name="CityName" required maxlength="50" value="@Model.CityName" class="form-control clearForm" placeholder="City">
+                        @*<span asp-validation-for="CityName" class="text-danger"></span>*@
+                    </div>
+
+
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" class="clearForm" id="CityId" name="CityId" value="@Model.CityId">
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/City/City'">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script src="../../customjs/CommonFunction.js"></script>
+
+
+
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            Init("@Model.CityId", "@Model.DisplayMessage", "@Model.HttpStatusCode");
+            if (jQuery("#CountryId").val() > 0 && (@Model.CityId> 0 || "@Model.HttpStatusCode" != 200))
+                PopulateStateDDL(jQuery("#CountryId").val())
+
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                if ("@Model.HttpStatusCode" == 200) {
+                    $successalert("", "@Model.DisplayMessage");
+                }
+                else {
+                    $erroralert("Transaction Failed!", "@Model.DisplayMessage");
+                }
+            }
+        });
+
+        function PopulateStateDDL(countryId) {
+            //var objDDL = countryDDL
+            jQuery("#StateId").html("")
+            jQuery.ajax({
+                type: "GET",
+                url: "/City/GetCounryStates",
+                data: { countryId: countryId },
+                success: function (response) {
+                    PopulateDropDown("StateId", response, '@Model.StateId', 'stateId', 'stateName')
+                },
+                failure: function (response) {
+                    $erroralert("Transaction Failed!", "errror<br>" + response.responseText);
+                  },
+                error: function (response) {
+                    $erroralert("Transaction Failed!", "errror<br>" + response.responseText);
+                }
+
+            });
+
+        }
+    </script>
+}

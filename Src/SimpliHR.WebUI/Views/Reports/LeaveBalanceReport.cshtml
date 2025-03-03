@@ -1,0 +1,548 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.EmployeeLeaveBalanceInputs
+@{
+    ViewData["Title"] = "BankTransferReport";
+}
+@using System.Data
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Reports /</span> Leave Balance Report</h4>
+
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <form id="showAlert" class="row g-3" onsubmit="return false">
+                    <div class="modal-body">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center mb-4">
+                        </div>
+
+                        <div class="col-12 text-center" id="successDiv">
+                            <p id="errorPara" class="error" style="color:red"></p>
+                        </div>
+                        <div class="col-12 text-center" id="errorDiv">
+                            <p id="successPara" class="error" style="color:black"></p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 text-center">
+                        @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                        <button type="reset" id="btnClose"
+                                class="btn btn-label-secondary btn-reset mt-3"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                            Close
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" id="Add">
+        <div id="wizard-checkout" class="bs-stepper wizard-icons wizard-icons-example mt-2">
+            <div class="container selectMain">
+
+                <div class="card-body">
+
+
+                    <form method="post" action="/Reports/ExportLeaveBalance">
+                        @*   <div class="row g-3" id="errorDiv"><p id="errorPara" class="error" style="color:red"></p></div>*@
+                        <div class="row g-3">
+                            <div class="col-md-3">
+
+                                <label class="form-label" for="">From</label>
+                                <select class="form-select" id="SelFmh" name="FromMonth" aria-label="Default select example">
+                                    <option value="0" selected>Select an Month</option>
+                                    @if (Model.SalMonths != null)
+                                    {
+                                        @foreach (var item in Model.SalMonths)
+                                        {
+
+                                            if (item.ID == Model.FromMonth)
+                                            {
+                                                <option value="@item.ID" selected> @item.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.ID"> @item.Name</option>
+                                            }
+
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" for=""></label>
+                                <select class="form-select" id="SelFYr" name="FromYear" aria-label="Default select example">
+                                    <option value="0" selected>Select an Year</option>
+
+                                    @if (Model.Years != null)
+                                    {
+                                        @foreach (var item in Model.Years)
+                                        {
+
+
+                                            if (item == Model.FromYear)
+                                            {
+                                                <option value="@item" selected> @item</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item"> @item</option>
+                                            }
+
+
+
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+                            <div class="col-md-3">
+
+                                <label class="form-label" for="">To</label>
+                                <select class="form-select" id="SelTmh" name="ToMonth" aria-label="Default select example">
+                                    <option value="0" selected>Select an Month</option>
+                                    @if (Model.SalMonths != null)
+                                    {
+                                        @foreach (var item in Model.SalMonths)
+                                        {
+
+                                            if (item.ID == Model.ToMonth)
+                                            {
+                                                <option value="@item.ID" selected> @item.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.ID"> @item.Name</option>
+                                            }
+
+
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" for=""></label>
+                                <select class="form-select" id="SelTyr" name="ToYear" aria-label="Default select example">
+                                    <option value="0" selected>Select an Year</option>
+
+                                    @if (Model.Years != null)
+                                    {
+                                        @foreach (var item in Model.Years)
+                                        {
+
+                                            if (item == Model.ToYear)
+                                            {
+                                                <option value="@item" selected> @item</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item"> @item</option>
+                                            }
+
+
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <label class="form-label" for="">Department</label>
+                                <select class="form-select" id="SelDept" name="DepartmentId" aria-label="Default select example">
+                                    <option value="0" selected>Select an Option</option>
+                                    @if (Model.DepartmentKeyValues != null)
+                                    {
+                                        @foreach (var item in Model.DepartmentKeyValues)
+                                        {
+
+                                            if (item.DepartmentId == Model.DepartmentId)
+                                            {
+                                                <option value="@item.DepartmentId" selected> @item.DepartmentName</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.DepartmentId"> @item.DepartmentName</option>
+                                            }
+
+
+
+
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="">Location</label>
+                                <select class="form-select" id="SelLocation" name="LocationId" aria-label="Default select example">
+                                    <option value="0" selected>Select an Option</option>
+
+                                    @if (Model.WorkLocationKeyValues != null)
+                                    {
+                                        @foreach (var item in Model.WorkLocationKeyValues)
+                                        {
+
+                                            if (item.WorkLocationId == Model.LocationId)
+                                            {
+                                                <option value="@item.WorkLocationId" selected> @item.Location</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.WorkLocationId"> @item.Location</option>
+                                            }
+
+
+
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="pt-4">
+                          
+                            <button type="submit" class="btn btn-primary" onclick="return BlockedUI()">Show</button>
+
+                        </div>
+                    </form>
+                    <form method="post" asp-action="ExportEmployeeLeaveBalanceReport" asp-controller="Reports">
+                        <input type="hidden" name="LeaveSheet" /> <br />
+                        <input type="submit" id="btnSubmit" style="background-color: #2ea44f;border: 1px solid rgba(27, 31, 35, .15); color: #fff;box-shadow: rgba(27, 31, 35, .1) 0 1px 0; font-size: 14px; padding: 6px 16px;line-height: 20px; display:none;" value="Download" />
+                    </form>
+                    <div class="card-datatable table-responsive text-nowrap">
+                        <table class="datatables-ajax table List" id="List">
+                            <thead>
+                                <tr>
+                                    <th>Employee Code</th>
+                                    <th>Employee Name</th>
+                                    <th>Designation</th>
+                                    <th>Department</th>
+                                    <th>Location</th>
+                                    <th>DOJ</th>
+                                    <th>LWD</th>
+                                    <th>Leave Type</th>
+                                    <th>Opening Balance</th>
+                                    <th>Credit/Accrued</th>
+                                    <th>Debit/Availed</th>
+                                    <th>Closing Balance</th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.GetEmployeeLeaveBalanceReport != null)
+                                {
+                                    @if (Model.GetEmployeeLeaveBalanceReport.Count > 0)
+                                    {
+
+                                        foreach (var item in Model.GetEmployeeLeaveBalanceReport)
+                                        {
+
+                                            <tr>
+                                                <td>@item.EmployeeCode</td>
+                                                <td>@item.EmployeeName</td>
+                                                <td>@item.Designation</td>
+                                                <td>@item.Department</td>
+                                                <td>@item.Location</td>
+                                                <td>@item.DOJ</td>
+                                                <td>@item.LWD</td>
+                                                <td>@item.LeaveType</td>
+                                                <td>@item.OpeningBalance</td>
+                                                <td><a href="#" data-bs-toggle="modal" data-bs-target="#exCreditModal" onclick="#">@item.Accrued</a></td>
+                                                <td><a href="#" data-bs-toggle="modal" data-bs-target="#exDebitModal" onclick="ViewDebitRecord(@item.EmployeeId,@item.LeaveTypeId)">@item.Availed</a></td>
+                                               <td>@item.ClosingBalance</td>
+
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="exDebitModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom">
+                        <div><h5 class="card-title mb-sm-0 me-2">Debit/Availed Details</h5></div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card-datatable table-responsive text-nowrap">
+                            <table class="datatables-ajax table" id="SummaryList">
+                                <thead>
+                                    <tr>
+                                        <th>Ticket Id</th>
+                                        <th>Type</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Status</th>                                    
+                                        <th>Applied On</th>                                        
+                                    </tr>
+                                </thead>
+                                <tbody id="myleavetbl">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="exCreditModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom">
+                        <div><h5 class="card-title mb-sm-0 me-2">Credit/Accrued Details</h5></div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card-datatable table-responsive text-nowrap">
+                            <table class="datatables-ajax table" id="SummaryList">
+                                <thead>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Date</th>
+                                        <th>Credit</th>
+                                        
+                                    </tr>
+                                </thead>
+                               @*  <tbody id="myleavetbl">
+                                </tbody> *@
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div id="DvLBGrid" style="align-content:center;display:none;">
+        <br />
+        <table cellspacing="2" cellpadding="10" align="center" border="1" style="width: 100%;">
+            <tr>
+                @*  @if (Model.objBTRDSet.Tables.Count>0)
+                @if (Model.objBTRDSet.Tables[0].Rows.Count > 0)
+                {
+                @foreach (DataColumn col in Model.objBTRDSet.Tables[0].Columns)
+                { *@
+
+                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Employee Code</strong></td>
+                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Employee Name</strong></td>
+                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Designation</strong></td>
+                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Department</strong></td>
+                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Location</strong></td>
+                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>DOJ</strong></td>
+                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>LWD</strong></td>
+                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Leave Type</strong></td>
+                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Opening Balance</strong></td>
+                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Credit/Accrued</strong></td>
+                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Debit/Availed</strong></td>
+                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Closing Balance</strong></td>
+                @*   }
+                } *@
+            </tr>
+            @if (Model.GetEmployeeLeaveBalanceReport != null)
+            {
+                @if (Model.GetEmployeeLeaveBalanceReport.Count > 0)
+                {
+
+                    foreach (var item in Model.GetEmployeeLeaveBalanceReport)
+                    {
+
+                        <tr>
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.EmployeeCode</td>
+                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.EmployeeName</td>
+                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.Designation</td>
+                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.Department</td>
+                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.Location</td>
+                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.DOJ</td>
+                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.LWD</td>
+                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.LeaveType</td>
+                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.OpeningBalance</td>
+                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.Accrued</td>
+                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.Availed</td>
+                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.ClosingBalance</td>
+                        </tr>
+                    }
+                }
+            }
+
+        </table>
+
+    </div>
+
+
+
+
+</div>
+@section scripts {
+
+
+    <script type="text/javascript">
+
+        jQuery(document).ready(function () {
+
+            $(".List").dataTable();
+
+            $("input[name='LeaveSheet']").val($("#DvLBGrid").html());
+
+          
+            if ("@Model.FromMonth" != "") {
+                   jQuery("#btnSubmit").show();              
+            }
+        });
+
+        function BlockedUI() {
+
+
+            fYear = jQuery("#SelFYr").val();
+            fMonth = jQuery("#SelFmh").val();
+            tYear = jQuery("#SelTYr").val();
+            tMonth = jQuery("#SelTmh").val();
+            //alert(year);
+            //return false;
+
+            BlockUI();
+           
+            if (fMonth == 0) {
+                UnblockUI();
+                $erroralert("Validation", "Please select From the month");
+                // ShowServerMessage("Please select the month");
+
+                return false;
+            }
+            if (fYear == 0) {
+                UnblockUI();
+                // jQuery("#btnSubmit").hide();
+                $erroralert("Validation", "Please select From the year");
+                // ShowServerMessage("Please select the year");
+
+                return false;
+            }
+            if (tMonth == 0) {
+                UnblockUI();
+                $erroralert("Validation", "Please select To the month");
+                // ShowServerMessage("Please select the month");
+
+                return false;
+            }
+            if (tYear == 0) {
+                UnblockUI();
+                // jQuery("#btnSubmit").hide();
+                $erroralert("Validation", "Please select To the year");
+                // ShowServerMessage("Please select the year");
+
+                return false;
+            }
+            
+
+
+
+        }
+
+
+
+        //const monthNames = ["January", "February", "March", "April", "May", "June",
+        //    "July", "August", "September", "October", "November", "December"
+        //];
+
+
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                // if (sMsg.toUpperCase() == "SUCCESS") {
+                // sMsg = "Earnnig component created/updated successfully";
+                jQuery("#successDiv").show();
+                jQuery("#successPara").html(sMsg);
+
+                // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                //  }
+                //else {
+                //    jQuery("#errorDiv").show();
+                //    jQuery("#errorPara").html(sMsg);
+                //}
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+
+        function ViewDebitRecord(employeeId, leaveTypeId) {
+
+          
+            var rowData = {};
+            rowData.EmployeeId = employeeId;
+            rowData.LeaveTypeId = leaveTypeId;
+            rowData.FromMonth = jQuery("#SelFmh").val();
+            rowData.FromYear = jQuery("#SelFYr").val();
+            rowData.ToMonth = jQuery("#SelTmh").val();
+            rowData.ToYear = jQuery("#SelTyr").val();
+            //  jQuery("#ModuleId")
+            //  var moduleId = $('#myticketmodule').val();
+
+            //  alert(value);
+            // return;
+            // if (ticketId != null) {
+            //     jQuery("#myleavetbl").html("")
+
+                jQuery.ajax({
+                    type: "POST",
+                url: "/Leave/GetDebitLeaveDetails",
+                data: { userAction: rowData },
+                    success: function (response) {
+                                              
+                        var status = 'pending';
+                        var aprdate = '';
+                        var aprBy = '', remarks = '';
+                           for (var i = 0; i < response.employeeLeaveList.length; i++) {
+
+                        if (response.employeeLeaveList[i].leaveStatus == 1)
+                            status = 'Pending';
+                        else if (response.employeeLeaveList[i].leaveStatus == 0)
+                            status = 'Approved';
+
+                        var sdate = response.employeeLeaveList[i].startDate.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                        sdate = sdate.slice(0, 10);
+                        var edate = response.employeeLeaveList[i].endDate.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                        edate = edate.slice(0, 10);
+                        var adate = response.employeeLeaveList[i].createdOn.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                        adate = adate.slice(0, 10);
+
+                        $("#myleavetbl").append('<tr><td>' + response.employeeLeaveList[i].ticketId + '</td><td>' + response.employeeLeaveList[i].leaveType + '</td><td>' + sdate + '</td><td>' + edate + '</td><td>' + status + '</td>><td>' + adate + '</td><</tr>');
+                       
+                           }
+                       
+                    },
+                    failure: function (response) {
+                        $erroralert("Error!", "errror<br>" + response.responseText);
+                    },
+                    error: function (response) {
+                        $erroralert("Error!", "errror<br>" + response.responseText);
+                    }
+
+                });
+          // }
+        }
+
+
+
+
+    </script>
+}

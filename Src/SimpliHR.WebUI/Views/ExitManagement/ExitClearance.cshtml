@@ -1,0 +1,465 @@
+﻿@model SimpliHR.Infrastructure.Models.Exit.ExitViewModel
+@{
+    ViewData["Title"] = "ExitChecklist";
+    int iHdrCtr = 1;
+    int iDtlCtr = 1;
+    //int iHdr=0;
+    //arrData = Model.EmployeeExitClearanceHeaderList.ToArray();
+}
+<link href="~/assets/css/exitclearance.css" rel="stylesheet" />
+<style>
+    .disabled {
+        opacity: 0.7;
+        box-shadow: 0 0.05rem 0.5rem rgba(161, 172, 184, 0.45)
+    }
+
+        .disabled .accordion-collapse {
+            pointer-events: none;
+        }
+
+    .EmployeeClearanceReport .form-control-plaintext {
+        pointer-events: none;
+    }
+</style>
+
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Exit Management /</span>Employee Clearance Report</h4>
+    <div class="row">
+
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive text-nowrap">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="100%">OnePlace - Employee Clearance Report</th>
+                                    <th width="0%"></th>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="border-0" style="padding: 0;">
+                                        <table class="table table-bordered pb-2" id="particulars">
+                                            <!-- colapsable tr start-->
+                                            <tr>
+                                                <td colspan="2">
+                                                    <div name="RentedPremisesDetailForm" style="">
+                                                        <div name="HouseRentDetailsFormCollection" class="EmployeeClearanceReport">
+                                                            <div class="row">
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label" for="username">Code</label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="EmployeeCode" name="EmployeeCode" value="@Model.EmployeeMasterInfo.EmployeeCode" class="form-control-plaintext mr-2" placeholder="" aria-label="" aria-describedby="">
+
+                                                                    </div>
+                                                                    <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label" for="username">Name</label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="EmployeeName" name="EmployeeName" value="@Model.EmployeeMasterInfo.EmployeeName" class="form-control-plaintext mr-2" placeholder="" aria-label="" aria-describedby="">
+                                                                    </div>
+                                                                    <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label" for="username">Department</label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="DepartmentName" name="DepartmentName" value="@Model.EmployeeMasterInfo.DepartmentName" class="form-control-plaintext mr-2" placeholder="" aria-label="" aria-describedby="">
+                                                                        @*<select class="form-select inptgrps" name="">
+                                                                        <option selected="" value="">-Select Department--</option>
+                                                                        <option>Sample 1</option>
+                                                                        </select>*@
+                                                                    </div>
+                                                                    <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label" for="username">Designation</label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="JobTitleName" name="JobTitleName" value="@Model.EmployeeMasterInfo.JobTitleName" class="form-control-plaintext mr-2" placeholder="" aria-label="" aria-describedby="">
+
+                                                                        @*<select class="form-select inptgrps" name="">
+                                                                        <option selected="" value="">-Select Designation--</option>
+                                                                        <option>Sample 1</option>
+                                                                        </select>*@
+                                                                    </div>
+                                                                    <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label" for="username">Payroll Company</label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="CompanyName" name="CompanyName" value="@Model.EmployeeMasterInfo.CompanyName" class="form-control-plaintext mr-2" placeholder="" aria-label="" aria-describedby="">
+                                                                    </div>
+                                                                    <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label" for="username">Portfolio Company</label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="UnitName" name="UnitName" value="@Model.EmployeeMasterInfo.UnitName" class="form-control-plaintext mr-2" placeholder="" aria-label="" aria-describedby="">
+                                                                    </div>
+                                                                    <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label" for="username">Reporting Manager</label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="ManagerName" name="ManagerName" value="@Model.EmployeeMasterInfo.ManagerName" class="form-control-plaintext mr-2" placeholder="" aria-label="" aria-describedby="">
+                                                                    </div>
+                                                                    <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label" for="username">DOR</label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="ResignationDate" name="ResignationDate" value="@(Model.EmployeeMasterInfo.ResignationDate == null ? "" : ((DateTime)Model.EmployeeMasterInfo.ResignationDate).ToString("dd-MMM-yyyy"))" class="form-control-plaintext mr-2" placeholder="" aria-label="" aria-describedby="">
+                                                                    </div>
+                                                                    <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>
+                                                                @* <div class="col-md-4 mb-3">
+                                                                <label class="form-label" for="username">LWD</label>
+                                                                <div class="input-group">
+                                                                <input type="text" id="" name="" value="" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                                                </div>
+                                                                <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>
+                                                                <div class="col-md-4 mb-3">
+                                                                <label class="form-label" for="username">LWD Policy</label>
+                                                                <div class="input-group">
+                                                                <input type="text" id="" name="" value="" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                                                </div>
+                                                                <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="table-responsive text-nowrap mt-2">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="100%">Department Wise Clearance Summary</th>
+                                    <th width="0%"></th>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="border-0" style="padding: 0;">
+                                        <table class="table table-bordered pb-2" id="particulars">
+                                            <!-- colapsable tr start-->
+                                            <tr>
+                                                <td colspan="2">
+                                                    <div class="row">
+                                                        <div class="col-md mb-4 mb-md-0">
+                                                            <div class="accordion mt-3" id="accordionExample1">
+                                                                @foreach (var item in Model.EmployeeExitClearanceHeaderList)
+                                                                {
+                                                                    int? deptId;
+                                                                    if (Model.IsClient.Value)
+                                                                        deptId = 0;
+                                                                    else
+                                                                        deptId = item.DepartmentId;
+                                                                    <div class="accordion-item mb-3 @(item.OwnerId==Model.LoginEmployeeId? "active":"disabled")">
+                                                                        <h2 class="accordion-header" id="accBusinessHeading_@item.DepartmentId" style=@(item.DepartmentId==Model.LoginUserDepartment? "background:green":"")>
+                                                                            <button type="button" style="border-radius: 0!important; @(item.DepartmentId==Model.LoginUserDepartment? "":"")" class="accordion-button collapsed bg-label-secondary" data-bs-toggle="collapse" data-bs-target="#accBusiness_@item.DepartmentId" aria-expanded="true" aria-controls="accBusiness_@item.DepartmentId">@item.DepartmentName</button>
+                                                                        </h2>
+                                                                        <div id="accBusiness_@item.DepartmentId" class="accordion-collapse collapse pt-3 show" data-bs-parent="#accordionExample">
+                                                                            <div class="accordion-body" name="">
+
+                                                                                <div class="row">
+                                                                                    <div class="col-md-12 mb-3">
+                                                                                        <table class="table table-bordered" style="width:100%;">
+                                                                                            <thead>
+                                                                                                <tr>
+                                                                                                    <th>Owner Name</th>
+                                                                                                    <th>Designation</th>
+                                                                                                    <th>Updated On</th>
+                                                                                                    <th>Status</th>
+                                                                                                    <th>Final Remarks</th>
+                                                                                                </tr>
+                                                                                            </thead>
+                                                                                            <tbody>
+                                                                                                <tr>
+                                                                                                    <td>@item.OwnerName</td>
+                                                                                                    <td>@item.JobTitleName</td>
+
+                                                                                                    <td>@item.ModifiedOn</td>
+                                                                                                    <td>
+                                                                                                        <input type="checkbox" name="ClearanceStatus" id="ClearanceStatus_@deptId@iHdrCtr" onclick="SelectDeselectAll(this,'@deptId','@iHdrCtr')" />
+                                                                                                        <span for="ClearanceStatus_@deptId@iHdrCtr">Status</span>
+                                                                                                    </td>
+                                                                                                    <td>
+                                                                                                        <textarea class="form-control" required id="FinalRemark_@deptId@iHdrCtr" name="FinalRemark_@deptId" rows="1">@item.FinalRemark</textarea>
+                                                                                                    </td>
+
+                                                                                                    <input type="hidden" id="ClearanceMappingId_@deptId@iHdrCtr" value="@item.ClearanceMappingId" />
+                                                                                                    <input type="hidden" id="OwnerId_@deptId@iHdrCtr" value="@item.OwnerId" />
+                                                                                                    <input type="hidden" id="EmployeeId_@deptId@iHdrCtr" value="@item.EmployeeId" />
+                                                                                                    <input type="hidden" id="DepartmentId_@deptId@iHdrCtr" value="@item.DepartmentId" />
+                                                                                                    <input type="hidden" id="DepartmentName_@deptId@iHdrCtr" value="@item.DepartmentName" />
+                                                                                                    <input type="hidden" id="UnitId_@deptId@iHdrCtr" value="@item.UnitId" />
+                                                                                                    <input type="hidden" id="EmployeeClearanceHeaderId_@deptId@iHdrCtr" value="@item.EmployeeClearanceHeaderId" />
+                                                                                                    <input type="hidden" id="SelectedDepartments" value="@Model.SelectedDepartments" />
+                                                                                                </tr>
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                    </div>
+
+                                                                                    <div class="col-md-12 mb-3">
+                                                                                        <table class="table table-bordered">
+                                                                                            @if (Model.EmployeeExitClearanceDetailList.Where(x => x.DepartmentId == item.DepartmentId).Select(x => x).ToList().Count >= 1)
+                                                                                            {
+                                                                                                <thead>
+                                                                                                    <tr>
+                                                                                                        @* <th>Select</th>*@
+                                                                                                        <th>Asset(s)</th>
+                                                                                                        <th>Status</th>
+                                                                                                        <th>Remarks</th>
+                                                                                                        <th>Recovery, If any</th>
+                                                                                                    </tr>
+                                                                                                </thead>
+                                                                                            }
+                                                                                            <tbody>
+                                                                                                @{
+                                                                                                    iDtlCtr = 1;
+                                                                                                }
+
+                                                                                                @foreach (var itemDetail in Model.EmployeeExitClearanceDetailList.Where(x => x.DepartmentId == item.DepartmentId).Select(x => x).ToList())
+                                                                                                {
+                                                                                                    <tr>
+                                                                                                        <td>@itemDetail.AssetName</td>
+                                                                                                        <td>@Html.DropDownList("AssetClearanceStatus_" + deptId + iHdrCtr + iDtlCtr, new SelectList(Model.ExitClearanceStatusList, "KeyName", "KeyValue", itemDetail.AssetClearanceStatus), "Select Status", htmlAttributes: new { @class = "dbcol select2 form-select select2-hidden-accessible", @required = "required" }) </td>
+                                                                                                        <td>
+                                                                                                            <textarea class="form-control" required id="Remark_@deptId@iHdrCtr@iDtlCtr" name="Remark_@deptId@iDtlCtr" rows="1">@itemDetail.Remark</textarea>
+                                                                                                        </td>
+                                                                                                        <td>
+                                                                                                            <input type="checkbox" class="RecoveryStatus" name="RecoveryStatus_@iDtlCtr" id="RecoveryStatus_@deptId@iHdrCtr@iDtlCtr" onChange="ShowRecoveryInput(this)" @(itemDetail.RecoveryStatus == true ? "checked" : "") />
+                                                                                                            <label for="RecoveryStatus_@deptId@iHdrCtr@iDtlCtr"></label>
+                                                                                                            <span style="display:none">Penalty Amount : Rs <input type="number" value=@itemDetail.RecoveryAmount id="RecoveryAmount_@deptId@iHdrCtr@iDtlCtr" /></span>
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                    @* <input type="hidden" id="EmployeeClearanceAssetId_@deptId@iHdrCtr@iDtlCtr" value="@itemDetail.EmployeeClearanceAssetId" />*@
+
+
+                                                                                                    <input type="hidden" id="EmployeeClearanceDetailId_@deptId@iHdrCtr@iDtlCtr" value="@itemDetail.EmployeeClearanceDetailId" />
+                                                                                                    <input type="hidden" id="AssetId_@deptId@iHdrCtr@iDtlCtr" value="@itemDetail.AssetId" />
+                                                                                                    <input type="hidden" id="AssetName_@deptId@iHdrCtr@iDtlCtr" value="@itemDetail.AssetName" />
+                                                                                                    iDtlCtr++;
+                                                                                                }
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                    </div>
+
+                                                                                </div>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    iHdrCtr++;
+                                                                }
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <input type="hidden" id="FY" value="" />
+                                                                <input type="hidden" id="Regime" value="" />
+                                                                <input type="hidden" id="LoginUserDepartment" value="@Model.LoginUserDepartment" />
+                                                                <input type="hidden" id="LoginUserUnitId" value="@Model.LoginUserUnitId" />
+                                                                @{
+                                                                    if (Model != null && Model.IsClient == false)
+                                                                    {
+                                                                        <button class="btn btn-primary me-2 mt-2" onclick="SaveExitClearance()">Submit</button>
+                                                                        <button class="btn btn-primary me-2 mt-2" onclick="javascript:history.back();">Cancel</button>
+                                                                    }
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <input type="hidden" id="encMessageId" value="@Model.encMessageId" />
+
+</div>
+<script src="~/customjs/commonfunction.js"></script>
+<script src="~/customjs/common.js"></script>
+
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            jQuery(".RecoveryStatus").each(function () {
+                if (this.checked)
+                    jQuery(this).parent().find("span").show();
+            });
+
+
+        });
+
+        function ShowRecoveryInput(chkBox) {
+            if (jQuery(chkBox).is(":checked")) {
+                jQuery(chkBox).parent().find("span").show();
+            }
+            else {
+                jQuery(chkBox).parent().find("span").hide();
+            }
+        }
+
+        function SaveExitClearance() {
+            var exitViewModel = {};
+            var headerCollection = new Array();
+            var detailCollection = new Array();
+            var isData = false;
+            //var formData = new FormData();
+            var iCtr = 0;
+
+            var iHdrCtr = 0;
+            var iDtlCtr = 0;
+
+            var sValidMsg = "";
+            var isData = false;
+            var loginDepartmentId = 0;
+            if (@Model.EmployeeExitClearanceHeaderList.Count> 0) {
+                //var arrDepts = jQuery("#SelectedDepartments").val().split(",");
+                if (!@Model.IsClient.Value.ToString().ToLower())
+                    loginDepartmentId = jQuery("#LoginUserDepartment").val();
+                for (iHdrCtr = 1; iHdrCtr <= @Model.EmployeeExitClearanceHeaderList.Count; iHdrCtr = iHdrCtr + 1) {
+                    var headerData = {};
+                    var addHeader = false;
+                    //var isChecked = document.getElementById("ClearanceStatus_" + loginDepartmentId + iHdrCtr).checked  //jQuery("#ClearanceStatus_" + loginDepartmentId + iHdrCtr).is(":checked")
+                    //document.getElementById("#ClearanceStatus_" + loginDepartmentId + iHdrCtr).checked  //
+                    var clearanceMappingId = jQuery("#ClearanceMappingId_" + loginDepartmentId + iHdrCtr).val();
+                    if (!IsBlank(clearanceMappingId)) {
+                        for (iDtlCtr = 1; iDtlCtr <= @Model.EmployeeExitClearanceDetailList.Count; iDtlCtr = iDtlCtr + 1) {
+                            var detailData = {};
+                            detailData.AssetId = $("#AssetId_" + loginDepartmentId + iHdrCtr + iDtlCtr).val();
+                            if (IsBlank(detailData.AssetId)) {
+                                break;
+                            }
+                            detailData.EmployeeClearanceDetailId = jQuery("#EmployeeClearanceDetailId_" + loginDepartmentId + iHdrCtr + iDtlCtr).val();
+                            detailData.EmployeeClearanceHeaderID = jQuery("#EmployeeClearanceHeaderId_" + loginDepartmentId + iHdrCtr).val();
+                            detailData.ClearanceMappingId = clearanceMappingId;
+
+                            detailData.AssetName = $("#AssetName_" + loginDepartmentId + iHdrCtr + iDtlCtr).val();
+                            detailData.Remark = $("#Remark_" + loginDepartmentId + iHdrCtr + iDtlCtr).val();
+                            detailData.AssetClearanceStatus = $("#AssetClearanceStatus_" + loginDepartmentId + iHdrCtr + iDtlCtr).val();
+
+                            if (IsBlank(detailData.AssetClearanceStatus) && (!IsBlank(detailData.Remark))) {
+                                sValidMsg = (sValidMsg != "" ? "<>br" : "") + "Recovery Status must be selected for departement '" + jQuery("#DepartmentName_" + loginDepartmentId + iHdrCtr).val() + "' and Asset '" + detailData.AssetName + "'";
+                                break;
+                            }
+                            var isChecked = document.getElementById("RecoveryStatus_" + loginDepartmentId + iHdrCtr + iDtlCtr).checked //jQuery("RecoveryStatus_" + loginDepartmentId + iHdrCtr + iDtlCtr).is(":checked")
+                            detailData.RecoveryStatus = isChecked //$("input[name='RecoveryStatus_" + loginDepartmentId + iHdrCtr + iDtlCtr + "']:checked");
+
+                            if (isChecked) {
+                                detailData.RecoveryAmount = jQuery("#RecoveryAmount_" + loginDepartmentId + iHdrCtr + iDtlCtr).val();
+                                if (IsBlank(detailData.RecoveryAmount)) {
+                                    sValidMsg = (sValidMsg != "" ? "<>br" : "") + "Recovery Amount must be entered for selected penalty of department '" + jQuery("#DepartmentName_" + loginDepartmentId + iHdrCtr).val() + "' and Asset '" + detailData.AssetName + "'";
+                                    break;
+                                }
+
+                            }
+                            if (!IsBlank(detailData.AssetClearanceStatus) && IsBlank(detailData.Remark)) {
+                                sValidMsg = (sValidMsg != "" ? "<>br" : "") + "Remark is mandatory for department '" + jQuery("#DepartmentName_" + loginDepartmentId + iHdrCtr).val() + "' and Asset '" + detailData.AssetName + "'";
+                                break;
+                            }
+                            else {
+                                if (!IsBlank(detailData.AssetClearanceStatus))
+                                    detailCollection.push(detailData)
+                            }
+                            addHeader = true;
+                        }
+
+                        if (addHeader) {
+                            headerData.UnitId = jQuery("#UnitId_" + loginDepartmentId + iHdrCtr).val();
+                            headerData.ClearanceMappingId = jQuery("#ClearanceMappingId_" + loginDepartmentId + iHdrCtr).val();
+                            headerData.OwnerId = jQuery("#OwnerId_" + loginDepartmentId + iHdrCtr).val();
+                            headerData.EmployeeId = jQuery("#EmployeeId_" + loginDepartmentId + iHdrCtr).val();
+                            headerData.DepartmentId = jQuery("#DepartmentId_" + loginDepartmentId + iHdrCtr).val();
+                            headerData.DepartmentName = jQuery("#DepartmentName_" + loginDepartmentId + iHdrCtr).val();
+                            headerData.FinalRemark = jQuery("#FinalRemark_" + loginDepartmentId + iHdrCtr).val();
+                            headerData.EmployeeClearanceHeaderId = jQuery("#EmployeeClearanceHeaderId_" + loginDepartmentId + iHdrCtr).val();
+                        }
+
+                        if (isChecked && IsBlank(headerData.FinalRemark)) {
+                            sValidMsg = "Final Remark is mandatory for department '" + headerData.DepartmentName + "'";
+                            break;
+                        }
+                    }
+                    if (detailCollection.length >= 1) {
+                        if (headerData != null) {
+                            headerCollection.push(headerData)
+                            exitViewModel.EmployeeExitClearanceHeaderList = headerCollection
+                            exitViewModel.EmployeeExitClearanceDetailList = detailCollection
+                        }
+                    }
+                    else {
+                        // $erroralert("Exit Clearance", "No Information found to save")
+                    }
+
+                }
+                if (IsBlank(sValidMsg)) {
+                    // alert('testing');
+                    SaveExitClearanceInfo(exitViewModel)
+                }
+                else {
+                    $erroralert("Exit Clearance", sValidMsg)
+
+                }
+
+            }
+        }
+
+
+        function SaveExitClearanceInfo(exitViewModel) {
+            BlockUI();
+            jQuery.ajax({
+                type: "POST",
+                url: "/ExitManagement/SaveExitClearanceInfo",
+                data: { exitVM: exitViewModel },
+                success: function (data) {
+                    //alert(data)
+                    UnblockUI();
+                    // var sMsg = data.displayMessage  //.Trim().Replace("< br > ", "\r\n")
+                    if (data.displayMessage.toUpperCase() == "SUCCESS") {
+                        //jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                        let messageId = $("#encMessageId").val();
+                        if ($.trim(messageId) != "") {
+                            clearNotification($.trim(messageId));
+                        }
+                        $successalert("", "Transaction Successful!");
+                        setTimeout(function () {
+                            history.back();
+                        }, 3000);
+
+
+                    }
+                    // window.location.href = "/EmployeeAttendanceUI/RegularizeAttendance"
+                },
+                error: function (result) {
+                    var x = 1;
+                    $erroralert("Employee Exit", "errror<br>" + result.responseText);
+                    UnblockUI();
+                }
+            });
+
+        }
+
+    </script>
+}
+
+
+

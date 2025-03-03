@@ -1,0 +1,133 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.StateMasterDTO
+
+@{
+    ViewData["Title"] = "State";
+    Model.DisplayMessage += "";
+    //Layout = null;
+}
+
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Personal Details /</span> State</h4>
+    <div class="card" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <button class="btn btn-secondary create-new btn-primary" tabindex="0" aria-controls="DataTables_Table_0" type="button" onclick="AddView(0)" style="float:right;">
+                <span>
+                    <i class="bx bx-plus me-sm-1"></i>
+                    <span class="d-none d-sm-inline-block">Add Record</span>
+                </span>
+            </button>
+            <!--input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" /-->
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+                            @* <th></th>*@
+                            <th>Country</th>
+                            <th>State</th>
+                            @*   <th>Status</th>*@
+                            <th class="text-center" style="width:100px">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.StateMasterList != null)
+                            @foreach (var item in Model.StateMasterList)
+                            {
+                                <tr>
+                                    <td>@item.CountryName</td>
+                                    <td>@item.StateName</td>
+                                    <td class="text-center">
+                                        <a class="dropdown-item" style="display:inline" href="#" onclick="EditRecord('State','/State/GetStateInfo','@item.EncryptedStateId','@item.IsActive')"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item" style="display:inline" href="#" onclick="DeleteRecord('State','@item.StateName','/State/DeleteState','@item.EncryptedStateId','@item.IsActive')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="List" onclick="javascript:window.location.href='/State/State'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/State/SaveState" class="">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-country">Country</label>
+                        <div class="position-relative">
+                            <select id="multicol-country" asp-for="CountryId" name="CountryId" class="select2 form-select select2-hidden-accessible clearForm" data-allow-clear="true" data-select2-id="multicol-country" tabindex="-1" aria-hidden="true">
+                                <option value="">Select</option>
+                                @if (Model.CountryList != null)
+                                {
+                                    @foreach (var item in Model.CountryList)
+                                    {
+                                        if (item.CountryId == Model.CountryId)
+                                        {
+                                            <option value="@item.CountryId" selected> @item.CountryName</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.CountryId"> @item.CountryName</option>
+                                        }
+
+                                    }
+                                }
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">State</label>
+                        <input type="text" id="StateName" asp-for="StateName" name="StateName" maxlength="100" value="@Model.StateName" class="form-control clearForm" placeholder="State">
+
+                    </div>
+
+
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" id="StateId" name="StateId" value="@Model.StateId">
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/State/State'">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script src="../../customjs/CommonFunction.js"></script>
+
+
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            Init("@Model.StateId", "@Model.DisplayMessage", "@Model.HttpStatusCode");
+
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                if ("@Model.HttpStatusCode" == 200) {
+                    $successalert("", "@Model.DisplayMessage");
+                }
+                else {
+                    $erroralert("Transaction Failed!", "@Model.DisplayMessage");
+                }
+            }
+        });
+
+
+    </script>
+}

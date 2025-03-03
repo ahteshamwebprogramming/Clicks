@@ -1,0 +1,553 @@
+﻿@model SimpliHR.WebUI.Modals.ITDeclarations.ITDeclarationsViewModel
+@{
+    ViewData["Title"] = "ProofSubmission";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll/</span> Documents Submission</h4>
+    <div class="row">
+
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="mb-3"><h5 class="card-title mb-sm-0 me-2">Mohd's IT Declaration</h5></div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="alert alert-secondary mb-3"><i class="fa-solid fa-circle-info"></i> Enter your planned investment declarations here and choose the desired regime in the following page.</div>
+                    <div class="table-responsive text-nowrap">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="50%">PARTICULARS</th>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="border-0" style="padding: 0;">
+                                        <table class="table table-bordered pb-2">
+                                            <tr class="bg-label-secondary">
+                                                <td width="90%">Is the employee staying in a rented house?</td>
+                                                <td width="10%">
+                                                </td>
+                                            </tr>
+                                            <!-- colapsable tr start-->
+                                            <tr>
+                                                <td colspan="2">
+                                                    <div>
+                                                        <div class="float-start"><h6>House Rent Details</h6></div>
+
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12 mb-3">
+                                                            <table class="table">
+                                                                <tbody>
+
+
+                                                                    <tr>
+                                                                        <td>Period From</td>
+                                                                        <td>Period To</td>
+                                                                        <td>Amount</td>
+                                                                        <td>Landlord Name</td>
+                                                                        <td>Landlord Pancard</td>
+                                                                        <td>Document Uploaded</td>
+                                                                        <td>Upload Proof</td>
+                                                                    </tr>
+
+                                                                    @{
+                                                                        if (Model != null)
+                                                                        {
+                                                                            if (Model.ItDeclarationHouseRentDetailList != null)
+                                                                            {
+                                                                                if (Model.ItDeclarationHouseRentDetailList.Count > 0)
+                                                                                {
+                                                                                    foreach (var item in Model.ItDeclarationHouseRentDetailList)
+                                                                                    {
+                                                                                        <tr>
+                                                                                            <td>@item.MonthFrom @item.YearFrom</td>
+                                                                                            <td>@item.MonthTo @item.YearTo</td>
+                                                                                            <td>@item.Amount</td>
+                                                                                            <td>@item.LandlordName</td>
+                                                                                            <td>@item.LandlordPancard</td>
+                                                                                            <td>@item.ProofFileName</td>
+                                                                                            <td><input type="file" /> <input type="button" class="btn btn-primary btn-sm" value="Upload" onclick="UploadDocument(this,@item.ItDeclarationHouseRentDetailsId,'HouseRent')" /> </td>
+                                                                                        </tr>
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <!-- colapsable tr Ends-->
+
+                                            <tr class=" border-bottom bg-label-secondary">
+                                                <td width="80%">Is the employee repaying home loan for a self occupied house property?</td>
+                                                <td width="10%">
+                                                    <label class="switch">
+                                                        <span class="switch-label">No</span>
+                                                        <input type="checkbox" class="switch-input">
+                                                        <span class="switch-toggle-slider">
+                                                            <span class="switch-on"></span>
+                                                            <span class="switch-off"></span>
+                                                        </span>
+                                                    </label>
+                                                </td>
+                                            </tr>
+                                            <!-- colapsable tr start-->
+                                            <tr class=" border-bottom">
+                                                <td colspan="2">
+                                                    <div class="row">
+                                                        <div class="col-md-12 mb-3">
+                                                            <table class="table">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>Principal Paid</td>
+                                                                        <td>Interest Paid</td>
+                                                                        <td>Name of the Lender</td>
+                                                                        <td>Lender PAN</td>
+                                                                        <td>Document Uploaded</td>
+                                                                        <td>Upload Proof</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>@(Model == null ? "" : Model.ItDeclarationHomeLoanDetailDTO == null ? "" : Model.ItDeclarationHomeLoanDetailDTO.PrincipalPaidOnHomeLoan)</td>
+                                                                        <td>@(Model == null ? "" : Model.ItDeclarationHomeLoanDetailDTO == null ? "" : Model.ItDeclarationHomeLoanDetailDTO.InterestPaidOnHomeLoan)</td>
+                                                                        <td>@(Model == null ? "" : Model.ItDeclarationHomeLoanDetailDTO == null ? "" : Model.ItDeclarationHomeLoanDetailDTO.NameOfTheLender)</td>
+                                                                        <td>@(Model == null ? "" : Model.ItDeclarationHomeLoanDetailDTO == null ? "" : Model.ItDeclarationHomeLoanDetailDTO.LenderPancard)</td>
+                                                                        <td>@(Model == null ? "" : Model.ItDeclarationHomeLoanDetailDTO == null ? "" : Model.ItDeclarationHomeLoanDetailDTO.ProofFileName)</td>
+                                                                        <td><input type="file" /> <input type="button" class="btn btn-primary btn-sm" value="Upload" onclick="UploadDocument(this,@(Model == null ? "" : Model.ItDeclarationHomeLoanDetailDTO == null ? "" : Model.ItDeclarationHomeLoanDetailDTO.ItDeclarationHomeLoanDetailsId),'HomeLoan')" /></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <!-- colapsable tr ends-->
+
+                                            <tr class=" border-bottom bg-label-secondary">
+                                                <td width="90%">Is the employee receiving rental income from let out property?</td>
+                                                <td width="10%">
+                                                    <label class="switch">
+                                                        <span class="switch-label">No</span>
+                                                        <input type="checkbox" class="switch-input">
+                                                        <span class="switch-toggle-slider">
+                                                            <span class="switch-on"></span>
+                                                            <span class="switch-off"></span>
+                                                        </span>
+                                                    </label>
+                                                </td>
+                                            </tr>
+                                            <!-- colapsable tr start-->
+                                            <tr class="border-bottom mb-3">
+                                                <td colspan="2">
+                                                    <div class="row">
+                                                        <div class="col-md-12 mb-3">
+                                                            <table class="table">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>Annual Rent Received</td>
+                                                                        <td>Taxes Paid</td>
+                                                                        <td>Net Annual Value</td>
+                                                                        <td>Standard Deduction</td>
+                                                                        <td>NET Income/Loss</td>
+                                                                        <td>Document Uploaded</td>
+                                                                        <td>Upload Proof</td>
+                                                                    </tr>
+                                                                    @{
+                                                                        if (Model != null)
+                                                                        {
+                                                                            if (Model.ItDeclarationLentOutPropertyDetailList != null)
+                                                                            {
+                                                                                if (Model.ItDeclarationLentOutPropertyDetailList.Count > 0)
+                                                                                {
+                                                                                    foreach (var item in Model.ItDeclarationLentOutPropertyDetailList)
+                                                                                    {
+                                                                                        <tr>
+                                                                                            <td>@item.AnnualRentReceived</td>
+                                                                                            <td>@item.TaxesPaid</td>
+                                                                                            <td>@item.AnnualRentReceived</td>
+                                                                                            <td>@item.StandardDeduction</td>
+                                                                                            <td>@item.NetIncomeLoss</td>
+                                                                                            <td>@item.ProofFileName</td>
+                                                                                            <td><input type="file" /> <input type="button" class="btn btn-primary btn-sm" value="Upload" onclick="UploadDocument(this,@item.ItDeclarationLentOutPropertyDetailsId,'LentOutProperty')" /> </td>
+                                                                                        </tr>
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <!-- colapsable tr ends-->
+                                        </table>
+                                    </td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-md mb-4 mb-md-0">
+                            <div class="accordion mt-3" id="accordionExample">
+                                <div class="accordion-item mb-3">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button type="button"
+                                                class="accordion-button collapsed bg-label-secondary"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#accordionOne"
+                                                aria-expanded="true"
+                                                aria-controls="accordionOne"
+                                                style="border-radius: 0!important">
+                                            Other Sources of Income
+                                        </button>
+                                    </h2>
+
+                                    <div id="accordionOne"
+                                         class="accordion-collapse collapse pt-3"
+                                         data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3">
+                                                    <table class="table">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Income from other sources</td>
+                                                                <td>Interest Earned from Savings Deposit</td>
+                                                                <td>Interest Earned from Fixed Deposit</td>
+                                                                <td>Interest Earned from National Savings Certificates</td>
+                                                                <td>Document Uploaded</td>
+                                                                <td>Upload Proof</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>@(Model == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO.IncomeFromOtherSource)</td>
+                                                                <td>@(Model == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO.InterestEarnedFromSavingsDeposit)</td>
+                                                                <td>@(Model == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO.InterestEarnedFromFixedDeposit)</td>
+                                                                <td>@(Model == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO.InterestEarnedFromNationalSavingsCertificates)</td>
+                                                                <td>@(Model == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO.ProofFileName)</td>
+                                                                <td style="white-space:nowrap"><input type="file" /> <input type="button" class="btn btn-primary btn-sm" value="Upload" onclick="UploadDocument(this,@(Model == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO.ItDeclarationOtherSourceOfIncomeId),'OtherSourceOfIncome')" /></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item mb-3">
+                                    <h2 class="accordion-header" id="headingTwo">
+                                        <button type="button"
+                                                class="accordion-button collapsed bg-label-secondary"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#accordionTwo"
+                                                aria-expanded="false"
+                                                aria-controls="accordionTwo"
+                                                style="border-radius: 0!important">
+                                            80C Investments
+                                        </button>
+                                    </h2>
+                                    <div id="accordionTwo"
+                                         class="accordion-collapse collapse pt-3"
+                                         aria-labelledby="headingTwo"
+                                         data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <div class="mb-3">Note: This section contains the list of investments including LIC schemes, mutual funds and PPF. The maximum limit for this section is ₹1,50,000.00</div>
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3">
+                                                    <table class="table">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Investment Type</td>
+                                                                <td>Investment Value</td>
+                                                                <td>Document Uploaded</td>
+                                                                <td>Upload Proof</td>
+                                                            </tr>
+                                                            @{
+                                                                if (Model != null)
+                                                                {
+                                                                    if (Model.ItDeclaration80CinvestmentList != null)
+                                                                    {
+                                                                        if (Model.ItDeclaration80CinvestmentList.Count > 0)
+                                                                        {
+                                                                            foreach (var item in Model.ItDeclaration80CinvestmentList)
+                                                                            {
+                                                                                <tr>
+
+
+                                                                                    @{
+                                                                                        if (Model.Investment80CmasterDTOs != null)
+                                                                                        {
+                                                                                            string r = Model.Investment80CmasterDTOs.Where(x => x.Investment80Cid == item.InvestmentType).Select(x => x.Investment80C).FirstOrDefault();
+                                                                                            <td>@r</td>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <td>@item.InvestmentType</td>
+                                                                                        }
+                                                                                    }                                                                                    
+                                                                                    <td>@item.Value</td>
+                                                                                    <td>@item.ProofFileName</td>
+                                                                                    <td><input type="file" /> <input type="button" class="btn btn-primary btn-sm" value="Upload" onclick="UploadDocument(this,@item.ItDeclaration80CinvestmentsId,'80CInvestments')" /> </td>
+                                                                                </tr>
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item mb-3">
+                                    <h2 class="accordion-header" id="headingThree">
+                                        <button type="button"
+                                                class="accordion-button collapsed bg-label-secondary"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#accordionThree"
+                                                aria-expanded="false"
+                                                aria-controls="accordionThree">
+                                            80D Exemptions
+                                        </button>
+                                    </h2>
+                                    <div id="accordionThree"
+                                         class="accordion-collapse collapse pt-3"
+                                         aria-labelledby="headingThree"
+                                         data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <div class="mb-3">Note: This section contains Mediclaim policies for yourself, your children, spouse and parents. The maximum limit for this section is ₹1,00,000.00</div>
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3">
+                                                    <table class="table">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Investment Type</td>
+                                                                <td>Investment Value</td>
+                                                                <td>Document Uploaded</td>
+                                                                <td>Upload Proof</td>
+                                                            </tr>
+                                                            @{
+                                                                if (Model != null)
+                                                                {
+                                                                    if (Model.ItDeclaration80DexemptionList != null)
+                                                                    {
+                                                                        if (Model.ItDeclaration80DexemptionList.Count > 0)
+                                                                        {
+                                                                            foreach (var item in Model.ItDeclaration80DexemptionList)
+                                                                            {
+                                                                                <tr>
+                                                                                    @{
+                                                                                        if (Model.exemptions80DDTOs != null)
+                                                                                        {
+                                                                                            string r = Model.exemptions80DDTOs.Where(x => x.Exemptions80Did == item.ExemptionType).Select(x => x.Exemptions80D1).FirstOrDefault();
+                                                                                            <td>@r</td>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <td>@item.ExemptionType</td>
+                                                                                        }
+                                                                                    }
+                                                                                   
+                                                                                    <td>@item.Value</td>
+                                                                                    <td>@item.ProofFileName</td>
+                                                                                    <td><input type="file" /> <input type="button" class="btn btn-primary btn-sm" value="Upload" onclick="UploadDocument(this,@item.ItDeclaration80DexemptionsId,'80DExemptions')" /> </td>
+                                                                                </tr>
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item mb-3">
+                                    <h2 class="accordion-header" id="headingFour">
+                                        <button type="button"
+                                                class="accordion-button collapsed bg-label-secondary"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#accordionFour"
+                                                aria-expanded="false"
+                                                aria-controls="accordionFour">
+                                            Other Investments & Exemptions
+                                        </button>
+                                    </h2>
+                                    <div id="accordionFour"
+                                         class="accordion-collapse collapse pt-3"
+                                         aria-labelledby="headingFour"
+                                         data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <div class="mb-3">Note: Declare other investments & exemptions such as Voluntary NPS, Interest Paid on Education Loan and Medical Expenditures under this section</div>
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3">
+                                                    <table class="table">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Investment Type</td>
+                                                                <td>Investment Value</td>
+                                                                <td>Document Uploaded</td>
+                                                                <td>Upload Proof</td>
+                                                            </tr>
+                                                            @{
+                                                                if (Model != null)
+                                                                {
+                                                                    if (Model.ItDeclarationOtherInvestmentExemptionList != null)
+                                                                    {
+                                                                        if (Model.ItDeclarationOtherInvestmentExemptionList.Count > 0)
+                                                                        {
+                                                                            foreach (var item in Model.ItDeclarationOtherInvestmentExemptionList)
+                                                                            {
+                                                                                <tr>
+                                                                                    @{
+                                                                                        if (Model.otherInvestmentExemptionDTOs != null)
+                                                                                        {
+                                                                                            string r = Model.otherInvestmentExemptionDTOs.Where(x => x.OtherInvestmentExemptionId == item.ItDeclarationOtherInvestmentExemptionId).Select(x => x.OtherInvestmentExemption1).FirstOrDefault();
+                                                                                            <td>@r</td>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <td>@item.ItDeclarationOtherInvestmentExemptionId</td>
+                                                                                        }
+                                                                                    }
+                                                                                    <td>@item.ItDeclarationOtherInvestmentExemptionId</td>
+                                                                                    <td>@item.Value</td>
+                                                                                    <td>@item.ProofFileName</td>
+                                                                                    <td><input type="file" /> <input type="button" class="btn btn-primary btn-sm" value="Upload" onclick="UploadDocument(this,@item.ItDeclarationOtherInvestmentExemptionId,'OtherInvestmentsExemptions')" /> </td>
+                                                                                </tr>
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item mb-3">
+                                    <h2 class="accordion-header" id="headingFive">
+                                        <button type="button"
+                                                class="accordion-button collapsed bg-label-secondary"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#accordionFive"
+                                                aria-expanded="false"
+                                                aria-controls="accordionFive">
+                                            Previous Employment
+                                        </button>
+                                    </h2>
+                                    <div id="accordionFive"
+                                         class="accordion-collapse collapse pt-3"
+                                         aria-labelledby="headingfive"
+                                         data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3">
+                                                    <table class="table">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Income After Exemptions</td>
+                                                                <td>Income Tax</td>
+                                                                <td>Professional Tax</td>
+                                                                <td>Employee Provident Fund</td>
+                                                                <td>Leave Encashment Exemptions</td>
+                                                                <td>Document Uploaded</td>
+                                                                <td>Upload Proof</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>@(Model == null ? "" : Model.ItDeclarationPreviousEmployementDTO == null ? "" : Model.ItDeclarationPreviousEmployementDTO.IncomeAfterExemptions)</td>
+                                                                <td>@(Model == null ? "" : Model.ItDeclarationPreviousEmployementDTO == null ? "" : Model.ItDeclarationPreviousEmployementDTO.IncomeTax)</td>
+                                                                <td>@(Model == null ? "" : Model.ItDeclarationPreviousEmployementDTO == null ? "" : Model.ItDeclarationPreviousEmployementDTO.ProfessionalTax)</td>
+                                                                <td>@(Model == null ? "" : Model.ItDeclarationPreviousEmployementDTO == null ? "" : Model.ItDeclarationPreviousEmployementDTO.EmployeeProvidentFund)</td>
+                                                                <td>@(Model == null ? "" : Model.ItDeclarationPreviousEmployementDTO == null ? "" : Model.ItDeclarationPreviousEmployementDTO.LeaveEncashmentExemptions)</td>
+                                                                <td>@(Model == null ? "" : Model.ItDeclarationPreviousEmployementDTO == null ? "" : Model.ItDeclarationPreviousEmployementDTO.ProofFileName)</td>
+                                                                <td style="white-space:nowrap"><input type="file" /> <input type="button" class="btn btn-primary btn-sm" value="Upload" onclick="UploadDocument(this,@(Model == null ? "" : Model.ItDeclarationPreviousEmployementDTO == null ? "" : Model.ItDeclarationPreviousEmployementDTO.ItDeclarationPreviousEmployementId),'PreviousEmployement')" /></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">Click Compute Tax, to calculate the Total Tax Liablility based on the above declaration. <a href="#">Compute Tax</a></div>
+                            </div>
+                            <div class="col-12">
+                                <button class="btn btn-primary me-2 mt-2">Submit</button>
+                                <button class="btn btn-primary me-2 mt-2" onclick="javascript:window.location.href='/PayrollAccount/PayrollAccount/'">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+
+
+        });
+
+        function UploadDocument(currObj, ITDeclarationPerticularId, ITDeclarationPerticular) {
+            let formData = new FormData();
+            formData.append("DocumentProofFile", $(currObj).parent().children("[type='file']")[0].files[0]);
+            formData.append("ItDeclarationParticularId", ITDeclarationPerticularId);
+            formData.append("ItDeclarationParticular", ITDeclarationPerticular);
+
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                url: "/PayrollAccount/UploadITDeclartionProof",
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                //contentType: 'application/json',
+                //dataType: "json",
+                success: function (data) {
+                    $successalert("Success!", "Document uploaded successfully");
+                    window.location.href = "/PayrollAccount/ProofSubmission";
+                    UnblockUI();
+                },
+                error: function (result) {
+                    $erroralert("Error!", result.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+    </script>
+    }
+

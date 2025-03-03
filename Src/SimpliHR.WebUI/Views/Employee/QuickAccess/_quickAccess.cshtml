@@ -1,0 +1,28 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeDashboardVM
+
+
+<link href="~/customcss/dashboard.css" rel="stylesheet" />
+@{
+    <div class="card-body" style="padding: 23px 25px">
+        <h5 class="col-6 col-md-6 mt-2 fw-bold text-dark">Quick access</h5>
+        <div class="quick-access-icons">
+            @if (Model.QuickAccessDetail.QuickAccessUnitLists != null)
+            {
+                if (Model.QuickAccessDetail.QuickAccessUnitLists.Count > 0)
+                {
+
+                    foreach (var item in Model.QuickAccessDetail.QuickAccessUnitLists)
+                    {
+                        <div class="d-inline-block me-2">
+                            <a href="@item.QuickAccessLink" target="_blank" class="app-brand-link quickAccessIcon">
+                                <img src="../../assets/img/@item.QuickAccessLogo" width="100%" height="auto" alt="" href="@item.QuickAccessLink" title="@item.QuickAccessName" />
+                            </a>
+                        </div>
+                    }
+                }
+            }
+        </div>
+        
+    </div>
+
+}

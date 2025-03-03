@@ -1,0 +1,13 @@
+.nav-link{color: #fff!important;}
+.layout-navbar-fixed .layout-navbar{background:#06d6a0!important;}
+    .text-muted{color: #fff !important;}
+@media (min-width: 1200px) {
+    .layout-menu-fixed .layout-navbar-full .layout-navbar,
+    .layout-menu-fixed-offcanvas .layout-navbar-full .layout-navbar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+      background:#06d6a0!important;
+    }
+}

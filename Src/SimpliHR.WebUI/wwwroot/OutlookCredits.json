@@ -1,0 +1,7 @@
+{
+  "client_id": "b651230c-2189-422e-902e-efb68c6f8bf2",
+  "scopes": "Calendars.ReadWrite offline_access User.Read",
+  "client_secret": "v938Q~CpOEkmBGMvK0gxFL9gl_1JyNMhjncPJcSw",
+  "redirect_url": "https://localhost:7151/oauth/Outlookcallback"
+
+}

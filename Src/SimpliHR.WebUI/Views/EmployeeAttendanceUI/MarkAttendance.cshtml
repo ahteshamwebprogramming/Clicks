@@ -1,0 +1,636 @@
+@model SimpliHR.Infrastructure.Models.Attendance.AttendanceHistoryViewModel
+@{
+    ViewData["Title"] = "Employee Attendance";
+    if (@Model.AttendanceList != null)
+    {
+        int totalRows = 0;
+        totalRows = Model.AttendanceList.Count;
+    }
+    DateTime today = DateTime.Today;
+    DateTime monthStart = new DateTime(today.Year, today.Month, 1);
+    DateTime monthEnd = monthStart.AddMonths(1).AddDays(-1);
+    Dictionary<string, string> rowColor = new Dictionary<string, string>();
+    rowColor.Add("TD", "circleBg grayBg");
+    rowColor.Add("P", "circleBg greenBg");
+    rowColor.Add("A", "circleBg redBg");
+    rowColor.Add("P/H", "circleBg brownBg");
+    rowColor.Add("WO", "circleBg lightGrayBg");
+    rowColor.Add("OD", "circleBg orangeBg");
+}
+<style>
+
+    .cont-no {
+        display: inline-block;
+        width: 58px;
+        font-size: 12px;
+    }
+
+    .circleBg {
+        padding: 5px 7px;
+        color: #fff;
+        border-radius: 20px;
+        display: inline-block;
+        width: 30px;
+        margin-bottom: 10px;
+    }
+
+    .grayBg {
+        background: #777777
+    }
+
+    .lightGrayBg {
+        background: #cccccc
+    }
+
+    .greenBg {
+        background: #009900
+    }
+
+    .redBg {
+        background: #ff0000
+    }
+
+    .brownBg {
+        background: #cc9933
+    }
+
+    .pinkBg {
+        background: #da18d8
+    }
+
+    .orangeBg {
+        background: #ff9900
+    }
+
+    .lightGreenBg {
+        background: #66ff99
+    }
+
+    .yellowBg {
+        background: #ffff00
+    }
+
+    .blueBg {
+        background: #0000ff
+    }
+
+    .lightBlueBg {
+        background: #5bc0de
+    }
+
+    .containerdiv {
+        padding: 19px;
+        border: 2px solid #e5dcdc;
+        /*-webkit-box-shadow: 1px 1px 3px 0px rgba(153,150,153,0.66);
+            -moz-box-shadow: 1px 1px 3px 0px rgba(153,150,153,0.66);
+            box-shadow: 1px 1px 3px 0px rgba(153,150,153,0.66);*/
+    }
+</style>
+<link rel="stylesheet" href="../../assets/vendor/libs/tagify/tagify.css" />
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <!--Location Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Attendance /</span> View Attendance</h4>
+        <!-- Location  -->
+        <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+                <h2>SimpliHR2.0</h2>
+                <div class="modal-content p-3 p-md-5">
+                    <div class="modal-body">
+                        <button type="button" class="btn-close" name="btnPopupClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center mb-4">
+                        </div>
+                        <form id="showAlert" class="row g-3" onsubmit="return false">
+                            <div class="col-12 text-center" id="successDiv">
+                                <p id="errorPara" class="error" style="color:red"></p>
+                            </div>
+                            <div class="col-12 text-center" id="errorDiv">
+                                <p id="successPara" class="error" style="color:black"></p>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="popupBtnDiv" class="col-12 text-center">
+                        @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                        <button type="reset" name="btnPopupClose"
+                                class="btn btn-label-secondary btn-reset mt-3"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                            Close
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div id="wizard-checkout" class="bs-stepper wizard-icons wizard-icons-example mt-2">
+
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Employee Attendance</h5>
+                </div>
+                <div class="card-body">
+                    <div style="">
+                        <form id="ViewAttendanceForm" method="post" action="/EmployeeAttendanceUI/GetEmployeeAttendance">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="formtabs-birthdate">Start Date</label>
+                                    <input type="text"
+                                           id="StartDate"
+                                           name="StartDate"
+                                           value="@(Model.StartDate == null ? monthStart.ToString("dd-MMM-yyyy") : ((DateTime)Model.StartDate).ToString("dd-MMM-yyyy"))"
+                                           class="form-control flatpickr-date1"
+                                           placeholder="DD-MMM-YYYY" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="formtabs-birthdate">End Date</label>
+                                    <input type="text"
+                                           id="EndDate"
+                                           name="EndDate"
+                                           value="@(Model.EndDate == null ? monthEnd.ToString("dd-MMM-yyyy") : ((DateTime)Model.EndDate).ToString("dd-MMM-yyyy"))"
+                                           class="form-control flatpickr-date1"
+                                           placeholder="DD-MMM-YYYY" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="">Employee</label>
+                                    @Html.DropDownListFor(x => x.EmployeeId,new SelectList(Model.EmployeeMasterKeyValue,"EmployeeId", "EmployeeNameCode", Model.EmployeeId),"Select Employees",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible",@name="EmployeeId" , @required="required"})
+                                </div>
+                            </div>
+                            <div class="pt-4">
+
+                                @* <button type="button" class="btn btn-primary me-sm-3 me-1" onclick="getLocation();">View Attendance</button>*@
+                                <button type="submit" class="btn btn-primary btn-sm me-sm-3 me-1" onclick="return ValidateViewAttendance()">Show Attendance</button>
+                                <input type="hidden" id="TicketId" value="@Model.TicketId">
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="mt-2" style="">
+                        @if (Model.AttendanceList.Count > 0)
+                        {
+                            <div id="tableInfo" class="mt-0">
+                                <button class="btn btn-primary btn-sm mb-4 pull-right" style="float:right" onclick="RegulerizeSelected()">Regularize Selected</button>
+                                <div style="clear:both"></div>
+                                <div class="table-responsive text-nowrap">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Day</th>
+                                                <th>Atnd.</th>
+                                                <th>Stay Hrs</th>
+                                                <th>Status</th>
+                                                <th>In Time</th>
+                                                <th>Out Time</th>
+                                                <th>Type</th>
+                                                <th>Reason</th>
+                                                <th><input type="checkbox" class="form-check-input" onclick="CheckAll(this)">Regularize</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                int iCtr = 1;
+                                                var showReason = false;
+                                                var inTime = "00:00";
+                                                var outTime = "00:00";
+                                                var status = "";
+                                                var shiftSchDetail = "";
+                                                var shiftAtndDetail = "";
+                                                var ctrlId = string.Empty;
+                                                foreach (var item in @Model.AttendanceList.Where(x => (x.InTime == null || x.InTime.ToString() == "00:00:00" || x.OutTime == null || x.OutTime.ToString() == "00:00:00")))
+                                                {
+                                                    showReason = false;
+                                                    ctrlId = $"{item.EmployeeId}_{item.DutyDate}";
+                                                    inTime = @item.InTime == null ? "00:00" : item.InTime.Value.ToString(@"hh\:mm");
+                                                    outTime = @item.OutTime == null ? "00:00" : item.OutTime.Value.ToString(@"hh\:mm");
+                                                    status = ((@item.Status == null || @item.Status == "") ? "" : @item.Status);
+                                                    string rowColorCls = (item.Status == null ? rowColor["TD"] : rowColor[item.Status]);
+                                                    if (Model.ShiftMasterKeyValue != null)
+                                                    {
+                                                        shiftSchDetail="";
+                                                        shiftAtndDetail = "";
+                                                        if (!string.IsNullOrEmpty(@item.ShiftIDScheduled))
+                                                            shiftSchDetail = Model.ShiftMasterKeyValue.Where(x => x.ShiftCode == @item.ShiftIDScheduled).Select(r => r.ShiftName).FirstOrDefault().ToString();
+                                                        if (!string.IsNullOrEmpty(@item.ShiftIDAttended))
+                                                            shiftAtndDetail = Model.ShiftMasterKeyValue.Where(x => x.ShiftCode == @item.ShiftIDAttended).Select(r => r.ShiftName).FirstOrDefault().ToString();
+                                                    }
+                                                            <tr>
+                                                                @*<td> <div class="@rowColorCls"></div></td>*@
+                                                                <td>@item.DutyDate.ToString("dd-MMM-yy")</td>
+                                                                <td>@item.DutyDate.ToString("ddd")</td>
+                                                               
+                                                                <td>
+                                                                    <span data-bs-toggle="tooltip"
+                                                                          data-bs-offset="0,4"
+                                                                          data-bs-placement="top"
+                                                                          data-bs-html="true"
+                                                                          data-bs-custom-class="tooltip-secondary"
+                                                                          title="<span>@shiftAtndDetail">
+                                                                        @item.ShiftIDAttended
+                                                                    </span>
+                                                                </td>
+                                                                <td>
+                                                                    @(
+                                                            item.Present == null ? "0" : item.Present.Value.ToString(@"hh\:mm")
+                                                                        )
+                                                                </td>
+                                                       
+                                                        @if (inTime != "00:00" || item.AttendanceType == "WO")
+                                                        {
+                                                            <td>@(item.IsHoliday.Value ? "Holiday" : item.Status == "P" ? "Present" : item.Status == "A" ? "Absent" : item.Status == "P/H" ? "Present/Absent" : item.AttendanceType == "WO" ? "Weekly Off" : "Absent")</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>@(item.IsHoliday.Value ? "Holiday" : "Absent")</td>
+                                                        }
+
+                                                                <td>
+                                                                    @if (inTime == "00:00" && (item.ShiftEndTime < DateTime.Now) && (!item.IsAttendanceLocked))
+                                                            {
+
+                                                                        <input type="time" name="InTime" id="InTime_@iCtr" required>
+                                                                showReason = true;
+                                                            }
+                                                            else
+                                                                        @inTime
+
+                                                                    </td>
+
+                                                                    <td>
+                                                                @if (outTime == "00:00" && (item.ShiftEndTime < DateTime.Now) && (!item.IsAttendanceLocked))
+                                                            {
+                                                                        <input type="time" name="OutTime" id="OutTime_@iCtr" required>
+                                                                showReason = true;
+                                                            }
+                                                            else
+                                                                        @outTime
+
+
+                                                                    </td>
+                                                       @if (showReason)
+                                                        {
+                                                            <td>
+                                                                <select class="select2 form-select" id="ManualPunchType_@iCtr">
+                                                                    <option selected value="Attendance">Attendance</option>
+                                                                    <option value="OD">OD</option>
+                                                                </select>
+                                                            </td>
+                                                                    <td>
+                                                                        <textarea type="text" id="ManualPunchReason_@iCtr" required cols="15" rows="2"></textarea>
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <input type="checkbox" id="Regularize_@iCtr" class="form-check-input">
+                                                                        <input type="hidden" id="EmployeeId_@iCtr" value="@item.EmployeeId">
+                                                                        <input type="hidden" id="DutyDate_@iCtr" value="@item.DutyDate.ToShortDateString()">
+                                                                        <input type="hidden" id="ShiftStartTime_@iCtr" value="@item.ShiftStartTime">
+                                                                        <input type="hidden" id="ShiftEndTime_@iCtr" value="@item.ShiftEndTime">
+                                                                        <input type="hidden" id="ShiftIDAttended_@iCtr" value="@item.ShiftIDAttended">
+
+                                                                    </td>
+                                                            iCtr++;
+                                                        }
+                                                        else
+                                                        {
+                                                            <td></td>
+                                                                    <td>@item.ManualPunchReason</td>
+                                                                    <td></td>
+                                                        }
+                                                            </tr>
+                                                }
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                    
+                                </div>
+
+                                <button class="btn btn-primary btn-sm mb-2 pull-right mt-4" style="float:right" onclick="RegulerizeSelected()">Regularize Selected</button>
+                                <div style="clear:both"></div>
+                            </div>
+
+                        }
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+        </div>
+    </div>
+    <!-- / Content -->
+
+    <input type="hidden" id="Longitude" name="Longitude" class="form-control" />
+    <input type="hidden" id="Latitude" name="Latitude" class="form-control" />
+</div>
+<!-- Content wrapper -->
+<script src="../../assets/vendor/libs/tagify/tagify.js"></script>
+<script src="../../assets/js/forms-tagify.js"></script>
+<script src="~/customjs/commonfunction.js"></script>
+<script src="~/customjs/common.js"></script>
+
+<script src="https://js.api.here.com/v3/3.1/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://js.api.here.com/v3/3.1/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        var GPSLocation ,longitude,latitude;
+        jQuery(document).ready(function () {
+            jQuery(".List").dataTable();
+            jQuery("#showAlert").modal('hide');
+            jQuery(".flatpickr-date1").flatpickr({
+                //monthSelectorType: 'static',
+                dateFormat: "d-M-Y"
+            });
+            jQuery("#showAlert").modal('hide');
+           // ShowServerMessage("@Model.DisplayMessage");
+            if ("@Model.DisplayMessage.Trim().ToUpper()" != "_BLANK") {
+                $successalert("", "@Model.DisplayMessage");
+            }
+
+            getLocation();
+
+        });
+        var Latitude;
+        function CheckAll(regularizeAll) {
+            isAllChecked = regularizeAll.checked;
+            for (iCtr = 1; iCtr <= @Model.AttendanceList.Count; iCtr = iCtr + 1) {
+
+                chkBox = jQuery("#Regularize_" + iCtr)
+                if (chkBox != undefined) {
+                    isChecked = chkBox.is(":checked")
+
+                    if (isAllChecked && !isChecked) {
+                        chkBox.attr('checked', true).change();
+                    }
+                    else if (!isAllChecked && isChecked) {
+                        chkBox.attr('checked', false).change();
+                    }
+                }
+            }
+        }
+
+        function ValidateAttendance(rowData) {
+            var sValidMsg = "";
+
+            if (rowData.InTime == "")
+                sValidMsg = (sValidMsg == "" ? "" : sValidMsg + "<br>") + "Please fill the InTime"
+            if (rowData.OutTime == "")
+                sValidMsg = (sValidMsg == "" ? "" : sValidMsg + "<br>") + "Please fill the OnTime"
+            if (rowData.ManualPunchReason == "")
+                sValidMsg = (sValidMsg == "" ? "" : sValidMsg + "<br>") + "Please fill the Manual Punch Reason"
+            sValidMsg = (sValidMsg == "" ? "" : "Please fill the following for duty date " + rowData.DutyDate + "<br>" + sValidMsg)
+
+            return sValidMsg;
+        }
+
+        function ValidateViewAttendance() {
+
+
+            startDate = jQuery("#StartDate").val();
+            endDate = jQuery("#EndDate").val();
+            var dateDiff = dateDiffrenece(startDate, endDate, "DD-MMM-YYYY", "day")
+            if (dateDiff < 0) {
+                $erroralert("Validation", "Start Date cannot be greater then End Date");
+                //jQuery("#errorDiv").show();
+                //jQuery("#errorPara").html("Start Date cannot be greater then End Date");
+                return false;
+            }
+            jQuery(" #tableInfo").hide()
+
+        }
+
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                if (sMsg.toUpperCase() == "SUCCESS") {
+                    sMsg = "Transaction Successful!";
+                    jQuery("#successDiv").show();
+                    jQuery("#successPara").html(sMsg);
+                    //$("#btnPopupDiv").on('click', '#btnPopup', function () {
+                    //    window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                    //});
+                    // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                }
+                else {
+                    jQuery("#errorDiv").show();
+                    jQuery("#errorPara").html(sMsg);
+                }
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+            }
+        }
+
+
+        function ResetForm() {
+            jQuery("#AttendanceRosterForm")[0].reset();
+        }
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+
+        function RediretToView() {
+            //window.location.href = '/EmployeeAttendanceUI/ViewAttendance'
+            $('#ViewAttendanceForm').submit();
+
+        }
+
+        function RegulerizeSelected() {
+
+            // alert(Latitude);
+
+            var rowData = {};
+            var attendanceHistoryVM = {};
+            var isData = false;
+            var dataCollection = new Array();
+            var results = new Array();
+            //var formData = new FormData();
+            var iCtr = 0;
+            var sValidMsg = "";
+            if (@Model.AttendanceList.Count> 0) {
+                for (iCtr = 1; iCtr <= @Model.AttendanceList.Count; iCtr = iCtr + 1) {
+                    isData = false;
+                    rowData = {};
+                    //var ctrlID = jQuery("#EmployeeId_" + iCtr).val() + "_" + jQuery("#DutyDate_" + iCtr).val();
+                    isChecked = jQuery("#Regularize_" + iCtr).is(":checked")
+
+                    if (isChecked) {
+
+                        rowData.EmployeeId = jQuery("#EmployeeId_" + iCtr).val();
+                        rowData.DutyDate = jQuery("#DutyDate_" + iCtr).val();
+                        rowData.ShiftStartTime = jQuery("#ShiftStartTime_" + iCtr).val();
+                        rowData.ShiftEndTime = jQuery("#ShiftEndTime_" + iCtr).val();
+                        rowData.InTime = document.getElementById("InTime_" + iCtr).value;
+                        rowData.OutTime = document.getElementById("OutTime_" + iCtr).value;
+                        rowData.ShiftIDAttended = document.getElementById("ShiftIDAttended_" + iCtr).value;
+                        rowData.ManualPunchReason = jQuery("#ManualPunchReason_" + iCtr).val();
+                        rowData.GPSLocation = GPSLocation;
+                        rowData.longitude = longitude;
+                        rowData.latitude = latitude;
+
+                        isData = true;
+                    }
+                    //sValidMsg = ValidateAttendance(rowData)
+                    //if (sValidMsg != "") {
+                    //    ShowServerMessage(sValidMsg)
+                    //    return false
+                    //}
+                    if (isData)
+                        dataCollection.push(rowData)
+
+                }
+
+
+            }
+            if (dataCollection.length <= 0)
+                $erroralert("Validation", "Select punches request for approval/recjection");
+               // ShowServerMessage("Select punches request for approval/recjection")
+
+            if (dataCollection.length > 0) {
+                //attendanceHistoryVM.GPSLocation = GPSLocation;
+                //attendanceHistoryVM.longitude = longitude;
+                //attendanceHistoryVM.latitude = latitude;
+                // Getting GPS Location
+
+                //var platform = new H.service.Platform({
+                //    "apikey": "Q3LzLSGK1PSUYGyP8jbG8myhzLy6nobFjebRnhLFoB0"
+                //});
+                //var geocoder = platform.getSearchService();
+                //if (navigator.geolocation) {
+                //    navigator.geolocation.getCurrentPosition(position => {
+                //        geocoder.reverseGeocode(
+                //            {
+
+                //                at: position.coords.latitude + "," + position.coords.longitude
+                //            }, data => {
+                                
+                //                if (data.items[0].address.label.length > 0) {                                    
+                //                    attendanceHistoryVM.GPSLocation = data.items[0].address.label;
+                //                    attendanceHistoryVM.longitude = position.coords.longitude;
+                //                    attendanceHistoryVM.latitude = position.coords.latitude;
+                                  
+                //                }
+
+                //            }, error => {
+                //                console.error(error);
+                //            }
+                //        );
+                //    });
+                //} else {
+                //    console.error("Geolocation is not supported by this browser!");
+                //}
+            
+
+                // End GPS Location
+
+                attendanceHistoryVM.AttendanceList = dataCollection;
+                attendanceHistoryVM.EmployeeId = jQuery("#EmployeeId").val();
+                attendanceHistoryVM.StartDate = jQuery("#StartDate").val();
+                attendanceHistoryVM.EndDate = jQuery("#EndDate").val();
+                attendanceHistoryVM.TicketId = jQuery("#TicketId").val();
+                BlockUI();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/EmployeeAttendanceUI/ApplyManualPunches",
+                    data: { inputData: attendanceHistoryVM },
+                    success: function (data) {
+                        //alert(data)
+                        UnblockUI();
+                        var sMsg = data.displayMessage  //.Trim().Replace("<br>", "\r\n")
+                        $successalert("", "Transaction Successful!");
+                        if (sMsg.toUpperCase() == "SUCCESS") {
+                            //jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                            jQuery("#TicketId").val(data.ticketId);
+                            RediretToView();
+                        }
+
+
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        $erroralert("Error!", "errror<br>" + result.responseText);
+                        UnblockUI();
+                    }
+                });
+
+            }
+
+        }
+
+        function getLocation() {
+            var platform = new H.service.Platform({
+                "apikey": "Q3LzLSGK1PSUYGyP8jbG8myhzLy6nobFjebRnhLFoB0"
+            });
+            var geocoder = platform.getSearchService();
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    geocoder.reverseGeocode(
+                        {
+
+                            at: position.coords.latitude + "," + position.coords.longitude
+                        }, data => {
+
+                            if (data.items[0].address.label.length > 0) {
+                                GPSLocation = data.items[0].address.label;
+                                longitude = position.coords.longitude;
+                                latitude = position.coords.latitude;
+
+                            }
+
+                        }, error => {
+                            console.error(error);
+                        }
+                    );
+                });
+            } else {
+                console.error("Geolocation is not supported by this browser!");
+            }
+        }
+
+        function showPosition(position) {
+
+            //   Latitude=position.coords.latitude;
+            jQuery("#Latitude").val(position.coords.latitude);
+            jQuery("#Longitude").val(position.coords.longitude);
+            //  alert(position.coords.latitude);
+
+            jQuery.ajax({
+                type: "GET",
+                url: "/EmployeeAttendanceUI/GetGPSLocation",
+                data: { latitude: jQuery("#Latitude").val(), longitude: jQuery("#Longitude").val() },
+                success: function (response) {
+
+                },
+                failure: function (response) {
+                    $erroralert("Transaction Failed!", response.responseText);
+                },
+                error: function (response) {
+                    $erroralert("Transaction Failed!", response.responseText);
+                }
+            });
+
+        }
+
+
+    </script>
+    }

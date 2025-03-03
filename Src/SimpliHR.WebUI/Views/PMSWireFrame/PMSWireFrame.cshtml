@@ -1,0 +1,490 @@
+﻿@model SimpliHR.Infrastructure.Models.Performace.PerformanceSettingViewModel
+@*<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">*@
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+@*<link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.4.4/bootstrap-editable/css/bootstrap-editable.css" rel="stylesheet">*@
+<link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/jquery-editable/jquery-ui-datepicker/css/redmond/jquery-ui-1.10.3.custom.min.css" rel="stylesheet">
+<style>
+    #PerformaceSettings h5 {
+        text-decoration: underline;
+    }
+
+    .plain-text {
+        color: var(--bs-table-striped-color);
+    }
+
+    .not-authorised {
+        pointer-events: none !important;
+        cursor: not-allowed !important;
+        opacity: 0.5 !important;
+    }
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Performance /</span> PMS Wire Frame
+    </h4>
+    <div class="card" id="">
+        <div class="card-body">
+            <form method="post" id="PerformaceSettings" action="return false">
+                <h5>Rating Scale</h5>
+                <div class="row g-3" style="margin-top:0px;">
+                    <div class="col-md-12">
+                        <div style="">
+                            <table class="table table-bordered table-striped" name="tblPerformanceSettingMechanism">
+                                @{
+                                    if (Model != null)
+                                    {
+                                        if (Model.PerformanceSettingMechanismList != null)
+                                        {
+                                            foreach (var item in Model.PerformanceSettingMechanismList)
+                                            {
+                                                <tr performanceSettingMechanismId="@item.PerformanceSettingMechanismId">
+                                                    <td name="Point">@item.Point</td>
+                                                    <td name="Category">@item.Category</td>
+                                                    <td name="Description">@item.Description</td>
+                                                    <td class="d-none" name="ScoreFrom">@item.ScoreFrom</td>
+                                                    <td class="d-none" name="ScoreTo">@item.ScoreTo</td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div id="div_KRAPartialView">
+                    @Html.Partial("_pmsWireFrame/_kra",Model)
+                </div>
+
+
+
+                <div id="div_BehaviouralSkillsPartialView">
+                    @Html.Partial("_pmsWireFrame/_behaviouralSkills",Model)
+                </div>
+
+                <div id="div_BehaviouralSkillsPartialView">
+                    @Html.Partial("_pmsWireFrame/_employeeManagerRemarks",Model)
+                </div>
+
+
+                <div id="div_BehaviouralSkillsPartialView">
+                    @Html.Partial("_pmsWireFrame/_trainingNeed",Model)
+                </div>
+
+
+
+
+
+
+
+                <h5 class="mt-5">Rating Calculations & Summary </h5>
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <table class="table table-bordered table-striped" name="tblRatingCalculationsAndSummary">
+                            <thead>
+                                <tr>
+                                    <th>Weight-ages</th>
+                                    <th>Weight-age(%age)</th>
+                                    <th>Score</th>
+                                    <th>Final Score(WA %age)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>KRAs</td>
+                                    <td name="WeightageKRA">@(Model == null ? 0 : Model.PerformanceSettingSkillSetMatrix == null ? 0 : Model.PerformanceSettingSkillSetMatrix.KRAWeightage)</td>
+                                    <td name="KRA">@(Model == null ? 00.00 : Model.PerformanceEmployeeData == null ? 00.00 : Model.PerformanceEmployeeData.RatingCalculationKRAScore == null ? 00.00 : Model.PerformanceEmployeeData.RatingCalculationKRAScore) </td>
+                                    <td name="TotalKRA">00.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Behavioral Skills</td>
+                                    <td name="WeightageBS">@(Model == null ? 0 : Model.PerformanceSettingSkillSetMatrix == null ? 0 : Model.PerformanceSettingSkillSetMatrix.SoftSkillsWeightage)</td>
+                                    <td name="BehavioralSkills">00.00</td>
+                                    <td name="TotalBS">00.00</td>
+                                </tr>
+                                <tr></tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total %age</th>
+                                    <th>@(Model == null ? 0 : Model.PerformanceSettingSkillSetMatrix == null ? 0 : (Model.PerformanceSettingSkillSetMatrix.KRAWeightage + Model.PerformanceSettingSkillSetMatrix.SoftSkillsWeightage))</th>
+                                    <th></th>
+                                    <th name="TotalKRABS">0</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="4"></th>
+                                </tr>
+                                <tr>
+                                    <th>Final Score</th>
+                                    <th name="FinalScoreKRA"></th>
+                                    <th name="FinalScoreBS"></th>
+                                    <th name="TotalKRABSFinalScore">0</th>
+                                </tr>
+                                <tr>
+                                    <th>Final Rating</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th point="0" name="finalrating"></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row">
+                    @{
+                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.HODReview == true)
+                        {
+                            <div class="col-md-6">
+                                <h5 class="mt-5">HOD's Review </h5>
+                                <div class="col-md-8">
+                                    <div class="row g-3 @((Model.ViewType == "HOD" && (Model.PerformanceEmployeeData!=null && Model.PerformanceEmployeeData.FilledByManager==true && Model.PerformanceEmployeeData.FilledByHOD!=true))  ? "" : "not-authorised")">
+                                        <label class="form-label required" for="multicol-last-name">Final Rating</label>
+
+                                        @{
+                                            if (Model.ViewType == "Employee" && (Model.PerformanceEmployeeData != null && Model.PerformanceEmployeeData.Published != true) || (Model.ViewType == "Manager" && (Model.PerformanceEmployeeData != null && Model.PerformanceEmployeeData.Published != true)))
+                                            {
+                                                <select class="form-control" name="PerformanceEmployeeData.HODFinalRatingId">
+                                                    <option value="0">Select</option>
+                                                    @{
+                                                        if (Model != null)
+                                                        {
+                                                            if (Model.PerformanceSettingMechanismList != null)
+                                                            {
+                                                                foreach (var item in Model.PerformanceSettingMechanismList)
+                                                                {
+                                                                    <option value="@item.PerformanceSettingMechanismId" point="@item.Point">@item.Category</option>
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                </select>
+                                            }
+                                            else
+                                            {
+                                                <select class="form-control" asp-for="PerformanceEmployeeData.HODFinalRatingId">
+                                                    <option value="0">Select</option>
+                                                    @{
+                                                        if (Model != null)
+                                                        {
+                                                            if (Model.PerformanceSettingMechanismList != null)
+                                                            {
+                                                                foreach (var item in Model.PerformanceSettingMechanismList)
+                                                                {
+                                                                    <option value="@item.PerformanceSettingMechanismId" point="@item.Point">@item.Category</option>
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                </select>
+
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.HODClosingRemarks == true)
+                        {
+                            <div class="col-md-6">
+                                <h5 class="mt-5">Closing Remarks - HOD</h5>
+
+                                @{
+                                    if (Model.ViewType == "Employee" && (Model.PerformanceEmployeeData != null && Model.PerformanceEmployeeData.Published != true) || (Model.ViewType == "Manager" && (Model.PerformanceEmployeeData != null && Model.PerformanceEmployeeData.Published != true)))
+                                    {
+                                        <textarea class="form-control @((Model.ViewType == "HOD" && (Model.PerformanceEmployeeData!=null && Model.PerformanceEmployeeData.FilledByManager==true && Model.PerformanceEmployeeData.FilledByHOD!=true))?"" :"not-authorised")" name="PerformanceEmployeeData.ClosingRemarksHOD"></textarea>
+                                    }
+                                    else
+                                    {
+                                        <textarea class="form-control @((Model.ViewType == "HOD" && (Model.PerformanceEmployeeData!=null && Model.PerformanceEmployeeData.FilledByManager==true && Model.PerformanceEmployeeData.FilledByHOD!=true))?"" :"not-authorised")" asp-for="PerformanceEmployeeData.ClosingRemarksHOD"></textarea>
+                                    }
+                                }
+
+
+                            </div>
+                        }
+                    }
+                </div>
+
+
+                <div class="pt-4">
+                    <input type="hidden" asp-for="EmployeeCode" />
+                    <input type="hidden" asp-for="EmployeeId" />
+                    <input type="hidden" class="dbcol" asp-for="PerformanceEmployeeData.PerformanceEmployeeDataId" />
+                    <input type="hidden" class="dbcol" asp-for="PerformanceSetting.Mechanism" />
+                    <input type="hidden" class="dbcol" asp-for="PerformanceSetting.PerformanceSettingId" />
+                    <input type="hidden" name="maxrating" value="@(Model==null ? 0 : Model.PerformanceSettingMechanismList==null ? 0 : Model.PerformanceSettingMechanismList.Count)" />
+                    <input type="hidden" name="viewtype" value="@(Model.ViewType)" />
+                    @*<button type="button" class="btn btn-primary me-sm-3 me-1 btn-sm" onclick="SaveClearanceMapping()">Configure PMS Settings</button>*@
+
+                    @{
+                        if (Model != null)
+                        {
+                            if (Model.ViewType == "Employee")
+                            {
+                                if (Model.PerformanceEmployeeData != null)
+                                {
+                                    if (Model.PerformanceEmployeeData.FilledByEmployee != true)
+                                    {
+                                        <input type="button" class="btn btn-primary btn-sm" value="Submit" onclick="SubmitData('Submit')" />
+                                        <input type="button" class="btn btn-primary btn-sm" value="Save As Draft" onclick="SubmitData('Save')" />
+                                    }
+                                }
+                                else
+                                {
+                                    <input type="button" class="btn btn-primary btn-sm" value="Submit" onclick="SubmitData('Submit')" />
+                                    <input type="button" class="btn btn-primary btn-sm" value="Save As Draft" onclick="SubmitData('Save')" />
+                                }
+                            }
+                            if (Model.ViewType == "Manager")
+                            {
+                                if (Model.PerformanceEmployeeData != null)
+                                {
+                                    if (Model.PerformanceEmployeeData.FilledByEmployee == true && Model.PerformanceEmployeeData.FilledByManager != true)
+                                    {
+                                        <input type="button" class="btn btn-primary btn-sm" value="Submit" onclick="SubmitData('Submit')" />
+                                        <input type="button" class="btn btn-primary btn-sm" value="Save As Draft" onclick="SubmitData('Save')" />
+                                    }
+                                }
+                            }
+                            if (Model.ViewType == "HOD")
+                            {
+                                if (Model.PerformanceEmployeeData != null)
+                                {
+                                    if (Model.PerformanceEmployeeData.FilledByManager == true && Model.PerformanceEmployeeData.FilledByHOD != true)
+                                    {
+                                        <input type="button" class="btn btn-primary btn-sm" value="Submit" onclick="SubmitData('Submit')" />
+                                        <input type="button" class="btn btn-primary btn-sm" value="Save As Draft" onclick="SubmitData('Save')" />
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts {
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.4.4/bootstrap-editable/js/bootstrap-editable.min.js"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap-editable/js/bootstrap-editable.min.js"></script>
+    @*<script src="~/customjs/performancesettings.js"></script>*@
+    <script src="~/customjs/pmswireframe.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //initDates();
+            intiEdit();
+            GrandTotalWeightage();
+
+            if ($("[name='PerformanceSetting.Mechanism']").val() == 2) {
+                GrandTotalScore();
+            }
+            else {
+                GrandTotalScoreSimple();
+            }
+
+
+            //setInterval(function () {
+            //    SubmitData('Save')
+            //}, 5000);
+
+            //GrandTotalScore();
+            //$("[name='tblWeightedAverageMethod']").find("tfoot").find("input[name='addRow']").click(function () {
+            //    addRow(this);
+            //});
+            //$("[name='tblSimpleAverageMethod']").find("tfoot").find("input[name='addRow']").click(function () {
+            //    addRow(this);
+            //});
+
+            //$("[name='PerformanceSetting.Mechanism']").change(function () {
+            //    managegradeTable(this);
+            //});
+            //managegradeTable($("[name='PerformanceSetting.Mechanism']"));
+            $(".tblWeightedAverageMethod").find("tbody").find("[name='managerrating']").find('select').change(function () {
+                let currselect = $(this);
+                let managerRating = currselect.val();
+                let maxRating = $("[name='maxrating'][type='hidden']").val();
+                let weightage = currselect.closest("tr").find("[name='weightage']").text();
+                let score = KRAScoreCalculator(managerRating, maxRating, weightage);
+
+                currselect.closest("tr").find("[name='score']").text(score);
+
+                let Mechanism = $("[name='PerformanceSetting.Mechanism']").val();
+                if (Mechanism == 2) {
+                    GrandTotalScore();
+                }
+                else {
+                    GrandTotalScoreSimple();
+                }
+
+            });
+        });
+
+        function managegradeTable(obj) {
+            //$("[name='tblSimpleAverageMethod']").hide();
+            //$("[name='tblWeightedAverageMethod']").hide();
+            //if ($(obj).val() == "1") {
+            //    $("[name='tblSimpleAverageMethod']").show();
+            //}
+            //if ($(obj).val() == "2") {
+            //    $("[name='tblWeightedAverageMethod']").show();
+            //}
+        }
+
+        function intiEdit() {
+            $.fn.editable.defaults.mode = 'inline';
+            $('.edit_text').editable({
+                type: 'textarea',
+                pk: 1,
+                name: 'comments',
+                title: 'Enter comments',
+                backdrop: "static ",
+                success: function (k, v) {
+                    console.log(v);
+                    // var href = $(this).attr("href");
+                    // $('.name-list '+href).html(v);
+                }
+            });
+        }
+        function initDates() {
+            $(".flatpickr-date1").flatpickr({
+                dateFormat: "d-M-Y"
+            });
+        }
+
+        function GrandTotalWeightage() {
+            $(".tblWeightedAverageMethod").each(function () {
+                let currTable = $(this);
+                let weightage = 0;
+                currTable.find("tbody").find("tr").each((i, v) => {
+                    weightage += parseInt($(v).find("[name='weightage']").text());
+                });
+                currTable.find("tfoot").find("[name='weightage']").text(weightage);
+            });
+        }
+        function GrandTotalScore() {
+            $(".tblWeightedAverageMethod").each(function () {
+                let currTable = $(this);
+                let score = 0;
+                let managersRating = 0;
+                currTable.find("tbody").find("tr").each((i, v) => {
+                    score += isNaN(parseFloat($(v).find("[name='score']").text())) ? 0 : parseFloat($(v).find("[name='score']").text());
+
+                    //managerrating
+                    let managerRating = $(v).find("[name='managerrating']").find("select").val();
+                    managerRating = isNaN(parseFloat(managerRating)) ? 0 : parseFloat(managerRating);
+                    managersRating += managerRating;
+                });
+                currTable.find("tfoot").find("[name='score']").text(score.toFixed(2))
+                let maxRating = $("[name='maxrating']").val();
+                let averageManagerRating = (managersRating / maxRating);
+                currTable.find("tfoot").find("[name='managerrating']").text(averageManagerRating.toFixed(2))
+
+                if (currTable.attr("name") == "tblWeightedAverageMethodKRA") {
+                    $("[name='tblRatingCalculationsAndSummary']").find("tbody").find('[name="KRA"]').text(score.toFixed(2));
+                    let WeightageKRAObj = $("[name='tblRatingCalculationsAndSummary']").find("tbody").find('[name="WeightageKRA"]').text();
+                    let WeightageKRA = isNaN(parseFloat(WeightageKRAObj)) ? 0 : parseFloat(WeightageKRAObj);
+                    $("[name='tblRatingCalculationsAndSummary']").find("tbody").find('[name="TotalKRA"]').text(((score.toFixed(2) * WeightageKRA) / 100));
+                }
+                else if (currTable.attr("name") == "tblWeightedAverageMethodBS") {
+                    $("[name='tblRatingCalculationsAndSummary']").find("tbody").find('[name="BehavioralSkills"]').text(score.toFixed(2));
+                    let WeightageBSObj = $("[name='tblRatingCalculationsAndSummary']").find("tbody").find('[name="WeightageBS"]').text();
+                    let WeightageBS = isNaN(parseFloat(WeightageBSObj)) ? 0 : parseFloat(WeightageBSObj);
+                    $("[name='tblRatingCalculationsAndSummary']").find("tbody").find('[name="TotalBS"]').text(((score.toFixed(2) * WeightageBS) / 100));
+                }
+
+                let totalKRAObj = $("[name='tblRatingCalculationsAndSummary']").find("tbody").find('[name="TotalKRA"]').text();
+                let totalKRA = isNaN(parseFloat(totalKRAObj)) ? 0 : parseFloat(totalKRAObj);
+                let TotalBSObj = $("[name='tblRatingCalculationsAndSummary']").find("tbody").find('[name="TotalBS"]').text();
+                let TotalBS = isNaN(parseFloat(TotalBSObj)) ? 0 : parseFloat(TotalBSObj);
+
+                let TotalKRABS = (totalKRA + TotalBS).toFixed(2);
+
+                $("[name='tblRatingCalculationsAndSummary']").find("tfoot").find('[name="TotalKRABS"]').text(TotalKRABS);
+                $("[name='tblRatingCalculationsAndSummary']").find("tfoot").find('[name="TotalKRABSFinalScore"]').text(TotalKRABS)
+
+                $("[name='tblPerformanceSettingMechanism']").find("tbody").find("tr").each((i, v) => {
+
+                    let scoreFrom = $(v).find('td[name="ScoreFrom"]').text();
+                    scoreFrom = isNaN(parseFloat(scoreFrom)) ? 0 : parseFloat(scoreFrom);
+                    let scoreTo = $(v).find('td[name="ScoreTo"]').text();
+                    scoreTo = isNaN(parseFloat(scoreTo)) ? 0 : parseFloat(scoreTo);
+                    if (TotalKRABS >= scoreFrom && TotalKRABS < scoreTo) {
+                        let Category = $(v).find('td[name="Category"]').text();
+                        let Point = $(v).find('td[name="Point"]').text();
+                        $("[name='tblRatingCalculationsAndSummary']").find("tfoot").find('[name="finalrating"]').text(Category);
+                        $("[name='tblRatingCalculationsAndSummary']").find("tfoot").find('[name="finalrating"]').attr("point", Point);
+                    }
+                });
+
+            });
+        }
+
+        function GrandTotalScoreSimple() {
+            $(".tblWeightedAverageMethod").each(function () {
+                let currTable = $(this);
+                let score = 0;
+                let managersRating = 0;
+                currTable.find("tbody").find("tr").each((i, v) => {
+                    score += isNaN(parseFloat($(v).find("[name='score']").text())) ? 0 : parseFloat($(v).find("[name='score']").text());
+
+                    //managerrating
+                    let managerRating = $(v).find("[name='managerrating']").find("select").val();
+                    managerRating = isNaN(parseFloat(managerRating)) ? 0 : parseFloat(managerRating);
+                    managersRating += managerRating;
+                });
+                currTable.find("tfoot").find("[name='score']").text(score.toFixed(2))
+                let maxRating = $("[name='maxrating']").val();
+                let maxCount = currTable.find("tbody").find("tr").length;
+                let averageManagerRating = (managersRating / maxCount);
+                currTable.find("tfoot").find("[name='managerrating']").text(averageManagerRating.toFixed(2))
+
+                if (currTable.attr("name") == "tblWeightedAverageMethodKRA") {
+                    $("[name='tblRatingCalculationsAndSummary']").find("tbody").find('[name="KRA"]').text(averageManagerRating.toFixed(2));
+                    let WeightageKRAObj = $("[name='tblRatingCalculationsAndSummary']").find("tbody").find('[name="WeightageKRA"]').text();
+                    let WeightageKRA = isNaN(parseFloat(WeightageKRAObj)) ? 0 : parseFloat(WeightageKRAObj);
+                    $("[name='tblRatingCalculationsAndSummary']").find("tbody").find('[name="TotalKRA"]').text(((averageManagerRating.toFixed(2) * WeightageKRA) / 100).toFixed(2))
+                }
+                else if (currTable.attr("name") == "tblWeightedAverageMethodBS") {
+                    $("[name='tblRatingCalculationsAndSummary']").find("tbody").find('[name="BehavioralSkills"]').text(averageManagerRating.toFixed(2));
+                    let WeightageBSObj = $("[name='tblRatingCalculationsAndSummary']").find("tbody").find('[name="WeightageBS"]').text();
+                    let WeightageBS = isNaN(parseFloat(WeightageBSObj)) ? 0 : parseFloat(WeightageBSObj);
+                    $("[name='tblRatingCalculationsAndSummary']").find("tbody").find('[name="TotalBS"]').text(((averageManagerRating.toFixed(2) * WeightageBS) / 100).toFixed(2))
+                }
+
+                let totalKRAObj = $("[name='tblRatingCalculationsAndSummary']").find("tbody").find('[name="TotalKRA"]').text();
+                let totalKRA = isNaN(parseFloat(totalKRAObj)) ? 0 : parseFloat(totalKRAObj);
+                let TotalBSObj = $("[name='tblRatingCalculationsAndSummary']").find("tbody").find('[name="TotalBS"]').text();
+                let TotalBS = isNaN(parseFloat(TotalBSObj)) ? 0 : parseFloat(TotalBSObj);
+
+                let TotalKRABS = (totalKRA + TotalBS).toFixed(2);
+
+                $("[name='tblRatingCalculationsAndSummary']").find("tfoot").find('[name="TotalKRABS"]').text(TotalKRABS);
+                $("[name='tblRatingCalculationsAndSummary']").find("tfoot").find('[name="TotalKRABSFinalScore"]').text(TotalKRABS)
+
+                $("[name='tblPerformanceSettingMechanism']").find("tbody").find("tr").each((i, v) => {
+
+                    let scoreFrom = $(v).find('td[name="ScoreFrom"]').text();
+                    scoreFrom = isNaN(parseFloat(scoreFrom)) ? 0 : parseFloat(scoreFrom);
+                    let scoreTo = $(v).find('td[name="ScoreTo"]').text();
+                    scoreTo = isNaN(parseFloat(scoreTo)) ? 0 : parseFloat(scoreTo);
+                    if (TotalKRABS >= scoreFrom && TotalKRABS < scoreTo) {
+                        let Category = $(v).find('td[name="Category"]').text();
+                        $("[name='tblRatingCalculationsAndSummary']").find("tfoot").find('[name="finalrating"]').text(Category);
+                    }
+                });
+
+            });
+        }
+
+    </script>
+}

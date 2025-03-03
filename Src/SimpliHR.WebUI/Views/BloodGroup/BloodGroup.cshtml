@@ -1,0 +1,106 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.BloodGroupMasterDTO
+@{
+    ViewData["Title"] = "BloodGroup";
+    Model.DisplayMessage += "";
+    //Layout = null;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Personal Details /</span> Blood Group</h4>
+
+    <div class="card" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <button class="btn btn-secondary create-new btn-primary" tabindex="0" aria-controls="DataTables_Table_0" type="button" onclick="AddView()" style="float:right;">
+                <span>
+                    <i class="bx bx-plus me-sm-1"></i>
+                    <span class="d-none d-sm-inline-block">Add Record</span>
+                </span>
+            </button>
+            <!--input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" /-->
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+                            <th>Blood Group Code</th>
+                            <th>Blood Group</th>
+                            <th class="text-center" style="width:100px">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.BloodGroupMasterList != null)
+                            @foreach (var item in Model.BloodGroupMasterList)
+                            {
+                                <tr>
+
+                                    <td>@item.BloodGroupCode</td>
+                                    <td>@item.BloodGroupName</td>
+                                    @*<th>@(item.IsActive == true ? "Active" : "Inactive")</th>*@
+                                    <td class="text-center">
+                                       @* <a class="btn btn-primary" onclick="EditRecord('BloodGroup','/BloodGroup/GetBloodGroupInfo','@item.EncryptedBloodGroupId','@item.IsActive')">Edit</a>*@
+                                        <a class="dropdown-item" style="display:inline" href="/BloodGroup/GetBloodGroupInfo/@item.EncryptedBloodGroupId"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item" style="display:inline" href="#" onclick="DeleteRecord('BloodGroup','@item.BloodGroupName','/BloodGroup/DeleteBloodGroup','@item.EncryptedBloodGroupId','@item.IsActive')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="List" onclick="javascript:window.location.href='/BloodGroup/BloodGroup/'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/BloodGroup/SaveBloodGroup">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Blood Group Code</label>
+                        <input type="text" required id="BloodGroupCode" name="BloodGroupCode" required maxlength="50" value="@Model.BloodGroupCode" class="form-control clearForm" placeholder="Blood Group Code">
+                        @*<span asp-validation-for="BloodGroupCode" class="text-danger"></span>*@
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Blood Group</label>
+                        <input type="text" required id="BloodGroupName" name="BloodGroupName" required maxlength="50" value="@Model.BloodGroupName" class="form-control clearForm" placeholder="Blood Group">
+                        @*<span asp-validation-for="BloodGroupName" class="text-danger"></span>*@
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" id="BloodGroupId" class="clearForm" name="BloodGroupId" value="@Model.BloodGroupId">
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/BloodGroup/BloodGroup/'">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script src="../../customjs/CommonFunction.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            Init("@Model.BloodGroupId", "@Model.DisplayMessage", "@Model.HttpStatusCode");
+
+            // if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+            //     if ("@Model.HttpStatusCode" == 200) {
+            //         $successalert("", "@Model.DisplayMessage");
+            //     }
+            //     else {
+            //         $erroralert("Transaction Failed!", "@Model.DisplayMessage");
+            //     }
+            // }
+        });
+
+    </script>
+    }

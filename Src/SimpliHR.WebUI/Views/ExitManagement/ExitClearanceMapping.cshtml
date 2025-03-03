@@ -1,0 +1,286 @@
+﻿@model SimpliHR.Infrastructure.Models.Exit.ExitViewModel
+
+<div class="container-xxl flex-grow-1 container-p-y">
+
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Exit Management /</span>Clearance Mapping
+    </h4>
+    <div class="card" id="" style="">
+        <div class="card-body">
+            <form id="FormDetails">
+                <div class="row">
+                    <div class="col-md-4 form-group">
+                        <label>Department</label>
+                        <select class="form-control form-control-sm" name="DepartmentId" id="DepartmentId">
+                            <option value="0">Select Department</option>
+                            @{
+                                if (Model != null)
+                                {
+                                    if (Model.Departments != null)
+                                    {
+                                        if (Model.Departments.Count > 0)
+                                        {
+                                            foreach (var item in Model.Departments)
+                                            {
+                                                <option value="@item.DepartmentId">@item.DepartmentName</option>
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label>Primary Clearance Person</label>
+                        <select class="form-control" name="PrimaryClearancePerson" id="PrimaryClearancePerson">
+                            <option value="0">Select</option>
+                            @{
+                                if (Model != null)
+                                {
+                                    if (Model.CompanyEmployees != null)
+                                    {
+                                        if (Model.CompanyEmployees.Count > 0)
+                                        {
+                                            foreach (var item in Model.CompanyEmployees)
+                                            {
+                                                <option value="@item.EmployeeId">@item.EmployeeName</option>
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label>Secondary Clearance Person</label>
+                        <select class="form-control" name="SecondaryClearancePerson" id="SecondaryClearancePerson">
+                            <option value="0">Select</option>
+                            @{
+                                if (Model != null)
+                                {
+                                    if (Model.CompanyEmployees != null)
+                                    {
+                                        if (Model.CompanyEmployees.Count > 0)
+                                        {
+                                            foreach (var item in Model.CompanyEmployees)
+                                            {
+                                                <option value="@item.EmployeeId">@item.EmployeeName</option>
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6 form-group mt-4">
+                        <input type="button" class="btn btn-sm btn-primary" value="Save" id="Save" onclick="SaveClearanceMapping()" />
+                        <input type="button" class="btn btn-sm btn-danger" value="Reset" id="Reset" onclick="resetForm()" />
+                        <input type="hidden" id="ClearanceMappingId" value="0" name="ClearanceMappingId" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div id="div_ViewExitClearanceMappingTable">
+                @*@Html.Partial("_admin/_employeeresignDetailsEmployeeWise")*@
+
+
+
+            </div>
+            <div id="div_ViewExitClearanceAssetMappingPopup">
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+@section scripts {
+
+    <script src="~/customjs/commonfunction.js"></script>
+    <script>
+        let assettable;
+        $(document).ready(function () {
+            ViewExitClearanceMappingTable();
+        });
+
+
+        function SaveClearanceMapping() {
+            BlockUI();
+            var inputDTO = {
+                "ClearanceMappingId": $("#ClearanceMappingId").val(),
+                "PrimaryClearancePerson": $("#PrimaryClearancePerson").val(),
+                "SecondaryClearancePerson": $("#SecondaryClearancePerson").val(),
+                "DepartmentId": $("#DepartmentId").val(),
+                "DepartmentName": $("#DepartmentId option:selected").text(),
+                "SecondaryClearancePersonName": $("#SecondaryClearancePerson option:selected").text(),
+                "PrimaryClearancePersonName": $("#PrimaryClearancePerson option:selected").text(),
+            };
+            $.ajax({
+                type: "POST",
+                url: "/ExitManagement/SaveClearanceMapping",
+                contentType: 'application/json',
+                data: JSON.stringify(inputDTO),
+                success: function (data) {
+                    //$(currDiv).parent().parent().parent().remove();
+                    $successalert("", "Transaction Successful!");
+                    resetForm();
+                    ViewExitClearanceMappingTable();
+                    UnblockUI();
+                },
+                error: function (error) {
+                    $erroralert("Transaction Failed!", error.responseText + '!');
+                    UnblockUI();
+                }
+            });
+        }
+
+        function ViewExitClearanceMappingTable() {
+            //var resignationListDTO = {};
+            //resignationListDTO.ResignationListId = ResignationListId;
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/ExitManagement/ExitClearanceMappingTable',
+                //data: JSON.stringify(resignationListDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#div_ViewExitClearanceMappingTable').html(data);
+                },
+                error: function (result) {
+                    $erroralert("Transaction Failed!", result.responseText + '!');
+                }
+            });
+        }
+        function ViewExitClearanceAssetMappingPopup(ClearanceMappingId) {
+            var inputDTO = {};
+            inputDTO.ClearanceMappingId = ClearanceMappingId;
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/ExitManagement/ViewExitClearanceAssetMappingPopup',
+                data: JSON.stringify(inputDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#div_ViewExitClearanceAssetMappingPopup').html(data);
+                    $("#btnExitClearanceAssetMappingPopup").click();
+                    $("#ClearanceMappingId").val(ClearanceMappingId);
+                    assettable = $("#tblAssetMap").DataTable();
+                },
+                error: function (result) {
+                    $erroralert("Transaction Failed!", result.responseText + '!');
+                }
+            });
+        }
+        function mapAssets() {
+
+            var ExitClearanceAssetMappingList = [];
+
+            //var selectedIds = assettable.columns().checkboxes.selected()[0];
+            //assettable.columns(0).context[0].checkboxes.s.data;
+            //var checkedvalues = assettable.$('input:checked').map(function () {
+            //    return this.id;
+            //}).get().join(',');
+            //console.log(selectedIds);
+
+            let x = assettable.$('input:checked');
+
+            //var x = $("#assetsMapping").find("table").find("tbody").find("input[type='checkbox']:checked");
+
+            //return;
+
+
+
+            x.each(function (i, v) {
+                let assetid = $(v).attr("assetid");
+                var ExitClearanceAssetMappingDTO = {};
+                ExitClearanceAssetMappingDTO.AssetId = assetid;
+                ExitClearanceAssetMappingDTO.ClearanceMappingId = $("#ClearanceMappingId").val();
+                ExitClearanceAssetMappingList.push(ExitClearanceAssetMappingDTO);
+            });
+
+            var inputDTO = {};
+            inputDTO.ExitClearanceAssetMappingList = ExitClearanceAssetMappingList;
+
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '/ExitManagement/MapAssets',
+                data: JSON.stringify(inputDTO),
+                success: function (data) {
+                    $successalert("", "Transaction Successful!");
+                },
+                error: function (error) {
+                    $erroralert("Transaction Failed!", error.responseText + '!');
+                    UnblockUI();
+                }
+            });
+
+        }
+
+        function EditClearanceMapping(ClearanceMappingId) {
+            BlockUI();
+            var inputDTO = {
+                "ClearanceMappingId": ClearanceMappingId
+            };
+            $.ajax({
+                type: "POST",
+                url: "/ExitManagement/GetClearanceMappingById",
+                contentType: 'application/json',
+                data: JSON.stringify(inputDTO),
+                success: function (data) {
+
+                    $("#DepartmentId").val(data.departmentId).change();
+                    $("#PrimaryClearancePerson").val(data.primaryClearancePerson).change();
+                    $("#SecondaryClearancePerson").val(data.secondaryClearancePerson).change();
+                    $("#ClearanceMappingId").val(data.clearanceMappingId).change();
+                    //$(currDiv).parent().parent().parent().remove();
+                    //$successalert("Success!", "Saved succesfully.");
+                    UnblockUI();
+                },
+                error: function (error) {
+                    $erroralert("Transaction Failed!", error.responseText + '!');
+                    UnblockUI();
+                }
+            });
+        }
+        function DeleteClearanceMapping(ClearanceMappingId) {
+            Swal.fire({ title: 'Are you sure?', text: "This will get deleted permanently!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, delete it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    BlockUI();
+                    var inputDTO = {
+                        "ClearanceMappingId": ClearanceMappingId
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "/ExitManagement/DeleteClearanceMapping",
+                        contentType: 'application/json',
+                        data: JSON.stringify(inputDTO),
+                        success: function (data) {
+                            $successalert("", "Transaction Successful!");
+                            ViewExitClearanceMappingTable();
+                            UnblockUI();
+                        },
+                        error: function (error) {
+                            $erroralert("Transaction Failed!", error.responseText + '!');
+                            UnblockUI();
+                        }
+                    });
+                }
+            });
+        }
+        function resetForm() {
+            $("#DepartmentId").val("0").change();
+            $("#PrimaryClearancePerson").val("0").change();
+            $("#SecondaryClearancePerson").val("0").change();
+            $("#ClearanceMappingId").val("0");
+        }
+
+    </script>
+    }
+

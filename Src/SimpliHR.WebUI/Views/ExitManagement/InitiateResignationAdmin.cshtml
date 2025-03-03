@@ -1,0 +1,312 @@
+﻿@model SimpliHR.Infrastructure.Models.Exit.ExitViewModel
+@{
+    //ViewData["Title"] = "ExitInitiation";
+}
+<link href="~/assets/css/exitclearance.css" rel="stylesheet" />
+<style>
+    label.required:after {
+        content: "*";
+        color: #FF0000;
+        font-size: 14px;
+    }
+
+    .error-label {
+        color: #FF0000;
+    }
+</style>
+@*Page CSS*@
+<div class="container-xxl flex-grow-1 container-p-y">
+
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Exit Management /</span> Initiation
+    </h4>
+    <div class="card" id="Add">
+
+        <div class="card-body">
+            <div>
+                <form method="post" id="EmployeeExitDetail" action="return false" style="">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label required" for="multicol-last-name">Employee Name</label>
+                            <select class="dbcol select2 form-select select2-hidden-accessible" required name="EmployeeId" onchange="GetEmployeeDetails()">
+                                <option value="0">Select Employee</option>
+                                @{
+                                    if (Model?.CompanyEmployees != null)
+                                    {
+                                        foreach (var item in Model.CompanyEmployees)
+                                        {
+                                            <option value="@item.EmployeeId">@item.EmployeeCode - @item.EmployeeName</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="multicol-last-name">Notice Period (In Days)</label>
+                            <input type="text" class="form-control-plaintext dbcol" readonly name="NoticePeriod" id="NoticePeriod">
+
+                        </div>
+
+                        @*<div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Resignation Date</label>
+                        <input type="text" id="ResignationDate" required name="ResignationDate" value="" class="form-control-plaintext dbcol" readonly placeholder="Resignation Date">
+                        </div>*@
+                        <div class="col-md-6">
+                            <label class="form-label required" for="multicol-last-name">Resignation Date</label>
+                            <input type="text" id="ResignationDateAdmin" required name="ResignationDateAdmin" value="" class="form-control  flatpickr-date dbcol" placeholder="Resignation Date" onchange="getObject(this);">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="multicol-last-name">Last Working Day</label>
+                            <input type="text" id="LastWorkingDateAdmin" required name="LastWorkingDateAdmin" class="form-control flatpickr-date dbcol" value="" placeholder="Last Working Date">
+                        </div>
+
+                       
+
+
+                        <div class="col-md-6">
+                            <input type="checkbox" id="NoticePeriodWaiveOffAdmin" name="NoticePeriodWaiveOffAdmin" class="form-check-input" />
+                            <label for="NoticePeriodWaiveOffAdmin" class="form-label">Notice Period Waived Off</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="checkbox" id="EligibleToHireAdmin" name="EligibleToHireAdmin" class="form-check-input" />
+                            <label for="EligibleToHireAdmin" class="form-label">Eligible to Rehire</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="checkbox" class="form-check-input" id="ActiveExitInterview" name="ActivateExitInterview" />
+                            <label for="ActiveExitInterview" class="form-label">Activate Exit Interview</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="checkbox" class="form-check-input" id="ClearanceByPass" name="ClearanceByPass" />
+                            <label class="form-label" for="ClearanceByPass">Skip Clearance Process</label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label required" for="multicol-last-name">Reason for Leaving</label>
+                            @Html.DropDownList("ReasonForLeaving", new SelectList(Model?.ExitReasonList, "KeyName", "KeyValue", Model?.ResignationDetails?.ReasonForLeaving), "Select Reason", htmlAttributes: new { @class = "dbcol select2 form-select select2-hidden-accessible", @required = "required" })
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="formFile" class="form-label">Documents</label>
+                            <input class="form-control" type="file" id="DocumentFileAdmin" name="DocumentFileAdmin" minlength="100" filemaxsize="10" />                            
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="multicol-last-name">LWD Policy</label>
+                            <input type="text" id="LastWorkingDate" required name="LastWorkingDate" class="form-control dbcol" value="" readonly placeholder="Last Working Date">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="multicol-last-name">Comments</label>
+                            <textarea class="form-control dbcol auto-resize" required id="AdminRemarks" name="AdminRemarks" rows="4" maxlength="255" oninput="validateCommentInput(this)"></textarea>
+                            <span name="EmployeeCommentsCharacterHelp" style="color:red">Max 255 characters allowed</span>
+                        </div>
+                    </div>
+                    <div class="pt-4">
+                        <input type="hidden" class="dbcol" id="ResignationListId" name="ResignationListId" value="@Model?.ResignationDetails?.ResignationListId" />
+                        <input type="hidden" class="dbcol" id="UnitId" name="UnitId" value="@Model?.ResignationDetails?.UnitId" />
+                        <input type="hidden" class="dbcol" id="ResignationInitiatedBy" name="ResignationInitiatedBy" value="@Model?.ResignationDetails?.ResignationInitiatedBy" />
+                        <button type="button" class="btn btn-primary me-sm-3 me-1" onclick="SaveResignationDetails()">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section scripts {
+    <script src="~/customjs/commonfunction.js"></script>
+    <script src="~/customjs/employeevalidation.js"></script>
+    <script src="~/customjs/exit/resignationbyadmin.js"></script>
+    <script type="text/javascript">
+        var initialLastWorkingDate;
+        var initialResignationDate;
+        var resignationDateMoment;
+        var lastWorkingDateMoment;
+        let maxDate;
+        $(document).ready(function () {
+            ResetValidationErrors();
+            initDates();
+            let autoresize = $(".auto-resize");
+            autoresize.each((i, v) => {
+                $(v)[0].style.height = "auto";
+                $(v)[0].style.height = $(v)[0].scrollHeight + "px";
+            });
+
+            $("[name='recoverycheck']").click(function () {
+                if ($(this).is(":checked")) {
+                    $(this).parent().find("span").show();
+                }
+                else {
+                    $(this).parent().find("span").hide();
+                }
+            });
+
+            $(".flatpickr-date1").flatpickr({
+                //monthSelectorType: 'static',
+                dateFormat: "d-M-Y",
+                minDate: new Date().fp_incr(-30),
+                maxDate: new Date().fp_incr(30)
+                // enable: [
+                //     {
+                //         from: new Date().fp_incr(-30),
+                //         to: new Date().fp_incr(30)
+                //     }
+                // ]
+            });
+
+        });
+
+
+
+        function PopulateResignationTable(data) {
+
+            // alert("List");
+            var tableID = "resignationList";
+            var keyAttr = "resignationListId"
+            var tableCols = ['employeeName', 'noticePeriod', 'resignationDate', 'lastWorkingDate', 'reasonForLeaving', 'employeeComments', 'Action']
+            var tableCtrl = jQuery("#" + tableID)
+
+            jQuery("#" + tableID + " tr").slice(1).remove()
+
+            data.forEach(function (row) {
+                var tr = $('<tr>');
+                tableCols.forEach(function (attr) {
+                    if (attr.toUpperCase() == "ACTION")
+                        tr.append('<th><a class="btn btn-primary" href="/ExitManagement/GetEmployeeExitInfo/"' + row[keyAttr] + '>Edit</a>');
+                    else
+                        tr.append('<td>' + row[attr] + '</td>');
+
+                    //tr.append();
+                });
+                tableCtrl.append(tr);
+            });
+        }
+
+        function remove(currDiv) {
+            $(currDiv).parent().parent().parent().remove();
+        }
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+        }
+
+        function getObject(object) {
+
+            var date1 = new Date($("#ResignationDateAdmin").val());
+
+
+            var newLastWorkingDate = moment(date1.setDate(date1.getDate() + parseInt(jQuery("#NoticePeriod").val()))).format("DD-MMM-YYYY");
+            $("#LastWorkingDate").val(newLastWorkingDate);
+
+            //const diffTime = Math.abs(date2 - date1);
+            ////  alert(diffTime);
+            //if (date1 > date2) {
+            //    $(":submit").attr("disabled", true);
+            //    ShowServerMessage("End date cannot be less than Start date");
+            //    return;
+            //}
+            //const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            //// diffDays =diffDays +1;
+
+            //var tDays = diffDays + 1;
+            //// alert(tDays);
+            //if (parseInt($("#leaveBalance").val()) < tDays) {
+            //    $(":submit").attr("disabled", true);
+            //    $("#NoOfLeave").val(0);
+            //    alert("you can take maximum no of leave : " + $("#leaveBalance").val());
+            //    return;
+            //}
+            //$("#NoOfLeave").val(tDays);
+
+        }
+
+        function validateCommentInput(textarea) {
+            const maxLength = 255;
+            const regex = /^[a-zA-Z0-9\s.,'!@@#&()\-+]*$/;
+            const cleanText = textarea.value.split('').filter(char => regex.test(char)).join('');
+
+            if (textarea.value !== cleanText) {
+                textarea.value = cleanText;
+            }
+
+            const remaining = maxLength - textarea.value.length;
+            const helpText = document.getElementsByName("EmployeeCommentsCharacterHelp")[0];
+            helpText.textContent = remaining + " characters remaining";
+        }
+
+        function initDates() {
+            resignationDateMoment = moment(initialResignationDate, "DD-MMM-YYYY");
+            lastWorkingDateMoment = moment(initialLastWorkingDate, "DD-MMM-YYYY");
+            maxDate = new Date().fp_incr(30);
+            minDate = new Date().fp_incr(-30);
+            if (lastWorkingDateMoment.isBefore(maxDate)) {
+                maxDate = new Date(lastWorkingDateMoment);
+            }
+
+
+
+            $("#ResignationDateAdmin").flatpickr({
+                dateFormat: "d-M-Y",
+                minDate: minDate,
+                maxDate: maxDate,
+                onChange: function (selectedDates, dateStr, instance) {
+                    // Update initialLastWorkingDate when the date changes
+                    initialResignationDate = dateStr;
+                }
+            });
+
+            $("#LastWorkingDateAdmin").flatpickr({
+                //monthSelectorType: 'static',
+                dateFormat: "d-M-Y",
+                minDate: initialResignationDate,
+                onChange: function (selectedDates, dateStr, instance) {
+                    // Update initialLastWorkingDate when the date changes
+                    initialLastWorkingDate = dateStr;
+                }
+            });
+
+            $("#LastWorkingDateAdmin").change(function () {
+                resignationDateMoment = moment(initialResignationDate, "DD-MMM-YYYY");
+                lastWorkingDateMoment = moment(initialLastWorkingDate, "DD-MMM-YYYY");
+                maxDate = new Date().fp_incr(30);
+                minDate = new Date().fp_incr(-30);
+                if (lastWorkingDateMoment.isBefore(maxDate)) {
+                    maxDate = new Date(lastWorkingDateMoment);
+                }
+                $("#ResignationDateAdmin").flatpickr({
+                    dateFormat: "d-M-Y",
+                    minDate: minDate,
+                    maxDate: maxDate,
+                    onChange: function (selectedDates, dateStr, instance) {
+                        // Update initialLastWorkingDate when the date changes
+                        initialResignationDate = dateStr;
+                    }
+                });
+            });
+            $("#ResignationDateAdmin").change(function () {
+
+                // if ($("#AdminDetails").find("[name='NoticePeriodWaiveOffAdmin']").is(":checked")) {
+                //     var resignationDateNP = $("#ResignationDateAdmin").val();
+                //     $("#LastWorkingDateAdmin").val(resignationDateNP);
+                // }
+                $("#LastWorkingDateAdmin").flatpickr({
+                    //monthSelectorType: 'static',
+                    dateFormat: "d-M-Y",
+                    minDate: initialResignationDate,
+                    onChange: function (selectedDates, dateStr, instance) {
+                        // Update initialLastWorkingDate when the date changes
+                        initialLastWorkingDate = dateStr;
+                    }
+                });
+            });
+        }
+
+    </script>
+}
+
+
+

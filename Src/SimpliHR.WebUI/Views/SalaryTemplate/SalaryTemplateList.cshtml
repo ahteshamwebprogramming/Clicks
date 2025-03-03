@@ -1,0 +1,212 @@
+﻿@using SimpliHR.Infrastructure.Helper;
+@model List<SimpliHR.Infrastructure.Models.Payroll.SalaryTemplateDTO>
+
+@{
+    ViewData["Title"] = "Salary Template List";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll /</span> Salary Template List</h4>
+    <div class="card addShow" id="List" style="">
+        <div class="card-body">
+            <button class="btn btn-info btn-sm" value="" onclick="AddView()" style="float:right;"><i class="fa fa-folder-plus"></i>&nbsp; Add New</button>
+            @*<input type="button" id="alert" value="show alert" class="btn btn-success btn-sm" />*@
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+                            <th>Template Name</th>
+                            <th>Description</th>
+
+                            @*  <th>Include Weekendse</th>*@
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            if (Model != null)
+                            {
+                                if (Model.Count > 0)
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@(item.TemplateName)</td>
+                                            <td>@(item.Description)</td>
+                                            <th>
+                                                <a class="btn btn-primary btn-sm" href="/SalaryTemplate/SalaryTemplate?SalaryTemplateId=@item.EncryptedId&type=@(CommonHelper.Encrypt("Edit"))"><i class="fa fa-edit"></i>&nbsp; Edit</a>
+                                                <button class="btn btn-danger btn-sm" onclick="DeleteRecord_Confirm('@item.TemplateName','@item.EncryptedId')"><i class="fa fa-trash"></i>&nbsp; Delete</button>
+                                                <a class="btn btn-warning btn-sm" href="/SalaryTemplate/SalaryTemplate?SalaryTemplateId=@item.EncryptedId&type=@(CommonHelper.Encrypt("Clone"))"><i class="fa fa-clone"></i>&nbsp; Clone</a>
+                                            </th>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+@section scripts {
+    <script src="~/assets/vendor/libs/pickr/pickr.js"></script>
+    <script src="~/assets/js/forms-pickers.js"></script>
+    <script src="~/assets/vendor/libs/sweetalert2/sweetalert2.js"></script>
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //appalert('success','','');
+            $("#alert").click(function () {
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'You clicked the button!',
+                    icon: 'success',
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    },
+                    buttonsStyling: false
+                });
+                Swal.fire({
+                    title: 'Info!',
+                    text: 'You clicked the button!',
+                    icon: 'info',
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false
+                });
+                Swal.fire({
+                    title: 'Warning!',
+                    text: ' You clicked the button!',
+                    icon: 'warning',
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false
+                });
+                Swal.fire({
+                    title: 'Error!',
+                    text: ' You clicked the button!',
+                    icon: 'error',
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false
+                });
+                Swal.fire({
+                    title: 'Question!',
+                    text: ' You clicked the button!',
+                    icon: 'question',
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false
+                });
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    customClass: {
+                        confirmButton: 'btn btn-primary me-3',
+                        cancelButton: 'btn btn-label-secondary'
+                    },
+                    buttonsStyling: false
+                }).then(function (result) {
+                    if (result.value) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: 'Your file has been deleted.',
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            }
+                        });
+                    }
+                });
+
+
+            });
+
+            $(".flatpickr-date1").flatpickr({
+                //monthSelectorType: 'static',
+                dateFormat: "d-M-Y"
+            });
+            $(".List").dataTable();
+
+
+        });
+
+
+        function AddView() {
+            window.location.href = "/SalaryTemplate/SalaryTemplate";
+        }
+
+        function DeleteRecord_Confirm(templateName, salaryTemplateId) {
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                customClass: {
+                    confirmButton: 'btn btn-primary me-3',
+                    cancelButton: 'btn btn-label-secondary'
+                },
+                buttonsStyling: false
+            }).then(function (result) {
+                if (result.value) {
+                    DeleteRecord(salaryTemplateId);
+                }
+            });
+
+
+            // event.preventDefault();
+            //url = $(this).attr('href');
+            //history.pushState({ key: url }, '', url);
+            //if (confirm("Sure want to delete this record?")) {
+            //    window.location.href = "/Leave/DeleteLeaveAttribute/" + leaveAttributeId;
+            //}
+            //return false;
+        }
+
+        function DeleteRecord(salaryTemplateId) {
+            jQuery.ajax({
+                type: "GET",
+                url: "/SalaryTemplate/DeleteSalaryTemplate/" + salaryTemplateId,
+                //data: { eSalaryTemplateId: salaryTemplateId },
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'Your file has been deleted.',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
+                    });
+
+                    window.location.href = "/SalaryTemplate/SalaryTemplateList";
+                },
+                failure: function (response) {
+                    $erroralert(response.responseText);
+                },
+                error: function (response) {
+                    $erroralert(response.responseText);
+                }
+            });
+        }
+    </script>
+    }
+
+
+

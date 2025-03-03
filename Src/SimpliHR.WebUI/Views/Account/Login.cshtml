@@ -1,0 +1,124 @@
+﻿@model SimpliHR.Webui.Modals.Account.Login
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR CLICKS</title>
+
+    <link rel="stylesheet" href="~/NewTheme/css/login.css">
+    <link rel="stylesheet" href="~/NewTheme/css/loginresponsive.css">
+    <link rel="stylesheet" href="~/NewTheme/css/bootstrap.min.css">
+
+    <!-- google fonts here  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+
+<body>
+    <div class="login-page">
+        <div class="container-fluid ">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8 col-xl-8 col-xxl-8 p-0">
+                    <div class="slider">
+                        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-indicators">
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                            </div>
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="~/NewTheme/image/login-1.svg" class="img-fluid" alt="...">
+                                    <div class="carousel-caption  d-md-block">
+                                        <h2>Best Employee Experience Platform</h2>
+                                        <p>Don’t limit yourself. Many people limit themselves to what they think.</p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="~/NewTheme/image/login-1.svg" class="img-fluid" alt="...">
+                                    <div class="carousel-caption d-md-block">
+                                        <h2>Finally a place where it all comes together</h2>
+                                        <p>Employees like you can even make Mondays a joy. Thanks for your hard.</p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="~/NewTheme/image/login-1.svg" class="img-fluid" alt="...">
+                                    <div class="carousel-caption  d-md-block">
+                                        <h2>Focus on the work that matters</h2>
+                                        <p>Business opportunities are like buses, there’s always another one</p>
+                                    </div>
+                                </div>.
+                            </div>
+                            <!-- <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                              <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                              <span class="visually-hidden">Next</span>
+                            </button> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-xxl-4">
+                    <div class="login-form">
+                        <div class="img-logo">
+                            <a href="index.html"><img src="~/NewTheme/image/HRLOGO.png" class="img-fluid " alt=""></a>
+                        </div>
+
+                        <div class="form-h">
+                            <h2>Login</h2>
+                            <form class="" method="post" action="/Account/Login">
+                                @Html.ValidationSummary("", new { @class = "text-danger" })
+                                <input type="text" asp-for="UserName" name="UserName" maxlength="100" required placeholder="Email or Mobile">
+                                <input type="password" asp-for="Password" name="Password" class="password" maxlength="20" required placeholder="Password">
+                                <div class="password-f">
+                                    <a href="">Forgate Password</a>
+                                </div>
+
+                                <div class="login-butn">
+                                    <a href=""><button type="submit">Login</button> </a>
+                                </div>
+                                <div class="login-with-octa">
+
+                                    <a href=""><button>Login With OKta</button> </a>
+                                </div>
+                                <div class="login-with-sso">
+
+                                    <a href=""><button>Login With SSO </button> </a>
+                                </div>
+                                <div class="app-image">
+                                    <a href=""> <img src="~/NewTheme/image/PlayStore.svg" class="img-fluid" alt=""></a>
+                                    <a href="">   <img src="~/NewTheme/image/AppStore.svg" class="img-fluid" alt=""></a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script src="~/NewTheme/js/bootstrap.min.js"></script>
+    <script src="~/customjs/employeevalidation.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            if ("@Model.DisplayMessage" != "_blank") {
+                //   alert("@Model.DisplayMessage");
+                $erroralert("Error!", "@Model.DisplayMessage");
+            }
+
+        });
+    </script>
+</body>
+
+</html>

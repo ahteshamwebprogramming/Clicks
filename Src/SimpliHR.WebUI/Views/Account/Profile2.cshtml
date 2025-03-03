@@ -1,0 +1,397 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeMasterDTO
+
+@{
+
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Account /</span> Profile</h4>
+    <div class="row">
+        <!-- User Sidebar -->
+        <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
+            <!-- User Card -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="user-avatar-section">
+                        <div class="d-flex align-items-center flex-column">
+                            @*<img class="img-fluid rounded my-4" src="../../assets/img/avatars/10.png" height="110" width="110" alt="User avatar" />*@
+                            <img class="img-fluid rounded my-4" src="@((Model.Base64ProfileImage==null || Model.Base64ProfileImage=="data:image/png;base64,") ?  "../../assets/img/avatars/10.png" : Model.Base64ProfileImage)" height="110" width="110" alt="User avatar" />
+                            <div class="user-info text-center">
+                                <h4 class="mb-2">@(Model.EmployeeName == null ? "No Name Found" : Model.EmployeeName)</h4>
+                                <h6>@(Model.EmployeeCode == null ? "No Employee Code Found" : Model.EmployeeCode)</h6>
+                                <span class="badge bg-label-secondary">@(Model == null ? "" : Model.Role == null ? "" : Model.Role.RoleName == null ? "" : Model.Role.RoleName)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <h5 class="pb-2 border-bottom mb-4">Details</h5>
+                    <div class="info-container">
+                        <ul class="list-unstyled mb-4">
+                            <li class="d-flex align-items-center mb-3">
+                                <i class="bx bx-phone"></i><span class="fw-semibold mx-2">Contact Number:</span> <span>@(Model == null ? "" : Model.ContactNo == null ? "" : Model.ContactNo)</span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3">
+                                <i class="bx bx-envelope"></i><span class="fw-semibold mx-2">Email:</span> <span>@(Model == null ? "" : Model.EmailId == null ? "" : Model.EmailId)</span>
+                            </li>
+                            <div class="d-flex justify-content-center pt-3">
+                                <a href="javascript:;"
+                                   class="btn btn-primary me-3"
+                                   data-bs-target="#editUser"
+                                   data-bs-toggle="modal">Edit</a>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /User Card -->
+        </div>
+        <!--/ User Sidebar -->
+        <!-- User Content -->
+        <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
+            <!-- User Pills -->
+
+            <div class="nav-align-top mb-4">
+                <ul class="nav nav-pills mb-3" role="tablist">
+                    <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#personal-info" aria-controls="personal-info" aria-selected="true">
+                            Personal Information
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#professional-info" aria-controls="professional-info" aria-selected="false">
+                            Professional Information
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#family-details" aria-controls="family-details" aria-selected="false">
+                            Family Details
+                        </button>
+                    </li>
+                    <!--li class="nav-item">
+                      <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-top-messages" aria-controls="navs-pills-top-messages" aria-selected="false">
+                        Messages
+                      </button>
+                    </li>
+                    <li class="nav-item">
+                      <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-top-messages" aria-controls="navs-pills-top-messages" aria-selected="false">
+                        Messages
+                      </button>
+                    </li-->
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="personal-info" role="tabpanel">
+                        <div class="info-container">
+                            <ul class="list-unstyled mb-4">
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-solid fa-person-half-dress"></i><span class="fw-semibold mx-2">Gender:</span> <span>@(Model == null ? "No Gender Found" : Model.GenderId == null ? "No Gender Found" : Model.GenderId == 1 ? "Male" : Model.GenderId == 2 ? "Female" : "")</span>
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-regular fa-calendar-days"></i><span class="fw-semibold mx-2">Date of Birth:</span> <span>@(Model == null ? "Date Of Birth not found" : Model.Dob == null ? "Date Of Birth Not Found" : ((DateTime)Model.Dob).ToString("dd-MMM-yyyy"))</span>
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-solid fa-person-dress"></i><span class="fw-semibold mx-2">Spouse Name:</span> <span>@(Model == null ? "" : Model.SpouseName == null ? "" : Model.SpouseName)</span>
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="bx bx-check"></i><span class="fw-semibold mx-2">Marital Status:</span> <span>@(Model == null ? "No Profile Found" : Model.MaritalStatus == null ? "No Marital status found" : Model.MaritalStatus.MaritalStatusName)</span>
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="bx bx-detail"></i><span class="fw-semibold mx-2">Religion:</span> <span>@(Model == null ? "No Profile Found" : Model.Religion == null ? "No Religion found" : Model.Religion.ReligionName)</span>
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-solid fa-droplet"></i><span class="fw-semibold mx-2">Blood Group:</span> <span>@(Model == null ? "No Profile Found" : Model.BloodGroup == null ? "No Blood Group found" : Model.BloodGroup.BloodGroupName.ToUpper())</span>
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-regular fa-address-card"></i><span class="fw-semibold mx-2">Pan Card:</span> <span>@(Model == null ? "No Profile Found" : Model.Pannumber == null ? "No Pan Number Found" : Model.Pannumber.ToUpper())</span>
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-regular fa-address-card"></i><span class="fw-semibold mx-2">Aadhar:</span> <span>@(Model == null ? "No Profile Found" : Model.AadharNumber == null ? "No Aadhar Number Found" : Model.AadharNumber.ToUpper())</span>
+                                </li>
+                            </ul>
+                            <small class="text-uppercase fw-semibold">Bank Details</small>
+                            <ul class="list-unstyled mb-4 mt-3">
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-solid fa-building-columns"></i><span class="fw-semibold mx-2">Bank Name:</span> <span>@(Model == null ? "No Profile Found" : Model.EmployeeBankDetails == null ? "No Bank Details Found" : Model.EmployeeBankDetails.Count == 0 ? "No Bank Details Found" : Model.EmployeeBankDetails.FirstOrDefault().Bank == null ? "Bank Name Not Found" : Model.EmployeeBankDetails.FirstOrDefault().Bank.BankName.ToUpper())</span>
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="bx bx-detail"></i><span class="fw-semibold mx-2">Account Number:</span> <span>@(Model == null ? "No Profile Found" : Model.EmployeeBankDetails == null ? "No Bank Details Found" : Model.EmployeeBankDetails.Count == 0 ? "No Bank Details Found" : Model.EmployeeBankDetails.FirstOrDefault().AccountNo.ToUpper())</span>
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="bx bx-detail"></i><span class="fw-semibold mx-2">IFSC Code:</span> <span>@(Model == null ? "No Profile Found" : Model.EmployeeBankDetails == null ? "No Bank Details Found" : Model.EmployeeBankDetails.Count == 0 ? "No Bank Details Found" : Model.EmployeeBankDetails.FirstOrDefault().IFSCCode.ToUpper())</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="professional-info" role="tabpanel">
+                        <div class="info-container">
+                            <ul class="list-unstyled mb-4">
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-solid fa-person-half-dress"></i><span class="fw-semibold mx-2">Employee ID:</span> <span>@(Model.EmployeeCode == null ? "No Employee Code Found" : Model.EmployeeCode)</span>
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-solid fa-layer-group"></i><span class="fw-semibold mx-2">Department:</span> <span> @(Model == null ? "" : Model.Department == null ? "" : Model.Department.DepartmentName == null ? "" : Model.Department.DepartmentName) </span>
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-regular fa-address-card"></i><span class="fw-semibold mx-2">Designation:</span> <span>@(Model == null ? "" : Model.JobTitle == null ? "" : Model.JobTitle.JobTitle == null ? "" : Model.JobTitle.JobTitle)</span>
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-regular fa-calendar-days"></i><span class="fw-semibold mx-2">Date of Joining:</span> <span>@(Model == null ? "Date Of Joining not found" : Model.Doj == null ? "Date Of Joining Not Found" : ((DateTime)Model.Doj).ToString("dd-MMM-yyyy"))</span>
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-solid fa-person-dress"></i><span class="fw-semibold mx-2">HOD:</span>
+                                    @{
+                                        if (Model.HODId != null && Model.EmployeeMastersKeyValues != null)
+                                        {
+                                            if (Model.EmployeeMastersKeyValues.EmployeeKeyValues != null)
+                                            {
+                                                string hodname = Model.EmployeeMastersKeyValues.EmployeeKeyValues.Where(x => x.EmployeeId == Model.HODId).FirstOrDefault().EmployeeName;
+
+                                                <span>@hodname</span>
+
+                                            }
+                                        }
+                                    }
+
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-solid fa-person-dress"></i><span class="fw-semibold mx-2">Reporting Manager:</span>
+
+                                    @{
+                                        if (Model.ManagerId != null && Model.EmployeeMastersKeyValues != null)
+                                        {
+                                            if (Model.EmployeeMastersKeyValues.EmployeeKeyValues != null)
+                                            {
+                                                string manager = Model.EmployeeMastersKeyValues.EmployeeKeyValues.Where(x => x.EmployeeId == Model.ManagerId).FirstOrDefault().EmployeeName;
+                                                <span> @manager </span>
+                                            }
+                                        }
+                                    }
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-solid fa-business-time"></i></i><span class="fw-semibold mx-2">Shift:</span> <span>@(Model == null ? "" : Model.CurrentShiftDetails)</span>
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-solid fa-location-crosshairs"></i><span class="fw-semibold mx-2">Location:</span> <span> @(Model == null ? "" : Model.WorkLocation == null ? "" : Model.WorkLocation.Location) </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="family-details" role="tabpanel">
+                        <div class="info-container">
+                            <ul class="list-unstyled mb-4">
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-solid fa-person-half-dress"></i><span class="fw-semibold mx-2">Father's Name:</span> <span>@(Model == null ? "" : Model.FatherName)</span>
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-solid fa-person-half-dress"></i><span class="fw-semibold mx-2">Name:</span> <span>@(Model == null ? "No Family Details Found" : Model.EmployeeFamilyDetails == null ? "" : Model.EmployeeFamilyDetails.Count == 0 ? "No Family Details Found" : Model.EmployeeFamilyDetails.FirstOrDefault().MemberName)</span>
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-solid fa-person-half-dress"></i><span class="fw-semibold mx-2">Relation Ship:</span> <span>@(Model == null ? "No Family Details Found" : Model.EmployeeFamilyDetails == null ? "" : Model.EmployeeFamilyDetails.Count == 0 ? "No Family Details Found" : Model.EmployeeFamilyDetails.FirstOrDefault().Relationship)</span>
+                                </li>
+                                <li class="d-flex align-items-center mb-3">
+                                    <i class="fa-solid fa-person-half-dress"></i><span class="fw-semibold mx-2">Date Of Birth:</span> <span>@(Model == null ? "No Family Details Found" : Model.EmployeeFamilyDetails == null ? "" : Model.EmployeeFamilyDetails.Count == 0 ? "No Family Details Found" : Model.EmployeeFamilyDetails.FirstOrDefault().MemberDob == null ? "" : ((DateTime)Model.EmployeeFamilyDetails.FirstOrDefault().MemberDob).ToString("dd-MMM-yyyy"))</span>
+                                </li>
+                                @*<li class="d-flex align-items-center mb-3">
+                                <i class="fa-solid fa-person-dress"></i><span class="fw-semibold mx-2">Daughter's Name:</span> <span>Rishi Khiani</span>
+                                </li>*@
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--/ User Pills -->
+
+        </div>
+        <!--/ User Content -->
+    </div>
+
+    <!-- Modal -->
+    <!-- Edit User Modal -->
+    <div class="modal fade" id="editUser" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-simple modal-edit-user">
+            <div class="modal-content p-3 p-md-5">
+                <div class="modal-body">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-4">
+                        <h3>Edit User Information</h3>
+                        <p>Updating user details will receive a privacy audit.</p>
+                    </div>
+                    <form id="editUserForm" class="row g-3" onsubmit="return false">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="modalEditUserFirstName">First Name</label>
+                            <input type="text"
+                                   id="modalEditUserFirstName"
+                                   name="modalEditUserFirstName"
+                                   class="form-control"
+                                   placeholder="John" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="modalEditUserLastName">Last Name</label>
+                            <input type="text"
+                                   id="modalEditUserLastName"
+                                   name="modalEditUserLastName"
+                                   class="form-control"
+                                   placeholder="Doe" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="modalEditUserName">Username</label>
+                            <input type="text"
+                                   id="modalEditUserName"
+                                   name="modalEditUserName"
+                                   class="form-control"
+                                   placeholder="john.doe.007" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="modalEditUserEmail">Email</label>
+                            <input type="text"
+                                   id="modalEditUserEmail"
+                                   name="modalEditUserEmail"
+                                   class="form-control"
+                                   placeholder="example@domain.com" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="modalEditUserStatus">Status</label>
+                            <select id="modalEditUserStatus"
+                                    name="modalEditUserStatus"
+                                    class="form-select"
+                                    aria-label="Default select example">
+                                <option selected>Status</option>
+                                <option value="1">Active</option>
+                                <option value="2">Inactive</option>
+                                <option value="3">Suspended</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="modalEditTaxID">Tax ID</label>
+                            <input type="text"
+                                   id="modalEditTaxID"
+                                   name="modalEditTaxID"
+                                   class="form-control modal-edit-tax-id"
+                                   placeholder="123 456 7890" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="modalEditUserPhone">Phone Number</label>
+                            <div class="input-group input-group-merge">
+                                <span class="input-group-text">+1</span>
+                                <input type="text"
+                                       id="modalEditUserPhone"
+                                       name="modalEditUserPhone"
+                                       class="form-control phone-number-mask"
+                                       placeholder="202 555 0111" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="modalEditUserLanguage">Language</label>
+                            <select id="modalEditUserLanguage"
+                                    name="modalEditUserLanguage"
+                                    class="select2 form-select"
+                                    multiple>
+                                <option value="">Select</option>
+                                <option value="english" selected>English</option>
+                                <option value="spanish">Spanish</option>
+                                <option value="french">French</option>
+                                <option value="german">German</option>
+                                <option value="dutch">Dutch</option>
+                                <option value="hebrew">Hebrew</option>
+                                <option value="sanskrit">Sanskrit</option>
+                                <option value="hindi">Hindi</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="modalEditUserCountry">Country</label>
+                            <select id="modalEditUserCountry"
+                                    name="modalEditUserCountry"
+                                    class="select2 form-select"
+                                    data-allow-clear="true">
+                                <option value="">Select</option>
+                                <option value="Australia">Australia</option>
+                                <option value="Bangladesh">Bangladesh</option>
+                                <option value="Belarus">Belarus</option>
+                                <option value="Brazil">Brazil</option>
+                                <option value="Canada">Canada</option>
+                                <option value="China">China</option>
+                                <option value="France">France</option>
+                                <option value="Germany">Germany</option>
+                                <option value="India">India</option>
+                                <option value="Indonesia">Indonesia</option>
+                                <option value="Israel">Israel</option>
+                                <option value="Italy">Italy</option>
+                                <option value="Japan">Japan</option>
+                                <option value="Korea">Korea, Republic of</option>
+                                <option value="Mexico">Mexico</option>
+                                <option value="Philippines">Philippines</option>
+                                <option value="Russia">Russian Federation</option>
+                                <option value="South Africa">South Africa</option>
+                                <option value="Thailand">Thailand</option>
+                                <option value="Turkey">Turkey</option>
+                                <option value="Ukraine">Ukraine</option>
+                                <option value="United Arab Emirates">United Arab Emirates</option>
+                                <option value="United Kingdom">United Kingdom</option>
+                                <option value="United States">United States</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="switch">
+                                <input type="checkbox" class="switch-input" />
+                                <span class="switch-toggle-slider">
+                                    <span class="switch-on"></span>
+                                    <span class="switch-off"></span>
+                                </span>
+                                <span class="switch-label">Use as a billing address?</span>
+                            </label>
+                        </div>
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                            <button type="reset"
+                                    class="btn btn-label-secondary"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ Edit User Modal -->
+    <!-- Add New Credit Card Modal -->
+    <div class="modal fade" id="upgradePlanModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-simple modal-upgrade-plan">
+            <div class="modal-content p-3 p-md-5">
+                <div class="modal-body">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-4">
+                        <h3>Upgrade Plan</h3>
+                        <p>Choose the best plan for user.</p>
+                    </div>
+                    <form id="upgradePlanForm" class="row g-3" onsubmit="return false">
+                        <div class="col-sm-9">
+                            <label class="form-label" for="choosePlan">Choose Plan</label>
+                            <select id="choosePlan" name="choosePlan" class="form-select" aria-label="Choose Plan">
+                                <option selected>Choose Plan</option>
+                                <option value="standard">Standard - $99/month</option>
+                                <option value="exclusive">Exclusive - $249/month</option>
+                                <option value="Enterprise">Enterprise - $499/month</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary">Upgrade</button>
+                        </div>
+                    </form>
+                </div>
+                <hr class="mx-md-n5 mx-n3" />
+                <div class="modal-body">
+                    <h6 class="mb-0">User current plan is standard plan</h6>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        <div class="d-flex justify-content-center me-2 mt-3">
+                            <sup class="h5 pricing-currency pt-1 mt-3 mb-0 me-1 text-primary">$</sup>
+                            <h1 class="display-3 mb-0 text-primary">99</h1>
+                            <sub class="h5 pricing-duration mt-auto mb-2">/month</sub>
+                        </div>
+                        <button class="btn btn-label-danger cancel-subscription mt-3">Cancel Subscription</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ Add New Credit Card Modal -->
+    <!-- /Modal -->
+</div>

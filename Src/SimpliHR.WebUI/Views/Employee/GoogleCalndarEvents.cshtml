@@ -1,0 +1,47 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeDashboardVM
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>GoogleCalndarEvents</title>
+</head>
+<body>
+    <h1> Upcomming Events</h1>
+    <br />
+
+    <table class="table table-hover">
+
+        <tr>
+            <td>Event title</td>
+            <td>Organizer</td>
+            <td>Description</td>
+            <td>Start Time</td>
+            <td>End Time</td>
+            <td>Link</td>
+        </tr>
+        @if (Model.GoogleEvents != null)
+        {
+            foreach (var item in Model.GoogleEvents)
+            {
+                <tr>
+                    <td>@item.Summary</td>
+                    <td>@item.Organizer</td>
+                    <td>@item.Description</td>
+                    <td>@item.StartTime</td>
+                    <td>@item.EndTime</td>
+                    <td><a href="@item.Link" target="_blank"> Link</a> </td>
+                    
+                </tr>
+            }
+        }
+    </table>
+
+
+
+    <div><a href="https://calendar.google.com/calendar/u/0/r" target="_blank" class="btn btn-primary">Open Calnedar</a> </div>
+</body>
+</html>

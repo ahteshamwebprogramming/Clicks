@@ -1,0 +1,80 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeDashboardVM
+
+
+<div class="row mt-4">
+    @{
+        if (Model != null && Model.EmployeeAnnouncements != null)
+        {
+            foreach (var item in Model.EmployeeAnnouncements)
+            {
+
+                <div class="align-items-center mb-4" onclick="javascript:window.location.href='/EmployeeAccouncement/EmployeeAnnouncementList?v=@Model.Source&&e=@item.encEmployeeAnnouncementId'" style="cursor:pointer">
+                    <div class="float-start me-3"><img src="../@(item.ImagePath)" class="rounded-2" width="55" alt=""></div>
+                    <div class="ms-2 ms-sm-0 me-2">
+                        <div class="fw-bold"><small><a style="color: inherit;" href="#">@item.Title</a></small></div>
+                        <div>
+                            @{
+                                if (item.Description != null)
+                                {
+                                    if (item.Description.Length > 90)
+                                    {
+                                        <small>@(item.Description.Substring(0, 90))... <a href="#">read more</a></small>
+                                    }
+                                    else
+                                    {
+                                        <small>@(item.Description)</small>
+                                    }
+                                }
+                            }
+                        </div>
+                        <div class="smaller-font">
+                            @{
+
+                                DateTime publishDateTime = item.PublishDate + item.PublishTime;
+                                var timeDiff = (System.DateTime.Now - publishDateTime);
+                                if (timeDiff != null)
+                                {
+                                    if (timeDiff.Days >= 1)
+                                    {
+                                        if (timeDiff.Days > 1)
+                                        {
+                                            <span>@(timeDiff.Days) days ago</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@(timeDiff.Days) day ago</span>
+                                        }
+                                    }
+                                    else if (timeDiff.Hours >= 1)
+                                    {
+                                        if (timeDiff.Hours > 1)
+                                        {
+                                            <span>@(timeDiff.Hours) hours ago</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@(timeDiff.Hours) hour ago</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (timeDiff.Minutes > 1)
+                                        {
+                                            <span>@(timeDiff.Minutes) minutes ago</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@(timeDiff.Minutes) minute ago</span>
+                                        }
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+
+
+            }
+        }
+    }
+</div>

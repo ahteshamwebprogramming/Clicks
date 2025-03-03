@@ -1,0 +1,69 @@
+﻿@model SimpliHR.Infrastructure.Models.Performace.MISViewListViewModel
+<div class="table-responsive text-nowrap mt-5">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                @*<th>SN</th>*@
+                <th>Employee Code</th>
+                <th>Employee Name</th>
+                <th>Designation</th>
+                <th>Department</th>
+                <th>Function</th>
+                <th>Location</th>
+                <th>Manager</th>
+                <th>HOD</th>
+                <th>PMS Status</th>
+                <th>Action/Publish</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (Model != null)
+                {
+                    if (Model.MISViewLists != null)
+                    {
+                        foreach (var item in Model.MISViewLists)
+                        {
+                            <tr>
+                                <td>@item.EmployeeCode</td>
+                                <td>@item.EmployeeName</td>
+                                <td>@item.Designation</td>
+                                <td>@item.Department</td>
+                                <td>@item.Function</td>
+                                <td>@item.WorkLocation</td>
+                                <td>@item.Manager</td>
+                                <td>@item.HOD</td>
+
+                                @{
+                                    if ((item.Source == "Manager" && item.PMSStatus == "Manager's Assessment Due") || (item.Source == "HOD" && item.PMSStatus == "HOD's Assessment Due") || (item.Source == "Employee" && item.PMSStatus == "Self Assessment Due"))
+                                    {
+                                        <td><a style="color:red" href="/PMSWireFrame/PMSWireFrame?enc=@item.encEmployeeId&&snc=@item.encSource&&pnc=@item.encPerformanceSettingId">@item.PMSStatus </a></td>
+                                    }
+                                    else
+                                    {
+                                        <td><a style="" href="/PMSWireFrame/PMSWireFrame?enc=@item.encEmployeeId&&snc=@item.encSource&&pnc=@item.encPerformanceSettingId">@item.PMSStatus </a></td>
+                                    }
+                                }
+                                @{
+                                    if (item.Published != null && item.Published == 1)
+                                    {
+                                        <td>Published</td>
+                                    }
+                                    else if (item.PMSStatus == "Completed" && item.Source == "ClientAdmin")
+                                    {
+                                        <td><input type="button" value="Publish" class="btn btn-primary btn-sm" onclick="publishPerformance(@item.PerformanceEmployeeDataId)"></td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+
+                                }
+                            </tr>
+                        }
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>

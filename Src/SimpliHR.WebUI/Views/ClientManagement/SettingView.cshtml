@@ -1,0 +1,460 @@
+﻿@model SimpliHR.Infrastructure.Models.ClientManagement.ClientSettingDTO
+@{
+    //Layout = null;
+    ViewData["Title"] = "Client Setting";
+}
+@*Page CSS*@
+<link rel="stylesheet" href="~/assets/vendor/libs/bs-stepper/bs-stepper.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/bootstrap-select/bootstrap-select.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/select2/select2.css" />
+<style>
+
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 18px;
+    }
+</style>
+@*Page CSS*@
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Client Dashboard /</span> Preferences</h4>
+
+    <div class="card" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary mb-3" value="Client Configuration" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List">
+                    <thead>
+                        <tr>
+
+                            <th>Company Name</th>
+                            <th>Color Theme</th>
+                            <th>Menu Style</th>
+                            <th>Logo</th>
+                            <th class="text-center" style="width:100px">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.lstClientSetting != null)
+                        {
+                            @foreach (var item in Model.lstClientSetting)
+                            {
+
+                                <tr>
+                                    <td>@item.ClientName</td>
+
+                                    <td>
+                                        @(
+                                            item.ColorTheme == "1" ? "Default" : item.ColorTheme == "2" ? "Blue" : item.ColorTheme == "3" ? "Green" : item.ColorTheme == "4" ? "Orange" : item.ColorTheme == "5" ? "Pink" : item.ColorTheme == "6" ? "Red" : "Default"
+                                            )
+                                    </td>
+
+                                    <td>
+                                        @(
+                                            item.MenuStyle == "V" ? "Vertical" : "Horizontal"
+                                            )
+                                    </td>
+                                    @*<td> <img src="~/ClientLogo/@item.ClientLogo" alt="" height=50 width=50 /> </td>*@
+                                    <td> <img src="@item.Base64ProfileImage" alt="" height=50 width=50 /> </td>
+                                    <td class="text-center">
+                                        <a class="dropdown-item d-inline" href="#" onclick="ClientSettingEdit('@item.EncryptedClientSettingId');"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="#" onclick="alert('Disabled, It will be enabled later');"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/ClientManagement/SettingView/'" style="float:right" />
+            <div style="clear:both"></div>
+            <form id="clientsettinginfoForm" enctype="multipart/form-data" asp-controller="ClientManagement" asp-action="SaveClientConfigurationInfo">
+                <!-- Client Settings -->
+                <div id="client-settings" class="content">
+                    @*@if (Model.lstClientSetting != null)
+                    {
+                    if (Model.lstClientSetting.Count == 1)
+                    {
+                    foreach (var item1 in Model.lstClientSetting)
+                    {*@
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label required" for="username">Client/ Company Name</label>
+                            <select id="ClientId" name="ClientId" required class="select2 form-select" data-allow-clear="true">
+                                <option value="">Select Client</option>
+                                @if (Model.ClientList != null)
+                                    foreach (var item in Model.ClientList)
+                                    {
+                                        if (item.ClientId == Model.ClientId)
+                                        {
+                                            <option value="@item.ClientId" selected> @item.CompanyName</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.ClientId"> @item.CompanyName</option>
+                                        }
+
+                                    }
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="formFile" class="form-label required">Company logo</label>
+                            <input class="form-control" type="file" id="ProfileImageFile" name="ProfileImageFile" />
+
+
+
+                            @*<img id="profileimagepreview" src="@Model.Base64ProfileImage" "@((Model.Base64ProfileImage == null) ? " style=display:none" : Model.Base64ProfileImage.Trim() == "data:image/png;base64," ? " style=display:none" : "")" />*@
+                            <img id="profileimagepreview" src="@Model.Base64ProfileImage" @((Model.Base64ProfileImage == null) ? " style=display:none" : Model.Base64ProfileImage.Trim() == "data:image/png;base64," ? " style=display:none" : "style=display:none") />
+
+                            @* <div class="container">
+                            <div class="img-panel center">
+                            <div class="button_outer">
+                            <div class="btn_upload">
+                            <input type="file" id="upload_file" name="" required>
+                            Company logo
+                            </div>
+                            <div class="processing_bar"></div>
+                            <div class="success_box center"></div>
+                            </div>
+                            </div>
+                            <div class="error_msg"></div>
+                            <div class="uploaded_file_view" id="uploaded_view">
+                            <span class="file_remove">X</span>
+                            <img id="profileimagepreview" src="@Model.Base64ProfileImage" "@((Model.Base64ProfileImage == null) ? " style=display:none" : Model.Base64ProfileImage.Trim() == "data:image/png;base64," ? " style=display:none" : "")" />
+                            </div>
+
+
+                            </div>*@
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="HeaderText">Header text</label>
+                            <input type="text" id="HeaderText" name="HeaderText" class="form-control" value="@Model.HeaderText" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="FooterText">Footer text</label>
+                            <input type="text" id="FooterText" name="FooterText" class="form-control" value="@Model.FooterText" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="SupportLink">Support link</label>
+                            <input type="text" id="SupportLink" name="SupportLink" class="form-control" value="@Model.SupportLink" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="address">Policies link</label>
+                            <input type="text" id="PoliciesLink" name="PoliciesLink" class="form-control" value="@Model.PoliciesLink" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="address">Document link</label>
+                            <input type="text" id="DocumentLink" name="DocumentLink" class="form-control" value="@Model.DocumentLink" />
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="form-label d-block" for="address">Menu style</label>
+                            <div class="form-check d-sm-inline-block pt-3">
+                                <input name="MenuStyle"
+                                       class="form-check-input"
+                                       type="radio"
+                                       value="V"
+                                       id="MenuStyle" checked />
+                                <label class="form-check-label" for="defaultRadio1"> vertical &nbsp;&nbsp;</label>
+                            </div>
+                            <div class="form-check d-sm-inline-block pt-3">
+                                <input name="MenuStyle"
+                                       class="form-check-input"
+                                       type="radio"
+                                       value="H"
+                                       id="MenuStyle" />
+                                <label class="form-check-label" for="defaultRadio2"> horizontal </label>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <label for="exampleFormControlSelect1" class="form-label required">Emails</label>
+
+
+
+                            <select id="EmailProvider" name="EmailProvider" required class="select2 form-select" data-allow-clear="true">
+                                <option value="0">--Select--</option>
+                                <option value="1">Zepto</option>
+                                <option value="2">Gupshup</option>
+
+                            </select>
+                        </div>
+                       
+                        <div class="col-sm-2">
+                            <label for="exampleFormControlSelect1" class="form-label required">Color themes</label>
+
+
+
+                            @Html.DropDownList("ColorTheme", ViewBag.ColorList as SelectList, "Select Color Themes", new { @class = "form-select required" })
+
+                           
+                        </div>
+
+                      @*   <div class="col-sm-6">
+                            <label class="form-label" for="address">Client Domain</label>
+                            <div class="row g-3">
+                                <div class="col-md-5">
+                                    <input type="text" id="ClientDomain" name="ClientDomain" maxlength="4" class="form-control" value="@Model.ClientDomain" />
+                                </div>
+                                <div class="col-md-7 monthCount">
+                                
+                                    <label>.simplihrms.com</label>
+                                    
+                                </div>
+                               
+                            </div>
+                           
+                        </div> *@
+                       
+                        <div class="col-sm-12">
+                            <label for="selectModuleIds" class="form-label required">Module mapping</label>
+                            <div class="select2-dark">
+                                <select id="selectModuleIds" name="selectModuleIds" required class="select2 form-select" multiple>
+                                    @{
+                                        string[] moduleIds = Model.ModuleIds == null ? null : Model.ModuleIds.Split(",");
+
+                                        if (Model.ModuleList != null)
+                                            foreach (var item in Model.ModuleList)
+                                            {
+                                                if (moduleIds != null)
+                                                {
+                                                    if (moduleIds.Contains(item.ModuleId.ToString()))
+                                                    {
+                                                        <option selected="selected" value="@item.ModuleId"> @item.ModuleName</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.ModuleId"> @item.ModuleName</option>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.ModuleId"> @item.ModuleName</option>
+                                                }
+
+                                            }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <label for="selectIDTypes" class="form-label required">Document mapping</label>
+                            <div class="select2-dark">
+                                <select id="selectIDTypes" name="selectIDTypes" required class="select2 form-select" multiple>
+                                    @{
+                                        string[] IdTypes = Model.IDTypes == null ? null : Model.IDTypes.Split(",");
+
+                                        if (Model.IDTypeList != null)
+                                            foreach (var item in Model.IDTypeList)
+                                            {
+                                                if (IdTypes != null)
+                                                {
+                                                    if (IdTypes.Contains(item.IdentityId.ToString()))
+                                                    {
+                                                        <option selected="selected" value="@item.IdentityId"> @item.IdentityName</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.IdentityId"> @item.IdentityName</option>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.IdentityId"> @item.IdentityName</option>
+                                                }
+                                            }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 d-flex justify-content-between">
+                            @* <button class="btn btn-primary btn-prev" style="display:none;" >
+                            <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                            <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                            </button>*@
+                            <input type="hidden" id="ClientSettingId" name="ClientSettingId" class="form-control" value="@Model.ClientSettingId" />
+                            <input type="hidden" id="IDTypes" name="IDTypes" class="form-control" value="@Model.IDTypes" />
+                            <input type="hidden" id="ModuleIds" name="ModuleIds" class="form-control" value="@Model.ModuleIds" />
+                            <input type="hidden" id="ColorsiD" name="Colors" class="form-control" value="@Model.ColorTheme" />
+                            <input type="hidden" id="ClientLogo" name="ClientLogo" class="form-control" value="@Model.ClientLogo" />
+                            <input type="hidden" id="EmailProviderId" name="EmailProvider" class="form-control" value="@Model.EmailProvider" />
+                            <button class="btn btn-primary btn-submit">Submit</button>
+                            @*  <input type="hidden" id="ClientId" name="ClientId" class="form-control" value="@Model.ClientId" />*@
+                            @*    <button class="btn btn-primary" onclick="SaveClientSettingInfo('clientsettinginfoForm','/ClientManagement/SaveClientConfigurationInfo')">Submit</button>*@
+                        </div>
+                    </div>
+                    @*      }
+                    }
+                    }*@
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+    @*  <link href="https://unpkg.com/bootstrap@3.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://unpkg.com/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script src="https://unpkg.com/bootstrap@3.3.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-multiselect@0.9.13/dist/js/bootstrap-multiselect.js"></script>
+    <link href="https://unpkg.com/bootstrap-multiselect@0.9.13/dist/css/bootstrap-multiselect.css" rel="stylesheet" /> *@
+
+    <script src="~/assets/vendor/libs/bs-stepper/bs-stepper.js"></script>
+    <script src="~/assets/vendor/libs/bootstrap-select/bootstrap-select.js"></script>
+    <script src="~/assets/vendor/libs/select2/select2.js"></script>
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script src="~/customjs/employeevalidation.js"></script>
+
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable({
+                "order": []
+            });
+            if (@Model.ClientSettingId != 0) {
+                $("#List").hide();
+                $("#Add").show();
+            }
+            else {
+                $("#List").show();
+                $("#Add").hide();
+            }
+
+          //  alert($("#EmailProviderId").val());
+            // $('#selectModuleIds').multiselect({
+            //     includeSelectAllOption: true
+            // });
+            $('#EmailProvider').val(parseInt($("#EmailProviderId").val()));
+            $('#EmailProvider').change();
+
+            $('#ColorTheme').val(parseInt($("#ColorsiD").val()));
+
+            $.each($("#ModuleIds").val().split(","), function (i, e) {
+                $("#selectModuleIds option[value='" + e + "']").prop("selected", true);
+            });
+            $.each($("#IDTypes").val().split(","), function (i, e) {
+                $("#selectIDTypes option[value='" + e + "']").prop("selected", true);
+            });
+
+
+
+        });
+
+
+        $("#selectModuleIds").change(function () {
+            var select = document.getElementById('selectModuleIds');
+            var selected = [...select.options]
+                .filter(option => option.selected)
+                .map(option => option.value);
+            //  alert(selected);
+
+            jQuery("#ModuleIds").val(selected);
+        });
+
+        $("#selectIDTypes").change(function () {
+            var select = document.getElementById('selectIDTypes');
+            var selected = [...select.options]
+                .filter(option => option.selected)
+                .map(option => option.value);
+            //  alert(selected);
+
+            jQuery("#IDTypes").val(selected);
+        });
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+
+        function SaveClientSettingInfo(formID, url) {
+
+
+            //   jQuery("#clientName").val(jQuery("#CompanyName").val());
+            // var formData = jQuery("#employeepersonalinfoForm").serialize(); ;
+            if (!ValidForm(formID)) {
+                return false;
+            }
+            // jQuery("#ClientId").val(20);
+            formData = GetProfileImage();
+
+
+            var x = 1
+
+            jQuery.ajax({
+                type: "POST",
+                //url: "/Employee/SaveEmployeePersonalInfo",
+                url: url,
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                dataType: "json",
+                success: function (data) {
+
+                    // jQuery.IsNumeric(data)?jQuery("#EmployeeId").val(data):"Print error message";
+                    if (formID == "clientsettinginfoForm") {
+
+                        if (IsNumeric(data)) {
+                            //  jQuery("#ClientId").val(data);
+
+                            //   MoveNext("clientsettinginfoForm");
+                        }
+                        else {
+                            // jQuery("#errorDiv").show();
+                            // jQuery("#errorPara").html(data);
+                            $erroralert("Transaction Failed!", data);
+                        }
+                    }
+                },
+                error: function (result) {
+                    var x = 1;
+                    // Query("#errorDiv").show();
+                    // jQuery("#errorPara").html(result);
+                    $erroralert("Transaction Failed!", result.responseText);
+                }
+            });
+        }
+
+        function GetProfileImage() {
+
+
+            let formData = new FormData();
+            formData.append("ProfileImageFile", jQuery("#upload_file")[0].files[0]);
+            formData.append("HeaderText", jQuery("#HeaderText").val());
+            formData.append("ClientId", jQuery("#ClientId").val());
+            formData.append("FooterText", jQuery("#FooterText").val());
+            formData.append("ColorTheme", jQuery("#ColorTheme").val());
+            formData.append("SupportLink", jQuery("#SupportLink").val());
+            formData.append("PoliciesLink", jQuery("#PoliciesLink").val());
+            formData.append("IDTypes", jQuery("#IDTypes").val());
+            formData.append("ModuleIds", jQuery("#ModuleIds").val());
+            formData.append("MenuStyle", jQuery("#MenuStyle").val());
+            formData.append("DocumentLink", jQuery("#DocumentLink").val());
+            formData.append("ClientSettingId", jQuery("#ClientSettingId").val());
+
+            return formData;
+        }
+
+        function ClientSettingEdit(EncryptedClientSettingId) {
+            Swal.fire({ title: 'Are you sure?', text: "You want to make changes!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    window.location.href = "/ClientManagement/GetClientSettingById/" + EncryptedClientSettingId;
+                }
+            });
+        }
+    </script>
+}

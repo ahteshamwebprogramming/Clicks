@@ -1,0 +1,177 @@
+﻿@model SimpliHR.Infrastructure.Models.Exit.ExitViewModel
+@{
+    ViewData["Title"] = "Send For Clearance";
+    int iCtr = 1;
+}
+<link href="~/assets/css/exitclearance.css" rel="stylesheet" />
+<style>
+    table thead tr th {
+        background-color: #03a6c9 !important;
+        color: white;
+    }
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin/</span> Send Request For Clearance</h4>
+    <div class="row">
+
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row" style="margin-bottom:20px;">
+                        <div class="col-md-12" style="text-align:center">
+                            @*    <p><a href="javacript:void(0)">click here</a> to update clearance owner</p> *@
+                            <input type="button" class="btn btn-info btn-sm" value="Send Clearance Request" onclick="SaveClearanceAuthority()" />
+                            <input type="button" class="btn btn-info btn-sm" value="View Clearance Status" onclick="ViewClearanceStatus()" />
+                            <input type="hidden" id="EmployeeId" value="@Model.EmployeeId">
+                            <input type="hidden" id="EncEmployeeId" value="@Model.encEmployeeId">
+                        </div>
+                    </div>
+
+                    <div class="table-responsive text-nowrap">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Select</th>
+                                    <th>Department</th>
+                                    <th>Primary Owner Name</th>
+                                    <th>Other Owner Name</th>
+                                    <th>Choose Owner (Default Primary)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.ExitClearanceMappingList)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="ClearanceMappingIds" @(@Model.EmployeeExitClearanceList.Any(x => x.ClearanceMappingId == @item.ClearanceMappingId) ? "checked" : "") id="Clearance_@iCtr" value="@item.ClearanceMappingId" />
+                                            <label for="Clearance_@iCtr"></label>
+                                        </td>
+                                        <td>@item.DepartmentName</td>
+                                        <td>@item.PrimaryClearancePersonName</td>
+                                        <td>@item.SecondaryClearancePersonName</td>
+                                        <td>
+                                            <input class="mr-3" type="radio" checked name="owner_@iCtr" id="Primary_@item.ClearanceMappingId" value="@item.PrimaryClearancePerson" />
+                                            <label for="Primary_@item.ClearanceMappingId">Primary</label>
+
+                                            <input class="mr-3" type="radio" name="owner_@iCtr" id="Other_@iCtr" value="@item.SecondaryClearancePerson" />
+                                            <label for="Other_@iCtr">Other</label>
+                                        </td>
+
+                                    </tr>
+                                    <input type="hidden" id="UnitId_@iCtr" value="@item.UnitId">
+                                    <input type="hidden" id="DepartmentId_@iCtr" value="@item.DepartmentId">
+                                    iCtr++;
+                                }
+
+
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("[name='recoverycheck']").click(function () {
+                if ($(this).is(":checked")) {
+                    $(this).parent().find("span").show();
+                }
+                else {
+                    $(this).parent().find("span").hide();
+                }
+            });
+
+
+        });
+
+        function SaveClearanceAuthority() {
+
+            var exitViewModel = {};
+            var dataCollection = new Array();
+            var isData = false;
+            //var formData = new FormData();
+            var iCtr = 0;
+            var sValidMsg = "";
+            var isData = false;
+
+            if (@Model.ExitClearanceMappingList.Count> 0) {
+                for (iCtr = 1; iCtr <= @Model.ExitClearanceMappingList.Count; iCtr = iCtr + 1) {
+                    var rowData = {};
+                    isChecked = jQuery("#Clearance_" + iCtr).is(":checked")
+                    if (isChecked) {
+                        rowData.UnitId = jQuery("#UnitId_" + iCtr).val();
+                        rowData.ClearanceMappingId = jQuery("#Clearance_" + iCtr).val();
+                        rowData.ClearanceBy = $("input[name='owner_" + iCtr + "']:checked").val()
+                        rowData.DepartmentId = $("#DepartmentId_" + iCtr).val();
+                        rowData.EmployeeId = jQuery("#EmployeeId").val();
+                        isData = true;
+                        if (isData) {
+                            dataCollection.push(rowData)
+                        }
+                    }
+
+
+
+                }
+            }
+            if (dataCollection.length <= 0)
+                $erroralert("Transaction Failed!", "Please select Authorized person for clearance")
+
+            if (dataCollection.length > 0) {
+                exitViewModel.EmployeeExitClearanceList = dataCollection;
+                exitViewModel.EmployeeId = jQuery("#EmployeeId").val();
+
+                BlockUI();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/ExitManagement/SaveEmployeeExitClearanceAuthorities",
+                    data: { exitViewModel: exitViewModel },
+                    success: function (data) {
+                        //alert(data)
+                        UnblockUI();
+                        // var sMsg = data.displayMessage  //.Trim().Replace("< br > ", "\r\n")
+                        if (data.displayMessage.toUpperCase() == "SUCCESS") {
+                            //jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                            //  $successalert("Employee Exit", "Clearance authority set successfully");
+
+                            //window.location = '@Url.Action("ExitClearance", "ExitManagement", new { encEmployeeId = "EMPID" })'.replace("EMPID", jQuery("#EncEmployeeId").val());
+                            $successalert("Transaction Successful!", "Clearance Sent!!");
+
+                        }
+                        // window.location.href = "/EmployeeAttendanceUI/RegularizeAttendance"
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        $erroralert("Employee Exit", "errror<br>" + result.responseText);
+                        UnblockUI();
+                    }
+                });
+
+            }
+
+
+        }
+
+        function ViewClearanceStatus() {
+            let encEmployeeId = $("#EncEmployeeId").val();
+            window.location.href = "/ExitManagement/ExitClearance/" + encEmployeeId;
+        }
+
+    </script>
+}
+
+
+

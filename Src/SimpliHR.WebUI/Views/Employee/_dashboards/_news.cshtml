@@ -1,0 +1,121 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeDashboardVM
+
+<div class="row mt-4">
+    @{
+        if (Model != null && Model.EmployeeNews != null)
+        {
+            foreach (var item in Model.EmployeeNews)
+            {
+                <a href="/EmployeeNews/EmployeeNewsList?v=@Model.Source&&e=@item.encEmployeeNewsId" style="color:inherit">
+                    <div class="align-items-center mb-4">
+                        <div class="float-start me-3"><img src="../@(item.ImagePath)" class="rounded-2" width="84" alt=""></div>
+                        <div class="ms-2 ms-sm-0 me-2">
+                            <div class="smaller-font">@(item.PublicationName)</div>
+                            <div class="fw-bold">
+                                <small class="fw-bold">
+
+                                    @{
+                                        if (item.Title != null && item.Title.Length > 40)
+                                        {
+                                            <span>@(item.Title.Substring(0, 40))...</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@item.Title</span>
+                                        }
+                                    }
+
+                                </small>
+                            </div>
+                            <div class="align-items-start">
+                                @{
+                                    if (item.ArticleType == 1)
+                                    {
+                                        if (item.Description != null)
+                                        {
+                                            if (item.Description.Length > 55)
+                                            {
+                                                <small style="display:block">@(item.Description.Substring(0, 55))... read more</small>
+                                            }
+                                            else
+                                            {
+                                                <small style="display:block">@(item.Description)</small>
+                                            }
+                                        }
+                                        if (item.ArticleLink != null)
+                                        {
+                                            if (item.ArticleLink.Length > 50)
+                                            {
+                                                <small>@(item.ArticleLink.Substring(0, 50))...</small>
+                                            }
+                                            else
+                                            {
+                                                <small>@(item.ArticleLink)</small>
+                                            }
+                                        }
+                                    }
+                                    else if (item.ArticleType == 2)
+                                    {
+                                        if (item.Article != null)
+                                        {
+                                            if (item.Article.Length > 110)
+                                            {
+                                                <small>@Html.Raw(item.Article.Substring(0, 110))... read more</small>
+                                            }
+                                            else
+                                            {
+                                                <small>@Html.Raw(item.Article)</small>
+                                            }
+                                        }
+                                    }
+                                }
+                            </div>
+                            @*<div class="smaller-font">15 hours ago</div>*@
+                            <div class="smaller-font">
+                                @{
+                                    var timeDiff = (System.DateTime.Now - item.CreatedDate);
+                                    if (timeDiff != null)
+                                    {
+                                        if (timeDiff.Value.Days >= 1)
+                                        {
+                                            if (timeDiff.Value.Days > 1)
+                                            {
+                                                <span>@(timeDiff.Value.Days) days ago</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@(timeDiff.Value.Days) day ago</span>
+                                            }
+                                        }
+                                        else if (timeDiff.Value.Hours >= 1)
+                                        {
+                                            if (timeDiff.Value.Hours > 1)
+                                            {
+                                                <span>@(timeDiff.Value.Hours) hours ago</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@(timeDiff.Value.Hours) hour ago</span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (timeDiff.Value.Minutes > 1)
+                                            {
+                                                <span>@(timeDiff.Value.Minutes) minutes ago</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@(timeDiff.Value.Minutes) minute ago</span>
+                                            }
+                                        }
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            }
+        }
+    }
+</div>

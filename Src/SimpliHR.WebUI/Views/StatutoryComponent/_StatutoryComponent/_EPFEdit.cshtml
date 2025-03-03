@@ -1,0 +1,256 @@
+﻿@model SimpliHR.Infrastructure.Models.StatutoryComponent.StatutoryComponent_EPFDTO
+
+<div class="info-container">
+    <div class="row g-3">
+        <div class="col-sm-8">
+            <div class="content-header mb-3">
+                @*<h5 class="mb-0">Employees' Provident Fund &nbsp;&nbsp;&nbsp;   <i class="fa fa-save hvr-grow" onclick="ViewEPFPartial()"></i>   </h5>*@
+                <h5 class="mb-0">Employees' Provident Fund &nbsp;&nbsp;&nbsp;   <i class="fa fa-save hvr-grow" onclick="SaveEPFData()"></i>   </h5>
+            </div>
+            <div class="table-responsive text-nowrap">
+                <input type="hidden" id="StatutoryComponentsId" value="@(Model == null ? "0" : Model.StatutoryComponentsId == null ? "0" : Model.StatutoryComponentsId)" />
+                <input type="hidden" id="MappingEmployeeIds" name="MappingEmployeeIds" class="form-control dbcol" value=@(Model==null?"":@Model.MappingEmployeeIds) />
+                <input type="hidden" id="UnitId" name="UnitId" class="dbcol" value=@(@Model==null?"":@Model.UnitId) />
+                <table class="table table-borderless">
+                    <tbody>
+                       @* <tr>
+                            <td>Departiment</td>
+                            <td>
+                                @if (!(Model == null || Model.DepartmentKeyValues == null))
+                                    @Html.DropDownList("DepartmentId", new SelectList(Model.DepartmentKeyValues, "DepartmentId", "DepartmentName", Model.DepartmentId), "All Departments", htmlAttributes: new { @class = "form-select dbcol clearForm", @name = "DepartmentId", @onchange = "GetEmployeeOfDepartment()" })
+                                </td>
+                            </tr>*@
+                            <tr>
+                                <td>Employees</td>
+                                <td>
+                                    @if (!(Model == null || Model.EmployeeKeyValues == null))
+                                    @Html.DropDownList("EmployeeId", new SelectList(Model.EmployeeKeyValues, "EmployeeId", "EmployeeName"), "All Employees", htmlAttributes: new { @class = "select2 form-select", @multiple = "multiple" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>EPF Number</td>
+                                <td> <input type="text" class="form-control" style="" asp-for="Epfnumber" value="@(Model == null ? "" : Model.Epfnumber == null ? "" : Model.Epfnumber)" /></td>
+                            </tr>
+                            <tr>
+                                <td>Deduction Cycle</td>
+                                <td>
+                                    <select class="form-control" style="width:50%" asp-for="DeductionCycle">
+                                        <option value="-" selected="@(Model == null ? "selected" : Model.DeductionCycle == null ? "selected" : Model.DeductionCycle=="-"?"selected":"false")">--Select--</option>
+                                        <option value="Montly" selected="@(Model == null ? "" : Model.DeductionCycle == null ? "" : Model.DeductionCycle=="Montly" ? "selected" : "")">Montly</option>
+                                        <option value="Quaterly" selected="@(Model == null ? "" : Model.DeductionCycle == null ? "" : Model.DeductionCycle=="Quaterly" ? "selected" : "")">Quaterly</option>
+                                        <option value="Annually" selected="@(Model == null ? "false" : Model.DeductionCycle == null ? "false" : Model.DeductionCycle=="Annually" ? "selected" : "false")">Annually</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Employee Contribution Rate</td>
+                                <td>
+                                    <input type="text" class="form-control" style="width:50px;display: inline-block;" asp-for="EmployeeContributionRate" value="@(Model == null ? "0" : Model.EmployeeContributionRate == null ? "0" : Model.EmployeeContributionRate)" />&nbsp;% of Actual PF Wage
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Employer Contribution Rate</td>
+                                <td>
+                                    <input type="text" class="form-control" asp-for="EmployerContributionRate" style="width:50px;display: inline-block;" value="@(Model == null ? "0" : Model.EmployerContributionRate == null ? "0" : Model.EmployerContributionRate)" />&nbsp;% of Actual PF Wage <a href="#" data-bs-toggle="popover"
+                                                                                                                                                                                                                                                                                                       data-bs-offset="0,14"
+                                                                                                                                                                                                                                                                                                       data-bs-placement="right"
+                                                                                                                                                                                                                                                                                                       data-bs-html="true"
+                                                                                                                                                                                                                                                                                                       data-bs-content="<table><tr class='border-bottom'><td class='pb-2'>SUB COMPONENTS</td><td class='pb-2'>EMPLOYER'S CONTRIBUTION</td></tr><tr><td  class='pt-2' style='padding-right:25px'>Employees' Provident Fund (EPF)</td><td class='pt-2'>3.67% of PF Wage</td></tr><tr><td  class='pt-2' style='padding-right:25px'>Employees' Pension Scheme</td><td class='pt-2'>8.33% of PF Wage</td></tr></table>"
+                                                                                                                                                                                                                                                                                                       title="CONTRIBUTION RATE">(View Splitup)</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="top">CTC Inclusions</td>
+                                <td class="rate">
+                                    <div class="pb-2"> <input type="checkbox" asp-for="IsCtcinclusionEmployers" />  <span>Employer's contribution is included in the CTC.</span></div>
+                                    <div class="pb-2"><input type="checkbox" asp-for="IsCtcinclusionEmployersEdli" /> <span>Employer's EDLI contribution is not included in the CTC.</span></div>
+                                    <div class="pb-2"><input type="checkbox" asp-for="IsCtcinclusionAdminCharges" /> <span>Admin charges is not included in the CTC.</span></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Allow Employee level Override</td>
+                                <td><input type="checkbox" asp-for="IsEmployeeLevelOverride" /></td>
+                            </tr>
+                            <tr>
+                                <td>Pro-rate Restricted PF Wage</td>
+                                <td><input type="checkbox" asp-for="IsProrateRestrictedPfwage" /></td>
+                            </tr>
+                            <tr>
+                                <td>Consider applicable salary<br> components based on LOP</td>
+                                <td valign="top"><input type="checkbox" asp-for="IsLopbasedComponentSalary" /> (when PF wage is less than ₹15,000)</td>
+                            </tr>
+                            <tr>
+                                <td>Eligible for ABRY Scheme</td>
+                                <td><input type="checkbox" asp-for="IsAbryScheme" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="rounded-box">
+                    <div class="content-header mb-3">
+                        <h5 class="mb-0">Sample EPF Calculation</h5>
+                    </div>
+                    <div class="mb-3">Let's assume the PF wage is ₹ 20,000. The breakup of contribution will be:</div>
+                    <div class="internal-rounded-box">
+                        <div>
+                            <table class="Table table-borderless" width="100%">
+                                <tr>
+                                    <td class="pb-2" colspan="2">Employee's Contribution</td>
+                                </tr>
+                                <tr class="border-bottom">
+                                    <td class="pb-2">EPF (12% of 20000)</td>
+                                    <td class="text-center">₹ 2400</td>
+                                </tr>
+                                <tr>
+                                    <td class="pb-2 pt-2" colspan="2">Employer's Contribution</td>
+                                </tr>
+                                <tr>
+                                    <td class="pb-2"><span>EPS (8.33% of 20000 <br>(Max of ₹ 15,000))</span></td>
+                                    <td valign="top" class="text-center">₹ 1250</td>
+                                </tr>
+                                <tr class="border-bottom">
+                                    <td class="pb-2">EPF (12% of 20000 - EPS)</td>
+                                    <td class="text-center">₹ 1150</td>
+                                </tr>
+                                <tr class="border-bottom">
+                                    <td class="pb-2 pt-2"><strong>Total</strong></td>
+                                    <td class="text-center">₹ 2400</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="pt-4">
+                        <i class="fa-regular fa-lightbulb"></i> <span>Do you want to preview EPF calculation for multiple cases, based on the preferences you have configured ?</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 d-flex justify-content-between">
+                @*<button class="btn btn-label-secondary btn-prev" disabled>
+            <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+            <span class="align-middle d-sm-inline-block d-none">Previous</span>
+            </button>
+            <button class="btn btn-primary btn-next">
+            <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+            <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+            </button>*@
+
+
+                @{
+                if (Model != null)
+                {
+                    if (Model.IsActive != null)
+                    {
+                        if (Model.IsActive == true)
+                        {
+                            <a href="javascript:void(0)" name="btnDisableEPF" onclick="disbaleEPF()" style="color:red"><i class="fa fa-trash"></i>  Disable EPF </a>
+                        }
+                        else
+                        {
+                            <a style="color:green" href="javascript:void(0)" name="btnEnableEPF" onclick="enableEPF()"><i class="fa fa-check-circle"></i>  Enable EPF </a>
+                        }
+                    }
+                    else
+                    {
+                        <a style="color:green" href="javascript:void(0)" name="btnEnableEPF" onclick="enableEPF()"><i class="fa fa-check-circle"></i>  Enable EPF </a>
+                    }
+                }
+                else
+                {
+                    <a style="color:green" href="javascript:void(0)" name="btnEnableEPF" onclick="enableEPF()"><i class="fa fa-check-circle"></i>  Enable EPF </a>
+                }
+            }
+
+        </div>
+    </div>
+</div>
+@*@section scripts {
+    
+    <script src="~/customjs/commonfunction.js"></script>
+
+    <script type="text/javascript">
+ jQuery("#DepartmentId").change(function () {
+            var select = document.getElementById('DepartmentId');
+            var selected = [...select.options]
+                .filter(option => option.selected)
+                .map(option => option.value);
+            jQuery("#DepartmentId").val(selected);
+        });
+
+        jQuery("#MappingEmployeeIds").change(function () {
+            var select = document.getElementById('EmployeeId');
+            var selected = [...select.options]
+                .filter(option => option.selected)
+                .map(option => option.value);
+            // alert(selected);
+            jQuery("#MappingEmployeeIds").val(selected);
+        });
+
+        function GetEmployeeOfDepartment(defaultServerValue) {
+            alert("@Model");
+
+            var unitId = jQuery("#UnitId").val();
+            var departmentId = jQuery("#DepartmentId").val();
+            var url = '/EmployeeAttendanceUI/EmployeeKeyValue/' + formParam;
+            alert(url);
+            jQuery("#EmployeeId").html("")
+            if (departmentId != "") {
+                var formParam = unitId + "&" + departmentId + "&true";
+                BlockUI();
+                jQuery.ajax({
+                    type: "GET",
+                    url: url,
+                    //data: formParam,
+                    success: function (response) {
+                        UnblockUI();
+                        PopulateDropDown('EmployeeId', response, defaultServerValue, 'employeeId', 'employeeName', 'All Employees')
+                        jQuery.each(jQuery("#MappingEmployeeIds").val().split(","), function (i, e) {
+                            jQuery("#EmployeeId option[value='" + e + "']").prop("selected", true);
+                        });
+
+
+                    },
+                    failure: function (response) {
+                        UnblockUI();
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+        }
+
+        function ShowEmployees(id) {
+            var url = "/PayrollSalary/GetEmployeeSalaryTemplateDetail/" + id
+            BlockUI();
+            jQuery.ajax({
+                type: "GET",
+                url: url,
+                //data: { id: formVM },
+                //cache: false,
+                //contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                success: function (data) {
+                    UnblockUI();
+                    if (data.displayMessage.toUpperCase() == "SUCCESS") {
+                        PopulateSalaryTemplateDetailTable(data.employeeSalaryTemplateDetailList, "ListDetailTable");
+                        jQuery("#showEmployee").modal('show');
+                    }
+                    else {
+                        ShowServerMessage(data.displayMessage);
+                    }
+                },
+                error: function (result) {
+                    UnblockUI();
+                    var x = 1;
+                    jQuery("#FormName").val("");
+                }
+            });
+        }
+
+
+    </script>
+
+}
+*@

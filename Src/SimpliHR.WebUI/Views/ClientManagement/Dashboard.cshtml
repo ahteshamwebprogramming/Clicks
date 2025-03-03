@@ -1,0 +1,243 @@
+﻿@model SimpliHR.Infrastructure.Models.ClientManagement.ClientDTO
+@{
+    //Layout = null;
+    ViewData["Title"] = "Client Dashboard";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Client Operations /</span> Manage Clients</h4>
+    <div class="card" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <button class="btn btn-secondary create-new btn-primary" tabindex="0" aria-controls="DataTables_Table_0" type="button" onclick="javascript:window.location.href='/ClientManagement/Add/'" style="float:right;">
+                <span>
+                    <i class="bx bx-plus me-sm-1"></i>
+                    <span class="d-none d-sm-inline-block">Add Client</span>
+                </span>
+            </button>
+            <!--input type="button" class="btn btn-primary" value="Add Client" onclick="javascript:window.location.href='/ClientManagement/Add/'" style="float:right;" /-->
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List">
+                    <thead>
+                        <tr>
+
+                            <th>Company Name</th>
+                            <th>Contact person</th>
+                            <th>Email</th>
+                            @*  <th>GSTN</th>*@
+                            <th>Contact Number</th>
+                            @*  <th>City Name</th>*@
+                            <th class="text-center" style="width:100px">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.lstClient != null)
+                        {
+                            @foreach (var item in Model.lstClient)
+                            {
+                                <tr>
+                                    <td>@item.CompanyName</td>
+                                    <td>@item.ClientName</td>
+                                    <td>@item.EmailId</td>
+                                    @*   <td>@item.GSTN</td>*@
+                                    <td>@item.ContactNumber</td>
+                                    @*   <td>@item.CityName</td>*@
+                                    @* <td> <img src="~/ClientLogo/@item.ClientLogo" alt="" height=50 width=50 /> </td>*@
+                                    <td class="text-center">
+                                        <a class="dropdown-item" style="display:inline" href="/ClientManagement/GetClientById/@item.EncClientId" onclick="return confirm('Are you sure you would like to edit?');"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item" style="display:inline" href="#" onclick="alert('Disabled, It will be enabled later');"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/ClientManagement/Dashboard/'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" id="clientForm" action="/ClientManagement/SaveCllientInfo">
+                <!-- Client Details -->
+                <div id="client-details" class="content">
+                    <div class="row g-3" id="errorDiv"><p id="errorPara" class="error" style="color:red"></p></div>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label" for="CompanyName">Company Name</label>
+                            <input type="text" id="CompanyName" name="CompanyName" class="form-control" placeholder="Company Name" value="@Model.CompanyName" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="GSTN">GSTN</label>
+                            <input type="text" id="GSTN" name="GSTN" class="form-control" placeholder="GSTN" value="@Model.GSTN" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="ClientName">Contact person</label>
+                            <input type="text" id="ClientName" name="ClientName" class="form-control" placeholder="Contact person" value="@Model.ClientName" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="email">Email</label>
+                            <input type="email"
+                                   id="EmailID"
+                                   name="EmailID"
+                                   class="form-control"
+                                   placeholder="john.doe@email.com"
+                                   aria-label="john.doe" value="@Model.EmailId" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="contactnumber">Contact number</label>
+                            <input type="number" id="ContactNumber" name="ContactNumber" class="form-control" placeholder="Contact Number" value="@Model.ContactNumber" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="address">Address </label>
+                            <input type="text" id="Address" name="Address" class="form-control" placeholder="Address" value="@Model.Address" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="exampleFormControlSelect1" class="form-label">Country</label>
+                            <select id="CountryId" name="CountryId" onchange="javascript:PopulateStateDDL(this.value)" class="select2 form-select select2-hidden-accessible" data-allow-clear="true" data-select2-id="multicol-country" tabindex="-1" aria-hidden="true">
+                                <option selected>Select Country</option>
+                                @if (Model.CountryList != null)
+                                    foreach (var item in Model.CountryList)
+                                    {
+                                        if (item.CountryId == Model.CountryId)
+                                        {
+                                            <option value="@item.CountryId" selected> @item.CountryName</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.CountryId"> @item.CountryName</option>
+                                        }
+
+                                    }
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="exampleFormControlSelect1" class="form-label">State</label>
+                            <select id="StateId" name="StateId" onchange="javascript:PopulateCityDDL(this.value)" class="select2 form-select select2-hidden-accessible" data-allow-clear="true" data-select2-id="multicol-country" tabindex="-1" aria-hidden="true">
+                                <option value="0">Select</option>
+                            </select>
+
+
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="exampleFormControlSelect1" class="form-label">City</label>
+                            <select id="CityId" name="CityId" class="select2 form-select select2-hidden-accessible" data-allow-clear="true" data-select2-id="multicol-country" tabindex="-1" aria-hidden="true">
+                                <option value="0">Select</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="Pincode">Pincode</label>
+                            <input type="number" id="Pincode" name="Pincode" class="form-control" placeholder="400001" value="@Model.Pincode" />
+                        </div>
+                        <div class="col-12 d-flex justify-content-between">
+
+                            <input type="hidden" id="hdnCountryId" name="CountryId" class="form-control" value="@Model.CountryId" />
+                            <input type="hidden" id="hdnStateId" name="StateId" class="form-control" value="@Model.StateId" />
+                            <input type="hidden" id="hdnCityId" name="CityId" class="form-control" value="@Model.CityId" />
+                            <input type="hidden" id="ClientId" name="ClientId" class="form-control" value="@Model.ClientId" />
+                            @*  <button class=" btn-success btn-submit" style="visibility:hidden">Submit</button>*@
+                            <button class="btn btn-success btn-submit">Submit</button>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+@section scripts {
+
+    <script src="~/assets/vendor/libs/bs-stepper/bs-stepper.js"></script>
+    <script src="~/assets/vendor/libs/bootstrap-select/bootstrap-select.js"></script>
+    <script src="~/assets/vendor/libs/select2/select2.js"></script>
+    @*<script src="../../customjs/CommonFunction.js"></script>*@
+    <script src="~/customjs/commonfunction.js"></script>
+
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $(".List").dataTable();
+
+            if (@Model.ClientId != 0) {
+                $("#List").hide();
+                $("#Add").show();
+            }
+            var countryId = ('@Model.CountryId' == '') ? 0 : '@Model.CountryId'
+            var stateId = ('@Model.StateId' == '') ? 0 : '@Model.StateId'
+            if (countryId > 0)
+                PopulateStateDDL(countryId);
+            if (stateId > 0)
+                PopulateCityDDL(stateId)
+
+            jQuery("#errorDiv").hide();
+            jQuery("#errorPara").html("");
+
+            if ("@Model.DisplayMessage.Trim().ToUpper()" != "_BLANK") {
+                if (!IsNumeric("@Model.DisplayMessage")) {
+                    jQuery("#errorDiv").show();
+                    jQuery("#errorPara").html("@Model.DisplayMessage.Trim().Replace("<br>", "\r\n")");
+                }
+            }
+
+            // $('#CountryId').val(parseInt($("#hdnCountryId").val()));
+        });
+        function MoveNext(formID) {
+            btnNext = jQuery("#" + formID).find('.btn-submit')
+            btnNext.trigger("click")
+        }
+
+        function PopulateStateDDL(countryId) {
+            //var objDDL = countryDDL
+            //  jQuery("#CountryId").attr("disabled", true)
+
+            jQuery("#StateId").html("")
+            jQuery.ajax({
+                type: "GET",
+                url: "/ClientManagement/GetCounryStates",
+                data: { CountryId: countryId },
+                success: function (response) {
+                    PopulateDropDown("StateId", response, '@Model.StateId', 'stateId', 'stateName')
+                    // jQuery("#CountryId").attr("disabled", false)
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function PopulateCityDDL(stateID) {
+            //var objDDL = countryDDL
+            //jQuery("#CountryId").attr("disabled", true)
+            //jQuery("#StateId").attr("disabled", true)
+            jQuery("#CityId").html("")
+            jQuery.ajax({
+                type: "GET",
+                url: "/ClientManagement/GetStateCities",
+                data: { StateId: stateID },
+                success: function (response) {
+                    PopulateDropDown("CityId", response, '@Model.CityId', 'cityId', 'cityName')
+                    //jQuery("#StateId").attr("disabled", false)
+                    //jQuery("#CountryId").attr("disabled", false)
+                },
+                failure: function (response) {
+                    $erroralert("Transaction Failed!", response.responseText);
+                },
+                error: function (response) {
+                    $erroralert("Transaction Failed!", response.responseText);
+                }
+            });
+        }
+
+
+    </script>
+}

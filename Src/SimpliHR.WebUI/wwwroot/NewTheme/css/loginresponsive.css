@@ -1,0 +1,26 @@
+@media(max-width:1366px){
+    .carousel-indicators {
+        bottom: -20px !important;
+    }
+    .login-page{
+        padding-bottom: 2rem;
+    }
+}
+
+@media(max-width:1024px){
+    .slider {
+       
+        height: unset; 
+    }
+}
+@media(max-width:575.5px){
+    .login-form .img-logo {
+         margin-top: 1rem; 
+        text-align: left;
+        margin-bottom: 1rem;
+    }
+    .slider {
+       
+        height: unset; 
+    }
+}

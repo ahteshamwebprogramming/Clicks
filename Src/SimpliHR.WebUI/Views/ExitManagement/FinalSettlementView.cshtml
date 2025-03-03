@@ -1,0 +1,404 @@
+﻿@model SimpliHR.Infrastructure.Models.Exit.ExitViewModel
+@{
+    ViewData["Title"] = "FinalSettlementView";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    @*   <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll /</span> Pay Slip</h4>*@
+
+    <div class="row">
+
+
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1" id="PrintPDF">
+            <!-- User Pills -->
+
+            <div class="nav-align-top mb-4">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="earnings" role="tabpanel">
+                        <div class="card">
+
+                            <div class="card-body">
+
+                                <div id="DvFnFGrid" style="align-content:center; text-align:center; width:100%;">
+                                    <div class="row mb-4">
+                                        <div class="col-md-4">
+                                            @*    <img src="../../ClientLogo/kt-logo.png" style="width:200px;height:auto;" /> *@
+                                            <img src="@(Model.Base64ProfileImage==null ? "logo_1.jpg" : Model.Base64ProfileImage)" width="200px" height="äuto" alt="" />
+                                        </div>
+                                        <div class="col-md-8 text-center">
+                                            @*  <h4><strong>Kabir  </strong></h4>
+                                            <p>Nehru Place, South Delhi.</p> *@
+                                            @if (Model.objSettlementDetails != null)
+                                            {
+                                                if (Model.objSettlementDetails.Count > 0)
+                                                {
+                                                    foreach (var item in Model.objSettlementDetails)
+                                                    {
+                                                        <h4><strong>@item.UnitName  </strong></h4>
+                                                        <p>@item.Address, @item.Location</p>
+                                                        <p>@item.StateName</p>
+                                                    }
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                    @*    <div class="mb-4">Payslip for the month of @Model.MonthName, @Model.Year</div> *@
+                                    <div class="table-responsive text-nowrap mb-4">
+                                        @if (Model.objSettlementDetails != null)
+                                        {
+                                            if (Model.objSettlementDetails.Count > 0)
+                                            {
+
+                                                foreach (var item in Model.objSettlementDetails)
+                                                {
+                                                    <input type="hidden" name="EmployeeId" id="EmployeeId" value="@item.EmployeeId" />
+                                                    <table cellspacing="2" cellpadding="10" align="center" border="1" style="width: 100%;">
+                                                        <tr>
+                                                            <td colspan="4" class="text-center" style="background-color:lightgray;"><strong>Full & Final Settlement Statement</strong></td>
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="4">&nbsp;</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Emp.Code</strong></td>
+                                                            <td>@item.EmployeeCode</td>
+                                                            <td><strong>Date Of Joining</strong></td>
+                                                            <td>@item.DOJ</td>
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Name</strong></td>
+                                                            <td>@item.EmployeeName</td>
+                                                            <td><strong>Date of Resignation</strong></td>
+                                                            <td>@item.DOR</td>
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Designation</strong></td>
+                                                            <td>@item.Designation</td>
+                                                            <td><strong>Last Working Day</strong></td>
+                                                            <td>@item.LWD</td>
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Department</strong></td>
+                                                            <td>@item.Department</td>
+                                                            <td><strong>Notice Period Applicable (Days)</strong></td>
+                                                            <td>@item.NoticePeriod</td>
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Location</strong></td>
+                                                            <td>@item.Location</td>
+                                                            <td><strong>Notice Given (Days)</strong></td>
+                                                            <td>@item.EmpNoticePeriod</td>
+
+                                                        </tr>
+                                                    </table>
+                                                    <br />
+                                                    <table cellspacing="2" cellpadding="10" align="center" border="1" style="width: 100%;">
+                                                        <tr>
+                                                            <td><strong>Notice Shortfall (Days)</strong></td>
+                                                            <td>@item.NoticeShortfall</td>
+                                                            <td><strong>Notice Period</strong></td>
+                                                            <td>
+                                                                @(
+                                                                    item.NoticePeriodId == 1 ? "Waived Off" : item.NoticePeriodId == 2 ? "Recoverable" : item.NoticePeriodId == 3 ? "Payable" : "Select an option"
+                                                                    )
+                                                            </td>
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Earned Leaves Balance (Days)</strong></td>
+                                                            <td>@item.ELBalance</td>
+                                                            <td><strong>Leave Balance</strong></td>
+                                                            <td>
+                                                                @(
+                                                                    item.LeaveBalanceId == 1 ? "Waived Off" : item.LeaveBalanceId == 2 ? "Recoverable" : item.LeaveBalanceId == 3 ? "Payable" : "Select an option"
+                                                                    )
+                                                            </td>
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td><strong>Total Service </strong></td>
+                                                            <td>@item.TotalServices</td>
+                                                            <td><strong>Gratuity Payable</strong></td>
+                                                            <td>
+                                                                @(
+                                                                    item.GratuityId == 1 ? "Yes" : item.GratuityId == 2 ? "No" : "Select an option"
+                                                                    )
+
+                                                            </td>
+
+                                                        </tr>
+
+                                                    </table>
+
+                                                }
+                                            }
+                                        }
+                                    </div>
+
+                                    <div class="table-responsive text-nowrap mb-4">
+                                        <table cellspacing="2" cellpadding="10" align="center" border="1" style="width: 100%;">
+                                            <tr>
+                                                <td><strong>Payable to the Employee</strong></td>
+                                                <td style="text-align:right;"><strong>Amount(Rs.)</strong></td>
+                                                <td><strong>Deductible from the Employee</strong></td>
+                                                <td style="text-align:right;"><strong>Amount(Rs.)</strong></td>
+                                            </tr>
+
+
+                                            @if (Model.objPaySlipComponent != null)
+                                            {
+                                                if (Model.objPaySlipComponent.Count > 0)
+                                                {
+                                                    foreach (var item in Model.objPaySlipComponent)
+                                                    {
+                                                        if (@item.Component != "Grand Total")
+                                                        {
+                                                            if (@item.Component != "Net Pay")
+                                                            {
+                                                                if (@item.Component != "Other Payment")
+                                                                {
+                                                                    if (@item.DComponent != "Other Deduction")
+                                                                    {
+
+                                                                        string szTotal = string.Format("{0:#,#.00}", @item.Total);
+                                                                        string szDTotal = string.Format("{0:#,#.00}", @item.DTotal);
+                                                                        <tr>
+                                                                            <td>@item.Component</td>
+
+                                                                            @if (item.Component != "")
+                                                                            {
+                                                                                <td class="text-end" style="text-align:right;">@(szTotal.Trim() == ".00" ? "0.00" : szTotal)</td>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <td class="text-end" style="text-align:right;">@(szTotal.Trim() == ".00" ? "" : szTotal)</td>
+                                                                            }
+
+
+                                                                            <td>@item.DComponent</td>
+
+                                                                            @if (item.DComponent != "")
+                                                                            {
+                                                                                <td class="text-end" style="text-align:right;">@(szDTotal.Trim() == ".00" ? "0.00" : szDTotal)</td>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <td class="text-end" style="text-align:right;">@(szDTotal.Trim() == ".00" ? "" : szDTotal)</td>
+                                                                            }
+
+                                                                        </tr>
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            <tr>
+                                                @if (Model.objPaySlipComponent.Count > 0)
+                                                {
+                                                    var gOther = Model.objPaySlipComponent.Where(x => x.Component.Equals("Other Payment")).FirstOrDefault();
+                                                    var gOther1 = Model.objPaySlipComponent.Where(x => x.DComponent.Equals("Other Deduction")).FirstOrDefault();
+
+                                                    <td>Other Payment/s</td>
+                                                    <td> <input type="number" id="OtherPayment" name="OtherPayment" value=@gOther.Total class="form-control" /> </td>
+                                                    <td>Other Deduction/s</td>
+                                                    <td><input type="number" id="OtherDeduction" name="OtherDeduction" value=@gOther1.DTotal class="form-control" /></td>
+                                                }
+                                            </tr>
+
+
+                                            @if (Model.objPaySlipComponent.Count > 0)
+                                            {
+
+                                                var gTotal = Model.objPaySlipComponent.Where(x => x.Component.Equals("Grand Total")).FirstOrDefault();
+
+
+                                                var szTotal = string.Format("{0:#,#.00}", @gTotal.Total);
+                                                var szDTotal = string.Format("{0:#,#.00}", @gTotal.DTotal);
+                                                <tr>
+
+                                                    <td><strong>Total Payable</strong></td>
+
+
+                                                    <td class="text-end"><strong>@szTotal</strong></td>
+                                                    <td><strong>Total Recoverable</strong></td>
+
+                                                    <td class="text-end"><strong>@szDTotal</strong></td>
+                                                </tr>
+
+                                                var gNetPay = Model.objPaySlipComponent.Where(x => x.Component.Equals("Net Pay")).FirstOrDefault();
+                                                var szNetPay = string.Format("{0:#,#.00}", @gNetPay.Standard);
+                                                <tr>
+                                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Net Payable / Recoverable </strong></td>
+                                                    <td class="text-end" style="text-align:right;">@szNetPay</td>
+                                                    <td colspan="2" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>(@gNetPay.DComponent)</strong></td>
+                                                </tr>
+                                            }
+
+
+
+                                        </table>
+                                    </div>
+
+                                    <div class="table-responsive text-nowrap mb-4">
+                                        @if (Model.objSettlementDetails != null)
+                                        {
+                                            if (Model.objSettlementDetails.Count > 0)
+                                            {
+
+                                                foreach (var item in Model.objSettlementDetails)
+                                                {  
+                                                    <table style="width:100%; text-align:left;">
+                                                        <tr>
+                                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Remarks</strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <textarea id="Remarks" name="Remarks" placeholder="Remarks here ..." class="form-control"> @item.Remarks </textarea>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                   
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                    <div class="table-responsive text-nowrap mb-4">
+                                        <table cellspacing="2" cellpadding="10" align="center" border="1" style="width: 100%;">
+                                            <tr>
+                                                <td colspan="4" class="text-center" style="background-color:lightgray;"><strong>Employee Acknowledgement Receipt</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4">&nbsp;</td>
+                                            </tr>
+                                            @if (Model.objPaySlipComponent.Count > 0)
+                                            {
+                                                var gNetPay = Model.objPaySlipComponent.Where(x => x.Component.Equals("Net Pay")).FirstOrDefault();
+                                                var szNetPay = string.Format("{0:#,#.00}", @gNetPay.Standard);
+                                                <tr>
+                                                    <td colspan="4"><strong>I acknowledge the final settment amount of Rs. @szNetPay/- (@gNetPay.DComponent) as payabe to me </strong></td>
+                                                </tr>
+                                            }
+                                            <tr>
+                                                <td colspan="4">&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4">I further undertake and accept that no other due of whatsoever nature is pending from the company towards my final settlement.</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td colspan="4">&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4">&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>(Employee Name)</strong></td>
+                                                <td></td>
+                                                <td><strong>(Signature)</strong></td>
+                                                <td><strong>(Date)</strong></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+
+                                    <div class="table-responsive text-nowrap mb-4">
+                                        This is a computer generated statement. Does not require any signatures.
+                                    </div>
+                                </div>
+                                <div class="pt-4">
+
+                                    <input type="button" id="btnSubmit" onclick="SubmitInDraft();" style="background-color: #2ea44f;border: 1px solid rgba(27, 31, 35, .15); color: #fff;box-shadow: rgba(27, 31, 35, .1) 0 1px 0; font-size: 14px; padding: 6px 16px;line-height: 20px;" value="Save in draft" />
+                                    <input type="button" id="btnFridze" onclick="SubmitnClosed();" style="background-color: #2ea44f;border: 1px solid rgba(27, 31, 35, .15); color: #fff;box-shadow: rgba(27, 31, 35, .1) 0 1px 0; font-size: 14px; padding: 6px 16px;line-height: 20px;" value="Final Settlement and Download" />
+                                </div>
+                                @* <form method="post" asp-action="ExportFinalStatement" asp-controller="ExitManagement">
+                                <input type="hidden" name="FnFSheet" /> <br />
+                                <input type="submit" id="btnSubmit" style="background-color: #2ea44f;border: 1px solid rgba(27, 31, 35, .15); color: #fff;box-shadow: rgba(27, 31, 35, .1) 0 1px 0; font-size: 14px; padding: 6px 16px;line-height: 20px;" value="Download" />
+                                </form> *@
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--/ User Pills -->
+
+        </div>
+        <!--/ User Content -->
+    </div>
+
+
+</div>
+@section scripts {
+    @*    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script src="~/assets/js/yearpicker.js"></script>*@
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+        });
+
+        //$("#btnSubmit").click(function () {
+        //    $("input[name='ExportData']").val($("#PrintPDF").html());
+        //});
+
+        function SubmitInDraft() {
+
+
+            if (parseInt($("#EmployeeId").val()) > 0) {
+
+                $.ajax({
+                    type: "POST",
+                    url: '/ExitManagement/SaveEmployeeOtherPayments',
+                    //  contentType: 'application/json',
+                    data: { EmployeeId: parseInt($("#EmployeeId").val()), OtherPayments: parseInt($("#OtherPayment").val()), OtherDeductions: parseInt($("#OtherDeduction").val()), Remarks: $("#Remarks").val() },
+                    success: function (data) {
+                        alert('Records are saved successfully in the draft');
+                        // var urlToOpen = '';
+                        // urlToOpen = '/ExitManagement/SettlementDownload';
+                        // if (urlToOpen != '') window.open(urlToOpen);
+                    },
+                    error: function (error) {
+                        $erroralert("Error!", error.responseText + '!'); UnblockUI();
+                        reject(error);
+                    }
+                });
+            }
+        }
+
+        function SubmitnClosed() {
+
+            if (confirm('Are you sure you want to close this Final Settlement? You wont be able to make any changes after closing it.')) {
+                if (parseInt($("#EmployeeId").val()) > 0) {
+
+                    $.ajax({
+                        type: "POST",
+                        url: '/ExitManagement/ProcessFinalSettlement',
+                        //  contentType: 'application/json',
+                        data: { EmployeeId: parseInt($("#EmployeeId").val()), OtherPayments: parseInt($("#OtherPayment").val()), OtherDeductions: parseInt($("#OtherDeduction").val()), Remarks: $("#Remarks").val() },
+                        success: function (data) {
+                            var urlToOpen = '';
+                            urlToOpen = '@Url.Action("SettlementDownload", "ExitManagement", new { employeeId = "EMPID" })'.replace("EMPID", parseInt($("#EmployeeId").val()));
+                            // urlToOpen = '/ExitManagement/SettlementDownload';
+                            if (urlToOpen != '') window.open(urlToOpen);
+                        },
+                        error: function (error) {
+                            $erroralert("Error!", error.responseText + '!'); UnblockUI();
+                            reject(error);
+                        }
+                    });
+                }
+            }
+        }
+
+    </script>
+}
+

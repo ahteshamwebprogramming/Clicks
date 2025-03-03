@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewData["Title"] = "ExitChecklist";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Exit Management /</span> Check List
+    </h4>
+
+    <div class="card">
+
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="View" onclick="javascript:window.location.href='#'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post">
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Employee Name</label>
+                        <select class="form-select" id="LeaveTypeId" required name="LeaveTypeId"  data-allow-clear="true" data-select2-id="multicol-country" aria-hidden="true">
+                            <option selected>Select an option</option>
+
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Checklist Item</label>
+                        <select class="form-select" id="LeaveTypeId" required name="LeaveTypeId" data-allow-clear="true" data-select2-id="multicol-country" aria-hidden="true">
+                            <option selected>Select an option</option>
+
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Responsible Person</label>
+                        <select class="form-select" id="LeaveTypeId" required name="LeaveTypeId"  data-allow-clear="true" data-select2-id="multicol-country" aria-hidden="true">
+                            <option selected>Select an option</option>
+
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Due Date</label>
+                        <input type="text" id="EndDate" name="EndDate" class="form-control flatpickr-date" placeholder="DD-MMM-YYYY">
+
+                    </div>
+
+                </div>
+                <div class="pt-4">
+
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    @* <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/Leave/LeaveApply/'">Cancel</button>*@
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+@section scripts{
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            $(".flatpickr-date").flatpickr({
+                //monthSelectorType: 'static',
+                dateFormat: "d-M-Y"
+            });
+        });
+    </script>
+}

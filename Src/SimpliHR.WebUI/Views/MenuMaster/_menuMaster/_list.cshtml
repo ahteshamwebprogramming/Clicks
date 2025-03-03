@@ -1,0 +1,44 @@
+﻿@model SimpliHR.Infrastructure.Models.MenuMaster.MenuMasterListView
+<table class="datatables-ajax table table-bordered List" id="List">
+    <thead>
+        <tr>
+            <th>MenuId</th>
+            <th>MenuName</th>
+            <th>Role</th>
+            <th>PageLink</th>
+            <th>ParentMenuId</th>
+            <th>ModuleId</th>
+            <th>Icon</th>
+            <th>Sn</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+            @foreach (var item in Model.MenuMasterList)
+            {
+                <tr>
+
+                    <td>@item.MenuId</td>
+                    <td>@item.MenuName</td>
+                    <td>@item.Role</td>
+                    <td>@item.PageLink</td>
+                    <td>
+
+
+                        @{
+                            string a = Model.MenuMasterListAll.Where(x => x.MenuId == item.ParentMenuId).Select(x => x.MenuName).FirstOrDefault();
+                            <span>@a</span>
+                        }
+                    </td>
+                    <td>@(Model.ModuleMasterList.Where(x => x.ModuleId == item.ModuleId).Select(x => x.ModuleName).FirstOrDefault())</td>
+                    <td>@item.Icon</td>
+                    <td>@item.Sn</td>
+                    <th>
+                        <a class="btn btn-primary" href="/MenuMaster/AddMenusPartialView?MenuId=@item.MenuId">Edit</a>
+                        <button class="btn btn-primary" onclick="DeleteRecord('@item.MenuName','@item.MenuId')"> Delete</button>
+                    </th>
+                </tr>
+            }
+    </tbody>
+</table>

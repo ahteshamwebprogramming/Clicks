@@ -1,0 +1,244 @@
+﻿@model SimpliHR.Infrastructure.Models.ClientManagement.UnitMasterDTO
+@{
+    Layout = "~/Views/Shared/_LayoutEmpty.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>Example of vertical centering</title>
+    <link href="https://cdn.jsdelivr.net/npm/vetixy/circular-std@1.0.0/dist/index.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+    
+
+        body{padding: 0; margin: 0; font-family: 'CircularStd', sans-serif;background:#f7f6fa url(../images/bg4a.png) no-repeat; background-position: bottom;}
+
+        #unit-container {
+            color: white;
+            width: 100%;
+            height: 70vh;
+            padding: 1% 0 5% 0;
+        }
+
+        .logo-container{padding: 17px 25px; border-radius: 20px;display: inline-block;}
+        .light-blue-bg{padding: 3% 5% 0;}
+        .serch{background: #fff; border-radius: 20px 0 0 20px;display: inline-block;width: 61%;padding: 14px 20px;}
+        .serch-icon{display: inline-block;}
+        .serch input{display: inline-block; width: 90%; border: none;}
+        .serch input:focus{outline: none;}
+        .user-details{display: inline-block;padding:0.75% 1%;margin-left: -5px;border-radius: 0 20px 20px 0;float: right;}
+        .mail-icon,.notification-icon{display: inline-block; padding: 5px 15px;}
+        .user-icon{display: inline-block;}
+        .user-icon img{border-radius: 35px;}
+        .user-name-cont{display: inline-block; padding: 5px 15px; font-size: 14px; color: #fff;line-height: 14px;position: relative;width: 145px;}
+        .user-name{position: absolute;top: -7px;}
+        .user-name span{font-size: 12px;line-height: 9px;}
+        .unit{background: #fff; border-radius: 60px;margin: 0 auto; webkit-box-shadow: 0px 0px 27px 0px rgba(99,79,168,0.18);moz-box-shadow: 0px 0px 27px 0px rgba(99,79,168,0.18);box-shadow: 0px 0px 27px 0px rgba(99,79,168,0.18);text-align: center;padding: 40px 25px;color: #333;font-size: 20px;line-height: 25px; min-height:250px; min-width:250px}
+        .unit-box{cursor:pointer;width: 300px;}
+        
+    </style>
+
+
+
+</head>
+<body>
+    @* <div class="light-blue-bg">
+        <div class="logo-container me-3"><img src="~/images/simpli-logo.png" width="118" height="26" alt=""></div>
+        <div class="user-details">
+            <div class="user-icon"><img src="~/images/1.png" class="rounded-circle" alt="" width="40" height="40"></div>
+            <li class="nav-item navbar-dropdown dropdown-user dropdown" style="list-style: none;">
+                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                        <img src="../../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                    </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <a class="dropdown-item" href="pages-account-settings-account.html">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 me-3">
+                                    <div class="avatar avatar-online">
+                                        <img src="../../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <span class="fw-semibold d-block">John Doe</span>
+                                    <small class="text-muted">Admin</small>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="pages-profile-user.html">
+                            <i class="bx bx-user me-2"></i>
+                            <span class="align-middle">My Profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="pages-account-settings-account.html">
+                            <i class="bx bx-cog me-2"></i>
+                            <span class="align-middle">Settings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="pages-account-settings-billing.html">
+                            <span class="d-flex align-items-center align-middle">
+                                <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
+                                <span class="flex-grow-1 align-middle">Billing</span>
+                                <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="pages-help-center-landing.html">
+                            <i class="bx bx-support me-2"></i>
+                            <span class="align-middle">Help</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="pages-faq.html">
+                            <i class="bx bx-help-circle me-2"></i>
+                            <span class="align-middle">FAQ</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="pages-pricing.html">
+                            <i class="bx bx-dollar me-2"></i>
+                            <span class="align-middle">Pricing</span>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="auth-login-cover.html" target="_blank">
+                            <i class="bx bx-power-off me-2"></i>
+                            <span class="align-middle">Log Out</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+        </div>
+    </div> *@
+    <div class="light-blue-bg">
+        <div class="logo-container me-3"><img src="~/images/simpli-logo.png" width="118" height="26" alt=""></div>
+       @*  <div class="logo-container me-3"><img src="../../assets/img/simpli-logo.png" width="118" height="26" alt=""></div> *@
+        <div class="user-details">
+            <li class="nav-item navbar-dropdown dropdown-user dropdown" style="list-style: none;">
+                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                        <img src="../../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                    </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <a class="dropdown-item" href="#">
+                            <i class="bx bx-user me-2"></i>
+                            <span class="align-middle">My Profile</span>
+                        </a>
+                    </li>
+                                       <li>
+                        <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="~/Account/Index">
+                            <i class="bx bx-power-off me-2"></i>
+                            <span class="align-middle">Log Out</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </div>
+    </div>
+    <div id="unit-container">
+        <div class="container pb-5">
+            <div class="row text-center">
+                <div class="col-12">
+                @{
+                  
+                    foreach (var item in Model.UnitMasterList)
+                    {
+                                    <div class="text-center d-inline-block unit-box" onclick="SetUnit(this)">
+                                            <input type="hidden" value="@item.UnitID" name="UnitID">
+                                            <div class="unit m-3">
+                                            <div><img src="@(Model.Base64ProfileImage==null ? "logo_1.jpg" : Model.Base64ProfileImage)" width="auto" height="40" alt=""></div>
+                                            <h5 class="pt-3">@item.UnitName</h5>
+                                            <div class="pt-3"><small>@item.CityName</small></div>
+                                    <div class="pt-3"><small>@item.Address</small></div>
+                                            </div>
+                                        </div>
+                       
+                    }
+                }
+                @*  <div class="col-md-3 text-center" style="cursor:pointer">
+                <div class="unit m-3">
+                <div><img src="~/images/simpli-logo.png" width="135" height="auto" alt=""></div>
+                <h4 class="pt-3">Delhi</h4>
+                <div class="pt-3">T11, 2nd <br>South Delhi - 110025</div>
+                </div>
+                </div>
+                <div class="col-md-3 text-center" style="cursor:pointer">
+                <div class="unit m-3">
+                <div><img src="~/images/simpli-logo.png" width="135" height="auto" alt=""></div>
+                <h4 class="pt-3">Gurgaon</h4>
+                <div class="pt-3">101, DLF Towers, Gurgaon - 423432</div>
+                </div>
+                </div>
+                <div class="col-md-3 text-center">
+                <div class="unit m-3">
+                <div><img src="~/images/simpli-logo.png" alt=""></div>
+                <h4 class="pt-3">Gurgaon</h4>
+                <div class="pt-3">101, DLF Towers, Gurgaon - 423432</div>
+                </div>
+                </div> *@
+            </div>
+        </div>
+        </div>
+    </div>
+</body>
+
+</html>
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+        });
+
+        function SetUnit(currDiv) {
+          
+            let unitId = $(currDiv).find("[name='UnitID']").val();
+
+            jQuery.ajax({
+                type: "POST",
+                url: "/ClientManagement/SetUnit/",
+                data: { UnitID: unitId },
+                cache: false,
+                dataType: "json",
+                success: function (data) {
+
+                    window.location.href = "/Admin/Index"
+                             
+
+                },
+                error: function (result) {
+                    alert(result.responseText);
+                }
+            });
+        }
+
+
+    </script>
+}

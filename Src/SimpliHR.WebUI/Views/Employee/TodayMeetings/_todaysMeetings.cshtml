@@ -1,0 +1,42 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeDashboardVM
+
+<style>
+    .nav-pills .nav-link {
+        background: #ebeef0;
+        padding-left: 37.5px;
+        padding-right: 37.5px;
+    }
+</style>
+<link href="~/customcss/dashboard.css" rel="stylesheet" />
+@{
+   
+            <div class="pe-md-4">
+
+                <div class="card-title d-flex align-items-start justify-content-between mb-3">
+                    <small class="col-6 col-md-6 col-lg-7"><h5 class="text-dark fw-bold">Upcoming meetings</h5></small>
+                    <small><a href="https://calendar.google.com/calendar/u/0/r" target="_blank" class="fw-bold">My calendar</a></small>
+                </div>
+
+                <div class="card bg-label-secondary">
+                    <div class="card-body" style="padding:20px 15px;">
+                        @if (Model.GoogleEvents.Count != 0)
+                        {
+
+                            @foreach (var item in Model.GoogleEvents)
+                            {
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <small>@item.StartTime to @item.EndTime</small><br>
+                                        <small>@item.Summary</small>
+                                    </div>
+                                    <div class="col-lg-4 mt-3"><a href=@item.Link target="_blank" class="btn btn-primary rounded-pill">Join</a></div>
+
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="col-lg-5 mt-3"><button class="btn btn-outline-primary rounded-pill" onclick="RefreshMeetings();">Refresh</button></div>
+            </div>
+      
+}

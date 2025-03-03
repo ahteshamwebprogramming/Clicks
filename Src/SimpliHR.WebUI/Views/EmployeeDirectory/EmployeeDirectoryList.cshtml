@@ -1,0 +1,313 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.MainDirectoryDTO
+@{
+    ViewData["Title"] = "EmployeeDirectoryList";
+    Layout = "~/Views/Shared/_LayoutVertical.cshtml";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"></span>Employee Directory</h4>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    @*        <div class="float-start"><h5 class="card-title mt-2">Links</h5></div> *@
+                    <div class="float-end"><button class="btn btn-primary" onclick="MappedDirectorySelected()"></i>Save Directory</button></div>
+                    <div class="clearfix"></div>
+                    <div class="table-responsive text-nowrap mb-2">
+                        <table class="datatables-ajax table List" id="List">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" class="form-check-input" onclick="CheckAll(this)">Select</th>
+                                    <th>Column</th>
+                                    <th>Position</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int iCtr = 1;
+                                    var showReason = false;
+                                    var ctrlId = string.Empty;
+                                    if (Model.MainDirectoryList.Count != 0)
+                                    {
+                                        foreach (var item in Model.MainDirectoryList)
+                                        {
+                                                        <tr>
+                                                            <td>
+                                                                @if (item.IsActive == true)
+                                                    {
+                                                                    <input type="checkbox" id="EmployeeDirectoryId_@iCtr" checked value="@item.DirectoryId" onclick="CheckPosition(@iCtr);" class="form-check-input">
+                                                    }
+                                                    else
+                                                    {
+                                                                    <input type="checkbox" id="EmployeeDirectoryId_@iCtr" value="@item.DirectoryId" onclick="CheckPosition(@iCtr);" class="form-check-input">
+                                                    }
+
+                                                            </td>
+
+                                                            <td>@item.DirectoryColumns</td>
+
+                                                            <td>
+                                                    <select id="selPositionId_@iCtr" name="PositionId" class="form-select" tabindex="-1" onchange="javascript:IsExists(this.value,@iCtr)" aria-hidden="true">
+                                                                    <option value="0">Select</option>
+
+                                                                </select>
+                                                            </td>
+
+                                                        </tr>
+                                            iCtr++;
+                                        }
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <div class="float-end"><button class="btn btn-primary" onclick="MappedDirectorySelected()">Save Directory</button></div>
+                </div>
+            </div>
+        </div>
+        <style>
+            .select2-container--default .select2-selection--single .select2-selection__clear {
+                display: none
+            }
+        </style>
+
+    </div>
+
+</div>
+
+@section scripts {
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $(".List").dataTable({
+                "bPaginate": false
+            });
+
+
+
+            GetAllChecked();
+
+
+
+        });
+
+        function GetAllChecked() {
+
+             $("select.form-select").empty();
+
+            $("<option/>").val(0).text("Select").appendTo(jQuery("select.form-select"));
+            var totalChecked=0;
+
+            jQuery.ajax({
+                type: "GET",
+                url: "/EmployeeDirectory/GetActiveDirectoryList",
+                success: function (response) {
+                  if (response.mainDirectoryList.length > 0) {
+                       for (var i = 0; i < response.mainDirectoryList.length; i++) {
+
+                           if(response.mainDirectoryList[i].isActive==true)
+                           {
+                               totalChecked=totalChecked+1;
+                                // $("<option/>").val(response.mainDirectoryList[i].positionId).text(response.mainDirectoryList[i].positionId).appendTo(jQuery("select.form-select"));
+                           }
+                       }
+                      for (j = 1; j <= totalChecked; j++) {
+                $("<option/>").val(j).text(j).appendTo(jQuery("select.form-select"));
+
+                            }
+
+                              for (var k = 0; k < response.mainDirectoryList.length; k++) {
+
+                             
+                           if(response.mainDirectoryList[k].isActive==true)                           {
+                              
+                                 var vals= parseInt(response.mainDirectoryList[k].positionId);
+                            
+                               jQuery("#selPositionId_" + (k+1)).val(vals);
+                           }
+                           
+                                 
+                         }
+                  }
+
+                },
+                failure: function (response) {
+                    $erroralert("Error!", "errror<br>" + response.responseText);
+                },
+                error: function (response) {
+                    $erroralert("Error!", "errror<br>" + response.responseText);
+                }
+            });
+
+        }
+
+        function MappedDirectorySelected() {
+            //alert('Regularize')
+            var rowData = {};
+            //   var formData = {};
+            var isData = false;
+            var isActive = 0;
+            var dataCollection = new Array();
+            // var results = new Array();
+            //var formData = new FormData();
+            var iCtr = 0;
+            var iCnt = 0;
+            // var sValidMsg = "";
+            // var isData = true;
+
+            if (@Model.MainDirectoryList.Count> 0) {
+                for (iCtr = 1; iCtr <= @Model.MainDirectoryList.Count; iCtr = iCtr + 1) {
+
+                    isChecked = jQuery("#EmployeeDirectoryId_" + iCtr).is(":checked")
+                    if (isChecked) {
+                        isActive = 1;
+                        isData = true;
+                        iCnt++;
+                    }
+                    else {
+                        isActive = 0;
+
+                    }
+
+                    rowData.EmployeeDirectoryIds = rowData.EmployeeDirectoryIds != undefined ? rowData.EmployeeDirectoryIds + "," + jQuery("#EmployeeDirectoryId_" + iCtr).val() : jQuery("#EmployeeDirectoryId_" + iCtr).val();
+                    rowData.PositionIds = rowData.PositionIds != undefined ? rowData.PositionIds + "," + jQuery("#selPositionId_" + iCtr).val() : jQuery("#selPositionId_" + iCtr).val();
+                    rowData.IsActives = rowData.IsActives != undefined ? rowData.IsActives + "," + isActive : isActive + "";
+
+                }
+            }
+
+            if (!isData) {
+                $erroralert("Transaction Failed!", "Please Select Atleast 1 Quick Access Link");
+                return;
+            }
+
+            BlockUI();
+            jQuery.ajax({
+                type: "POST",
+                url: "/EmployeeDirectory/SaveEmployeeDirectory",
+                data: { userAction: rowData },
+                success: function (data) {
+                    UnblockUI();
+                    $successalert("", "Transaction Successful!");
+                    if (data.toUpperCase() == "SUCCESS") {
+                        // jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                    }
+
+                },
+                error: function (result) {
+                    var x = 1;
+                    $erroralert("Transaction Failed!", "" + result.responseText);
+                    UnblockUI();
+                }
+            });
+
+        }
+
+        function CheckAll(regularizeAll) {
+            isAllChecked = regularizeAll.checked;
+
+            $("select.form-select").empty();
+
+            $("<option/>").val(0).text("Select").appendTo(jQuery("select.form-select"));
+
+            for (iCtr = 1; iCtr <= @Model.MainDirectoryList.Count; iCtr = iCtr + 1) {
+                $("<option/>").val(iCtr).text(iCtr).appendTo(jQuery("select.form-select"));
+                jQuery("#selPositionId_" + iCtr).val(iCtr);
+                chkBox = jQuery("#EmployeeDirectoryId_" + iCtr)
+                if (chkBox != undefined) {
+                    isChecked = chkBox.is(":checked")
+
+                    if (isAllChecked && !isChecked) {
+
+                        chkBox.attr('checked', true).change();
+
+                    }
+                    else if (!isAllChecked && isChecked) {
+                        chkBox.attr('checked', false).change();
+                        $("select.form-select").empty();
+                        $("<option/>").val(0).text("Select").appendTo(jQuery("select.form-select"));
+                    }
+                }
+            }
+            // alert(output);
+            //  $("selPositionId).html(output.join(''));
+        }
+
+
+        function CheckPosition(posId) {
+            $("select.form-select").empty();
+            $("<option/>").val(0).text("Select").appendTo(jQuery("select.form-select"));
+            var totalSelected = 0
+            for (iCtr = 1; iCtr <= @Model.MainDirectoryList.Count; iCtr = iCtr + 1) {
+                chkBox = jQuery("#EmployeeDirectoryId_" + iCtr)
+                if (chkBox != undefined) {
+                    isChecked = chkBox.is(":checked")
+                    if (isChecked) {
+                        totalSelected = totalSelected + 1;
+                    }
+                }
+            }
+            for (i = 1; i <= totalSelected; i++) {
+                $("<option/>").val(i).text(i).appendTo(jQuery("select.form-select"));
+                //jQuery("#selPositionId_" + posId).val(posId);
+            }
+
+            // jQuery("#selPositionId_" + iCtr).val(iCtr);
+            // alert(totalSelected);
+        }
+
+
+        function IsExists(positionId,iCtrVal) {
+
+           
+            for (iCtr = 1; iCtr <= @Model.MainDirectoryList.Count; iCtr = iCtr + 1) {
+                // alert(iCtr);
+                // alert(iCtrVal);
+                // alert(positionId);
+              var cValue= jQuery("#selPositionId_" + iCtr).val();
+                if (cValue > 0) {
+                    if (cValue == positionId && iCtr != iCtrVal) {
+                        jQuery("#selPositionId_" + iCtr).val(0);
+                        jQuery("#selPositionId_" + iCtr).change();
+                        $successalert("Transaction Successful!", "This position is assigned to another directory!");
+                        return;
+                    }
+                }
+            }
+
+           // alert(positionId);
+           // jQuery.ajax({
+           //      type: "GET",
+           //      url: "/EmployeeDirectory/PositionIsExist",
+           //      data: { positionId: positionId },
+           //      success: function (data) {
+           //         // UnblockUI();
+                 
+           //         if(data==1)
+           //           $successalert("Validation", "This position is assigned to another directory!");
+           //          // if (data.toUpperCase() == "SUCCESS") {
+           //          //     // jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+           //          // }
+
+           //      },
+           //      error: function (result) {
+           //          var x = 1;
+           //          $erroralert("Transaction Failed!", "" + result.responseText);
+           //         // UnblockUI();
+           //      }
+           //  });
+          }
+
+        
+    </script>
+}
+
+
+

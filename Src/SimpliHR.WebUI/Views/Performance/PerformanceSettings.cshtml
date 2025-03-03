@@ -1,0 +1,441 @@
+﻿@model SimpliHR.Infrastructure.Models.Performace.PerformanceSettingViewModel
+@*<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">*@
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.4.4/bootstrap-editable/css/bootstrap-editable.css" rel="stylesheet">
+<style>
+    #PerformaceSettings h5 {
+        text-decoration: underline;
+    }
+
+    [name=tblWeightedAverageMethod] .removeTr {
+        cursor: pointer;
+        position: relative;
+        vertical-align: middle;
+        float: right;
+        top: 5px;
+        right: 0px;
+        color: #696cff;
+        transition: text-shadow 0.3s ease;
+    }
+
+    [name=tblSimpleAverageMethod] .removeTr {
+        cursor: pointer;
+        position: relative;
+        vertical-align: middle;
+        float: right;
+        top: 5px;
+        right: 0px;
+        color: #696cff;
+        transition: text-shadow 0.3s ease;
+    }
+
+
+
+    [name=tblWeightedAverageMethod] .removeTr:hover {
+        color: red;
+        cursor: pointer;
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    [name=tblSimpleAverageMethod] .removeTr:hover {
+        color: red;
+        cursor: pointer;
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Performance /</span> Settings
+    </h4>
+    <div class="card" id="">
+        <div class="card-body">
+            <form method="post" id="PerformaceSettings" action="return false">
+                <h5>Review Year/Period</h5>
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        From&nbsp;&nbsp;
+                        <input type="text" class="flatpickr-date1 form-control-plaintext" style="display:inline;width:100px;color:blue" placeholder="dd-mm-yyyy" value='@(Model==null ? "" : Model.PerformanceSetting==null ? "" : Model.PerformanceSetting.ReviewPeriodFrom.ToString("dd-MMM-yyyy"))' asp-for='PerformanceSetting.ReviewPeriodFrom' />
+                        To&nbsp;&nbsp;
+                        @*<input type="text" class="flatpickr-date1 form-control-plaintext" style="display:inline;width:100px;color:blue" placeholder="dd-mm-yyyy" value="" asp-for='PerformanceSetting.ReviewPeriodTo' value='@(Model==null ? "" : Model.PerformanceSetting==null ? "" : Model.PerformanceSetting.ReviewPeriodTo.ToString("dd-MMM-yyyy"))' />*@
+                        <input type="text" readonly class="form-control-plaintext" style="display:inline;width:100px;color:blue" placeholder="dd-mm-yyyy" value="" asp-for='PerformanceSetting.ReviewPeriodTo' value='@(Model==null ? "" : Model.PerformanceSetting==null ? "" : Model.PerformanceSetting.ReviewPeriodTo.ToString("dd-MMM-yyyy"))' data-bs-toggle="tooltip" data-bs-offset="0,8" data-bs-placement="top" data-bs-custom-class="tooltip-info" data-bs-original-title="Please select ASSESSMENT PERIODICITY" />
+                    </div>
+                </div>
+
+                <h5 class="mt-5">PMS Framework Setting</h5>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label required" for="multicol-last-name">Assessment Periodicity</label>
+                        <select class="form-control" asp-for="PerformanceSetting.AssesmentPeriodicity">
+                            <option value="0">Select</option>
+                            <option value="1">Daily</option>
+                            <option value="2">Monthly</option>
+                            <option value="3">Quarterly</option>
+                            <option value="4">Half Yearly</option>
+                            <option value="5">Yearly</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label required" for="multicol-last-name">Roll-Out</label>
+                        <select class="form-control" asp-for="PerformanceSetting.RollOut">
+                            <option value="0">Select</option>
+                            <option value="1">Automatically</option>
+                            <option value="2">Manually</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label required" for="multicol-last-name">Mechanism</label>
+                        <select class="form-control" asp-for="PerformanceSetting.Mechanism">
+                            <option value="0">Select</option>
+                            <option value="1">Simple Average</option>
+                            <option value="2">Weighed Average</option>
+                            <option value="3">OKR</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12">
+                        <table class="table table-bordered table-striped" name="tblWeightedAverageMethod" style="display:none">
+                            <thead>
+                                <tr>
+                                    <th>Point</th>
+                                    <th>Category</th>
+                                    <th>Description</th>
+                                    <th>Score/Range(%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    if (Model != null)
+                                    {
+                                        if (Model.PerformanceSetting != null)
+                                        {
+                                            if (Model.PerformanceSetting.Mechanism == 2)
+                                            {
+                                                if (Model.PerformanceSettingMechanismList != null)
+                                                {
+                                                    foreach (var item in Model.PerformanceSettingMechanismList)
+                                                    {
+                                                        <tr>
+                                                            <td name='Point'><a href='javascript:void(0)' class='edit_number'>@item.Point</a></td>
+                                                            <td><a name='Category' href='javascript:void(0)' class='edit_text'>@item.Category</a></td>
+                                                            <td><a name='Description' href='javascript:void(0)' class='edit_text'>@item.Description</a></td>
+                                                            <td><a name='ScoreFrom' href='javascript:void(0)' class='edit_number'>@item.ScoreFrom</a> - <a name='ScoreTo' href='javascript:void(0)' class='edit_text'>@item.ScoreTo</a> <i class="fa fa-remove removeTr"></i> </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" style="text-align:right">
+                                        <input type="button" class="btn btn-primary btn-sm" value="Add" name="addRow" />
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <table class="table table-bordered table-striped" name="tblSimpleAverageMethod" style="display:none">
+                            <thead>
+                                <tr>
+                                    <th>Point</th>
+                                    <th>Category</th>
+                                    <th>Description</th>
+                                    <th>Score/Range</th>
+                                </tr>
+                            <tbody>
+                                    @{
+                                        if (Model != null)
+                                        {
+                                            if (Model.PerformanceSetting != null)
+                                            {
+                                                if (Model.PerformanceSetting.Mechanism == 1)
+                                                {
+                                                    if (Model.PerformanceSettingMechanismList != null)
+                                                    {
+                                                        foreach (var item in Model.PerformanceSettingMechanismList)
+                                                        {
+                                                        <tr>
+                                                            <td name='Point'><a href='javascript:void(0)' class='edit_number'>@item.Point</a></td>
+                                                            <td><a name='Category' href='javascript:void(0)' class='edit_text'>@item.Category</a></td>
+                                                            <td><a name='Description' href='javascript:void(0)' class='edit_text'>@item.Description</a></td>
+                                                            <td><a name='ScoreFrom' href='javascript:void(0)' class='edit_number'>@item.ScoreFrom</a> - <a name='ScoreTo' href='javascript:void(0)' class='edit_number'>@item.ScoreTo</a><i class="fa fa-remove removeTr"></i></td>
+                                                        </tr>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" style="text-align:right">
+                                        <input type="button" class="btn btn-primary btn-sm" value="Add" name="addRow" />
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <h5 class="mt-5">Skill Set Matrix</h5>
+                <div class="row g-3" style="margin-top:0px;">
+                    <div class="col-md-12">
+                        <table class="table table-bordered table-striped" name="SkillSetMatrix">
+                            <thead>
+                                <tr>
+                                    <th>Band</th>
+                                    <th>KRA<small>s</small> Weight-Age(%)</th>
+                                    <th>Soft Skills / Behavioural Skills Weight-Age(%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    if (Model != null)
+                                    {
+                                        if (Model.Bands != null)
+                                        {
+                                            foreach (var item in Model.Bands)
+                                            {
+                                                <tr>
+                                                    <td name="BandId" value="@item.BandId">@item.Band</td>
+                                                    <td><a name="KRAWeightage" href='javascript:void(0)' class='edit_number'>@(Model.PerformanceSettingSkillSetMatrixList == null ? 50 : Model.PerformanceSettingSkillSetMatrixList.Where(x => x.BandId == item.BandId).Count() == 0 ? 50 : Model.PerformanceSettingSkillSetMatrixList.Where(x => x.BandId == item.BandId).Select(x => x.KRAWeightage).FirstOrDefault())</a>%</td>
+                                                    <td><a name="SoftSkillsWeightage" href='javascript:void(0)' class='edit_number'>@(Model.PerformanceSettingSkillSetMatrixList == null ? 50 : Model.PerformanceSettingSkillSetMatrixList.Where(x => x.BandId == item.BandId).Count() == 0 ? 50 : Model.PerformanceSettingSkillSetMatrixList.Where(x => x.BandId == item.BandId).Select(x => x.SoftSkillsWeightage).FirstOrDefault())</a>%</td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <h5 class="mt-5">PMS Process Setting</h5>
+                <div class="row g-3" style="margin-top:0px;">
+                    <div class="col-md-12">
+                        <div style="border: 2px solid gray;padding: 15px;">
+                            <div class="email-list pt-0">
+                                <ul class="list-unstyled m-0">
+                                    <li class="email-list-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="form-check">
+                                                <input class="email-list-item-input form-check-input" type="checkbox" asp-for="PerformanceSetting.SettingByManager" checked />
+                                                <label class="form-check-label" for=""></label>
+                                            </div>
+                                            <div class="email-list-item-content ms-2 ms-sm-4 me-2">
+                                                <span class="email-list-item-username me-2 h6">Goals / KRAs Setting by Manager / HR (Mass Upload Facility)</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="email-list-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="form-check">
+                                                <input class="email-list-item-input form-check-input" type="checkbox" asp-for="PerformanceSetting.AcceptanceofGoalsByEmployee" />
+                                                <label class="form-check-label" for=""></label>
+                                            </div>
+                                            <div class="email-list-item-content ms-2 ms-sm-4 me-2">
+                                                <span class="email-list-item-username me-2 h6">Acceptance of Goals by Employee</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="email-list-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="form-check">
+                                                <input class="email-list-item-input form-check-input" type="checkbox" asp-for="PerformanceSetting.EmployeeRating" />
+                                                <label class="form-check-label" for=""></label>
+                                            </div>
+                                            <div class="email-list-item-content ms-2 ms-sm-4 me-2">
+                                                <span class="email-list-item-username me-2 h6">Employee Rating</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="email-list-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="form-check">
+                                                <input class="email-list-item-input form-check-input" type="checkbox" asp-for="PerformanceSetting.EmployeeRemarks" />
+                                                <label class="form-check-label" for=""></label>
+                                            </div>
+                                            <div class="email-list-item-content ms-2 ms-sm-4 me-2">
+                                                <span class="email-list-item-username me-2 h6">Employee Remarks (Mandatory / Optional)</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="email-list-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="form-check">
+                                                <input class="email-list-item-input form-check-input" type="checkbox" asp-for="PerformanceSetting.EmployeeClosingRemarks" />
+                                                <label class="form-check-label" for=""></label>
+                                            </div>
+                                            <div class="email-list-item-content ms-2 ms-sm-4 me-2">
+                                                <span class="email-list-item-username me-2 h6">Employee Closing Remarks (Mandatory / Optional)</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="email-list-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="form-check">
+                                                <input class="email-list-item-input form-check-input" type="checkbox" asp-for="PerformanceSetting.ManagerRating" />
+                                                <label class="form-check-label" for=""></label>
+                                            </div>
+                                            <div class="email-list-item-content ms-2 ms-sm-4 me-2">
+                                                <span class="email-list-item-username me-2 h6">Manager’s Rating</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="email-list-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="form-check">
+                                                <input class="email-list-item-input form-check-input" type="checkbox" asp-for="PerformanceSetting.ManagerRemarks" />
+                                                <label class="form-check-label" for=""></label>
+                                            </div>
+                                            <div class="email-list-item-content ms-2 ms-sm-4 me-2">
+                                                <span class="email-list-item-username me-2 h6">Manager’s Remarks (Mandatory / Optional)</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="email-list-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="form-check">
+                                                <input class="email-list-item-input form-check-input" type="checkbox" asp-for="PerformanceSetting.ManagerClosingRemarks" />
+                                                <label class="form-check-label" for=""></label>
+                                            </div>
+                                            <div class="email-list-item-content ms-2 ms-sm-4 me-2">
+                                                <span class="email-list-item-username me-2 h6">Manager’s Closing Remarks (Mandatory / Optional)</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="email-list-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="form-check">
+                                                <input class="email-list-item-input form-check-input" type="checkbox" asp-for="PerformanceSetting.TNRByManager" />
+                                                <label class="form-check-label" for=""></label>
+                                            </div>
+                                            <div class="email-list-item-content ms-2 ms-sm-4 me-2">
+                                                <span class="email-list-item-username me-2 h6">Training Needs Recommendation by Manager</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="email-list-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="form-check">
+                                                <input class="email-list-item-input form-check-input" type="checkbox" asp-for="PerformanceSetting.HODReview" />
+                                                <label class="form-check-label" for=""></label>
+                                            </div>
+                                            <div class="email-list-item-content ms-2 ms-sm-4 me-2">
+                                                <span class="email-list-item-username me-2 h6">HOD’s Review (Moderation)</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="email-list-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="form-check">
+                                                <input class="email-list-item-input form-check-input" type="checkbox" asp-for="PerformanceSetting.HODClosingRemarks" />
+                                                <label class="form-check-label" for=""></label>
+                                            </div>
+                                            <div class="email-list-item-content ms-2 ms-sm-4 me-2">
+                                                <span class="email-list-item-username me-2 h6">HOD’s Closing Remarks (Mandatory / Optional)</span>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4">
+                    <input type="hidden" class="dbcol" id="ResignationListId" name="ResignationListId" value="" />
+                    <input type="hidden" class="dbcol" id="UnitId" name="UnitId" value="" />
+                    <input type="hidden" class="dbcol" asp-for="PerformanceSetting.PerformanceSettingId" />
+
+                    <button type="button" class="btn btn-primary me-sm-3 me-1 btn-sm" onclick="SaveClearanceMapping()">Configure PMS Settings</button>
+
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+
+@section scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.4.4/bootstrap-editable/js/bootstrap-editable.min.js"></script>
+    <script src="~/customjs/performancesettings.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            initDates();
+            intiEdit();
+            $("[name='tblWeightedAverageMethod']").find("tfoot").find("input[name='addRow']").click(function () {
+                addRow(this);
+            });
+            $("[name='tblSimpleAverageMethod']").find("tfoot").find("input[name='addRow']").click(function () {
+                addRow(this);
+            });
+
+            $("[name='PerformanceSetting.Mechanism']").change(function () {
+                managegradeTable(this);
+            });
+            managegradeTable($("[name='PerformanceSetting.Mechanism']"));
+
+            AssesmentPeriodicityChangeEvent();
+
+            $("[name='tblWeightedAverageMethod']").find(".removeTr").on('click', function () {
+                $(this).closest('tr').remove();
+            });
+            $("[name='tblSimpleAverageMethod']").find(".removeTr").on('click', function () {
+                $(this).closest('tr').remove();
+            });
+
+        });
+
+        function managegradeTable(obj) {
+            $("[name='tblSimpleAverageMethod']").hide();
+            $("[name='tblWeightedAverageMethod']").hide();
+            if ($(obj).val() == "1") {
+                $("[name='tblSimpleAverageMethod']").show();
+            }
+            if ($(obj).val() == "2") {
+                $("[name='tblWeightedAverageMethod']").show();
+            }
+        }
+
+        function intiEdit() {
+            $.fn.editable.defaults.mode = 'inline';
+            $('.edit_text').editable({
+                type: 'text',
+                success: function (k, v) {
+                    console.log(v);
+                    // var href = $(this).attr("href");
+                    // $('.name-list '+href).html(v);
+                }
+            });
+            $('.edit_number').editable({
+                type: 'text',
+                validate: function (value) {
+                    if (isNaN(value)) {
+                        return 'Please enter a valid integer.';
+                    }
+                    // else {
+                    //     if (intValue < 0 || intValue > 1000) {
+                    //         return 'Integer must be between 0 and 1000.';
+                    //     }
+                    // }
+                },
+                success: function (response, newValue) {
+                    $(this).text(parseInt(newValue, 10));
+                }
+            });
+        }
+        function initDates() {
+            $(".flatpickr-date1").flatpickr({
+                dateFormat: "d-M-Y"
+            });
+        }
+
+
+    </script>
+}

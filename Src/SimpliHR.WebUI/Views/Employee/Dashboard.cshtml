@@ -1,0 +1,348 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeMasterVM
+@{
+    //Layout = null;
+    ViewData["Title"] = "Employee Dashboard";
+}
+
+@* <link rel="stylesheet" href="../../assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+<link rel="stylesheet" href="../../assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+ *@
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Employee /</span> Dashboard</h4>
+    <div class="card addShow" id="List">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="javascript:window.location.href='/Employee/EmployeeDetail'" style="float:right;" />
+            <div style="clear:both"></div>
+
+            <div class="card-datatable table-responsive text-nowrap">
+                <table id="employeeTable" class="datatables-ajax table List">
+                    <thead>
+                   
+                        <tr>
+                          @*   <th></th> *@
+                            <th><input type="checkbox" class="form-check-input" onclick="CheckAll(this)"></th>
+                            <th>Action</th>
+                            <th>Last Mail Sent</th>
+                            <th>Form Status</th>
+                            <th>Status</th>                                                  
+                            <th>Employee Code</th>
+                            <th>Full Name</th>
+                            <th>Designation</th>
+                            <th>Department</th>
+                            <th>Location</th>
+                            <th>DOJ</th>
+                            @*<th>Official Email</th>*@
+                            <th>Manager</th>
+                            <th>HOD</th>
+                            <th>Confirmation Period</th>
+                            <th>Employee Type</th>
+                            <th>LWD</th>
+                           
+                          
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.EmployeeMasterList != null)
+                        {
+                            int iCtr = 1;
+                            foreach (var item in Model.EmployeeMasterList.OrderByDescending(x => x.EmployeeId))
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" id="EmployeeId_@iCtr" value="@item.EmployeeId" class="form-check-input">
+                                        <input type="hidden" id="InfoFillingStatus_@iCtr" value="@item.InfoFillingStatus" />
+                                    </td>
+                                    <td>
+
+                                        @{
+                                            if (item.InfoFillingStatus != 0)
+                                            {
+                                                            <a class="dropdown-item" style="display:inline" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Send Induction Email" onclick="ConfirmSendInductionMail(@item.EmployeeId)"><i style="color:green" class="fa-solid fa-envelope me-1"></i></a>
+                                            }
+                                            else
+                                            {
+                                                            <a class="dropdown-item" style="display:inline" href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" title="Send E-Joining Email" onclick="ConfirmSendEJoiningLinkMail(@item.EmployeeId)"><i style="color:orange" class="fa-solid fa-envelope me-1"></i></a>
+                                            }
+                                        }
+                                        <a class="dropdown-item" style="display:inline" href="#" onclick="javascript:alert('Implimentation Pending')"><i class="bx bx-trash me-1"></i></a>
+                                        <a class="dropdown-item" style="display:inline" href="#" onclick="javascript:window.location.href='/Employee/EmployeeDetail?eEmployeeId=@item.EnycEmployeeId'"><i class="bx bx-edit-alt me-1"></i></a>
+
+                                    </td>
+                                    <td>@(item.LastTimeStamp == null ? "" : item.LastTimeStamp.Value.ToString("dd-MMM-yyyy HH:mm"))</td>
+                                    <td>
+                                        @{
+                                            if (item.InfoFillingStatus == 0)
+                                            {
+                                                <span class="badge bg-label-warning me-1">In Progress</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-label-success me-1">Completed</span>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @{
+                                            if (item.EmployeeStatus == null)
+                                            {
+                                                <span class="badge bg-label-warning me-1">In Progress</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-label-primary me-1">@item.EmployeeStatus</span>
+                                            }
+                                        }
+                                    </td>
+
+                                  
+                                   
+                                    <td>@item.EmployeeCode</td>
+                                    <td>@item.EmployeeName</td>
+                                    <td>@item.JobTitleName</td>
+                                    <td>@(item == null ? "" : item.DepartmentName)</td>
+                                    <td>@(item.WorkLocation != null ? @item.WorkLocation.Address : "") </td>
+                                    <td>@(item.Doj == null ? "" : item.Doj.Value.ToString("dd-MMM-yyyy")) </td>
+                                    @*<td>@item.OfficialEmail</td>*@
+                                    <td>@(item.ManagerName == null ? "" : item.ManagerName)</td>
+                                    <td>@(item.HODName == null ? "" : item.HODName)</td>
+                                    <td>@((item.ConfirmationPeriod != null ? item.ConfirmationPeriod + " Days" : ""))</td>
+                                    @* <td>@(item.EmploymentType)</td> *@
+                                    <td>@(item.EmploymentType == 1 ? "Permanent" : item.EmploymentType == 2 ? "Probation" : " ")</td>
+                                    <td></td>
+
+                                   
+                                </tr>
+                                iCtr++;
+                            }
+                        }
+                    </tbody>
+                </table>
+                <div class="col-12 d-flex justify-content-between mt-3 mb-3">
+                    <button class="btn btn-primary btn-prev" onclick="MailsSelected()">
+
+                        <span class="align-middle d-sm-inline-block d-none">Trigger Mail</span>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section scripts {
+
+    @*    <script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script src="../../customjs/CommonFunction.js"></script>
+
+    @*  <script src="../../assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="../../assets/js/tables-datatables-advanced.js"></script> *@
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $(".List").dataTable();
+            //$(".List").dataTable(
+            //    ordering: false,
+            //    searching: true,
+            //    paging: true
+            //);
+            // new DataTable('#employeeTable', {
+            //     ordering: false,
+            //     searching: true,
+            //     lengthMenu: [
+            //         [10, 25, 50, -1],
+            //         [10, 25, 50, 'All']
+            //     ],
+            //     paging: true
+            // });
+            if (displayMessage.trim().toLowerCase() == "false") {
+                $successalert("Dashboard", displayMessage);
+            }
+        });
+
+        function CheckAll(regularizeAll) {
+            isAllChecked = regularizeAll.checked;
+            for (iCtr = 1; iCtr <= @Model.EmployeeMasterList.Count; iCtr = iCtr + 1) {
+
+                chkBox = jQuery("#EmployeeId_" + iCtr)
+                if (chkBox != undefined) {
+                    isChecked = chkBox.is(":checked")
+
+                    if (isAllChecked && !isChecked) {
+                        chkBox.attr('checked', true).change();
+                    }
+                    else if (!isAllChecked && isChecked) {
+                        chkBox.attr('checked', false).change();
+                    }
+                }
+            }
+        }
+
+
+        function MailsSelected() {
+            //alert('Regularize')
+           
+            var isData = false;
+           
+            var iCtr = 0;
+            var sValidMsg = "";           
+            // var isData = true;
+
+            if (@Model.EmployeeMasterList.Count> 0) {
+
+                Swal.fire({ title: 'Are you sure?', text: "You want to send Email's!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, Send it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                    if (result.value) {
+                        BlockUI();
+                for (iCtr = 1; iCtr <= @Model.EmployeeMasterList.Count; iCtr = iCtr + 1) {
+                    isChecked = jQuery("#EmployeeId_" + iCtr).is(":checked")
+
+                    if (isChecked) {                       
+                        isData = true;                      
+                        var empStatus = jQuery("#InfoFillingStatus_" + iCtr).val();
+                        var empId = jQuery("#EmployeeId_" + iCtr).val();
+
+                                if (empStatus == 0)
+                                    SendEJoiningLinkBulkMail(empId);
+                                else
+                                    SendInductionBulkMail(empId);
+                            }
+                     
+                }
+                        if (!isData) {
+
+                            $erroralert("Validation", "Please select at least one");
+                           // UnblockUI();
+                        }
+                        setTimeout(function () {
+                            //window.location.reload();
+                            $successalert("Transaction Successful!", "Email's sent succesfully");
+                            window.location.href = "/Employee/Employees";
+                        }, 5000);
+                      
+                       // window.location.href = "/Employee/Employees";
+                      //  UnblockUI();
+                       
+                    }
+                });
+            }
+
+           
+           
+           
+
+        }
+
+        function ConfirmSendInductionMail(EmployeeId) {
+            Swal.fire({ title: 'Are you sure?', text: "This will resend induction Email!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, Send it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    SendInductionMail(EmployeeId)
+                }
+            });
+        }
+
+        function SendInductionMail(EmployeeId) {
+            var inputDTO = {};
+            inputDTO.EmployeeId = EmployeeId;
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                url: "/Employee/ResendInductionEmail",
+                contentType: 'application/json',
+                data: JSON.stringify(inputDTO),
+                success: function (data) {
+                    setTimeout(function () {
+                        //window.location.reload();
+                        $successalert("Transaction Successful!", "Email sent succesfully");
+                        window.location.href = "/Employee/Employees";
+                    }, 5000);
+                   // UnblockUI();
+                },
+                error: function (error) {
+                    $erroralert("Error!", error.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+        function ConfirmSendEJoiningLinkMail(EmployeeId) {
+            Swal.fire({ title: 'Are you sure?', text: "This will resend e-joining link!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, Send it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    SendEJoiningLinkMail(EmployeeId)
+                }
+            });
+        }
+
+        function SendEJoiningLinkMail(EmployeeId) {
+            var inputDTO = {};
+            inputDTO.EmployeeId = EmployeeId;
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                url: "/Employee/ResendEJoiningEmail",
+                contentType: 'application/json',
+                data: JSON.stringify(inputDTO),
+                success: function (data) {
+                    setTimeout(function () {
+                        //window.location.reload();
+                        $successalert("Transaction Successful!", "Email sent succesfully");
+                        window.location.href = "/Employee/Employees";
+                    }, 5000);
+                },
+                error: function (error) {
+                    $erroralert("Error!", error.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+
+        function SendInductionBulkMail(EmployeeId) {
+
+          
+            var inputDTO = {};
+            inputDTO.EmployeeId = EmployeeId;
+          //  BlockUI();
+            $.ajax({
+                type: "POST",
+                url: "/Employee/ResendInductionEmail",
+                contentType: 'application/json',
+                data: JSON.stringify(inputDTO),
+                success: function (data) {
+                   // $successalert("Success", "Email sent succesfully");
+                   // UnblockUI();
+                },
+                error: function (error) {
+                    $erroralert("Error!", error.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+
+        function SendEJoiningLinkBulkMail(EmployeeId) {
+
+            //alert(EmployeeId);
+
+            var inputDTO = {};
+            inputDTO.EmployeeId = EmployeeId;
+            //BlockUI();
+            $.ajax({
+                type: "POST",
+                url: "/Employee/ResendEJoiningEmail",
+                contentType: 'application/json',
+                data: JSON.stringify(inputDTO),
+                success: function (data) {
+                   // $successalert("Transaction Successful!", "Email sent succesfully");
+                   // UnblockUI();
+                },
+                error: function (error) {
+                    $erroralert("Error!", error.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+    </script>
+
+
+}

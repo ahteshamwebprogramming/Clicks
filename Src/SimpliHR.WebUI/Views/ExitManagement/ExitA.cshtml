@@ -1,0 +1,369 @@
+﻿@model SimpliHR.Infrastructure.Models.Exit.ExitViewModel
+@{
+    ViewData["Title"] = "Exit";
+}
+<link rel="stylesheet" href="~/assets/vendor/libs/tagify/tagify.css" />
+<link href="~/assets/css/exitclearance.css" rel="stylesheet" />
+<style>
+    label.required:after {
+        content: "*";
+        color: #FF0000;
+        font-size: 14px;
+    }
+
+    .error-label {
+        color: #FF0000;
+    }
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4" style="display:inline-block"><span class="text-muted fw-light">Exit/</span> Employees</h4>
+
+    <input style="float:right;margin:2px;" type="button" class="btn btn-primary btn-sm" value="Run Schedular" onclick="RunSchedular()" />
+    <input style="float:right;margin:2px;" type="button" class="btn btn-primary btn-sm" value="Initiate Resignation" onclick="javascript:window.location.href='/ExitManagement/InitiateResignationAdmin'" />
+    <div style="clear:both"></div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <ul id="ExitNav" class="nav nav-pills flex-column flex-sm-row">
+                    <li class="nav-item">
+                        <a class="nav-link active" onclick="setActive(this,'Pending');" href="javascript:void(0)"><i class="bx bx-user me-1"></i> Pending Tickets</a>
+                    </li>
+                   @*<li class="nav-item">
+                        <a class="nav-link" onclick="setActive(this,'Completed');" href="javascript:void(0)"><i class="bx bx-group me-1"></i> Completed Tickets</a>
+                    </li> *@
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="setActive(this,'All');" href="javascript:void(0);"><i class="bx bx-link-alt me-1"></i> All Tickets</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="card">
+                <div class="card-body">                    
+                    <div id="div_ViewResignListPartial">
+                        @Html.Partial("_admin/_listOfTickets",Model)
+                    </div>
+                    <div id="div_ViewResignDetailsPartial">
+                        @*@Html.Partial("_admin/_employeeresignDetailsEmployeeWise")*@
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+@section scripts {
+    <script src="~/customjs/employeevalidation.js"></script>
+    <script src="~/customjs/exit/exitadminview.js"></script>
+    <script type="text/javascript">
+        var initialLastWorkingDate;
+        var initialResignationDate;
+        var resignationDateMoment;
+        var lastWorkingDateMoment;
+        let maxDate;
+
+        $(document).ready(function () {
+            $(".List").dataTable();
+            initDates();
+            $("[name='recoverycheck']").click(function () {
+                if ($(this).is(":checked")) {
+                    $(this).parent().find("span").show();
+                }
+                else {
+                    $(this).parent().find("span").hide();
+                }
+            });
+        });
+
+        function ViewEmployeeResignDetails_Admin(ResignationListId) {
+            var resignationListDTO = {};
+            resignationListDTO.ResignationListId = ResignationListId;
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/ExitManagement/ViewEmployeeResignDetails_Admin',
+                data: JSON.stringify(resignationListDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#div_ViewResignDetailsPartial').html(data);
+
+                    let autoresize = $(".auto-resize");
+                    autoresize.each((i, v) => {
+                        $(v)[0].style.height = "auto";
+                        $(v)[0].style.height = $(v)[0].scrollHeight + "px";
+                    });
+
+                    initialLastWorkingDate = $("#LastWorkingDateAdmin").val();
+                    initialResignationDate = $("#ResignationDateAdmin").val();
+
+                    initDates();
+
+                    // $("#AdminDetails").find("[name='NoticePeriodWaiveOffAdmin']").change(function () {
+                    //     if ($(this).is(":checked")) {
+                    //         var resignationDate = $("#ResignationDateAdmin").val();
+                    //         $("#LastWorkingDateAdmin").val(resignationDate).prop("disabled", true);
+                    //     } else {
+                    //         $("#LastWorkingDateAdmin").val(initialLastWorkingDate).prop("disabled", false);
+                    //     }
+                    // });
+                },
+                error: function (result) {
+                    $erroralert("Transaction Failed!", result.responseText);
+                }
+            });
+        }
+        function remove(currDiv) {
+            $(currDiv).parent().parent().parent().remove();
+        }
+        function initDates() {
+            resignationDateMoment = moment(initialResignationDate, "DD-MMM-YYYY");
+            lastWorkingDateMoment = moment(initialLastWorkingDate, "DD-MMM-YYYY");
+            maxDate = new Date().fp_incr(30);
+            minDate = new Date().fp_incr(-30);
+            if (lastWorkingDateMoment.isBefore(maxDate)) {
+                maxDate = new Date(lastWorkingDateMoment);
+            }
+
+
+
+            $("#ResignationDateAdmin").flatpickr({
+                dateFormat: "d-M-Y",
+                minDate: minDate,
+                maxDate: maxDate,
+                onChange: function (selectedDates, dateStr, instance) {
+                    // Update initialLastWorkingDate when the date changes
+                    initialResignationDate = dateStr;
+                }
+            });
+
+            $("#LastWorkingDateAdmin").flatpickr({
+                //monthSelectorType: 'static',
+                dateFormat: "d-M-Y",
+                minDate: initialResignationDate,
+                onChange: function (selectedDates, dateStr, instance) {
+                    // Update initialLastWorkingDate when the date changes
+                    initialLastWorkingDate = dateStr;
+                }
+            });
+
+            $("#LastWorkingDateAdmin").change(function () {
+                resignationDateMoment = moment(initialResignationDate, "DD-MMM-YYYY");
+                lastWorkingDateMoment = moment(initialLastWorkingDate, "DD-MMM-YYYY");
+                maxDate = new Date().fp_incr(30);
+                minDate = new Date().fp_incr(-30);
+                if (lastWorkingDateMoment.isBefore(maxDate)) {
+                    maxDate = new Date(lastWorkingDateMoment);
+                }
+                $("#ResignationDateAdmin").flatpickr({
+                    dateFormat: "d-M-Y",
+                    minDate: minDate,
+                    maxDate: maxDate,
+                    onChange: function (selectedDates, dateStr, instance) {
+                        // Update initialLastWorkingDate when the date changes
+                        initialResignationDate = dateStr;
+                    }
+                });
+            });
+            $("#ResignationDateAdmin").change(function () {
+
+                // if ($("#AdminDetails").find("[name='NoticePeriodWaiveOffAdmin']").is(":checked")) {
+                //     var resignationDateNP = $("#ResignationDateAdmin").val();
+                //     $("#LastWorkingDateAdmin").val(resignationDateNP);
+                // }
+                $("#LastWorkingDateAdmin").flatpickr({
+                    //monthSelectorType: 'static',
+                    dateFormat: "d-M-Y",
+                    minDate: initialResignationDate,
+                    onChange: function (selectedDates, dateStr, instance) {
+                        // Update initialLastWorkingDate when the date changes
+                        initialLastWorkingDate = dateStr;
+                    }
+                });
+            });
+
+            $(".select2").select2();
+            $("select").select2();
+            $("select").addClass("select2");
+            var $select = $('.flatpickr-calendar').find('.select2').select2();
+            $select.each(function (i, item) {
+                $(item).select2("destroy");
+            });
+        }
+
+        function SaveResignationDetailsByAdmin() {
+            Swal.fire({ title: 'Are you sure to approve the resignation?', text: "You will not be able to revert this action!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, approve it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+
+                    if (!ValidForm("AdminDetails")) {
+                        //alert("Please fill personal information and try again");
+                        return false;
+                    }
+                    SaveDetailsinDatabase(1);
+                }
+            });
+        }
+        function RejectResignationByAdmin() {
+            Swal.fire({ title: 'Are you sure to reject the resignation?', text: "You will not be able to revert this action!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, reject it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    SaveDetailsinDatabase(-1);
+                }
+            });
+        }
+        function SaveDetailsinDatabase(adminApproval) {
+            let data = $("#div_ViewResignDetailsPartial");
+            let inputDTO = new FormData();
+            inputDTO.append("ResignationListId", data.find("[name='ResignationListId']").val());
+            inputDTO.append("EmployeeId", data.find("[name='EmployeeId']").val());
+            inputDTO.append("ResignationDateAdmin", moment(data.find("[name='ResignationDateAdmin']").val()).format('YYYY-MM-DD'));
+            inputDTO.append("LastWorkingDateAdmin", moment(data.find("[name='LastWorkingDateAdmin']").val()).format('YYYY-MM-DD'));
+            inputDTO.append("NoticePeriodWaiveOffAdmin", data.find("[name='NoticePeriodWaiveOffAdmin']").is(':checked') ? true : false);
+            inputDTO.append("EligibleToHireAdmin", data.find("[name='EligibleToHireAdmin']").is(':checked') ? true : false);
+            inputDTO.append("ActivateExitInterview", data.find("[name='ActivateExitInterview']").is(':checked') ? true : false);
+            inputDTO.append("ClearanceByPass", data.find("[name='ClearanceByPass']").is(':checked') ? true : false);
+            inputDTO.append("LWDPolicy", data.find("[name='LWDPolicy']").val());
+            inputDTO.append("AdminRemarks", data.find("[name='AdminRemarks']").val());
+            inputDTO.append("DocumentFileAdmin", $("#DocumentFileAdmin")[0].files[0]);
+            inputDTO.append("ReasonForLeavingAdmin", data.find("[name='ReasonForLeaving']").val());
+            inputDTO.append("AdminApproval", adminApproval);
+
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                url: '/ExitManagement/SaveResignationDetailsByAdmin',
+                data: inputDTO,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    $successalert("", "Transaction Successful!");
+                    UnblockUI();
+                    setTimeout(function () {
+                        location.reload();
+                    }, 2000);
+                },
+                error: function (result) {
+                    $erroralert("Transaction Failed!", result.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+        function onExitClick(id) {
+            window.location = '@Url.Action("EmployeeFinalSettlement", "ExitManagement", new { employeeId = "EMPID" })'.replace("EMPID", parseInt(id));
+        }
+        function onExitClearance(id) {
+            window.location = '@Url.Action("InitiateExitClearance", "ExitManagement", new { employeeId = "EMPID" })'.replace("EMPID", parseInt(id));
+        }
+        function onSettlementDownload(id) {
+            //alert(id);
+            var urlToOpen = '';
+            urlToOpen = '@Url.Action("SettlementDownload", "ExitManagement", new { employeeEncId = "EMPID" })'.replace("EMPID", id);
+            if (urlToOpen != '') window.open(urlToOpen);
+        }
+        function DownloadResignationDocumentM(fileId, filename) {
+            // AJAX request to download the file
+            $.ajax({
+                url: '/ExitManagement/DownloadResignationDocumentM/' + fileId,
+                method: 'GET',
+                xhrFields: {
+                    responseType: 'blob'// Set the response type to blob
+                },
+                success: function (data) {
+                    // Create a temporary anchor element to trigger the download
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(data);
+                    a.href = url;
+                    a.download = filename;
+                    // Set the filename for download
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    //$successalert("Success!", "Downloaded succesfully.");
+                },
+                error: function (xhr, status, error) {
+                    $erroralert("Oops!", 'Error downloading file:' + xhr.responseText);
+                }
+            });
+        }
+        function DownloadResignationDocumentA(fileId, filename) {
+            // AJAX request to download the file
+            $.ajax({
+                url: '/ExitManagement/DownloadResignationDocumentA/' + fileId,
+                method: 'GET',
+                xhrFields: {
+                    responseType: 'blob'// Set the response type to blob
+                },
+                success: function (data) {
+                    // Create a temporary anchor element to trigger the download
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(data);
+                    a.href = url;
+                    a.download = filename;
+                    // Set the filename for download
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    //$successalert("Success!", "Downloaded succesfully.");
+                },
+                error: function (xhr, status, error) {
+                    $erroralert("Oops!", 'Error downloading file:' + xhr.responseText);
+                }
+            });
+        }
+
+        function validateAdminCommentInput(textarea) {
+            const maxLength = 255;
+            const regex = /^[a-zA-Z0-9\s.,'!@@#&()\-+]*$/;
+            const cleanText = textarea.value.split('').filter(char => regex.test(char)).join('');
+
+            if (textarea.value !== cleanText) {
+                textarea.value = cleanText;
+            }
+
+            const remaining = maxLength - textarea.value.length;
+            const helpText = document.getElementsByName("EmployeeCommentsCharacterHelp")[0];
+            helpText.textContent = remaining + " characters remaining";
+        }
+        function validateLWDPolicyInput(input) {
+            const maxLength = 50;
+            const regex = /^[a-zA-Z0-9\s.,'!@@#&()\-+]*$/;
+            const cleanText = input.value.split('').filter(char => regex.test(char)).join('');
+
+            if (input.value !== cleanText) {
+                input.value = cleanText;
+            }
+        }
+
+        function RunSchedular() {
+            $.ajax({
+                type: "POST",
+                url: "/ExitManagement/MarkEmployeeResigned",
+                contentType: 'application/json',
+                //data: JSON.stringify(inputDTO),
+                success: function (data) {
+                    $successalert("", "Transaction Successful!");
+                },
+                error: function (error) {
+                    $erroralert("Transaction Failed!", error.responseText + '!');
+                    UnblockUI();
+                }
+            });
+        }
+    </script>
+}
+
+
+

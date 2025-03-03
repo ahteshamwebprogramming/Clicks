@@ -1,0 +1,61 @@
+﻿@model SimpliHR.Infrastructure.Models.StatutoryComponent.StatutoryComponentsEsiDTO
+<div class="row g-3">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-3 mb-1">
+                <div class="mb-3">
+                    <label class="form-label" for="username">ESI Number</label>
+                    <input type="number" class="form-control" placeholder="000000000" name="Esinumber" id="Esinumber" asp-for="Esinumber" value="@(Model==null ? "" : Model.Esinumber==null ? "" : Model.Esinumber)" />
+                </div>
+            </div>
+            <div class="col-md-3 mb-1">
+                <div class="mb-3">
+                    <label class="form-label" for="username">
+                        Deduction Cycle
+                        <i class="fa-solid fa-circle-info" data-bs-toggle="tooltip"
+                           data-bs-offset="0,4"
+                           data-bs-placement="top"
+                           data-bs-html="true"
+                           title="<span class='small'>Content comes here</span>"></i>
+                    </label>
+                    <input type="Text" name="DeductionCycle" value="Monthly" class="form-control" placeholder="Monthly" disabled asp-for="DeductionCycle" value="@(Model==null ? "Monthly" : Model.DeductionCycle==null ? "Monthly" : Model.Esinumber)" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <label class="form-label" for="">Employees' Contribution</label>
+        <div class="input-group">
+            <input type="number" name="EmployeesContribution" class="form-control mr-2" placeholder="0.00%" aria-label="" aria-describedby="" asp-for="EmployeesContribution"> &nbsp; &nbsp; <span class="pt-2">of Gross Pay</span>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <label class="form-label" for="">Employer's Contribution</label>
+        <div class="input-group">
+            <input type="number" name="EmployersContribution" class="form-control mr-2" placeholder="0.00%" aria-label="" aria-describedby="" asp-for="EmployersContribution"> &nbsp; &nbsp; <span class="pt-2">of Gross Pay</span>
+        </div>
+    </div>
+    <div class="mb-3">
+        <div class="col-12 form-check">
+            <input class="form-check-input" type="checkbox" name="IsEmployersContibutionInCtc" asp-for="IsEmployersContibutionInCtc"> Include employer's contribution in the CTC
+        </div>
+    </div>
+    <div class="mb-3 note small">
+        Note: Once you associate this deduction with an employee, you will only be able to edit the Name in Payslip. The change will be reflected in both new and existing employees.Note: ESI deductions will be made only if the employee’s monthly salary is less than or equal to ₹21,000. If the employee gets a salary revision which increases their monthly salary above ₹<span name="Esilimit">21000</span> they would have to continue making ESI contributions till the end of the contribution period in which the salary was revised (April-September or October-March).
+    </div>
+    <style>
+        .note {
+            padding: 10px;
+            background: #f8f7f7;
+        }
+    </style>
+    <div class="col-12">
+        <input type="hidden" name="StatutoryComponentsEsiid" id="StatutoryComponentsEsiid" value="@(Model==null ? 0 : Model.StatutoryComponentsEsiid==null ? 0 : Model.StatutoryComponentsEsiid)" />
+        <button onclick="SaveESIData()" class="btn btn-primary me-2 mt-2">Save</button>
+        <button class="btn btn-label-secondary mt-2" onclick="ViewESIPartial()">Cancel</button>
+    </div>
+</div>
+
+
+

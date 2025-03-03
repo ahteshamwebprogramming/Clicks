@@ -1,0 +1,139 @@
+﻿@model SimpliHR.Infrastructure.Models.Exit.EmployeeExitManagementViewModel
+<div class="col-md-12 mt-5">
+    <button type="button" class="btn btn-primary btn-sm" onclick="downloadExcel()">Download Excel</button>
+
+    <div class="table-responsive text-nowrap">
+        <table id="myTable" class="table table-bordered">
+            <thead>
+                @{
+                    if (Model != null)
+                    {
+                        <tr>
+
+                            <th rowspan="2">Employee Code</th>
+                            <th rowspan="2">Employee Name</th>
+                            <th rowspan="2">Designation</th>
+                            <th rowspan="2">Department</th>
+                            <th rowspan="2">Location</th>
+                            <th rowspan="2">Date Of Joining</th>
+                            <th rowspan="2">Last Working Date</th>
+                            <th rowspan="2">Survey Send Date</th>
+                            <th rowspan="2">Response Date</th>
+                            @{
+                                if (Model.HeaderComponents != null)
+                                {
+                                    if (Model.HeaderComponents.Count > 0)
+                                    {
+                                        foreach (var item in Model.HeaderComponents)
+                                        {
+                                            if (item.type != "button")
+                                            {
+                                                if (item.type == "survey")
+                                                {
+                                                    <th rowspan="1" colspan="@item.questions.Count">@item.label</th>
+                                                }
+                                                else
+                                                {
+                                                    <th rowspan="2">@item.label</th>
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+                        </tr>
+                        <tr>
+                            @{
+                                if (Model.HeaderComponents != null)
+                                {
+                                    if (Model.HeaderComponents.Count > 0)
+                                    {
+                                        foreach (var item in Model.HeaderComponents)
+                                        {
+                                            if (item.type != "button")
+                                            {
+                                                if (item.type == "survey")
+                                                {
+                                                    if (item.questions != null)
+                                                    {
+                                                        if (item.questions.Count > 0)
+                                                        {
+                                                            foreach (var question in item.questions)
+                                                            {
+                                                                <th>@question.label</th>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        </tr>
+                    }
+                }
+            </thead>
+            <tbody>
+                @{
+                    if (Model?.ResponseComponent != null)
+                    {
+                        foreach (var item in Model.ResponseComponent)
+                        {
+                            if (item.ResignationDetails != null)
+                            {
+                                <tr>
+                                    <td>@item.ResignationDetails.EmployeeCode</td>
+                                    <td>@item.ResignationDetails.EmployeeName</td>
+                                    <td>@item.ResignationDetails.JobTitle</td>
+                                    <td>@item.ResignationDetails.DepartmentName</td>
+                                    <td>@item.ResignationDetails.Location</td>
+                                    <td>@(item.ResignationDetails.DOJ == null ? "" : ((DateTime)item.ResignationDetails.DOJ).ToString("dd-MMM-yyyy"))</td>
+                                    <td>@(item.ResignationDetails.LastWorkingDateAdmin == null ? "" : ((DateTime)item.ResignationDetails.LastWorkingDateAdmin).ToString("dd-MMM-yyyy"))</td>
+                                    <td>@(item.ResignationDetails.AdminApprovalDate?.ToString("dd-MMM-yyyy"))</td>
+                                    <td>@(item.ResignationDetails.ExitInterviewSubmissionDate?.ToString("dd-MMM-yyyy"))</td>
+                                    @{
+                                        if (item.Responses != null)
+                                        {
+                                            foreach (var responses in item.Responses)
+                                            {
+                                                if (responses != null)
+                                                {
+                                                    if (responses.type != "button")
+                                                    {
+                                                        if (responses.type == "survey")
+                                                        {
+                                                            if (responses.questions != null)
+                                                            {
+                                                                if (responses.questions.Count > 0)
+                                                                {
+                                                                    foreach (var question in responses.questions)
+                                                                    {
+                                                                        <td>@question.response</td>
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>@responses.response</td>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                </tr>
+                            }
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+</div>

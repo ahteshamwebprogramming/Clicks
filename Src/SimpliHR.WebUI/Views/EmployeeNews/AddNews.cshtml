@@ -1,0 +1,262 @@
+﻿@{
+    ViewData["Title"] = "Add News";
+}
+@model SimpliHR.Infrastructure.Models.EmployeeSocialActivity.EmployeeNewsViewModel
+<link rel="stylesheet" href="~/assets/vendor/libs/quill/typography.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/quill/katex.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/quill/editor.css" />
+
+<link rel="stylesheet" href="~/assets/vendor/libs/dropzone/dropzone.css" />
+
+@*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.css">*@
+
+<link rel="stylesheet" href="~/assets/vendor/libs/tagify/tagify.css" />
+<style>
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+
+    .tagify__tag-text {
+        white-space: nowrap !important;
+    }
+
+    /*.modal {
+                                                display: none;
+                                                position: fixed;
+                                                z-index: 9999;
+                                                left: 0;
+                                                top: 0;
+                                                width: 100%;
+                                                height: 100%;
+                                                overflow: auto;
+                                                background-color: rgb(0,0,0);
+                                                background-color: rgba(0,0,0,0.4);
+                                            }*/
+
+    /*.modal-content {
+                                                background-color: #fefefe;
+                                                margin: 15% auto;
+                                                padding: 20px;
+                                                border: 1px solid #888;
+                                                width: 80%;
+                                            }*/
+
+
+</style>
+<link href="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.css" rel="stylesheet">
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">News/</span> Add News</h4>
+    <div class="row">
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="card">
+                <div class="card-body">
+                    <input type="button" class="btn btn-primary btn-sm mb-3" value="List Of News" style="float:right;margin-bottom:5px;" onclick="window.location.href='/EmployeeNews/EmployeeNews'" />
+                    <div class="clearfix"></div>
+                    <form id="NewsForm" method="post" enctype="multipart/form-data">
+
+
+
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label for="TagifyBasicTagging" class="form-label required">Category Tag</label>
+                                        @*<input id="TagifyBasicTagging" class="form-control" asp-for="employeeNewsDTO.Tagging" required />*@
+                                        <select id="select2Multiple" class="form-control" required asp-for="employeeNewsDTO.Tagging" multiple>
+                                            <option value="0">Select</option>
+                                            @{
+                                                if (Model != null && Model.NewsCategoryTags != null)
+                                                {
+                                                    int[] Tags;
+                                                    var selectedTagsCommaSeperated = Model.employeeNewsDTO == null ? null : Model.employeeNewsDTO.Tagging;
+                                                    if (selectedTagsCommaSeperated != null && selectedTagsCommaSeperated.Trim() != "")
+                                                    {
+                                                        Tags = selectedTagsCommaSeperated.Split(',').Where(x => int.TryParse(x, out _)).Select(int.Parse).ToArray();
+                                                    }
+                                                    else
+                                                    {
+                                                        Tags = new int[1];
+                                                    }
+
+                                                    foreach (var item in Model.NewsCategoryTags)
+                                                    {
+                                                        if (Tags.Contains(item.NewsCategoryTagId))
+                                                        {
+                                                            <option selected value="@item.NewsCategoryTagId">@item.NewsCategoryTag</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.NewsCategoryTagId">@item.NewsCategoryTag</option>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        </select>
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label for="defaultFormControlInput" class="form-label required" required>Title</label>
+                                        <input type="text" class="form-control" placeholder="Title" asp-for="employeeNewsDTO.Title" required>
+                                        @*<div class="form-text">Title for the Announcement/Post</div>*@
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label for="formFileMultiple" class="form-label required">Upload Thumbnail Image</label>
+                                        <input class="form-control" type="file" id="uploads" accept="image/*" required>
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                        <div class="col-md-12">
+                                            @{
+                                                if (Model != null)
+                                                {
+                                                    if (Model.EmployeeNewsFileUploadList != null)
+                                                    {
+                                                        foreach (var item in Model.EmployeeNewsFileUploadList)
+                                                        {
+                                                            if (item.UploadType == "Upload")
+                                                            {
+                                                                <tags class="tagify tagify-email-list" tabindex="-1" name="attachmentTag_@item.EmployeeNewsFileUploadsId">
+                                                                    <tag title="@item.UploadedFileName" contenteditable="false" spellcheck="false" tabindex="-1" class="tagify__tag tagify--noAnim" value="@item.UploadedFileName">
+                                                                        <x title="" class="tagify__tag__removeBtn" role="button" aria-label="remove tag" style="display:inherit" onclick="deleteUploadedFile(@item.EmployeeNewsFileUploadsId)"></x>
+                                                                        <div>
+                                                                            <span class="tagify__tag-text">@item.UploadedFileName</span>
+                                                                        </div>
+                                                                    </tag>
+                                                                    <span contenteditable="" tabindex="0" data-placeholder="​" aria-placeholder="" class="tagify__input" role="textbox" aria-autocomplete="both" aria-multiline="false">
+                                                                    </span>
+                                                                </tags>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label for="defaultFormControlInput" class="form-label required">Article Type</label>
+                                        <select class="form-control" asp-for="employeeNewsDTO.ArticleType" onchange="initArticleType()" required>
+                                            <option value="0">Select</option>
+                                            <option value="1">Article Link</option>
+                                            <option value="2">Internal Article</option>
+                                        </select>
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+
+                                    <div class="form-group col-md-12 mb-3 external-article" style="display:none">
+                                        <label for="defaultFormControlInput" class="form-label">Article</label>
+                                        <div id="full-editor">
+                                            @Html.Raw(Model == null ? "" : Model.employeeNewsDTO == null ? "" : Model.employeeNewsDTO.Article == null ? "" : Model.employeeNewsDTO.Article)
+                                        </div>
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+                                    <div class="form-group col-md-6 mb-3 article-link" style="display:none">
+                                        <label for="defaultFormControlInput" class="form-label required" required>Article Link</label>
+                                        <input type="text" class="form-control" asp-for="employeeNewsDTO.ArticleLink" required>
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+                                    <div class="form-group col-md-6 mb-3 article-link" style="display:none">
+                                        <label for="" class="form-label required">Description</label>
+                                        <input class="form-control" required asp-for="employeeNewsDTO.Description" />
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label for="TagifyBasicAuthorsName" class="form-label required">Author(s) Name</label>
+                                        <input id="TagifyBasicAuthorsName" class="form-control" asp-for="employeeNewsDTO.AuthorsName" required />
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label for="defaultFormControlInput" class="form-label required" required>Publication Name</label>
+                                        <input type="text" class="form-control" asp-for="employeeNewsDTO.PublicationName" required>
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label for="TagifyBasicKeywords" class="form-label required">Keywords</label>
+                                        <input id="TagifyBasicKeywords" class="form-control" asp-for="employeeNewsDTO.Keywords" required />
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <input type="button" class="btn btn-primary btn-sm" onclick="SaveNews('Publish')" value="Publish">
+                                        @*<input type="button" class="btn btn-primary btn-sm" value="Schedule" data-bs-toggle="modal" data-bs-target="#ScheduleModal">*@
+                                        <input type="hidden" asp-for="employeeNewsDTO.encEmployeeNewsId" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="button" id="btnModalImageCrop" data-bs-toggle="modal" data-bs-target="#backDropModal" data-bs-backdrop="static" value="Test" style="display:none" />
+<style>
+    #croppedImage {
+        max-width: 100%; /* This rule is very important, please do not ignore this! */
+        display: block;
+    }
+</style>
+<div class="modal fade" id="backDropModal" data-bs-backdrop="static" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <form class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="backDropModalTitle">Crop Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div style="width:100%;margin:auto">
+                    <img id="croppedImage" src="#" alt="Cropped Image" style="margin:auto">
+                </div>
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>*@
+                <button type="button" class="btn btn-primary" id="cropButton">Crop Image</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+@section scripts {
+    <script src="~/assets/vendor/libs/quill/katex.js"></script>
+    <script src="~/assets/vendor/libs/quill/quill.js"></script>
+    <script src="~/assets/js/forms-editors.js"></script>
+
+    <script src="~/assets/vendor/libs/dropzone/dropzone.js"></script>
+    <script src="~/assets/js/forms-file-upload.js"></script>
+
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>*@
+
+    <script src="~/assets/vendor/libs/tagify/tagify.js"></script>
+    <script src="~/assets/js/forms-tagify.js"></script>
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
+
+    <script src="~/customjs/socialactivity/addnews.js"></script>
+
+
+
+
+    <script type="text/javascript">
+
+
+
+
+
+
+
+
+
+
+    </script>
+    }
+

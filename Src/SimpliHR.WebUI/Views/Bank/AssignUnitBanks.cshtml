@@ -1,0 +1,178 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.UnitBankListVM
+@{
+    ViewData["Title"] = "AssignUnitBanks";
+    Layout = "~/Views/Shared/_LayoutVertical.cshtml";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Compensation /</span> Bank List</h4>
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <form id="showAlert" class="row g-3" onsubmit="return false">
+                    <div class="modal-body">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center mb-4">
+                        </div>
+
+                        <div class="col-12 text-center" id="successDiv">
+                            <p id="errorPara" class="error" style="color:red"></p>
+                        </div>
+                        <div class="col-12 text-center" id="errorDiv">
+                            <p id="successPara" class="error" style="color:black"></p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 text-center">
+                        @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                        <button type="reset" id="btnClose"
+                                class="btn btn-label-secondary btn-reset mt-3"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                            Close
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="card addShow" id="List">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Back" onclick="javascript:window.location.href='/Bank/Bank/'" style="float:right;margin-right: 5px;" />
+            <input type="button" class="btn btn-primary" value="Map Banks" onclick="SaveUnitBankFromMaster()" style="float:right;margin-right: 5px;" "  />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table table-bordered List" id="List">
+                    <thead>
+                        <tr>
+                            <th>Bank Name</th>
+                            @foreach (var unit in Model.Units)
+                            {
+                                <th>
+                                    <input type="checkbox" id="Unit_@unit.UnitID" class="form-check-input units" onclick="SelectUnit('@unit.UnitID',this)" />
+                                    @unit.UnitName
+                                </th>
+                            }
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.BankMasterList != null)
+                            @foreach (var item in Model.BankMasterList)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.BankName
+                                        <input id="BankId" type="hidden" value="@item.BankId" />
+                                    </td>                                   
+                                    @foreach (var unit in Model.Units)
+                                    {
+                                        <td>
+                                            <input type="checkbox" id="Unit_@unit.UnitID+'_'+@item.BankId" data-unit="@unit.UnitID" value="@item.BankId" class="form-check-input unitClass_@unit.UnitID"
+                                            @(Model.UnitBankList.Exists(x => x.BankId == item.BankId) ? "checked" : "") onclick="CheckAllSelected('@unit.UnitID','Unit_@unit.UnitID')" />
+                                        </td>
+                                    }
+
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section scripts {
+
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $(".List").dataTable();
+            $('#select_all').on('click', function () {
+
+            });
+
+            $('.checkbox').on('click', function () {
+
+            });
+        });
+
+        function SelectUnit(unitId, id) {
+            var unitClass = 'unitClass_' + unitId
+            if (id.checked) {
+                jQuery('.' + unitClass).each(function () {
+                    this.checked = true;
+                });
+            } else {
+                jQuery('.' + unitClass).each(function () {
+                    this.checked = false;
+                });
+            }
+        }
+
+        function CheckAllSelected(unitId, idName) {
+            var unitClass = 'unitClass_' + unitId
+            if (jQuery('.' + unitClass + ':checked').length == jQuery('.' + unitClass).length) {
+                jQuery('#' + idName).prop("checked", true);
+            } else {
+                jQuery('#' + idName).prop("checked", false);
+            }
+        }
+
+        function SaveUnitBankFromMaster() {
+            var iCtr = 0, unitId = 0;
+            var unitBanksVM = {};
+            var BankMasterList = new Array();
+            jQuery('.units').each(function () {
+                unitId = this.id.replace("Unit_", "");
+                if (!IsBlank(unitId)) {
+                    unitClass = "unitClass_" + unitId;
+                    jQuery('.' + unitClass).each(function () {
+                        if (this.checked) {
+                            var detailData = {};
+                            detailData.UnitId = unitId
+                            detailData.BankId = this.value;
+                            BankMasterList.push(detailData)
+                        }
+                    });
+                }
+            });
+
+            if (BankMasterList.length > 0) {
+                unitBanksVM.BankMasterList = BankMasterList
+            }
+            else {
+                $successerror("Transaction Failed!", "No Bank/s selected to map");
+            }
+            BlockUI();
+            jQuery.ajax({
+                type: "POST",
+                url: "/Bank/SaveUnitBankFromMaster",
+                data: unitBanksVM,
+                success: function (data) {
+                    //alert(data)
+                    UnblockUI();
+                    // var sMsg = data.displayMessage  //.Trim().Replace("< br > ", "\r\n")
+                    if (data.displayMessage.toUpperCase() == "SUCCESS") {
+                        //jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                        $successalert("", "Transaction Successful!");
+                    }
+                    window.location.href = "/Bank/Bank";
+                },
+                error: function (result) {
+                    var x = 1;
+                    $successerror("Transaction Failed!", "" + result.responseText);
+                    UnblockUI();
+                }
+            });
+
+        }
+
+    </script>
+}
+

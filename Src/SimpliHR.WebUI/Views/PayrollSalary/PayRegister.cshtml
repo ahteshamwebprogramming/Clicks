@@ -1,0 +1,122 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.SalaryProcessInputs
+@{
+    ViewData["Title"] = "PayRegister";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll /</span> Pay Register</h4>
+
+    <div class="card addShow" id="List">
+        <div class="card-body">
+
+
+
+            <form id="ViewId" method="post" action="/PayrollSalary/PayRegisterDownload" target="_new">
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label" for=""> Year</label>
+                       @*  @Html.DropDownList("PassingYear", new SelectList(Model.EmployeeMastersKeyValues.GetYears(1970, DateTime.Now.Year - 1970 + 1), "Select PassingYear"), "Select Option", htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible", @name = "PassingYear", @required = "required" }) *@
+                            <select class="form-select" id="selYear" name="Year" aria-label="Default select example">
+                                <option value="0" selected>Select an option</option>
+
+                            @if (Model.Years != null)
+                                {
+                                    @foreach (var item in Model.Years)
+                                    {
+                                    if (item == Model.Year)
+                                        {
+                                        <option value="@item" selected> @item</option>
+                                        }
+                                        else
+                                        {
+                                        <option value="@item"> @item</option>
+                                        }
+
+                                    }
+                                }
+                            </select>
+
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for=""> Month</label>
+                            <select class="form-select" id="selMonth" name="Month" aria-label="Default select example">
+                                <option value="0" selected>Select an option</option>
+                               
+                                @if (Model.SalMonths != null)
+                                {
+                                    @foreach (var item in Model.SalMonths)
+                                    {
+                                        if (item.ID == Model.Month)
+                                        {
+                                            <option value="@item.ID" selected> @item.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.ID"> @item.Name</option>
+                                        }
+
+                                    }
+                                }
+                            </select>
+
+                        </div>
+
+                        @* <div class="col-md-4"><br />
+                        <button type="submit" class="btn btn-primary btn-sm me-sm-3 me-1" onclick="return ValidateViewAttendance()">Show Details</button>
+                        </div>*@
+
+                    </div>
+                    <div class="pt-4">
+                 @*    <a class="btn btn-primary btn-sm me-sm-3 me-1" onclick="return ValidateInputs()" href="/PayrollSalary/PayRegisterDownload" target="_blank">Download</a>. *@
+                    <button type="submit" class="btn btn-primary btn-sm me-sm-3 me-1" onclick="return ValidateInputs()">Download</button>
+                    </div>
+                </form>
+              
+           
+        </div>
+
+    </div>
+
+
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+           
+        });
+
+       
+
+        function ValidateInputs() {
+
+
+
+
+
+            year = jQuery("#selYear").val();
+            month = jQuery("#selMonth").val();
+
+            //  alert(year);
+            //  BlockUI();
+            if (year == 0) {
+                alert("Please select the year");
+
+                //  ShowServerMessage("Please select the year");
+                // UnblockUI();
+                return false;
+            }
+            if (month == 0) {
+                //UnblockUI();
+                alert("Please select the month");
+
+                //  ShowServerMessage("Please select the month");
+                return false;
+            }
+
+
+        }
+
+    </script>
+}

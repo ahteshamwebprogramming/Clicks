@@ -1,0 +1,217 @@
+﻿@model SimpliHR.Infrastructure.Models.Exit.ExitViewModel
+<div class="table-responsive text-nowrap">
+    <table class="table table-bordered List">
+        <thead>
+            <tr>
+                <th>Ticket No</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Department</th>
+                <th>Resignation Date</th>
+                <th>Last Working Date</th>
+                <th>Notice Period</th>
+                <th>Reason</th>
+                <th>Shortfall Days</th>
+                <th>Notice Period</th>
+                <th>Status(Manager)</th>
+                <th>Status(Admin)</th>
+                <th>Clearance Status</th>
+                <th>Exit Interview Status</th>
+                <th>Final Settlement Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (Model != null)
+                {
+                    if (Model.ResignationList != null)
+                    {
+                        if (Model.ResignationList.Count > 0)
+                        {
+                            foreach (var item in Model.ResignationList)
+                            {
+                                <tr>
+                                    <td>@item.TicketId</td>
+                                    <td>@item.EmployeeCode</td>
+                                    <td>@item.EmployeeName</td>
+                                    <td>@item.JobTitle</td>
+                                    <td>@item.DepartmentName</td>
+                                    <td>@(item.ResignationDate == null ? "" : ((DateTime)item.ResignationDate).ToString("dd-MMM-yyyy"))</td>
+                                    <td>@(item.LastWorkingDate == null ? "" : ((DateTime)item.LastWorkingDate).ToString("dd-MMM-yyyy"))</td>
+                                    <td>@item.NoticePeriod Days</td>
+                                    <td>@item.ReasonForLeaving</td>
+
+                                    @{
+                                        if (item.ResignationDate != null && item.LastWorkingDate != null)
+                                        {
+                                            TimeSpan? difference = item.LastWorkingDate - item.ResignationDate;
+                                            int? daysDifference = difference?.Days;
+                                            int? shortfalldays = item.NoticePeriod - daysDifference;
+                                            <td>@shortfalldays Days</td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+                                        }
+
+                                        if (item.AdminApproval == 0)
+                                        {
+                                            if (item.NoticePeriodWaiveOff == true)
+                                            {
+                                                <td>Waived</td>
+                                            }
+                                            else
+                                            {
+                                                <td>Recovery</td>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (item.NoticePeriodWaiveOffAdmin == true)
+                                            {
+                                                <td>Waived</td>
+                                            }
+                                            else
+                                            {
+                                                <td>Recovery</td>
+                                            }
+                                        }
+                                    }
+                                    <td>
+                                        @{
+                                            if (item.CreationDateEmployee == null)
+                                            {
+                                                <span style="color:blue">-</span>
+                                            }
+                                            else if (item.ManagerApproval == 0)
+                                            {
+                                                <span style="color:blue">Pending</span>
+                                            }
+                                            else if (item.ManagerApproval == 1)
+                                            {
+                                                <span style="color:#4CAF50">Approved</span>
+                                            }
+                                            else if (item.ManagerApproval == -1)
+                                            {
+                                                <span style="color:#FF0000">Rejected</span>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @{
+                                            if (item.AdminApproval == 0 && item.ManagerApproval != -1)
+                                            {
+                                                <span style="color:blue">Pending</span>
+                                            }
+                                            else if (item.AdminApproval == 1)
+                                            {
+                                                <span style="color:#4CAF50">Approved</span>
+                                            }
+                                            else if (item.AdminApproval == -1)
+                                            {
+                                                <span style="color:#FF0000">Rejected</span>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @{
+                                            if ((item.AdminApproval == 1) && (item.ClearanceByPass == false))
+                                            {
+                                                if (item.ClearanceStatus == 0)
+                                                {
+                                                    <a style="color:#FF0000;" href="/ExitManagement/InitiateExitClearance/@item.EncryptedEmployeeId">Not Yet Started</a>
+                                                }
+                                                else if (item.ClearanceStatus == 1)
+                                                {
+                                                    <a style="color:#FFC107;" href="/ExitManagement/InitiateExitClearance/@item.EncryptedEmployeeId">In Progress</a>
+                                                }
+                                                else
+                                                {
+                                                    <a style="color:#4CAF50;" href="/ExitManagement/InitiateExitClearance/@item.EncryptedEmployeeId">Completed</a>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (item.ClearanceByPass)
+                                                {
+                                                    <span style="color:blue">Clearance Skipped</span>
+                                                }
+                                                else
+                                                {
+                                                    <span style="color:blue"></span>
+                                                }
+
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @{
+                                            if (item.AdminApproval == 1 && item.ActivateExitInterview == true)
+                                            {
+                                                if (item.InterviewStatus == 0)
+                                                {
+                                                    <a style="color:#FF0000;" href="#">Not Yet Started</a>
+                                                }
+                                                else if (item.InterviewStatus == 1)
+                                                {
+                                                    <a style="color:#FFC107;" href="#">In Progress</a>
+                                                }
+                                                else
+                                                {
+                                                    <a style="color:#4CAF50;">Completed</a>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (item.ActivateExitInterview == false)
+                                                {
+                                                    <span style="color:blue">NA</span>
+                                                }
+                                                else
+                                                {
+                                                    <span style="color:blue"></span>
+                                                }
+
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @{
+                                            if (item.AdminApproval == 1)
+                                            {
+                                                if (item.SettlementStatus == 0)
+                                                {
+                                                    <a style="color:#FF0000;" href="/ExitManagement/EmployeeFinalSettlement/@item.EncryptedEmployeeId">Not Yet Started</a>
+                                                }
+                                                else if (item.SettlementStatus == 1)
+                                                {
+                                                    <a style="color:#FFC107;" href="/ExitManagement/EmployeeFinalSettlement/@item.EncryptedEmployeeId">In Progress</a>
+                                                }
+                                                else
+                                                {
+                                                    <a style="color:#4CAF50;" href="/ExitManagement/SettlementDownload/@item.EncryptedEmployeeId">Completed</a>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span style="color:blue">Not Applicable</span>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        <input type="button" class="btn btn-primary btn-sm" value="View" onclick="ViewEmployeeResignDetails_Admin(@item.ResignationListId)" />
+
+
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                }
+            }
+
+        </tbody>
+    </table>
+</div>

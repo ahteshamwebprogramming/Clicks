@@ -1,0 +1,148 @@
+﻿@model SimpliHR.Infrastructure.Models.Leave.EmployeeCompOffDTO
+@{
+    ViewData["Title"] = "EmployeeCompOff";
+    Layout = "~/Views/Shared/_LayoutVertical.cshtml";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+
+
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Leave /</span>Employee Comp Off</h4>
+    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Apply Comp Off" onclick="AddView()" style="float:right;" />
+           <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List">
+                    <thead>
+                        <tr>
+
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>Remarks</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.EmployeeCompOffList != null)
+                            @foreach (var item in Model.EmployeeCompOffList)
+                            {
+                                <tr>
+                                    <td>
+                                        @(item.CompOffType.Trim() == "W" ? "Weekly Off" : item.CompOffType.Trim() == "H" ? "Holidays" : "")
+                                    </td>
+                                    <td>@(item.CompOffDate.Value.ToString("dd-MMM-yy"))</td>
+                                    <td>@(item.Remarks)</td>
+                                   
+
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="/Leave/GetLeaveCompoffInfo/@item.EncryptedId"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="#" onclick="DeleteRecord('@item.CompOffType','@item.EncryptedId')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="ListView()" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/Leave/SaveEmployeeCompOff">
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Type</label>
+                        <select id="selCompOffType" name="CompOffType" class="form-select" required>
+                            <option value="S">Select</option>
+                            <option value="W">Weekly Off</option>
+                            <option value="H">Holidays</option>
+                        </select>
+
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="">Date</label>
+                        <input type="date" id="CompOffDate" name="CompOffDate" maxlength="50" class="form-control flatpickr-date1"
+                               placeholder="DD-MMM-YYYY">
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label" for="">Remarks</label>
+                        <textarea type="text" id="Remarks" name="Remarks" class="form-control"></textarea>
+                    </div>
+                   
+                    <div class="pt-4">
+                        <input type="hidden" id="hdnCompOffId" name="CompOffId" value="@Model.CompOffId" />
+                       <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                        <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/Leave/EmployeeCompOff/'">Cancel</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+   
+</div>
+
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+
+            //  alert($("#hdnAppicalbleFor").val());
+            jQuery(".flatpickr-date1").flatpickr({
+                // monthSelectorType: 'static',
+                dateFormat: "d-M-Y"
+
+            });
+
+            if (@Model.CompOffId != 0 || @Model.HttpStatusCode!= 200) {
+                $("#List").hide();
+                $("#Add").show();
+            }
+
+            if ("@Model.DisplayMessage.Trim().ToUpper()" != "_BLANK") {
+                $successalert("Employee Comp Off", "@Model.DisplayMessage");
+                UnblockUI();
+            }
+
+        });
+
+
+
+     
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+
+      
+
+
+        function DeleteRecord(name, id) {
+            // event.preventDefault();
+            url = $(this).attr('href');
+            history.pushState({ key: url }, '', url);
+            if (confirm("Sure, you want to delete policy '" + name + "'?")) {
+                window.location.href = "/Leave/DeleteLeaveCompoff/" + id;
+            }
+            return false;
+        }
+    </script>
+}
+
+

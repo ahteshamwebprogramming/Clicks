@@ -1,0 +1,808 @@
+﻿@model SimpliHR.Infrastructure.Models.ClientManagement.UnitMasterDTO
+@{
+    ViewData["Title"] = "ClientUnit";
+    // Model.DisplayMessage = "";
+}
+
+@*Page CSS*@
+<link rel="stylesheet" href="~/assets/vendor/libs/bs-stepper/bs-stepper.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/bootstrap-select/bootstrap-select.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/select2/select2.css" />
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.3.2/css/fixedHeader.bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap.min.css" />
+<style>
+
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+</style>
+@*Page CSS*@
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Organisational Units /</span>Unit Management </h4>
+
+    <div class="card" id="List1" style="display:none;">
+        <div class="card-body">
+            <button class="btn btn-secondary create-new btn-primary" tabindex="0" aria-controls="DataTables_Table_0" type="button" onclick="AddView()" style="float:right;">
+                <span>
+                    <i class="bx bx-plus me-sm-1"></i>
+                    <span class="d-none d-sm-inline-block">Add Unit</span>
+                </span>
+            </button>
+            <!--input type="button" class="btn btn-primary" value="Add Unit" onclick="AddView()" style="float:right;" /-->
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List">
+                    <thead>
+                        <tr>
+                            <th>Company Name</th>
+                            <th>Unit Name</th>
+                            <th>Unit Admin</th>
+                            @* <th>GSTN</th>
+                            <th>TIN</th>
+                            <th>PanCard</th> *@
+                            <th>Contact No</th>
+                            <th>contact Person</th>
+                            <th>Status</th>
+                            <th class="text-center" style="width:100px">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.lstUnitMaster != null)
+                        {
+                            @foreach (var item in Model.lstUnitMaster)
+                            {
+                                <tr>
+                                    <td>@item.ClientName</td>
+                                    <td>@item.UnitName</td>
+                                    <td>@item.EmailId</td>
+                                    @*  <td>@item.GSTN</td>
+                            <td>@item.TIN</td>
+                            <td>@item.PanCard</td> *@
+                                    <td>@item.ContactNumber</td>
+                                    <td>@item.ContactPerson</td>
+                                    @*<td><span class="badge bg-label-primary me-1">Active</span></td>*@
+                                    <td>
+                                        @{
+                                            if (item.IsBlock == 0)
+                                            {
+                                                    <span style="cursor:pointer" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="top" title="Click to block this client" class="badge bg-label-primary me-1" onclick="ConfirmBlockClient('@item.EunitID')">Active</span>
+                                            }
+                                            else
+                                            {
+                                                    <span style="cursor:pointer" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="top" title="Click to unblock this client" class="badge bg-label-danger me-1" onclick="ConfirmActivateClient('@item.EunitID')">Blocked</span>
+                                            }
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <a class="dropdown-item" style="display:inline" href="#" onclick="ClientUnitEdit('@item.EunitID')"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item" style="display:inline" href="#" onclick="alert('Disabled, It will be enabled later');"><i class="bx bx-trash me-1"></i></a>
+                                        @*  <a class="dropdown-item" style="display:inline" href="#" onclick="ConfirmLockUserAccount('@item.EunitID')"><i class="fa-solid fa-user-lock"></i></a> *@
+                                        <a class="dropdown-item" style="display:inline" href="#" onclick="ConfirmSendUnitCreationMail('@item.EunitID')"><i class="fa-solid fa-envelope me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" id="Add1" style="display:none;">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/ClientManagement/ClientUnit/'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/ClientManagement/SaveClientUnitInfo">
+                <!-- Client Settings -->
+                <div id="unit-settings" class="content">
+                    <!--div class="content-header mb-3">
+                      <h6 class="mb-0">Social Links</h6>
+                      <small>Enter Your Social Links.</small>
+                    </div-->
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label required" for="username">Company Name</label>
+                            <select id="selClientId" name="ClientID" onchange="javascript:PopulateEmail(this.value)" required class="select2 form-select" data-allow-clear="true">
+                                <option value="">Select Client</option>
+                                @if (Model.ClientList != null)
+                                    foreach (var item in Model.ClientList)
+                                    {
+                                        if (item.ClientId == Model.ClientId)
+                                        {
+                                            <option value="@item.ClientId" selected> @item.CompanyName</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.ClientId"> @item.CompanyName</option>
+                                        }
+
+                                    }
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label required" for="username">Unit Name</label>
+                            <input type="text" id="UnitName" name="UnitName" class="form-control" placeholder="johndoe" value="@Model.UnitName" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label required" for="UnitName">Contact person</label>
+                            <input type="text" id="ContactPerson" name="ContactPerson" class="form-control" placeholder="johndoe" value="@Model.ContactPerson" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label required" for="EmailID">Email</label>
+                            <input type="email" id="EmailID" name="EmailID" class="form-control" placeholder="john.doe@email.com" a-label="john.doe" value="@Model.EmailId" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="EmailID">Email Display Name</label>
+                            <input type="text" id="EmailDisplayName" name="EmailDisplayName" value="@Model.EmailDisplayName" class="form-control" placeholder="john.doe" a-label="john.doe" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label required" for="ContactNumber">Contact number</label>
+                            <input type="number" id="ContactNumber" name="ContactNumber" class="form-control" placeholder="1234567890" onKeyPress="if(this.value.length==10) return false;" value="@Model.ContactNumber" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="address">GSTN </label>
+                            <input type="text" id="GSTN" name="GSTN" class="form-control" placeholder="1234567890" onKeyPress="if(this.value.length==15) return false;" value="@Model.GSTN" />
+                        </div>
+                        <div class="col-sm-6">
+
+                            <label class="form-label" for="contactnumber">TIN</label>
+                            <input type="number" id="TIN" name="TIN" class="form-control" placeholder="1234567890" onKeyPress="if(this.value.length==11) return false;" value="@Model.TIN" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label required" for="address">Pan Card</label>
+                            <input type="text" id="PanCard" name="PanCard" class="form-control" placeholder="Pan Card" onKeyPress="if(this.value.length==10) return false;" value="@Model.PanCard" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label required" for="address">Unit Address</label>
+                            @*  <textarea id="Address" required name="Address" rows="2" class="form-control"  value="@Model.Address"></textarea>*@
+                            <input type="text" id="Address" class="form-control" name="Address" placeholder="Unit Address" value="@Model.Address" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="exampleFormControlSelect1" class="form-label required">Country</label>
+                            <select class="form-select" id="CountryId" required name="CountryID" onchange="javascript:PopulateStateDDL(this.value)" data-allow-clear="true">
+                                <option selected>Select Country</option>
+                                @if (Model.CountryList != null)
+                                    foreach (var item in Model.CountryList)
+                                    {
+                                        if (item.CountryId == Model.CountryId)
+                                        {
+                                            <option value="@item.CountryId" selected> @item.CountryName</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.CountryId"> @item.CountryName</option>
+                                        }
+
+                                    }
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="exampleFormControlSelect1" class="form-label required">State</label>
+                            <select class="form-select" id="StateId" name="StateID" required onchange="javascript:PopulateCityDDL(this.value)">
+                                <option selected>Select State</option>
+
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="exampleFormControlSelect1" class="form-label required">City</label>
+                            <select class="form-select" id="CityId" name="CityID" required>
+                                <option selected>Select City</option>
+
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label required" for="address">Pincode</label>
+                            <input type="number" id="Pincode" name="Pincode" class="form-control" onKeyPress="if(this.value.length==6) return false;" placeholder="400001" maxlength="12" value="@Model.Pincode" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label required" for="address">Confirmation Period (In Day)</label>
+                            <input type="number" id="ConfirmationPeriod" name="ConfirmationPeriod" class="form-control" onKeyPress="if(this.value.length==3) return false;" placeholder="Confirmation Period" value="@Model.ConfirmationPeriod" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label required" for="address">Notice Period (In Day)</label>
+                            <input type="number" id="NoticePeriod" name="NoticePeriod" class="form-control" onKeyPress="if(this.value.length==3) return false;" placeholder="Notice Period" value="@Model.NoticePeriod" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label required" for="address">Payroll Start Day</label>
+                            <input type="number" id="PayrollStartDate" name="PayrollStartDate" class="form-control flatpickr-date1" onKeyPress="if(this.value.length==2) return false;" value="@Model.PayrollStartDate" />
+
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label required" for="address">Payroll End Day</label>
+                            <input type="number" id="PayrollEndDate" name="PayrollEndDate" class="form-control flatpickr-date1" onKeyPress="if(this.value.length==2) return false;" value="@Model.PayrollEndDate" />
+
+                        </div>
+                        @* <div class="col-sm-3">
+                        <label class="form-label" for="formtabs-birthdate">Is Block</label>
+                        <div class="col mt-2">
+                        <div class="form-check form-check-inline">
+
+                        <input name="IsBlocks"
+                        class="form-check-input"
+                        type="checkbox"
+                        id="IsBlocks" />
+                        <label class="form-check-label" for="collapsible-address-type-home">Is Block</label>
+                        </div>
+                        </div>
+                        </div> *@
+                        <div class="col-sm-9">
+                            <label class="form-label" for="formtabs-birthdate">Weekly Off</label>
+                            <div class="col mt-2">
+                                <div class="form-check form-check-inline">
+                                    <input name="WeeklyOff11"
+                                           class="form-check-input"
+                                           type="checkbox"
+                                           value="1"
+                                           id="WeeklyOff_1" />
+                                    <label class="form-check-label" for="collapsible-address-type-home">Monday</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input name="WeeklyOff11"
+                                           class="form-check-input"
+                                           type="checkbox"
+                                           value="2"
+                                           id="WeeklyOff_2" />
+                                    <label class="form-check-label" for="collapsible-address-type-office">Tuesday</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input name="WeeklyOff11"
+                                           class="form-check-input"
+                                           type="checkbox"
+                                           value="3"
+                                           id="WeeklyOff_3" />
+                                    <label class="form-check-label" for="collapsible-address-type-office">Wednesday</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input name="WeeklyOff11"
+                                           class="form-check-input"
+                                           type="checkbox"
+                                           value="4"
+                                           id="WeeklyOff_4" />
+                                    <label class="form-check-label" for="collapsible-address-type-office">Thursday</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input name="WeeklyOff11"
+                                           class="form-check-input"
+                                           type="checkbox"
+                                           value="5"
+                                           id="WeeklyOff_5" />
+                                    <label class="form-check-label" for="collapsible-address-type-office">Friday</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input name="WeeklyOff11"
+                                           class="form-check-input"
+                                           type="checkbox"
+                                           value="6"
+                                           checked=""
+                                           id="WeeklyOff_6" />
+                                    <label class="form-check-label" for="collapsible-address-type-office">Saturday</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input name="WeeklyOff11"
+                                           class="form-check-input"
+                                           type="checkbox"
+                                           value="0"
+                                           checked=""
+                                           id="WeeklyOff_7" />
+                                    <label class="form-check-label" for="collapsible-address-type-office">Sunday</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="form-label" for="formtabs-birthdate">Is Attendance Sandwich Rule</label>
+                            <div class="col mt-2">
+                                <div class="form-check form-check-inline">
+                                    <input name="AttendaceSandwich"
+                                           class="form-check-input"
+                                           type="radio"
+                                           value="1"
+                                           id="SandwichRuleY"  checked />
+                                    <label class="form-check-label" for="collapsible-address-type-home">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input name="AttendaceSandwich"
+                                           class="form-check-input"
+                                           type="radio"
+                                           value="0"
+                                           id="SandwichRuleN" />
+                                    <label class="form-check-label" for="collapsible-address-type-office">No</label>
+                                </div>
+                               
+                            </div>
+                        </div>
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-primary btn-prev" style="display:none;">
+                                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                            </button>
+                            <input type="hidden" id="UnitEmail" name="UnitEmail" class="form-control" />
+                            <input type="hidden" id="UnitCN" name="UnitCN" class="form-control" />
+                            <input type="hidden" id="AttendaceSandwichRules" name="AttendaceSandwichRule" class="form-control" />
+                            <input type="hidden" id="hdnCountryId" name="CountryId" class="form-control" value="@Model.CountryId" />
+                            <input type="hidden" id="hdnStateId" name="StateId" class="form-control" value="@Model.StateId" />
+                            <input type="hidden" id="hdnCityId" name="CityId" class="form-control" value="@Model.CityId" />
+                            <input type="hidden" id="ClientId" name="ClientId" class="form-control" value="@Model.ClientId" />
+                            <input type="hidden" id="UnitID" name="UnitID" class="form-control" value="@Model.UnitID" />
+                            <input type="hidden" id="isChecked" name="WeeklyOff" class="form-control" value="@Model.WeeklyOff" />
+                            <input type="hidden" id="IBlock" name="IsBlock" class="form-control" value="@Model.IsBlock" />
+                            <button class="btn btn-success btn-submit" onclick="return Checked();">Submit</button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <div class="modal-body">
+                    <button type="button" class="btn-close" name="btnPopupClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-4">
+                    </div>
+                    <form id="showAlert" class="row g-3" onsubmit="return false">
+                        <div class="col-12 text-center" id="errorDiv">
+                            <p id="errorPara" class="error" style="color:red"></p>
+                        </div>
+                        <div class="col-12 text-center" id="successDiv">
+                            <p id="successPara" class="error" style="color:black"></p>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="popupBtnDiv" class="col-12 text-center">
+                    @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                    <button type="reset" name="btnPopupClose"
+                            class="btn btn-label-secondary btn-reset mt-3"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                        Close
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+    <script src="~/assets/vendor/libs/bs-stepper/bs-stepper.js"></script>
+    <script src="~/assets/vendor/libs/bootstrap-select/bootstrap-select.js"></script>
+    <script src="~/assets/vendor/libs/select2/select2.js"></script>
+    <script src="../../customjs/CommonFunction.js"></script>
+    @*   <script src="~/customjs/employeevalidation.js"></script> *@
+
+    @*     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/fixedheader/3.3.2/js/dataTables.fixedHeader.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
+    <script src=" https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap.min.js"></script>
+ *@
+
+
+
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            // $(".List").dataTable();
+            var table = $('.List').DataTable({
+                responsive: true
+            });
+            new $.fn.dataTable.FixedHeader(table);
+
+        
+
+           
+
+            if (@Model.UnitID != 0) {
+                $("#List1").hide();
+                $("#Add1").show();
+              
+                if ("@Model.AttendaceSandwichRule" == "True") {
+                    $("#SandwichRuleY").prop("checked", true)
+                    $("#SandwichRuleN").prop("checked", false)
+                }
+                else if ("@Model.AttendaceSandwichRule" == "False") {
+                    $("#SandwichRuleN").prop("checked", true)
+                    $("#SandwichRuleY").prop("checked", false)
+                }
+            }
+            else {
+                $("#Add1").hide();
+                $("#List1").show();
+            }
+            //  alert(@Model.DisplayMessage);
+            if ("@Model.DisplayMessage.Trim().ToUpper()" != "_BLANK") {
+                $successalert("Client Unit", "@Model.DisplayMessage");
+                $("#List1").hide();
+                $("#Add1").show();
+            }
+
+            // Init("@Model.UnitID", "@Model.DisplayMessage", "");
+
+            var countryId = ('@Model.CountryId' == '') ? 0 : '@Model.CountryId'
+            var stateId = ('@Model.StateId' == '') ? 0 : '@Model.StateId'
+            if (countryId > 0)
+                PopulateStateDDL(countryId);
+            if (stateId > 0)
+                PopulateCityDDL(stateId);
+
+
+          
+
+        });
+
+        function Checked() {
+
+            // alert('asif');
+            //  alert(isBlank($("#UnitName").val()));
+            // return false;
+
+            if (isBlank($("#UnitName").val())) {
+
+                $erroralert("Transaction Failed!", "Please insert Unit");
+                // ShowServerMessage("Please insert Academic Code");
+                UnblockUI();
+                return false;
+            }
+            if (isBlank($("#ContactPerson").val())) {
+                $erroralert("Transaction Failed!", "Please Contact Person");
+                UnblockUI();
+                return false;
+            }
+            if (isBlank($("#EmailID").val())) {
+                $erroralert("Transaction Failed!", "Please insert Email ID");
+                // ShowServerMessage("Please insert Academic Code");
+                UnblockUI();
+                return false;
+            }
+
+            // if (!isBlank($("#UnitEmail").val())) {
+
+            //     if ($("#UnitEmail").val() != $("#EmailID").val()) {
+            //         $erroralert("Validation", "Email ID could not be changed, email ID should be the same to client units");
+
+            //         UnblockUI();
+            //         return false;
+            //     }
+
+            //     // ShowServerMessage("Please insert Academic Code");
+
+            // }
+
+            if (isBlank($("#ContactNumber").val())) {
+                $erroralert("Transaction Failed!", "Please insert Contact Number");
+                UnblockUI();
+                return false;
+            }
+
+            // if (!isBlank($("#UnitCN").val())) {
+
+            //     if ($("#UnitCN").val() != $("#ContactNumber").val()) {
+            //         $erroralert("Validation", "Contact Number could not be changed, Contact Number  should be the same to client units");
+
+            //         UnblockUI();
+            //         return false;
+            //     }
+
+            //     // ShowServerMessage("Please insert Academic Code");
+
+            // }
+
+            if (isBlank($("#GSTN").val())) {
+                $erroralert("Transaction Failed!", "Please insert GSTN number");
+                UnblockUI();
+                return false;
+            }
+            if (isBlank($("#TIN").val())) {
+                $erroralert("Transaction Failed!", "Please insert TIN number");
+                UnblockUI();
+                return false;
+            }
+            if (isBlank($("#PanCard").val())) {
+                $erroralert("Transaction Failed!", "Please insert PanCard Number");
+                UnblockUI();
+                return false;
+            }
+            if (isBlank($("#Address").val())) {
+                $erroralert("Transaction Failed!", "Please insert Address");
+                UnblockUI();
+                return false;
+            }
+
+            if (isBlank($("#Pincode").val())) {
+                $erroralert("Transaction Failed!", "Please insert Pincode");
+                UnblockUI();
+                return false;
+            }
+            if (isBlank($("#ConfirmationPeriod").val())) {
+                $erroralert("Transaction Failed!", "Please insert Confirmation Period");
+                UnblockUI();
+                return false;
+            }
+            if ($("#ConfirmationPeriod").val() > 365) {
+                $erroralert("Transaction Failed!", "Confirmation Period could not be more than 365 days!");
+                UnblockUI();
+                return false;
+            }
+
+            if (isBlank($("#NoticePeriod").val())) {
+                $erroralert("Transaction Failed!", "Please insert Notice Period");
+                UnblockUI();
+                return false;
+            }
+            if ($("#NoticePeriod").val() > 365) {
+                $erroralert("Transaction Failed!", "Notice Period could not be more than 365 days!");
+                UnblockUI();
+                return false;
+            }
+            if (isBlank($("#PayrollStartDate").val())) {
+                $erroralert("Transaction Failed!", "Please insert Payroll Start Date");
+                UnblockUI();
+                return false;
+            }
+            if ($("#PayrollStartDate").val() > 31) {
+                $erroralert("Transaction Failed!", "Payroll Start Day could not be more than 31 days!");
+                UnblockUI();
+                return false;
+            }
+
+            if (isBlank($("#PayrollEndDate").val())) {
+                $erroralert("Transaction Failed!", "Please insert Payroll End Date");
+                UnblockUI();
+                return false;
+            }
+            if ($("#PayrollEndDate").val() > 31) {
+                $erroralert("Transaction Failed!", "Payroll End Day could not be more than 31 days!");
+                UnblockUI();
+                return false;
+            }
+
+            var arr = [];
+            $.each($("input[name='WeeklyOff11']:checked"), function () {
+                arr.push($(this).val());
+            });
+
+            $("#isChecked").val(arr.join(", "));
+
+            // var boxes = $('#IsBlocks').is(':checked');
+            // if (boxes == true) {
+            //     $("#IBlock").val(1);
+            // }
+            // else {
+            //     $("#IBlock").val(0);
+            // }
+            var isRule = $('#SandwichRuleY').is(':checked');
+            if (isRule == true) {
+                $("#AttendaceSandwichRules").val(true);               
+            }
+            else {
+                $("#AttendaceSandwichRules").val(false);               
+            }
+           
+
+            BlockUI();
+        }
+        function isBlank(str) {
+            return (!str || /^\s*$/.test(str));
+        }
+        function PopulateEmail(clientId) {
+
+
+            if (clientId > 0) {
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/ClientManagement/GetUnitEmail",
+                    data: { clientId: clientId },
+                    success: function (response) {
+                        $("#EmailID").val("");
+                        $("#ContactNumber").val("");
+                        if (response != null) {
+                            // alert(response.emailId);
+
+                            $("#UnitEmail").val(response.emailId);
+                            $("#EmailID").val(response.emailId);
+                            $("#UnitCN").val(response.contactNumber);
+                            $("#ContactNumber").val(response.contactNumber);
+                            $("#EmailID").prop('readonly', true);
+                            $("#ContactNumber").prop('readonly', true);
+                            // $("#EmailID").change();
+                            // $("#ContactNumber").change();
+                        }
+                        else {
+                            $("#EmailID").val("");
+                            $("#UnitEmail").val("");
+                            $("#UnitCN").val("");
+                            $("#ContactNumber").val("");
+                            $("#EmailID").prop('readonly', false);
+                            $("#ContactNumber").prop('readonly', false);
+                            //  $("#EmailID").removeAttr('disabled');
+                            //  $("#ContactNumber").removeAttr('disabled');
+                        }
+                    },
+                    failure: function (response) {
+                        $erroralert("Transaction Failed!", response.responseText);
+                    },
+                    error: function (response) {
+                        $erroralert("Transaction Failed!", response.responseText);
+                    }
+
+                });
+                // return false;
+            }
+        }
+
+
+
+        function ListView() {
+            $("#Add1").hide();
+            $("#List1").show();
+        }
+        function AddView() {
+            $("#Add1").show();
+            $("#List1").hide();
+
+        }
+
+        function PopulateStateDDL(countryId) {
+            //var objDDL = countryDDL
+            jQuery("#CountryId").attr("disabled", true)
+            jQuery("#StateId").html("")
+            jQuery.ajax({
+                type: "GET",
+                url: "/ClientManagement/GetCounryStates",
+                data: { CountryId: countryId },
+                success: function (response) {
+                    PopulateDropDown("StateId", response, '@Model.StateId', 'stateId', 'stateName')
+                    jQuery("#CountryId").attr("disabled", false)
+                },
+                failure: function (response) {
+                    $erroralert("Transaction Failed!", response.responseText);
+                },
+                error: function (response) {
+                    $erroralert("Transaction Failed!", response.responseText);
+                }
+            });
+        }
+
+        function PopulateCityDDL(stateID) {
+            //var objDDL = countryDDL
+            jQuery("#CountryId").attr("disabled", true)
+            jQuery("#StateId").attr("disabled", true)
+            jQuery("#CityId").html("")
+            jQuery.ajax({
+                type: "GET",
+                url: "/ClientManagement/GetStateCities",
+                data: { StateId: stateID },
+                success: function (response) {
+                    PopulateDropDown("CityId", response, '@Model.CityId', 'cityId', 'cityName')
+                    jQuery("#StateId").attr("disabled", false)
+                    jQuery("#CountryId").attr("disabled", false)
+                },
+                failure: function (response) {
+                    $erroralert("Transaction Failed!", response.responseText);
+                },
+                error: function (response) {
+                    $erroralert("Transaction Failed!", response.responseText);
+                }
+            });
+        }
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                if (sMsg.toUpperCase() == "SUCCESS") {
+                    sMsg = "Ticket Created Successfully";
+                    jQuery("#successDiv").show();
+                    jQuery("#successPara").html(sMsg);
+
+                    // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                }
+                else {
+                    jQuery("#errorDiv").show();
+                    jQuery("#errorPara").html(sMsg);
+                }
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+
+        function ProgressAlert() {
+            BlockUI();
+        }
+
+
+        function ConfirmSendUnitCreationMail(EunitID) {
+            Swal.fire({ title: 'Are you sure?', text: "This will resend Email!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, Send it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    SendUnitCreationMail(EunitID)
+                }
+            });
+        }
+
+        function SendUnitCreationMail(EunitID) {
+            var inputDTO = {};
+            inputDTO.EunitID = EunitID;
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                url: "/ClientManagement/ResendUnitCreationEmail",
+                contentType: 'application/json',
+                data: JSON.stringify(inputDTO),
+                success: function (data) {
+                    $successalert("Transaction Successful!", "Email sent succesfully");
+                    UnblockUI();
+                },
+                error: function (error) {
+                    $erroralert("Transaction Failed!!", error.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+        function ConfirmBlockClient(EunitID) {
+            Swal.fire({ title: 'Are you sure?', text: "This will block the client!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, Block it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    BlockUnits(EunitID, 0);
+                }
+            });
+        }
+        function ConfirmActivateClient(EunitID) {
+            Swal.fire({ title: 'Are you sure?', text: "This will unblock the client!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, Unblock it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    BlockUnits(EunitID, 1);
+                }
+            });
+        }
+
+
+        function BlockUnits(EunitID, isblock) {
+            var inputDTO = {};
+            inputDTO.EunitID = EunitID;
+            inputDTO.isblock = isblock;
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                url: "/ClientManagement/BlockClientUnits",
+                contentType: 'application/json',
+                data: JSON.stringify(inputDTO),
+                success: function (data) {
+                    if (isblock == 0) {
+                        $successalert("Transaction Successful!", "Unit has been Blocked");
+                    }
+                    else {
+                        $successalert("Transaction Successful!", "Unit has been UnBlocked");
+                    }
+
+                    window.location.href = "/ClientManagement/ClientUnit"
+                    UnblockUI();
+                },
+                error: function (error) {
+                    $erroralert("Transaction Failed!", error.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+        function ClientUnitEdit(EunitID) {
+            Swal.fire({ title: 'Are you sure?', text: "You want to make changes!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    window.location.href = "/ClientManagement/GetClientUnitById/" + EunitID;
+                }
+            });
+        }
+    </script>
+}

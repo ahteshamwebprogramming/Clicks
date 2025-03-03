@@ -1,0 +1,341 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.SalaryProcessInputs
+@{
+    ViewData["Title"] = "Employee Salary Template Mapping";
+}
+
+<style>
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+</style>
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll /</span> Salary Processing Scheduler</h4>
+
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <form id="showAlert" class="row g-3" onsubmit="return false">
+                    <div class="modal-body">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center mb-4">
+                        </div>
+
+                        <div class="col-12 text-center" id="successDiv">
+                            <p id="errorPara" class="error" style="color:red"></p>
+                        </div>
+                        <div class="col-12 text-center" id="errorDiv">
+                            <p id="successPara" class="error" style="color:black"></p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 text-center">
+                        @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                        <button type="reset" id="btnClose"
+                                class="btn btn-label-secondary btn-reset mt-3"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                            Close
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+   
+    <div class="card" id="Add">
+        <div id="wizard-checkout" class="bs-stepper wizard-icons wizard-icons-example">
+            <div class="card">
+                <div class="card-body">
+                    <input type="button" class="btn btn-primary addShow" onclick="javascript:window.location.href='/PayrollSalary/SalariesList'" value="Processed Salary List" style="float:right" />
+                    <div style="clear:both"></div>
+                    <!--<h5 class="card-header">Roster Details</h5>-->
+                    <form method="post" action="/PayrollSalary/EmployeeSalaryProcessing">
+                        @*   <div class="row g-3" id="errorDiv"><p id="errorPara" class="error" style="color:red"></p></div>*@
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+
+                                @*  <label class="form-control" id="lblyear" for="">2023</label>*@
+                                <select class="form-select" id="selyr" name="SelYear" aria-label="Default select example">
+                                    <option value="0" selected>Select an option</option>
+                                    @if (Model.Years != null)
+                                    {
+                                        @foreach (var item in Model.Years)
+                                        {
+                                            if (item == Model.Year)
+                                            {
+                                                <option value="@item" selected> @item</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item"> @item</option>
+                                            }
+
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+                            <div class="col-md-6">
+
+                                <select class="form-select" id="selmth" name="SelMonth" aria-label="Default select example">
+                                    <option value="0" selected>Select an option</option>
+                                    @*<option value="01">Jan</option>
+                                    <option value="02">Feb</option>
+                                    <option value="03">Mar</option>
+                                    <option value="04">Apr</option>
+                                    <option value="05">May</option>
+                                    <option value="06">Jun</option>
+                                    <option value="07">Jul</option>
+                                    <option value="08">Aug</option>
+                                    <option value="09">Sep</option>
+                                    <option value="10">Oct</option>
+                                    <option value="11">Nov</option>
+                                    <option value="12">Dec</option>*@
+                                    @if (Model.SalMonths != null)
+                                    {
+                                        @foreach (var item in Model.SalMonths)
+                                        {
+                                            if (item.ID == Model.Month)
+                                            {
+                                                <option value="@item.ID" selected> @item.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.ID"> @item.Name</option>
+                                            }
+
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <div class="pt-4">
+                            <input type="hidden" class="dbcol" id="CrrMonth" name="CrrMonth" />
+                            <button type="submit" class="btn btn-primary" onclick="return BlockedUI()">Process</button>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+
+
+</div>
+
+@*<script src="../../assets/vendor/libs/tagify/tagify.js"></script>
+<script src="../../assets/js/forms-tagify.js"></script>*@
+<script src="~/customjs/commonfunction.js"></script>
+<script src="~/customjs/employeevalidation.js"></script>
+
+@section scripts {
+
+
+    <script type="text/javascript">
+
+        jQuery(document).ready(function () {
+
+
+            //alert(@Model.SalMonths.Count);
+
+            if ("@Model.Year" != "") {
+                jQuery("#selyr").val("@Model.Year");
+                jQuery("#selmth").val("@Model.Month");
+            }
+           
+
+            if ("@Model.DisplayMessage.Trim().ToUpper()" != "_BLANK") {
+                $successalert("PayScheduler", "@Model.DisplayMessage");
+
+            }
+        });
+
+        function BlockedUI() {
+
+           
+            year = jQuery("#selyr").val();
+            month = jQuery("#selmth").val();
+            //alert(year);
+            //return false;
+            BlockUI();
+            if (year == 0) {
+                $erroralert("Validation", "Please select the year");
+                //ShowServerMessage("Please select the year");
+
+                UnblockUI();
+                return false;
+            }
+            if (month == 0) {
+                UnblockUI();
+                $erroralert("Validation", "Please select the month");
+              
+                return false;
+            }
+            if (confirm("Confirm!, you want to process the salary?")) {
+                return true;
+            }
+            else {
+                UnblockUI();
+                return false;
+
+            }
+           
+          //  BlockUI();
+
+        }
+
+       
+
+        //const monthNames = ["January", "February", "March", "April", "May", "June",
+        //    "July", "August", "September", "October", "November", "December"
+        //];
+
+      
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                // if (sMsg.toUpperCase() == "SUCCESS") {
+                // sMsg = "Earnnig component created/updated successfully";
+                jQuery("#successDiv").show();
+                jQuery("#successPara").html(sMsg);
+
+                // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                //  }
+                //else {
+                //    jQuery("#errorDiv").show();
+                //    jQuery("#errorPara").html(sMsg);
+                //}
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+
+     
+
+        function ValidateInputs() {
+
+         
+          
+            
+
+            year = jQuery("#selYear").val();
+            month = jQuery("#selMonth").val();
+
+            //  alert(year);
+            BlockUI();
+            if (year == 0) {
+                $erroralert("Validation", "Please select the year");
+                jQuery(" #tableInfo").hide();
+                //  ShowServerMessage("Please select the year");
+                UnblockUI();
+                return false;
+            }
+            if (month == 0) {
+                UnblockUI();
+                $erroralert("Validation", "Please select the month");
+                jQuery(" #tableInfo").hide();
+                //  ShowServerMessage("Please select the month");
+                return false;
+            }
+
+
+        }
+
+        //function FreezePayroll() {
+
+        //    var rowData = {};
+        //    var formData = {};
+        //    var isData = false;
+        //    var dataCollection = new Array();
+        //    var results = new Array();
+        //    //var formData = new FormData();
+        //    var iCtr = 0;
+        //    var sValidMsg = "";
+        //    // var isData = true;
+        //    if (confirm("Are you sure you freeze to selected?")) {
+        //        if (jQuery("#selYear").val() == 0) {
+        //            alert("Please select the year");
+
+        //            //  ShowServerMessage("Please select the year");
+
+        //            return false;
+        //        }
+        //        if (jQuery("#selMonth").val() == 0) {
+
+        //            alert("Please select the month");
+
+        //            //  ShowServerMessage("Please select the month");
+        //            return false;
+        //        }
+
+        //        if (@Model.objResultData.Count> 0) {
+        //            for (iCtr = 1; iCtr <= @Model.objResultData.Count; iCtr = iCtr + 1) {
+        //                isChecked = jQuery("#EmpId_" + iCtr).is(":checked")
+
+        //                if (isChecked) {
+
+        //                    rowData.ProcessYear = jQuery("#selYear").val();
+        //                    rowData.ProcessMonth = jQuery("#selMonth").val();
+        //                    rowData.EmployeeIds = rowData.EmployeeIds != undefined ? rowData.EmployeeIds + "," + jQuery("#EmpId_" + iCtr).val() : jQuery("#EmpId_" + iCtr).val();
+        //                    isData = true;
+        //                }
+        //            }
+        //        }
+
+        //        if (isData) {
+
+        //            dataCollection.push(rowData)
+        //        }
+        //        else
+        //            alert("Please select any one option at least to process");
+        //        // ShowServerMessage("Please select the option you want to update the working day")
+
+        //        if (dataCollection.length > 0) {
+
+        //            BlockUI();
+        //            jQuery.ajax({
+        //                type: "POST",
+        //                url: "/PayrollSalary/EmpSalaryFreeze",
+        //                data: { userAction: rowData },
+        //                success: function (data) {
+        //                    console.log(data);
+        //                    //  alert(data.objResultData)
+        //                    UnblockUI();
+        //                    // var sMsg = data.displayMessage  //.Trim().Replace("< br > ", "\r\n")
+        //                    // ShowServerMessage(data);
+        //                    //if (data.toUpperCase() == "SUCCESS") {
+        //                    //    jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+        //                    //}
+        //                    // window.location.href = "/EmployeeAttendanceUI/RegularizeAttendance"
+        //                },
+        //                error: function (result) {
+        //                    var x = 1;
+        //                    alert("errror<br>" + result.responseText);
+        //                    UnblockUI();
+        //                }
+        //            });
+
+        //        }
+        //    }
+        //    else {
+        //        return false;
+        //    }
+
+        //}
+    </script>
+    }

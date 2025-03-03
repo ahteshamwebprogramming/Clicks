@@ -1,0 +1,106 @@
+﻿@model List<SimpliHR.Infrastructure.Models.Masters.MenuMasterDTO>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Compensation /</span> Holidays</h4>
+    <div class="card addShow" id="List" style="">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="window.location.href='/MenuMaster/AddMenusPartialView'" style="float:right;" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <div class="row">
+                    <div class="col-md-3">
+                        <select class="form-control" id="ParentMenu">
+                            <option value="0">Select Parent Menu</option>
+                            <option value="-1">All</option>
+                            @{
+                                if (Model != null)
+                                    @foreach (var item in Model)
+                                    {
+                                        <option value="@item.MenuId">@item.MenuName</option>
+                                    }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div id="divListMenus">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+
+
+
+
+        $(document).ready(function () {
+            ListMenus(0);
+            $("#ParentMenu").change(function () {
+                ListMenus($(this).val());
+            });
+        });
+
+        function Edit() {
+
+            window.location.href = "";
+
+        }
+        function DeleteRecord(Name, Id) {
+            var menuMasterDTO = {};
+            menuMasterDTO.MenuId = Id;
+            menuMasterDTO.ParentMenuId = $("#ParentMenu").val();
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/MenuMaster/DeleteMenuAndReturnPartialView',
+                data: JSON.stringify(menuMasterDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#divListMenus').html(data);
+                    $(".List").dataTable({
+                        "order": []
+                    });
+                    UnblockUI();
+                },
+                error: function (result) {
+                    alert(result);
+                    UnblockUI();
+                }
+            });
+        }
+
+
+        function ListMenus(parentMenuId) {
+            var menuMasterDTO = {};
+            menuMasterDTO.ParentMenuId = parentMenuId;
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/MenuMaster/ListMenusPartialView',
+                data: JSON.stringify(menuMasterDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#divListMenus').html(data);
+                    $(".List").dataTable({
+                        "order": []
+                    });
+                    UnblockUI();
+                },
+                error: function (result) {
+                    alert(result);
+                    UnblockUI();
+                }
+            });
+        }
+    </script>
+    }

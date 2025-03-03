@@ -1,0 +1,90 @@
+﻿@model SimpliHR.Infrastructure.Models.Performace.PerformanceSettingViewModel
+@{
+    ViewData["Title"] = "PMS Setting";
+}
+<link href="~/assets/css/exitclearance.css" rel="stylesheet" />
+<style>
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Performance/</span> List Of KRA</h4>
+    @{
+
+    }
+    <input type="button" class="btn btn-primary btn-sm" value="Upload KRA" style="float:right;margin-bottom:5px;margin-right:5px;" onclick="window.location.href='/Performance/PMSMasterKRA?ePerformanceSettingId=@(Model==null ? "" : Model.encPerformanceSettingId==null ? "" : Model.encPerformanceSettingId)'" />
+    <input type="button" class="btn btn-primary btn-sm" value="Go To Master" style="float:right;margin-bottom:5px;margin-right:5px;" onclick="window.location.href='/Performance/PMSMastersPage?ePerformanceSettingId=@(Model==null ? "" : Model.encPerformanceSettingId==null ? "" : Model.encPerformanceSettingId)'" />
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive text-nowrap">
+                        <table class="table table-bordered" id="table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Employee Code
+                                    </th>
+                                    <th>
+                                        Key Result Areas
+                                    </th>
+                                    <th>
+                                        WeightAge(%)
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    if (Model != null)
+                                    {
+                                        if (Model.PerformanceKRAMasterDBList != null)
+                                        {
+                                            foreach (var item in Model.PerformanceKRAMasterDBList)
+                                            {
+                                                <tr>
+                                                    <td>@(item.EmployeeCode)</td>
+                                                    <td>@(item.KRA)</td>
+                                                    <td>@(item.Weightage)</td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="div_ViewResignDetailsPartial">
+                        @*@Html.Partial("_employee/_employeeresignDetailsEmployeeWise")*@
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#table").dataTable({
+                "pageLength": 10,
+                responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'csv', 'excel'
+                ]
+            });
+        });
+
+
+    </script>
+    }
+
+
+

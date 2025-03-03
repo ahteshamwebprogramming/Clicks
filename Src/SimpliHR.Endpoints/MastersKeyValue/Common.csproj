@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\SimpliHR.Core\SimpliHR.Core.csproj" />
+    <ProjectReference Include="..\..\SimpliHR.Infrastructure\SimpliHR.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\SimpliHR.Services\SimpliHR.Services.csproj" />
+  </ItemGroup>
+
+</Project>

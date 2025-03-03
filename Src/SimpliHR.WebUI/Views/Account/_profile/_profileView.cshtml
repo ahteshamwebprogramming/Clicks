@@ -1,0 +1,303 @@
+﻿@model SimpliHR.Infrastructure.Models.ProfileEditAuth.ProfileEditAuthViewModel
+@{
+    //EmployeeMasterDTO employeedetail = new EmployeeMasterDTO();
+
+
+
+    SimpliHR.Infrastructure.Models.Employee.EmployeeMasterDTO employeedetail = Model.EmployeeDetails;
+    List<SimpliHR.Infrastructure.Models.ProfileEditAuth.ProfileEditAuthDTO> editAuth = Model.ProfileEditAuthList;
+
+}
+<style>
+    .edit-class {
+        color: red;
+        margin-left: 5px;
+        display: none;
+    }
+
+    .approval {
+        display: none;
+    }
+
+    .cancel {
+        display: none;
+    }
+</style>
+<div class="row">
+    <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
+        <!-- User Card -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="user-avatar-section">
+                    <div class="d-flex align-items-center flex-column">
+                        <img class="img-fluid rounded my-4" src="@((employeedetail.Base64ProfileImage==null || employeedetail.Base64ProfileImage=="data:image/png;base64,") ?  "../../assets/img/avatars/10.png" : employeedetail.Base64ProfileImage)" height="110" width="110" alt="User avatar" />
+                        <div class="user-info text-center">
+                            <h4 class="mb-2">@(employeedetail.EmployeeName == null ? "No Name Found" : employeedetail.EmployeeName)</h4>
+                            <h6>@(employeedetail.EmployeeCode == null ? "No Employee Code Found" : employeedetail.EmployeeCode)</h6>
+                            <h6>@(employeedetail == null ? "" : employeedetail.Role == null ? "" : employeedetail.Role.RoleName == null ? "" : employeedetail.Role.RoleName)</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-container">
+                    <ul class="list-unstyled mb-4">
+                        <li class="d-flex justify-content-center mb-3 text-center">
+                            <i class="bx bx-phone"></i><span class="fw-semibold mx-2">Contact Number:</span>
+                            <span>
+                                <span tblname="" oldvalue="@(employeedetail == null ? "" : employeedetail.ContactNo == null ? "" : employeedetail.ContactNo)" dbname="ContactNo" attachmentrequired="@(editAuth.Where(x => x.ProfileFieldName == "ContactNo").Select(x => x.AttachmentRequired).FirstOrDefault())" labelname="Contact Number">
+                                    @(employeedetail == null ? "" : employeedetail.ContactNo == null ? "" : employeedetail.ContactNo)
+                                </span>
+                                @{
+                                    if (editAuth.Where(x => x.ProfileFieldName == "ContactNo").Select(x => x.IsEditable).FirstOrDefault() == true)
+                                    {
+                                        <i class="fa fa-edit edit-class"></i>
+                                    }
+                                }
+                            </span>
+                        </li>
+                        <li class="d-flex justify-content-center mb-3">
+                            <i class="bx bx-envelope"></i>
+                            <span class="fw-semibold mx-2">Email:</span> <span>
+                                <span oldvalue="@(employeedetail == null ? "" : employeedetail.EmailId == null ? "" : employeedetail.EmailId)" dbname="EmailId" attachmentrequired="@(editAuth.Where(x => x.ProfileFieldName == "EmailId").Select(x => x.AttachmentRequired).FirstOrDefault())" labelname="Email Id">
+                                    @(employeedetail == null ? "" : employeedetail.EmailId == null ? "" : employeedetail.EmailId)
+                                </span>
+                                @{
+                                    if (editAuth.Where(x => x.ProfileFieldName == "EmailId").Select(x => x.IsEditable).FirstOrDefault() == true)
+                                    {
+                                        <i class="fa fa-edit edit-class"></i>
+                                    }
+                                }
+                            </span>
+                        </li>
+                        <div class="d-flex justify-content-center pt-3">
+                            @*<a href="javascript:void(0);" class="btn btn-primary me-3" data-bs-target="#editUser" data-bs-toggle="modal">Edit</a>*@
+                            <a href="javascript:void(0);" class="btn btn-primary me-3 edit" onclick="editShow()">Edit</a>
+                            <a href="javascript:void(0);" class="btn btn-primary me-3 approval" onclick="SendForApproval()">Send For Approval</a>
+                            <a href="javascript:void(0);" class="btn btn-danger me-3 cancel" onclick="cancel()">Cancel</a>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <!-- /User Card -->
+    </div>
+    <!--/ User Sidebar -->
+    <!-- User Content -->
+    <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
+        <!-- User Pills -->
+
+        <div class="nav-align-top mb-4">
+
+            <ul class="nav nav-pills mb-3" role="tablist">
+                <li class="nav-item">
+                    <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#personal-info" aria-controls="personal-info" aria-selected="true">
+                        Personal Information
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#professional-info" aria-controls="professional-info" aria-selected="false">
+                        Professional Information
+                    </button>
+                </li>
+               @* <li class="nav-item">
+                    <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#family-details" aria-controls="family-details" aria-selected="false">
+                        Family Details
+                    </button>
+                </li>*@
+                <li class="nav-item">
+                    <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#tickets-profile-edit" aria-controls="family-details" aria-selected="false">
+                        Tickets (Profile Edit)
+                    </button>
+                </li>
+               
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="personal-info" role="tabpanel">
+                    <div class="info-container">
+                        <small class="text-uppercase fw-semibold">Personal Details</small>
+                        <div class="list-unstyled mb-4 mt-3 container">
+                            <div class="row">
+                                <div class="align-items-center mb-3 col-md-6">
+                                    <i class="fa-regular fa-user"></i><span class="fw-semibold mx-2">First Name:</span> <span>@(employeedetail == null ? "" : employeedetail.FirstName == null ? "" : employeedetail.FirstName)</span>
+                                </div>
+                                <div class="align-items-center mb-3 col-md-6">
+                                    <i class="fa-regular fa-user"></i><span class="fw-semibold mx-2">Last Name:</span> <span>@(employeedetail == null ? "" : employeedetail.LastName == null ? "" : employeedetail.LastName)</span>
+                                </div>
+                                <div class="align-items-center mb-3 col-md-6">
+                                    <i class="fa-regular fa-user"></i><span class="fw-semibold mx-2">Middle Name:</span> <span>@(employeedetail == null ? "" : employeedetail.MiddleName == null ? "" : employeedetail.MiddleName)</span>
+                                </div>
+                                <div class="align-items-center mb-3 col-md-6">
+                                    <i class="fa-regular fa-user"></i><span class="fw-semibold mx-2">Gender:</span> <span>@(employeedetail == null ? "" : employeedetail.GenderId == null ? "" : employeedetail.GenderId == 1 ? "Male" : employeedetail.GenderId == 2 ? "Female" : "")</span>
+                                </div>
+                                <div class="align-items-center mb-3 col-md-6">
+                                    <i class="fa-regular fa-calendar-days"></i><span class="fw-semibold mx-2">Date of Birth:</span> <span>@(employeedetail == null ? "" : employeedetail.Dob == null ? "" : ((DateTime)employeedetail.Dob).ToString("dd-MMM-yyyy"))</span>
+                                </div>
+                                <div class="align-items-center mb-3 col-md-6">
+                                    <i class="fa-regular fa-user"></i><span class="fw-semibold mx-2">Father Name:</span> <span>@(employeedetail == null ? "" : employeedetail.FatherName == null ? "" : employeedetail.FatherName)</span>
+                                </div>
+                                <div class="align-items-center mb-3 col-md-6">
+                                    <i class="fa-regular fa-user"></i><span class="fw-semibold mx-2">Spouse Name:</span> <span>@(employeedetail == null ? "" : employeedetail.SpouseName == null ? "" : employeedetail.SpouseName)</span>
+                                </div>
+                                <div class="align-items-center mb-3 col-md-6">
+                                    <i class="bx bx-detail"></i><span class="fw-semibold mx-2">Marital Status:</span> <span>@(employeedetail == null ? "" : employeedetail.MaritalStatus == null ? "" : employeedetail.MaritalStatus.MaritalStatusName)</span>
+                                </div>
+                                <div class="align-items-center mb-3 col-md-6">
+                                    <i class="fa-solid fa-hands-praying"></i><span class="fw-semibold mx-2">Religion:</span> <span>@(employeedetail == null ? "" : employeedetail.Religion == null ? "" : employeedetail.Religion.ReligionName)</span>
+                                </div>
+                                <div class="align-items-center mb-3 col-md-6">
+                                    <i class="fa-solid fa-droplet"></i><span class="fw-semibold mx-2">Blood Group:</span> <span>@(employeedetail == null ? "" : employeedetail.BloodGroup == null ? "" : employeedetail.BloodGroup.BloodGroupName.ToUpper())</span>
+                                </div>
+                                <div class="align-items-center mb-3 col-md-6">
+                                    <i class="fa-regular fa-address-card"></i><span class="fw-semibold mx-2">Pan Card:</span> <span>@(employeedetail == null ? "" : employeedetail.Pannumber == null ? "" : employeedetail.Pannumber.ToUpper())</span>
+                                </div>
+                                <div class="align-items-center mb-3 col-md-6">
+                                    <i class="fa-regular fa-address-card"></i><span class="fw-semibold mx-2">Aadhar:</span> <span>@(employeedetail == null ? "" : employeedetail.AadharNumber == null ? "" : employeedetail.AadharNumber.ToUpper())</span>
+                                </div>
+                               
+                            </div>
+                        </div>
+                        <small class="text-uppercase fw-semibold">Emergency Info</small>
+                        <div class="list-unstyled mb-4 mt-3 container">
+                            <div class="row">
+                                <div class="align-items-center mb-3 col-md-6">
+                                    <i class="fa-solid fa-building-columns"></i><span class="fw-semibold mx-2">Contact Person:</span> <span>
+                                        @(employeedetail == null ? "" : (employeedetail.EmergencyContactPerson == null) ? "" : employeedetail.EmergencyContactPerson)</ span >
+                                </div>
+                                <div class="align-items-center mb-3 col-md-6">
+                                    <i class="bx bx-detail"></i><span class="fw-semibold mx-2">Contact Numbar:</span> <span>
+                                        @(employeedetail == null ? "" : (employeedetail.EmergencyContactNo == null) ? "" : employeedetail.EmergencyContactNo)
+                                    </span>
+                                </div>
+
+                                <div class="align-items-center mb-3 col-md-6">
+                                    <i class="bx bx-detail"></i><span class="fw-semibold mx-2">Contact Relation:</span> <span>
+                                        @(employeedetail == null ? "" : (employeedetail.EmergencyContactRelation == null) ? "" : employeedetail.EmergencyContactRelation)
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="professional-info" role="tabpanel">
+                    <div class="info-container">
+                        <ul class="list-unstyled mb-4">
+                            <li class="d-flex align-items-center mb-3  col-md-6">
+                                <i class="fa-solid fa-person-half-dress"></i><span class="fw-semibold mx-2">Employee Code:</span> <span>@(employeedetail.EmployeeCode == null ? "" : employeedetail.EmployeeCode)</span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3  col-md-6">
+                                <i class="fa-solid fa-person-half-dress"></i><span class="fw-semibold mx-2">Job Title:</span> <span>@(employeedetail.JobTitleName == null ? "" : employeedetail.JobTitleName)</span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3  col-md-6">
+                                <i class="fa-solid fa-layer-group"></i><span class="fw-semibold mx-2">Department:</span> <span>@(employeedetail == null ? "" : employeedetail.DepartmentName == null ? "" : employeedetail.DepartmentName)</span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3  col-md-6">
+                                <i class="fa-solid fa-person-dress"></i><span class="fw-semibold mx-2">Reporting Manager:</span> <span>
+                                    @(employeedetail == null ? "" : employeedetail.ManagerName == null ? "" : employeedetail.ManagerName)
+                                   
+                                </span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3 col-md-6">
+                                <i class="fa-solid fa-person-dress"></i><span class="fw-semibold mx-2">HOD:</span> <span>
+                                    @(employeedetail == null ? "" : employeedetail.HODName == null ? "" : employeedetail.HODName)
+                                   
+                                </span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3 col-md-6">
+                                <i class="fa-regular fa-calendar-days"></i><span class="fw-semibold mx-2">Date of Joining:</span> <span>@(employeedetail == null ? "" : employeedetail.Doj == null ? "" : ((DateTime)employeedetail.Doj).ToString("dd-MMM-yyyy"))</span>
+                            </li>
+                           
+                            <li class="d-flex align-items-center mb-3 col-md-6">
+                                <i class="fa-solid fa-location-crosshairs"></i><span class="fw-semibold mx-2">Location:</span> <span>@(employeedetail == null ? "" : employeedetail.WorkLocation == null ? "" : employeedetail.WorkLocation.Location)</span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3 col-md-6">
+                                <i class="fa-solid fa-location-crosshairs"></i><span class="fw-semibold mx-2">Employement Type:</span> <span>@(employeedetail == null ? "" : employeedetail.EmploymentType == null ? "" : employeedetail.EmploymentType)</span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3 col-md-6">
+                                <i class="fa-solid fa-location-crosshairs"></i><span class="fw-semibold mx-2">Employement Status:</span> <span> @(employeedetail == null ? "" : employeedetail.EmployeeStatus == null ? "" : employeedetail.EmployeeStatus) </span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3 col-md-6">
+                                <i class="fa-solid fa-location-crosshairs"></i><span class="fw-semibold mx-2">Work Email:</span> <span> @(employeedetail == null ? "" : employeedetail.OfficialEmail == null ? "" : employeedetail.OfficialEmail) </span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3 col-md-6">
+                                <i class="fa-solid fa-location-crosshairs"></i><span class="fw-semibold mx-2">CTC:</span> <span> @(employeedetail == null ? "" : employeedetail.CTC == null ? "" : employeedetail.CTC) </span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3 col-md-6">
+                                <i class="fa-solid fa-location-crosshairs"></i><span class="fw-semibold mx-2">EPF No:</span> <span> @(employeedetail == null ? "" : employeedetail.EPFNumber == null ? "" : employeedetail.EPFNumber) </span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3 col-md-6">
+                                <i class="fa-solid fa-location-crosshairs"></i><span class="fw-semibold mx-2">ESI No:</span> <span> @(employeedetail == null ? "" : employeedetail.ESINumber == null ? "" : employeedetail.ESINumber) </span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3 col-md-6">
+                                <i class="fa-solid fa-location-crosshairs"></i><span class="fw-semibold mx-2">UAN No:</span> <span> @(employeedetail == null ? "" : employeedetail.UANNumber == null ? "" : employeedetail.UANNumber) </span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3 col-md-6">
+                                <i class="fa-solid fa-location-crosshairs"></i><span class="fw-semibold mx-2">Confirmation Period(In Days):</span> <span> @(employeedetail == null ? "" : employeedetail.ConfirmationPeriod == null ? "" : employeedetail.ConfirmationPeriod) </span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3 col-md-6">
+                                <i class="fa-solid fa-location-crosshairs"></i><span class="fw-semibold mx-2">Date of Confirmation:</span> <span> @(employeedetail == null ? "" : employeedetail.DOC == null ? "" : employeedetail.DOC) </span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3 col-md-6">
+                                <i class="fa-solid fa-location-crosshairs"></i><span class="fw-semibold mx-2">Notice Period:</span> <span> @(employeedetail == null ? "" : employeedetail.NoticePeriod == null ? "" : employeedetail.NoticePeriod) </span>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                </div>
+                @*<div class="tab-pane fade" id="family-details" role="tabpanel">
+                    <div class="info-container">
+                        <ul class="list-unstyled mb-4">
+                            <li class="d-flex align-items-center mb-3">
+                                <i class="fa-solid fa-person-half-dress"></i><span class="fw-semibold mx-2">Father's Name:</span> <span>@(employeedetail == null ? "" : employeedetail.FatherName)</span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3">
+                                <i class="fa-solid fa-person-half-dress"></i><span class="fw-semibold mx-2">Name:</span> <span>@(employeedetail == null ? "No Family Details Found" : employeedetail.EmployeeFamilyDetails == null ? "" : employeedetail.EmployeeFamilyDetails.Count == 0 ? "No Family Details Found" : employeedetail.EmployeeFamilyDetails.FirstOrDefault().MemberName)</span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3">
+                                <i class="fa-solid fa-person-half-dress"></i><span class="fw-semibold mx-2">Relation Ship:</span> <span>@(employeedetail == null ? "No Family Details Found" : employeedetail.EmployeeFamilyDetails == null ? "" : employeedetail.EmployeeFamilyDetails.Count == 0 ? "No Family Details Found" : employeedetail.EmployeeFamilyDetails.FirstOrDefault().Relationship)</span>
+                            </li>
+                            <li class="d-flex align-items-center mb-3">
+                                <i class="fa-solid fa-person-half-dress"></i><span class="fw-semibold mx-2">Date Of Birth:</span> <span>@(employeedetail == null ? "No Family Details Found" : employeedetail.EmployeeFamilyDetails == null ? "" : employeedetail.EmployeeFamilyDetails.Count == 0 ? "No Family Details Found" : employeedetail.EmployeeFamilyDetails.FirstOrDefault().MemberDob == null ? "" : ((DateTime)employeedetail.EmployeeFamilyDetails.FirstOrDefault().MemberDob).ToString("dd-MMM-yyyy"))</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>*@
+                <div class="tab-pane fade" id="tickets-profile-edit" role="tabpanel">
+                    <div class="info-container">
+                        <div class="row">
+                            <div class="table-responsive text-nowrap mb-4">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th><strong>Ticket Id</strong></th>
+                                            <td>Employee</td>
+                                            <td><strong>Department</strong></td>
+                                            <td>View</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            if (Model != null && Model.EmployeeEditTicketListHistory != null)
+                                            {
+                                                foreach (var item in Model.EmployeeEditTicketListHistory)
+                                                {
+                                                    <tr>
+                                                        <td>@item.TicketId</td>
+                                                        <td>@item.EmployeeName</td>
+                                                        <td>@item.Department</td>
+                                                        <td>
+                                                            <input type="button" class="btn btn-primary" value="View" onclick="window.location.href='/Employee/EmployeeEditList?tenc=@item.encTicketId&&tsc=@item.encSourceScreen'" />
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/ User Pills -->
+
+    </div>
+</div>

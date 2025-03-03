@@ -1,0 +1,306 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.SalaryProcessInputs
+@{
+    ViewData["Title"] = "PaySlip";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    @*   <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll /</span> Pay Slip</h4>*@
+
+    <div class="row">
+        <!-- User Content -->
+        @*@using (Html.BeginForm("ExportPaySlip", "PayrollSalary", FormMethod.Post))
+        {
+        <input type="hidden" name="ExportData" />
+        <input type="submit" id="btnSubmit" class="btn btn-primary" style="float:right;" value="Download" />
+        }*@
+        @*        <input type="button" class="btn btn-primary" value="Download" onclick="#" style="float:right;" />
+        *@
+
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1" id="PrintPDF">
+            <!-- User Pills -->
+
+            <div class="nav-align-top mb-4">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="earnings" role="tabpanel">
+                        <div class="card">
+
+                            <div class="card-body">
+                                <input type="button" id="btndownload" class="btn btn-primary" value="Download" style="float:right; width:200px;" />
+                                <div style="clear:both"></div>
+                                <div class="row mb-4">
+                                    <div class="col-md-4">
+                                       @*  <img src="../../ClientLogo/kt-logo.png" style="width:200px;height:auto;" /> *@
+                                        <img src="@(Model.Base64ProfileImage==null ? "logo_1.jpg" : Model.Base64ProfileImage)" width="200px" height="äuto" alt="" />
+                                        </div>
+                                    <div class="col-md-8 text-center">
+                                        @if (Model.objPaySlip != null)
+                                        {
+                                            if (Model.objPaySlip.Count > 0)
+                                            {
+                                                foreach (var item in Model.objPaySlip)
+                                                {
+                                                    <h4><strong>@item.UnitName  </strong></h4>
+                                                    <p>@item.Address, @item.CityName.</p>
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                                <div class="mb-4">Payslip for the month of @Model.MonthName, @Model.Year</div>
+                                <div class="table-responsive text-nowrap mb-4">
+                                    @if (Model.objPaySlip != null)
+                                    {
+                                        if (Model.objPaySlip.Count > 0)
+                                        {
+                                            float? paidDays = 0;
+                                            if (Model.objPaySlipComponent.Count > 0)
+                                            {
+                                                paidDays = Model.objPaySlipComponent.Select(x => x.PaidDays).FirstOrDefault();
+                                            }
+                                            foreach (var item in Model.objPaySlip)
+                                            {
+
+                                                <table class="table table-bordered">
+                                                    <tr>
+                                                        <td><strong>Emp. Name</strong></td>
+                                                        <td>@item.EmployeeName</td>
+                                                        <td><strong>Location</strong></td>
+                                                        <td>@item.CityName</td>
+                                                        <td><strong>Paid Days</strong></td>
+                                                        <td class="text-center">@paidDays</td>
+                                                        <td><strong>Bank Name</strong></td>
+                                                        <td class="text-center">@item.BankName</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Designation</strong></td>
+                                                        <td>@item.JobTitle</td>
+                                                        <td><strong>Department</strong></td>
+                                                        <td>@item.DepartmentName</td>
+                                                        <td><strong>UAN</strong></td>
+                                                        <td>@item.EpfNumber</td>
+                                                        <td><strong>Bank A/c No.</strong></td>
+                                                        <td>@item.AccountNo</td>
+                                                    </tr>
+                                                </table>
+                                            }
+                                        }
+                                    }
+                                </div>
+
+                                <div class="table-responsive text-nowrap mb-4">
+                                    <table class="table">
+                                        <tr>
+                                            <td colspan="5" class="text-center" width="50%"><strong>EARNINGS</strong></td>
+                                            <td colspan="4" class="text-center" width="50%"><strong>DEDUCTIONS</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Component</strong></td>
+                                            <td><strong>Standard</strong></td>
+                                            <td><strong>Actual</strong></td>
+                                            <td><strong>Arrears</strong></td>
+                                            <td><strong>Total Earnings</strong></td>
+                                            <td><strong>Component</strong></td>
+                                            <td><strong>Actual</strong></td>
+                                            <td><strong>Arrears</strong></td>
+                                            <td><strong>Total Deductions</strong></td>
+                                        </tr>
+
+
+                                        @if (Model.objPaySlipComponent != null)
+                                        {
+                                            if (Model.objPaySlipComponent.Count > 0)
+                                            {
+                                                foreach (var item in Model.objPaySlipComponent)
+                                                {
+                                                    if (@item.Component != "Grand Total")
+                                                    {
+                                                        if (@item.Component != "Net Pay")
+                                                        {
+                                                            string szStandard = string.Format("{0:#,#.00}", @item.Standard);
+                                                            string szActual = string.Format("{0:#,#.00}", @item.Actual);
+                                                            string szArrears = string.Format("{0:#,#.00}", @item.Arrears);
+                                                            string szTotal = string.Format("{0:#,#.00}", @item.Total);
+                                                            string szDActual = string.Format("{0:#,#.00}", @item.DActual);
+                                                            string szDArrears = string.Format("{0:#,#.00}", @item.DArrears);
+                                                            string szDTotal = string.Format("{0:#,#.00}", @item.DTotal);
+                                                            <tr>
+                                                                <td>@item.Component</td>
+                                                                <td class="text-end" style="text-align:right;"> @(szStandard.Trim() == ".00" ? "0" : szStandard)</td>
+                                                                <td class="text-end" style="text-align:right;">@(szActual.Trim() == ".00" ? "0" : szActual)</td>
+                                                                <td class="text-end" style="text-align:right;">@(szArrears.Trim() == ".00" ? "0" : szArrears)</td>
+                                                                <td class="text-end" style="text-align:right;">@(szTotal.Trim() == ".00" ? "0" : szTotal)</td>
+                                                                <td>@item.DComponent</td>
+                                                                <td class="text-end" style="text-align:right;">@(szDActual.Trim() == ".00" ? "0" : szDActual)</td>
+                                                                <td class="text-end" style="text-align:right;">@(szDArrears.Trim() == ".00" ? "0" : szDArrears)</td>
+                                                                <td class="text-end" style="text-align:right;">@(szDTotal.Trim() == ".00" ? "0" : szDTotal)</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        @*  <tr>
+                                        <td>@item.Component</td>
+                                        <td class="text-end">20,001.00</td>
+                                        <td class="text-end">18,065.00</td>
+                                        <td class="text-end">3,000.00</td>
+                                        <td class="text-end">21,065.00</td>
+                                        <td>Income Tax</td>
+                                        <td class="text-end">0.00</td>
+                                        <td class="text-end"></td>
+                                        <td class="text-end">0.00</td>
+
+                                        <td>HRA</td>
+                                        <td class="text-end">10,000.00</td>
+                                        <td class="text-end">9,032.00</td>
+                                        <td class="text-end">1,250.00</td>
+                                        <td class="text-end">10,282.00</td>
+                                        <td>Provident Fund</td>
+                                        <td class="text-end">2,400.12</td>
+                                        <td class="text-end">0.00</td>
+                                        <td class="text-end">2,400.12</td>
+                                        </tr>
+                                        <tr>
+                                        <td>Fixed Allowance</td>
+                                        <td class="text-end">50,000.00</td>
+                                        <td class="text-end">45,161.00</td>
+                                        <td class="text-end">3,000.00</td>
+                                        <td class="text-end">48,161.00</td>
+                                        <td>Loan / Advance</td>
+                                        <td class="text-end">0.00</td>
+                                        <td class="text-end"></td>
+                                        <td class="text-end">0.00</td>
+                                        </tr>
+                                        <tr>
+                                        <td>Bonus</td>
+                                        <td class="text-end"></td>
+                                        <td class="text-end">2,400.00</td>
+                                        <td class="text-end"></td>
+                                        <td class="text-end">2,400.00</td>
+                                        <td>Professional Tax</td>
+                                        <td class="text-end">200</td>
+                                        <td class="text-end"></td>
+                                        <td class="text-end">200</td>
+                                        </tr>
+                                        <tr>
+                                        <td>Commission</td>
+                                        <td class="text-end"></td>
+                                        <td class="text-end">500.00</td>
+                                        <td class="text-end"></td>
+                                        <td class="text-end">500.00</td>
+                                        <td></td>
+                                        <td class="text-end"></td>
+                                        <td class="text-end"></td>
+                                        <td class="text-end"></td>
+                                        </tr>*@
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+
+                                        @if (Model.objPaySlipComponent.Count > 0)
+                                        {
+
+                                            var gTotal = Model.objPaySlipComponent.Where(x => x.Component.Equals("Grand Total")).FirstOrDefault();
+
+                                            var szStandard = string.Format("{0:#,#.00}", @gTotal.Standard);
+                                            var szActual = string.Format("{0:#,#.00}", @gTotal.Actual);
+                                            var szArrears = string.Format("{0:#,#.00}", @gTotal.Arrears);
+                                            var szTotal = string.Format("{0:#,#.00}", @gTotal.Total);
+                                            var szDActual = string.Format("{0:#,#.00}", @gTotal.DActual);
+                                            var szDArrears = string.Format("{0:#,#.00}", @gTotal.DArrears);
+                                            var szDTotal = string.Format("{0:#,#.00}", @gTotal.DTotal);
+                                            <tr>
+
+                                                <td><strong>Grand Total</strong></td>
+
+                                                <td class="text-end"><strong>@(szStandard.Trim() == ".00" ? "0" : szStandard)</strong></td>
+                                                <td class="text-end"><strong>@(szActual.Trim() == ".00" ? "0" : szActual)</strong></td>
+                                                <td class="text-end"><strong>@(szArrears.Trim() == ".00" ? "0" : szArrears)</strong></td>
+                                                <td class="text-end"><strong>@(szTotal.Trim() == ".00" ? "0" : szTotal)</strong></td>
+                                                <td><strong>Grand Total</strong></td>
+                                                <td class="text-end"><strong>@(szDActual.Trim() == ".00" ? "0" : szDActual)</strong></td>
+                                                <td class="text-end"><strong>@(szDArrears.Trim() == ".00" ? "0" : szDArrears)</strong></td>
+                                                <td class="text-end"><strong>@(szDTotal.Trim() == ".00" ? "0" : szDTotal)</strong></td>
+                                            </tr>
+                                        }
+
+
+
+                                    </table>
+                                </div>
+
+                                <div class="table-responsive text-nowrap mb-4">
+                                    <table class="table table-bordered">
+                                        @if (Model.objPaySlipComponent.Count > 0)
+                                        {
+
+                                            var gNetPay = Model.objPaySlipComponent.Where(x => x.Component.Equals("Net Pay")).FirstOrDefault();
+                                            var szNetPay = string.Format("{0:#,#.00}", @gNetPay.Standard);
+                                            <tr>
+                                                <td><strong>Net Pay for the Month (INR)</strong></td>
+                                                <td>@szNetPay</td>
+                                                <td><strong>(@gNetPay.DComponent)</strong></td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--/ User Pills -->
+
+        </div>
+        <!--/ User Content -->
+    </div>
+
+
+</div>
+
+@section scripts {
+    @*    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script src="~/assets/js/yearpicker.js"></script>*@
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                ShowServerMessage("@Model.DisplayMessage")
+            }
+
+        });
+
+        //$("#btnSubmit").click(function () {
+        //    $("input[name='ExportData']").val($("#PrintPDF").html());
+        //});
+
+        $('#btndownload').click(function () {
+
+            var urlToOpen = '';
+            var docURL = document.URL;
+
+            urlToOpen = '/PayrollSalary/PaySlipDownload';
+            //if (docURL.indexOf('index') > -1) {
+            //    urlToOpen = '../Print/' + $(this).attr('id');
+            //}
+            //else {
+            //    urlToOpen = 'Contract/Print/' + $(this).attr('id');
+            //}
+
+            //alert('urlToOpen > ' + urlToOpen);
+            if (urlToOpen != '') window.open(urlToOpen);
+        });
+    </script>
+}

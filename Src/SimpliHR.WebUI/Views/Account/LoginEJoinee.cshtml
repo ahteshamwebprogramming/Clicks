@@ -1,0 +1,43 @@
+﻿@model SimpliHR.Infrastructure.Models.Login.LoginDetailDTO
+@{
+    Layout = null;
+}
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Simpli2.0 HRMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/vetixy/circular-std@1.0.0/dist/index.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/login.css" rel="stylesheet">
+</head>
+<body>
+    <div id="container">
+        <div id="content">
+            <form class="login-form animate-bottom" method="post" action="/Account/LoginEJoinee">
+                <div class="login-data">
+                    <img src="~/images/simpli-logo.png" alt="">
+                    <div class="tagnine">Welcome</div>
+                    <div class="login-form">
+                        <p>Login to Simpli</p>
+                        <div> <input asp-for="UserName" name="UserName" type="text" class="username" required placeholder="Username"></div>
+                        <div> <input asp-for="Password" name="Password" type="password" class="password" required placeholder="Password"></div>
+                        <input type="hidden" name="EncryptedEmpId" asp-for="EncryptedEmpId" value="@Model.EncryptedEmpId" />
+                        <button type="submit" class="login-btn">Login</button>
+                    </div>
+                    @Html.ValidationSummary("", new { @class = "text-danger" })
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+<script src="~/customjs/employeevalidation.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+       
+
+    });
+</script>
+</html>

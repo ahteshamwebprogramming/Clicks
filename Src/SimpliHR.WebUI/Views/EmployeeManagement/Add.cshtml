@@ -1,0 +1,593 @@
+﻿@{
+    // Layout = null;
+}
+
+@*Page CSS*@
+<link rel="stylesheet" href="~/assets/vendor/libs/bs-stepper/bs-stepper.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/bootstrap-select/bootstrap-select.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/select2/select2.css" />
+
+@*Page CSS*@
+<div class="container-xxl flex-grow-1 container-p-y">
+    <!-- Default -->
+    <div class="row">
+        <div class="col-12">
+            <h5>Employee Details</h5>
+        </div>
+
+
+
+        <!-- Vertical Wizard -->
+        <div class="col-12 mb-4">
+            <div class="bs-stepper wizard-numbered wizard-vertical vertical mt-2">
+                <div class="bs-stepper-header">
+                    <div class="step" data-target="#personal">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">1</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Personal Information</span>
+                                <!--span class="bs-stepper-subtitle">Setup Account Details</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#bank-details">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">2</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Bank Details</span>
+                                <!--span class="bs-stepper-subtitle">Add personal info</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#academic-details">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">3</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Academic Details</span>
+                                <!--span class="bs-stepper-subtitle">Add social links</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#experiences">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">4</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Experiences Background</span>
+                                <!--span class="bs-stepper-subtitle">Add social links</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#certification">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">5</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Certification Details</span>
+                                <!--span class="bs-stepper-subtitle">Add social links</span-->
+                            </span>
+                        </button>
+                    </div>
+
+                    <div class="line"></div>
+                    <div class="step" data-target="#job-information">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">6</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Job Information </span>
+                                <!--span class="bs-stepper-subtitle">Add social links</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#Compensation">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">7</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Compensation </span>
+                                <!--span class="bs-stepper-subtitle">Add social links</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#upload-documents">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">8</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Upload Documents</span>
+                                <!--span class="bs-stepper-subtitle">Add social links</span-->
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <div class="bs-stepper-content">
+                    <form onSubmit="return false">
+                        <!-- Account Details -->
+                        <div id="personal" class="content">
+                            <!--div class="content-header mb-3">
+                              <h6 class="mb-0">Account Details</h6>
+                              <small>Enter Your Account Details.</small>
+                            </div-->
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">First Name</label>
+                                    <input type="text" id="" class="form-control" placeholder="First Name" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Middle Name</label>
+                                    <input type="text" id="" class="form-control" placeholder="Middle Name" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Last Name</label>
+                                    <input type="text" id="" class="form-control" placeholder="Last Name" />
+                                </div>
+                               
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Gender</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">Male</option>
+                                        <option value="2">Female</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Date of Birth</label>
+                                    <input type="text" class="form-control flatpickr-date-cstm" placeholder="YYYY-MM-DD" id="flatpickr-date" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Contact Number</label>
+                                    <input type="number" id="" class="form-control" placeholder="Contact Number" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Email</label>
+                                    <input type="email"
+                                           id="email"
+                                           class="form-control"
+                                           placeholder="john.doe@email.com"
+                                           aria-label="john.doe" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Father Name</label>
+                                    <input type="text" id="" class="form-control" placeholder="Father Name" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Spouse Name</label>
+                                    <input type="text" id="" class="form-control" placeholder="Spouse Name" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Marital Status</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">Single</option>
+                                        <option value="2">Married</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Religion</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">One</option>
+                                        <option value="2">Two</option>
+                                        <option value="3">Three</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Blood Group</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">One</option>
+                                        <option value="2">Two</option>
+                                        <option value="3">Three</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Pan Card</label>
+                                    <input type="text" id="" class="form-control" placeholder="Pan Card" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Aadhar</label>
+                                    <input type="text" id="" class="form-control" placeholder="Aadhar" />
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-label-secondary btn-prev" disabled>
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Personal Info -->
+                        <div id="bank-details" class="content">
+                            <!--div class="content-header mb-3">
+                              <h6 class="mb-0">Personal Info</h6>
+                              <small>Enter Your Personal Info.</small>
+                            </div-->
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="country-vertical">Bank Name</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option label="Country"></option>
+                                        <option>Option 1</option>
+                                        <option>Option 2</option>
+                                        <option>Option 3</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="first-name-vertical">Account Name</label>
+                                    <input type="text" id="" class="form-control" placeholder="Account Name" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="first-name-vertical">Account Number</label>
+                                    <input type="text" id="" class="form-control" placeholder="Account Number" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="last-name-vertical">IFSC Code</label>
+                                    <input type="text" id="" class="form-control" placeholder="IFSC Code" />
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Academic Details -->
+                        <div id="academic-details" class="content">
+                            <!--div class="content-header mb-3">
+                              <h6 class="mb-0">Personal Info</h6>
+                              <small>Enter Your Personal Info.</small>
+                            </div-->
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="country-vertical">Qualification:Type</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option label="Qualification:Type"></option>
+                                        <option>Option 1</option>
+                                        <option>Option 2</option>
+                                        <option>Option 3</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="country-vertical">Qualification:Name</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option label="Qualification:Name"></option>
+                                        <option>Option 1</option>
+                                        <option>Option 2</option>
+                                        <option>Option 3</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="country-vertical">Year of Passing</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option label="Country"></option>
+                                        <option>Option 1</option>
+                                        <option>Option 2</option>
+                                        <option>Option 3</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="first-name-vertical">Percentage/grade</label>
+                                    <input type="text" id="" class="form-control" placeholder="Percentage/grade" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="last-name-vertical">Institute/ University</label>
+                                    <input type="text" id="" class="form-control" placeholder="Institute/ University" />
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Experiences Background -->
+                        <div id="experiences" class="content">
+                            <!--div class="content-header mb-3">
+                              <h6 class="mb-0">Personal Info</h6>
+                              <small>Enter Your Personal Info.</small>
+                            </div-->
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="first-name-vertical">Company Name</label>
+                                    <input type="text" id="" class="form-control" placeholder="Company Name" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="last-name-vertical">Job title</label>
+                                    <input type="text" id="" class="form-control" placeholder="Job title" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Joined Date</label>
+                                    <input type="text" class="form-control flatpickr-date-cstm" placeholder="YYYY-MM-DD" id="flatpickr-date-1" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Last working Date</label>
+                                    <input type="text" class="form-control flatpickr-date-cstm" placeholder="YYYY-MM-DD" id="flatpickr-date-2" />
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Job Information  -->
+                        <div id="job-information" class="content">
+                            <!--div class="content-header mb-3">
+                              <h6 class="mb-0">Personal Info</h6>
+                              <small>Enter Your Personal Info.</small>
+                            </div-->
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="username-vertical">Employee ID</label>
+                                    <input type="text" id="" class="form-control" placeholder="Employee ID" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="email-vertical">Job Title</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">One</option>
+                                        <option value="2">Two</option>
+                                        <option value="3">Three</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="email-vertical">Department</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">One</option>
+                                        <option value="2">Two</option>
+                                        <option value="3">Three</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="confirm-password-vertical">Supervisor/Manager</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">One</option>
+                                        <option value="2">Two</option>
+                                        <option value="3">Three</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="confirm-password-vertical">Hiring Date</label>
+                                    <input type="text" class="form-control flatpickr-date-cstm" placeholder="YYYY-MM-DD" id="flatpickr-date" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="confirm-password-vertical">Work Location</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">One</option>
+                                        <option value="2">Two</option>
+                                        <option value="3">Three</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="confirm-password-vertical">Employment Type</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">One</option>
+                                        <option value="2">Two</option>
+                                        <option value="3">Three</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="confirm-password-vertical">Employment Status</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">One</option>
+                                        <option value="2">Two</option>
+                                        <option value="3">Three</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="confirm-password-vertical">Work Email</label>
+                                    <input type="email"
+                                           id="email"
+                                           class="form-control"
+                                           placeholder="john.doe@email.com"
+                                           aria-label="john.doe" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="confirm-password-vertical">Role</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">One</option>
+                                        <option value="2">Two</option>
+                                        <option value="3">Three</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="confirm-password-vertical">Band</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">One</option>
+                                        <option value="2">Two</option>
+                                        <option value="3">Three</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Certification Details  -->
+                        <div id="certification" class="content">
+                            <!--div class="content-header mb-3">
+                              <h6 class="mb-0">Personal Info</h6>
+                              <small>Enter Your Personal Info.</small>
+                            </div-->
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Certification Name</label>
+                                    <input type="text" id="" class="form-control" placeholder="Certification Name" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="confirm-password-vertical">Year of certification</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">One</option>
+                                        <option value="2">Two</option>
+                                        <option value="3">Three</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Duration</label>
+                                    <input type="text" id="" class="form-control" placeholder="Duration" />
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Upload Documents -->
+                        <div id="upload-documents" class="content">
+                            <div class="content-header mb-3">
+                                <h6 class="mb-0">Social Links</h6>
+                                <small>Enter Your Social Links.</small>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label for="formFile" class="form-label">Pan Card</label>
+                                    <input class="form-control" type="file" id="" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="formFile" class="form-label">Aadhar Card</label>
+                                    <input class="form-control" type="file" id="" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="formFile" class="form-label">Account Cheque</label>
+                                    <input class="form-control" type="file" id="" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="formFile" class="form-label">10th Certificate</label>
+                                    <input class="form-control" type="file" id="" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="formFile" class="form-label">12th Certificate</label>
+                                    <input class="form-control" type="file" id="" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="formFile" class="form-label">Graduate</label>
+                                    <input class="form-control" type="file" id="" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="formFile" class="form-label">Post Graduate</label>
+                                    <input class="form-control" type="file" id="" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="formFile" class="form-label">Certificate</label>
+                                    <input class="form-control" type="file" id="" />
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-success btn-submit">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="Compensation" class="content">
+                            <!--div class="content-header mb-3">
+                              <h6 class="mb-0">Personal Info</h6>
+                              <small>Enter Your Personal Info.</small>
+                            </div-->
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="first-name-vertical"> Monthly Basic Salary</label>
+                                    <input type="number" id="" class="form-control" placeholder=" Monthly Basic Salary" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="last-name-vertical"> Annual Basic Salary</label>
+                                    <input type="number" id="" class="form-control" placeholder=" Annual Basic Salary" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Monthly CTC</label>
+                                    <input type="number" class="form-control" placeholder="Monthly CTC" id="" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Annual CTC</label>
+                                    <input type="text" class="form-control" placeholder="Annual CTC" id="" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Other Compensation Details</label>
+                                    <input type="number" class="form-control" placeholder="Other Compensation Details" id="" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for=""> Salary In Hand</label>
+                                    <input type="number" class="form-control" placeholder=" Salary In Hand" id="" />
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- /Vertical Wizard -->
+    </div>
+
+
+</div>
+
+@section scripts{
+    <!-- Vendors JS -->
+    <script src="~/assets/vendor/libs/bs-stepper/bs-stepper.js"></script>
+    <script src="~/assets/vendor/libs/bootstrap-select/bootstrap-select.js"></script>
+    <script src="~/assets/vendor/libs/select2/select2.js"></script>
+    <!-- Page JS -->
+    <script src="~/assets/js/form-wizard-numbered.js"></script>
+    <script src="~/assets/js/form-wizard-validation.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".flatpickr-date-cstm").flatpickr({
+                //monthSelectorType: 'static'
+            });
+        });
+    </script>
+}

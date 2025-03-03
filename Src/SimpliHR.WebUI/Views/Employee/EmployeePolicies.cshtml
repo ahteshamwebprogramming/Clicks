@@ -1,0 +1,130 @@
+﻿@model List<SimpliHR.Infrastructure.Models.Employee.EmployeePolicyAcceptanceDTO>
+@{
+    ViewData["Title"] = "Employee Policies";
+    Layout = "~/Views/Shared/_LayoutEmpty.cshtml";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Employee /</span> Documentation Alert</h4>
+    <div class="card">
+
+        <div class="card-header">
+            <h5>Employee Declaration</h5>
+        </div>
+        <div class="card-body">
+            <p>I hearby declare that i have read and understood the policies/procedures/rules and regulations/information contained in the following documents and agreed to abide by the same during my association with the company</p>
+
+            <table class="table table-borderd table-striped" id="Policies">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Sub Category</th>
+                        <th>Document Name</th>
+                        <th>Mandatory</th>
+                        <th><input type="checkbox" class="mastercheck" /></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        if (Model != null)
+                        {
+                            if (Model.Count > 0)
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.PolicyDocumentsCategory</td>
+                                        <td>@item.PolicyDocumentsSubCategory</td>
+                                        <td><a href="javascript:void(0)" onclick="downloadPolicy(@item.PolicyDocumentsMasterId)">@item.PolicyDocument</a></td>
+                                        <td>@item.AcceptanceRequired</td>
+                                        <td><input type="checkbox" class="childcheck" chkid="@item.PolicyDocumentsMasterId" checked="@item.Accepted"> </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+            <div style="padding: 30px 0px 9px 0px;">
+                <input type="button" class="btn btn-primary" value="Submit" onclick="AccpetPolicies()" />
+                <input type="button" class="btn btn-danger" value="Logout" onclick="window.location.href='/Account/Login'" />
+
+                @Html.ValidationSummary("" ,new{@class = "text-danger"})
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+
+@section scripts{
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            if (jQuery("#PolicyDocumentsCategoryId").val() > 0)
+                PopulateStateDDL(jQuery("#PolicyDocumentsCategoryId").val())
+
+            $("#Policies").find(".mastercheck").click(function () {
+                $("#Policies").find(".childcheck").prop('checked', $(this).prop('checked'));
+            });
+
+        });
+
+        function downloadPolicy(documentId) {
+            window.open("/Employee/DownloadPolicies?documentId=" + documentId, "_blank");
+        }
+
+        function AccpetPolicies() {
+           
+            //if (!ValidateMapRoles()) {
+            //    return;
+            //}
+            let PolicyDocumentIds = [];
+            $("#Policies tbody").find("input[type='checkbox']").each(function () {
+                if ($(this).is(":checked")) {
+                    let policyDocumentId = $(this).attr("chkid");
+                    PolicyDocumentIds.push(policyDocumentId);
+                }
+            });
+
+            if (PolicyDocumentIds.length == 0) {
+                $erroralert("Validation", "Please select atleast one menu");
+                              
+                return;
+            }
+            BlockUI();
+            jQuery.ajax({
+                type: "POST",
+                url: "/Employee/AcceptPolicies/",
+                data: { PolicyDocumentIds: PolicyDocumentIds },
+                cache: false,
+                dataType: "json",
+                success: function (data) {
+                    UnblockUI();
+                    if (data.message == "Incomplete") {
+                        $(".validation-summary-valid").find("ul").find("li").empty();
+                        $(".validation-summary-valid").find("ul").find("li").append("Please accept all the mandatory policies to access your profile");
+                        $(".validation-summary-valid").find("ul").find("li").show();
+                    }
+                    else if (data.message == "Complete") {
+                        window.location.href = "/Admin/Index";
+                    }
+                    else {
+                    }
+                },
+                error: function (result) {
+                    UnblockUI();
+                    $erroralert("Error!", result.responseText);                  
+                }
+            });
+        }
+
+
+
+
+
+    </script>
+}

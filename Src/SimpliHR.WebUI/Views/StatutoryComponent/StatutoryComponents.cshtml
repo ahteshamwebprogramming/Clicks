@@ -1,0 +1,221 @@
+﻿
+@{
+    ViewData["Title"] = "Statutory Components";
+}
+<link rel="stylesheet" href="../../assets/vendor/css/pages/page-user-view.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/sweetalert2/sweetalert2.css" />
+<style>
+    .popover {
+        max-width: 500px !important;
+        font-size: 12px;
+    }
+
+    .rate i {
+        width: 25px;
+        text-align: center;
+    }
+
+    .rounded-box {
+        background: #f9f9f9;
+        border-radius: 15px;
+        border: 1px solid #e3e3e3;
+        padding: 20px;
+    }
+
+    .internal-rounded-box {
+        background: #fff;
+        border-radius: 15px;
+        border: 1px solid #e3e3e3;
+        padding: 20px;
+    }
+
+    .bx-chevron-right:before {
+        display: none
+    }
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll /</span> Statutory Components</h4>
+    <div class="row">
+        <!-- User Content -->
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <!-- User Pills -->
+
+            <div class="nav-align-top mb-4">
+                <ul class="nav nav-pills mb-3" role="tablist">
+                    <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#epfTab-info" aria-controls="epfTab-info" aria-selected="true">
+                            EPF
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="btnViewESIPartial" type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#esiTab-info" aria-controls="esiTab-info" aria-selected="false">
+                            ESI
+                        </button>
+                    </li>                  
+                    <li class="nav-item">
+                        <button id="btnViewLabourWelfareFundPartial" type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#labourWelfareFund-Tab" aria-controls="labourWelfareFund-Tab" aria-selected="false">
+                            Labour Welfare Fund
+                        </button>
+                    </li>
+                    @*  <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#GratuityTab-info" aria-controls="GratuityTab-info" aria-selected="false">
+                            Tax Limit Settings
+                        </button>
+                    </li>
+                     <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#professionalTaxTab-info" aria-controls="professionalTaxTab-info" aria-selected="false">
+                            Gratuity
+                        </button>
+                    </li> *@
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="epfTab-info" role="tabpanel">
+
+
+                        <div id="div_EPFView" style="display:none">
+                            @Html.Partial("_StatutoryComponent/_EPFView.cshtml")
+                        </div>
+                        <div id="div_EPFEdit" style="display:none">
+                            @Html.Partial("_StatutoryComponent/_EPFEdit.cshtml")
+                        </div>
+                    </div>
+                    <div class="modal fade" id="showEmployee" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+                            <h2>SimpliHR2.0</h2>
+                            <div class="modal-content p-3 p-md-5">
+                                <form id="showMappedEmployee" class="row g-3" onsubmit="return false">
+                                    <div class="modal-body">
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                                        <table class="datatables-ajax table table-bordered List" id="ListDetailTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Employee Name</th>
+                                                </tr>
+                                            </thead>
+
+                                        </table>
+
+                                    </div>
+
+                                    <div class="col-12 text-center">
+                                        @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                                        <button type="reset" id="btnClose"
+                                                class="btn btn-label-secondary btn-reset mt-3"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close">
+                                            Close
+                                        </button>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="esiTab-info" role="tabpanel" style="min-height:50vh;">
+                        <div class="info-container">
+                            <div id="div_ESIView" style="display:none">
+                                @Html.Partial("_StatutoryComponent/_ESIView.cshtml")
+                            </div>
+                            <div id="div_ESIEdit" style="display:none">
+                                @Html.Partial("_StatutoryComponent/_ESIEdit.cshtml")
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="GratuityTab-info" role="tabpanel" style="min-height:50vh">
+                        <div class="info-container">
+
+                            <h6>Components Tax Limit</h6>
+                            @* <p>This tax is levied on an employee's income but the State Government. Tax slabs differ in each state.</p> *@
+
+                            <div class="card">
+                                <div class="card-body">
+                                 
+                                        <div class="row g-3" style="width:30%;">
+                                      
+                                        <div class="col-md-12">
+                                            <label class="form-label" for="multicol-last-name">Gratuity Tax Free Limit</label>
+                                            <input type="number" id="GratuityLimit"  required name="GratuityLimit" class="form-control" value="0">
+
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label" for="multicol-last-name">Leave Encashment Tax Free Limit</label>
+                                            <input type="number" id="LeaveEncashmentLimit" name="LeaveEncashmentLimit" class="form-control" value="0">
+
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label" for="multicol-last-name">PF (Employer's Share) Tax Free Limit</label>
+                                            <input type="number" id="PFLimit" name="PFLimit" class="form-control" value="0">
+
+                                        </div>
+                                        </div>
+                                        <div class="pt-4">
+                                        <input type="hidden" id="TaxLimitId" name="TaxLimitId">
+                                        <button type="button" class="btn btn-primary me-sm-3 me-1" onclick="SubmitTaxDetails();">Submit</button>
+                                            @* <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/Leave/LeaveApply/'">Cancel</button>*@
+                                        </div>
+                                  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="tab-pane fade" id="labourWelfareFund-Tab" role="tabpanel" style="min-height:50vh;">
+                        <div class="info-container" style="">
+                            <h6>Labour Welfare Fund   </h6>
+                            <p>Labour Welfare Fund act ensures social security and improved working conditions for employees whose monthly salary is less then or equal to ₹15,000.</p>
+                            <div id="div_LabourWelfareFundView" style="display:none">
+                                @Html.Partial("_StatutoryComponent/_LabourWelfareFundView.cshtml")
+                            </div>
+                            <div id="div_LabourWelfareFundEdit" style="display:none">
+                                @Html.Partial("_StatutoryComponent/_LabourWelfareFundEdit.cshtml")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--/ User Pills -->
+
+        </div>
+        <!--/ User Content -->
+    </div>
+
+
+</div>
+
+@section scripts {
+    <script src="../../assets/js/modal-edit-user.js"></script>
+    <script src="../../assets/js/app-user-view.js"></script>
+    <script src="../../assets/js/app-user-view-account.js"></script>
+    <script src="~/assets/vendor/libs/sweetalert2/sweetalert2.js"></script>
+    <script src="~/customjs/statutorycomponents.js"></script>
+    <script src="~/customjs/commonfunction.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#btnViewLabourWelfareFundPartial").click(function () {
+                ViewLabourWelfareFundPartial();
+            });
+
+            $("#btnViewESIPartial").click(function () {
+                ViewESIPartial();
+            });
+            
+
+            ViewEPFPartial();
+
+          
+           
+        });
+
+      
+       
+    </script>
+
+}

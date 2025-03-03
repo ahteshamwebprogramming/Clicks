@@ -1,0 +1,82 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeMasterDTO
+@{
+    //Layout = null;
+    ViewData["Title"] = "Employee Dashboard";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Employee /</span> Reporting Employee</h4>
+    <div class="card" id="List">
+        <div class="card-body">
+
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List">
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Employee Code</th>
+                            <th>Official Email</th>
+                            <th>Department</th>
+                            <th>HOD</th>
+                            <th>DOJ</th>
+                            <th>DOB</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.EmployeeMasterList != null)
+                            foreach (var item in Model.EmployeeMasterList)
+                            {
+                                <tr>
+                                    <td>@item.EmployeeName</td>
+                                    <td>@item.EmployeeCode</td>
+                                    <td>@item.OfficialEmail</td>
+                                    <td>@Model.EmployeeMastersKeyValues.DepartmentKeyValues.Where(x => x.DepartmentId == item.DepartmentId).Select(r => r.DepartmentName).FirstOrDefault()</td>
+                                    <td>
+                                        @if (item != null && item.HODId != null)
+                                        {
+                                            var x = Model.EmployeeMastersKeyValues.EmployeeKeyValues.Where(x => x.EmployeeId == item.HODId);
+                                            if (x != null && x.Count() > 0)
+                                            {
+                                                Html.Raw(x.Select(r => r.EmployeeName).FirstOrDefault().ToString());
+                                            }
+                                        }
+                                        @* @Model.EmployeeMastersKeyValues.EmployeeKeyValues.Where(x=>x.EmployeeId==item.HODId).Select(r=>r.EmployeeName).FirstOrDefault().ToString() *@
+                                    </td>
+                                    <td>@(item.Doj == null ? "" : item.Doj.Value.ToString("dd-MMM-yyyy")) </td>
+                                    <td>@(item.Dob == null ? "" : @item.Dob.Value.ToString("dd-MMM-yyyy"))</td>
+                                    <td style="text-align:center">
+                                        @* <button class="btn btn-primary" onclick="javascript:window.location.href='/Employee/EmployeeDetail?eEmployeeId=@item.EnycEmployeeId'">Edit</button>
+                                <button class="btn btn-primary" onclick="javascript:alert('Implimentation Pending')">Delete</button>*@
+                                        <a href="/Account/Profile/@item.EnycEmployeeId"><i style="color:#03c3ec" class="fas fa-eye"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+    @*    <script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $(".List").dataTable();
+
+            if (displayMessage.trim().toLowerCase() == "false") {
+                alert(displayMessage);
+            }
+        });
+
+
+
+    </script>
+
+
+}

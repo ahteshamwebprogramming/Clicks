@@ -1,0 +1,140 @@
+﻿@model List<SimpliHR.Infrastructure.Models.ClientManagement.PolicyDocumentsMasterDTO>
+@{
+    ViewData["Title"] = "List Of Policies";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Repository /</span> List Of Policies</h4>
+    <div class="card">
+
+        <div class="card-header">
+        </div>
+        <div class="card-body">
+            <table class="table table-borderd table-striped" id="Policies">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Sub Category</th>
+                        <th>Document Name</th>
+                        <th>Mandatory</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        if (Model != null)
+                        {
+                            if (Model.Count > 0)
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.PolicyDocumentsCategory.PolicyDocumentsCategory</td>
+                                        <td>@item.PolicyDocumentsSubCategory.PolicyDocumentsSubCategory</td>
+                                        <td><a href="javascript:void(0)" onclick="downloadPolicy(@item.PolicyDocumentsMasterId)">@item.PolicyDocument</a></td>
+                                        <td>@item.AcceptanceRequired</td>
+                                        
+                                        <td>
+                                            <a class="dropdown-item d-inline" href="#" onclick="DeleteRecord('@item.PolicyDocument','@item.EncryptedId')"><i class="bx bx-trash me-1"></i></a>
+                                      
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+            <div style="padding: 30px 0px 9px 0px;">
+
+                @Html.ValidationSummary("" ,new{@class = "text-danger"})
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+
+@section scripts{
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            if (jQuery("#PolicyDocumentsCategoryId").val() > 0)
+                PopulateStateDDL(jQuery("#PolicyDocumentsCategoryId").val())
+
+            $("#Policies").find(".mastercheck").click(function () {
+                $("#Policies").find(".childcheck").prop('checked', $(this).prop('checked'));
+            });
+
+        });
+
+        function downloadPolicy(documentId) {
+            window.open("/Employee/DownloadPolicies?documentId=" + documentId, "_blank");
+        }
+
+        function AccpetPolicies() {
+
+            //if (!ValidateMapRoles()) {
+            //    return;
+            //}
+            let PolicyDocumentIds = [];
+            $("#Policies tbody").find("input[type='checkbox']").each(function () {
+                if ($(this).is(":checked")) {
+                    let policyDocumentId = $(this).attr("chkid");
+                    PolicyDocumentIds.push(policyDocumentId);
+                }
+            });
+
+            if (PolicyDocumentIds.length == 0) {
+                $erroralert("Transaction Failed!", "Please select atleast one menu");
+              //  alert("Please select atleast one menu");
+
+                return;
+            }
+            BlockUI();
+            jQuery.ajax({
+                type: "POST",
+                url: "/Employee/AcceptPolicies/",
+                data: { PolicyDocumentIds: PolicyDocumentIds },
+                cache: false,
+                dataType: "json",
+                success: function (data) {
+                    UnblockUI();
+                    if (data.message == "Incomplete") {
+                        $(".validation-summary-valid").find("ul").find("li").empty();
+                        $(".validation-summary-valid").find("ul").find("li").append("Please accept all the mandatory policies to access your profile");
+                        $(".validation-summary-valid").find("ul").find("li").show();
+                    }
+                    else if (data.message == "Complete") {
+                        window.location.href = "/Admin/Index";
+                    }
+                    else {
+                    }
+                },
+                error: function (result) {
+                    UnblockUI();
+                    $erroralert("Transaction Failed!", "" + result.responseText);
+                }
+            });
+        }
+
+        function DeleteRecord(name, id) {
+            // event.preventDefault();
+            url = $(this).attr('href');
+            history.pushState({ key: url }, '', url);
+            
+            Swal.fire({ title: 'Are you sure?', text: "This will get deleted permanently!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, delete it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    window.location.href = "/PolicyDocumentManagement/DeletePolicyDocument/" + id;
+                }
+            });
+            return false;
+        }
+
+
+
+    </script>
+}
+

@@ -1,0 +1,51 @@
+﻿@model SimpliHR.Infrastructure.Models.Performace.TrainingNeedReportListViewModel
+<div class="table-responsive text-nowrap">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                @*<th>SN</th>*@
+                <th>Employee Code</th>
+                <th>Employee Name</th>
+                <th>Designation</th>
+                <th>Department</th>
+                <th>Function</th>
+                <th>Location</th>
+                <th>Manager</th>
+                <th>HOD</th>
+                <th>
+                    Training Need
+                </th>
+                <th>
+                    Training Type
+                </th>
+                <th>
+                    Urgency
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (Model != null && Model.TrainingNeedReportList != null)
+                {
+                    foreach (var item in Model.TrainingNeedReportList)
+                    {
+                        <tr>
+                            <td>@item.EmployeeCode</td>
+                            <td>@item.EmployeeName</td>
+                            <td>@item.Designation</td>
+                            <td>@item.Department</td>
+                            <td>@item.Function</td>
+                            <td>@item.WorkLocation</td>
+                            <td>@item.Manager</td>
+                            <td>@item.HOD</td>
+                            <td>@item.TrainingNeed</td>
+                            <td>@item.TrainingType</td>
+                            <td>@item.Urgency</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>

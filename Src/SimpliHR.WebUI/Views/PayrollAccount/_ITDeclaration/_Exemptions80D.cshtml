@@ -1,0 +1,53 @@
+﻿@model SimpliHR.Infrastructure.Models.ITDeclaration.ItDeclaration80DexemptionDTO
+
+<input type="hidden" value="@(Model==null ? 0 : Model.ItDeclaration80DexemptionsId==null ? 0 :  Model.ItDeclaration80DexemptionsId)" name="ItDeclaration80DexemptionsId" />
+
+<div class="col-md-8 mb-3">
+    <select class="form-select" data-style="btn-default" name="ExemptionType">
+        <option selected value="0">Select an Investment</option>
+        @{
+            var a = Model.exemptions80DDTOs.Where(x => x.IsActive == true).Select(x => x.Optgroup).Distinct();
+            foreach (var item in a)
+            {
+                <optgroup label="@item" style="font-weight:800">
+                    @{
+                        var b = Model.exemptions80DDTOs.Where(x => x.Optgroup == item && x.IsActive == true);
+                        foreach (var item1 in b)
+                        {
+                            if (Model != null && Model.ExemptionType == item1.Exemptions80Did)
+                            {
+                                <option selected value="@item1.Exemptions80Did">@item1.Exemptions80D1</option>
+                            }
+                            else
+                            {
+                                <option value="@item1.Exemptions80Did">@item1.Exemptions80D1</option>
+                            }
+                            
+                        }
+                    }
+
+                </optgroup>
+            }
+        }
+       @* <optgroup label="80D" style="font-weight:800">
+            <option value="1">Medi Claim Policy For Self, Spouse, Children - 80D</option>
+            <option value="1">Medi Claim Policy For Self, Spouse, Children for Senior Citizen - 80D</option>
+            <option value="1">Medi Claim Policy For Parent - 80D</option>
+            <option value="1">Medi Claim Policy For Parent for senior Citizen - 80D</option>
+            <option value="1">Preventive health checkup - 80D</option>
+            <option value="1">Preventive health checkup for parent - 80D</option>
+            <option value="1">Medical Bills For Self, Spouse, Children for Senior Citizen - 80D</option>
+            <option value="1">Medical Bills For Parent for Senior Citizen - 80D</option>
+        </optgroup>*@
+    </select>
+</div>
+<div class="col-md-3 mb-3">
+    <div class="input-group">
+        <span class="input-group-text" id="basic-addon11">₹</span>
+        <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="" name="Value" value="@(Model == null ? "" : Model.Value)">
+    </div>
+</div>
+<div class="col-md-1 mb-3">
+    <div class="float-end"><i class="fa-solid fa-xmark" onclick="remove80DInvestmentsForm(this,@(Model==null ? 0 : Model.ItDeclaration80DexemptionsId==null ? 0 :  Model.ItDeclaration80DexemptionsId))"></i></div>
+    <div class="clearfix"></div>
+</div>

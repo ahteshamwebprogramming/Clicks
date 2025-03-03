@@ -1,0 +1,210 @@
+﻿@{
+    //Layout = null;
+    ViewData["Title"] = "Ticket List";
+}
+<!-- / Navbar -->
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Ticket /</span> List</h4>
+        <div class="row">
+            <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+                <div class="nav-align-top mb-4">
+                    <ul class="nav nav-pills mb-3" role="tablist">
+                        <li class="nav-item">
+                            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#myTickets" aria-controls="Apply" aria-selected="true">
+                                My Tickets
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#assignedToMe" aria-controls="View" aria-selected="false">
+                                Assigned To Me
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#actionedByMe" aria-controls="View" aria-selected="false">
+                                Actioned By Me
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="myTickets" role="tabpanel">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6 form-group">
+                                            <label class="form-label">Ticket Module</label>
+                                            <select class="form-control">
+                                                <option>Select</option>
+                                                <option>Leave</option>
+                                                <option>Attendance</option>
+                                                <option>Profile</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="form-label">Ticket Status</label>
+                                            <select class="form-control">
+                                                <option>Select</option>
+                                                <option>Pending</option>
+                                                <option>Completed</option>
+                                                <option>Cancelled</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-12 form-group">
+                                            <input type="button" class="btn btn-primary" value="Search" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:12px;">
+                                <div class="table-responsive text-nowrap mb-4">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>SNo</th>
+                                                <td>Ticket No</td>
+                                                <td>Employee Name</td>
+                                                <td>Type</td>
+                                                <td>Status</td>
+                                                <td>Updated On</td>
+                                                <td>View Log</td>
+                                                <td>Cancel</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="assignedToMe" role="tabpanel">
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6 form-group">
+                                            <label class="form-label">Ticket Number</label>
+                                            <input class="form-control" type="text" />
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="form-label">Ticket Type</label>
+                                            <select class="form-control">
+                                                <option>Select</option>
+                                                <option>Expense</option>
+                                                <option>Leave</option>
+                                                <option>Comp Off</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="form-label">Period From</label>
+                                            <input class="form-control flatpickr-date1" type="text" />
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="form-label">Period To</label>
+                                            <input class="form-control flatpickr-date1" type="text" />
+                                        </div>
+                                        <div class="col-md-12 form-group">
+                                            <input type="button" class="btn btn-primary" value="Search" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:12px;">
+                                <div class="table-responsive text-nowrap mb-4">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>SNo</th>
+                                                <td><input type="checkbox" /> Select</td>
+                                                <td>Ticket No</td>
+                                                <td>Employee Name</td>
+                                                <td>Type</td>
+                                                <td>Status</td>
+                                                <td>Updated On</td>
+                                                <td>View Log</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="actionedByMe" role="tabpanel">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6 form-group">
+                                            <label class="form-label">Ticket Module</label>
+                                            <select class="form-control">
+                                                <option>Select</option>
+                                                <option>Leave</option>
+                                                <option>Attendance</option>
+                                                <option>Profile</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <label class="form-label">Ticket Status</label>
+                                            <select class="form-control">
+                                                <option>Select</option>
+                                                <option>Pending</option>
+                                                <option>Completed</option>
+                                                <option>Cancelled</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-12 form-group">
+                                            <input type="button" class="btn btn-primary" value="Search" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:12px;">
+                                <div class="table-responsive text-nowrap mb-4">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>SNo</th>
+                                                <td>Ticket No</td>
+                                                <td>Employee Name</td>
+                                                <td>Type</td>
+                                                <td>Status</td>
+                                                <td>Updated On</td>
+                                                <td>View Log</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <!-- /Modal -->
+        </div>
+        <!-- / Content -->
+    </div>
+    <!-- Content wrapper -->
+    @section scripts {
+
+        @*    <script src="../../customjs/countrydatatabletable.js"></script>*@
+        <script src="../../customjs/CommonFunction.js"></script>
+        <script type="text/javascript">
+
+            $(document).ready(function () {
+                $(".flatpickr-date1").flatpickr({
+                    dateFormat: "d-M-Y"
+                });
+            });
+
+
+
+        </script>
+
+
+    }

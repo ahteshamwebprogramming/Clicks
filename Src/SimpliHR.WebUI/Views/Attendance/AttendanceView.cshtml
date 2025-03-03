@@ -1,0 +1,135 @@
+@model SimpliHR.Infrastructure.Models.Attendance.AttendanceViewModel
+@{
+    ViewData["Title"] = "Manual Punches";
+}
+
+<link rel="stylesheet" href="../../assets/vendor/libs/tagify/tagify.css" />
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <!--Location Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Wizard examples /</span> Location</h4>
+        <!-- Location  -->
+        <div id="wizard-checkout" class="bs-stepper wizard-icons wizard-icons-example mt-2">
+            <div class="container selectMain">
+                <div class="card mb-4">
+                    <h5 class="card-header">Employee Attendance Details</h5>
+                    <form class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label" for="">Month</label>
+                                <select id="" class="select2 form-select" data-allow-clear="true">
+                                    <option value="">Select</option>
+                                    <option value="Australia">Option 1</option>
+                                    <option value="Bangladesh">Option 2</option>
+                                    <option value="Belarus">Option 3</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" for="">Year</label>
+                                <select id="" class="select2 form-select" data-allow-clear="true">
+                                    <option value="">Select</option>
+                                    <option value="Australia">Option 1</option>
+                                    <option value="Bangladesh">Option 2</option>
+                                    <option value="Belarus">Option 3</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="">Department</label>
+                                <select id="" class="select2 form-select" data-allow-clear="true">
+                                    <option value="">Select</option>
+                                    <option value="Australia">Option 1</option>
+                                    <option value="Bangladesh">Option 2</option>
+                                    <option value="Belarus">Option 3</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="pt-4">
+                            <button type="button" class="btn btn-primary me-sm-3 me-1">View Attendance</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive text-nowrap">
+                            <table class="table List">
+                                <thead>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Day</th>
+                                        <th>Roster</th>
+                                        <th>In Time</th>
+                                        <th>Out Time</th>
+                                        <th>Stay Hour</th>
+                                        <th>Attendance</th>
+                                        <th>Remark</th>
+                                        <th>Select</th>
+                                        <th><input type="checkbox" class="form-check-input"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- / Content -->
+</div>
+<!-- Content wrapper -->
+<script src="../../assets/vendor/libs/tagify/tagify.js"></script>
+<script src="../../assets/js/forms-tagify.js"></script>
+<script src="~/customjs/commonfunction.js"></script>
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            jQuery(".List").dataTable();
+            jQuery(".flatpickr-date1").flatpickr({
+                //monthSelectorType: 'static',
+                dateFormat: "d-M-Y"
+            });
+            if ("@Model.DisplayMessage.Trim().ToUpper()" != "_BLANK") {
+
+                var sMsg = "@Model.DisplayMessage.Trim().Replace("<br>","\r\n")"
+                if (sMsg.toUpperCase() == "SUCCESS") {
+                    sMsg = "Transaction Successful!";
+                    // jQuery("#successDiv").show();
+                    // jQuery("#successPara").html(sMsg);
+                    $successalert("", sMsg);
+                }
+                else {
+                    // jQuery("#errorDiv").show();
+                    // jQuery("#errorPara").html(sMsg);
+                    $erroralert("Transaction Failed!", sMsg);
+                }
+               // jQuery("#showAlert").modal('show');
+                ResetForm();
+            }
+
+        });
+
+        function ResetForm() {
+            jQuery("#AttendanceRosterForm")[0].reset();
+        }
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+
+
+
+    </script>
+    }

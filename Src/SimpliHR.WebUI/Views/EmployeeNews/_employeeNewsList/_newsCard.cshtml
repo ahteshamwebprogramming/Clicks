@@ -1,0 +1,215 @@
+﻿@model SimpliHR.Infrastructure.Models.EmployeeSocialActivity.EmployeeNewsViewModel
+<link href="~/customcss/newscardview.css" rel="stylesheet" />
+
+<div class="card" style="min-height: 1170px;">
+    <div class="card-body">
+        <div class="row mb-1 news-main">
+            <div class="col-lg-8 mb-3 news-search">
+                <input type="search" onchange="fetchPartialViewNewsCard()" class="form-control border" placeholder="Search... title, keywords, categories, publication name, author name " aria-controls="DataTables_Table_0" asp-for="NewsSearchKeyword">
+            </div>
+            <div class="col-10 col-lg-3">
+                <select id="select2Basic" class="select2 form-select form-select-lg float-start border-0" data-allow-clear="true" asp-for="NewsCategoryId" onchange="fetchPartialViewNewsCard()">
+                    <option value="0">Select Option</option>
+                    @{
+                        if (Model != null && Model.NewsCategoryTagsList != null)
+                        {
+                            foreach (var item in Model.NewsCategoryTagsList)
+                            {
+                                <option value="@item.NewsCategoryTagId">@item.NewsCategoryTag</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-2 col-lg-1"><i class="bx bx-list-ul bx-sm mt-2" onclick="ListView()"></i></div>
+        </div>
+        <div class="row">
+            @{
+                if (Model != null && Model.EmployeeNewsList != null)
+                {
+                    foreach (var item in Model.EmployeeNewsList)
+                    {
+                        <div class="col-lg-4">
+                            <div class="news-container news-container-card border rounded mt-4 p-0 cursor-pointer" onclick="NewsDetails('@item.encEmployeeNewsId','card')">
+                                <div><img src="../@(item.ImagePath)" class="rounded" width="100%" height="auto%" alt=""></div>
+                                <div class="p-3">
+                                    <div class="mb-1"><span>@(item.PublicationName)</span></div>
+                                    @{
+                                        if (item.Title != null && item.Title.Length > 50)
+                                        {
+                                            <div class="mb-2 fw-bold news-ttl">@(item.Title.Substring(0, 50))...</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="mb-2 fw-bold news-ttl">@item.Title</div>
+                                        }
+
+                                        if (item.ArticleType == 1)
+                                        {
+                                            if (item.Description != null)
+                                            {
+                                                if (item.Description.Length > 60)
+                                                {
+                                                    <div class="mb-2 news-short-cont-card">@(item.Description.Substring(0, 60))...</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="mb-2 news-short-cont-card">@(item.Description) </div>
+                                                }
+                                            }
+                                            if (item.ArticleLink != null)
+                                            {
+                                                if (item.ArticleLink.Length > 25)
+                                                {
+                                                    <div class="mb-2 news-short-cont-card">@(item.ArticleLink.Substring(0, 25))...</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="mb-2 news-short-cont-card">@(item.ArticleLink)</div>
+                                                }
+                                            }
+                                        }
+                                        else if (item.ArticleType == 2)
+                                        {
+                                            if (item.Article != null)
+                                            {
+                                                if (item.Article.Length > 100)
+                                                {
+                                                    <div class="mb-2 news-short-cont-card">@Html.Raw(item.Article.Substring(0, 100))... </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="mb-2 news-short-cont-card"> @Html.Raw(item.Article) </div>
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                    <div class="mb-1 news-author-name-card"><span>By&nbsp;@(item.AuthorsName)</span></div>
+                                    <div class="news-catg-name-card">
+                                        <div class="d-inline-block me-2 fw-bold blue-font">
+                                            <a href="javascript:void(0)" class="fw-bold">@(item.CategoryTags.Length > 15 ? item.CategoryTags.Substring(0, 15) : item.CategoryTags)</a>
+                                        </div>
+                                        <div class="d-inline-block me-2" style="font-size: 8px;">&#9670;</div>
+                                        @{
+                                            var timeDiff = (System.DateTime.Now - item.CreatedDate);
+                                            if (timeDiff != null)
+                                            {
+                                                if (timeDiff.Value.Days >= 1)
+                                                {
+                                                    if (timeDiff.Value.Days > 1)
+                                                    {
+                                                        <div class="d-inline-block small">@(timeDiff.Value.Days) days ago</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="d-inline-block small">@(timeDiff.Value.Days) day ago</div>
+                                                    }
+                                                }
+                                                else if (timeDiff.Value.Hours >= 1)
+                                                {
+                                                    if (timeDiff.Value.Hours > 1)
+                                                    {
+                                                        <div class="d-inline-block small">@(timeDiff.Value.Hours) hours ago</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="d-inline-block small">@(timeDiff.Value.Hours) hour ago</div>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (timeDiff.Value.Minutes > 1)
+                                                    {
+                                                        <div class="d-inline-block small">@(timeDiff.Value.Minutes) minutes ago</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="d-inline-block small">@(timeDiff.Value.Minutes) minute ago</div>
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="demo-inline-spacing" style="margin:auto">
+                    <!-- Basic Pagination -->
+                    @{
+                        if (Model != null && Model.PageDetails != null)
+                        {
+                            int PageIndex = Model.PageDetails.PageNumber ?? default(int);
+                            int TotalPages = Model.PageDetails.TotalPages ?? default(int);
+                            <nav aria-label="Page navigation" class="d-flex justify-content-center mt-4">
+                                <ul class="pagination">
+                                    <li class="page-item first">
+                                        <a class="page-link" href="javascript:void(0)" onclick="fetchPartialViewNewsCard(1)">
+                                            <i class="fa-solid fa-angles-left"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item prev">
+                                        <a class="page-link" href="javascript:void(0)" onclick="fetchPartialViewNewsCard(@(PageIndex > 1 ? PageIndex - 1 : 1))">
+                                            <i class="fa-solid fa-angle-left"></i>
+                                        </a>
+                                    </li>
+
+                                    @if (PageIndex > 3)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" href="javascript:void(0)" onclick="fetchPartialViewNewsCard(1)">1</a>
+                                        </li>
+                                        <li class="page-item disabled">
+                                            <span class="page-link">...</span>
+                                        </li>
+                                    }
+
+                                    @for (var i = Math.Max(1, PageIndex - 1); i <= Math.Min(PageIndex + 1, TotalPages); i++)
+                                    {
+                                        <li class="page-item @(i == PageIndex ? "active" : "")">
+                                            <a class="page-link" href="javascript:void(0)" onclick="fetchPartialViewNewsCard(@i)">@i</a>
+                                        </li>
+                                    }
+
+                                    @if (PageIndex < TotalPages - 2)
+                                    {
+                                        <li class="page-item disabled">
+                                            <span class="page-link">...</span>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="javascript:void(0)" onclick="fetchPartialViewNewsCard(@TotalPages)">@TotalPages</a>
+                                        </li>
+                                    }
+
+                                    <li class="page-item next">
+                                        <a class="page-link" href="javascript:void(0)" onclick="fetchPartialViewNewsCard(@(PageIndex < TotalPages ?  PageIndex + 1 : TotalPages))">
+                                            <i class="fa-solid fa-angle-right"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item last">
+                                        <a class="page-link" href="javascript:void(0)" onclick="fetchPartialViewNewsCard(@TotalPages)">
+                                            <i class="fa-solid fa-angles-right"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+
+                        }
+                    }
+
+
+                    <!--/ Basic Pagination -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

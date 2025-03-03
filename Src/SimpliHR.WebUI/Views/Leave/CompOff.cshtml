@@ -1,0 +1,248 @@
+﻿@model SimpliHR.Infrastructure.Models.Leave.LeaveCompOffDTO
+@{
+    ViewData["Title"] = "CompOff Settings";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+
+
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Leave /</span>Comp Off Configuration</h4>
+    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+                            <th>Leave Policy</th>
+                            <th>Calendar Year</th>
+                            <th>Min Duration Half Day</th>
+                            <th>Min Duration Full Day</th>
+                            <th>Applicable Day</th>
+                            <th>Applicable For</th>
+                            @* <th>Status</th>*@
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.LeaveCompOffList != null)
+                            @foreach (var item in Model.LeaveCompOffList)
+                            {
+                                <tr>
+                                    <td>@(item.LeavePolicy)</td>
+                                    <td>@(item.CalendarName)</td>
+                                      <td>@(item.MinHalfDay)</td>
+                                    <td>@(item.MinFullDay)</td>
+                                    <td>@(item.ApplicableDay)</td>
+                                  @*   <td>@(item.ApplicableFor)</td> *@
+                                    <td>
+                                        @(item.ApplicableFor == "W" ? "Weekly Off" : item.ApplicableFor == "H" ? "Holidays" : "Weekly Off,Holidays")
+                                    </td>
+                                   @*  <th>
+                                        <a class="btn btn-primary btn-sm" href="/Leave/GetLeaveCompoffInfo/@item.EncryptedId">Edit</a>
+                                        <button class="btn btn-danger btn-sm" onclick="DeleteRecord('@item.LeavePolicy','@item.EncryptedId')"> Delete</button>
+                                    </th> *@
+
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="/Leave/GetLeaveCompoffInfo/@item.EncryptedId"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="#" onclick="DeleteRecord('@item.LeavePolicy','@item.EncryptedId')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="ListView()" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/Leave/LeaveCompOff">
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Leave Policy</label>
+                        <input type="text" id="LeavePolicy" name="LeavePolicy" required maxlength="20" onKeyPress="if(this.value.length==20) return false;" class="form-control" value="@Model.LeavePolicy" placeholder="LEAVE POLICY">
+                       
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="">Calender Year</label>
+                       @*  <select id="multicol-CalendarName" name="CalendarYear" class="select2 form-select select2-hidden-accessible" data-allow-clear="true" data-select2-id="multicol-country" tabindex="-1" aria-hidden="true">
+                            <option value="0" data-select2-id="2">Select Option</option>
+                            @foreach (var item in Model.LeaveAttributeKeyValues.LeaveCalenderYearKeyValue)
+                            {
+                                if (item.LeaveYearId == Model.CalendarYear)
+                                {
+                                    <option value="@item.LeaveYearId" selected>@item.CalendarName</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.LeaveYearId">@item.CalendarName</option>
+                                }
+                            }
+                        </select> *@
+                       
+                        @Html.DropDownListFor(x => x.CalendarYear, new SelectList(Model.LeaveAttributeKeyValues.LeaveCalenderYearKeyValue, "LeaveYearId", "CalendarName", Model.CalendarYear), "Select Option", htmlAttributes: new { @class = "select2 form-select d-md-inline-block", @required = "required" })
+                    </div>
+                  
+                   
+                    <div class="col-md-6">
+                        <label class="form-label" for="">Min Working Duration For Half Day</label>
+                        <input class="form-control" type="time" name="MinHalfDay" id="MinHalfDay" value="@Model.MinHalfDay" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="">Min Working Duration For Full Day </label>
+                        <input class="form-control" type="time" name="MinFullDay" id="MinFullDay" value="@Model.MinFullDay" />
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label" for="">Applicable Eligibility (In Day) </label>
+                        <input class="form-control" type="number" onKeyPress="if(this.value.length==2) return false;" name="ApplicableDay" id="ApplicableDay" value="@Model.ApplicableDay" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="">Avail Eligibility (In Day) </label>
+                        <input class="form-control" type="number" onKeyPress="if(this.value.length==2) return false;" name="AvailDay" id="AvailDay" value="@Model.AvailDay" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Applicable For</label>
+                        <select id="selApplicableFor" name="ApplicableFor" class="form-select" required >
+                            <option value="S">Select</option>
+                            <option value="W">Weekly Off</option>
+                            <option value="H">Holidays</option>
+                            <option value="B">Weekly Off,Holidays</option>
+                        </select>
+                    </div>
+       
+                <div class="pt-4">
+                        <input type="hidden" id="hdnCompOffId" name="CompOffId" class="form-control" value="@Model.CompOffId" />
+                        <input type="hidden" id="hdnAppicalbleFor" name="ApplicableFor" class="form-control" value="@Model.ApplicableFor" />
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/Leave/CompOff/'">Cancel</button>
+                </div>
+        </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <div class="modal-body">
+                    <button type="button" class="btn-close" name="btnPopupClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-4">
+                    </div>
+                    <form id="showAlert" class="row g-3" onsubmit="return false">
+                        <div class="col-12 text-center" id="errorDiv">
+                            <p id="errorPara" class="error" style="color:red"></p>
+                        </div>
+                        <div class="col-12 text-center" id="successDiv">
+                            <p id="successPara" class="error" style="color:black"></p>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="popupBtnDiv" class="col-12 text-center">
+                    @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                    <button type="reset" name="btnPopupClose"
+                            class="btn btn-label-secondary btn-reset mt-3"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                        Close
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+  
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+
+          //  alert($("#hdnAppicalbleFor").val());
+       
+
+            if (@Model.CompOffId != 0 || @Model.HttpStatusCode!= 200) {
+                $("#List").hide();
+                $("#Add").show();
+            }
+            else { 
+                ClearInputs();
+            }
+
+            if ("@Model.DisplayMessage.Trim().ToUpper()" != "_BLANK") {
+                $successalert("", "@Model.DisplayMessage");
+                UnblockUI();
+            }
+
+        });
+
+       
+
+        $('#selApplicableFor').val($("#hdnAppicalbleFor").val().trim());
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                // if (sMsg.toUpperCase() == "SUCCESS") {
+                // sMsg = "Earnnig component created/updated successfully";
+                jQuery("#successDiv").show();
+                jQuery("#successPara").html(sMsg);
+
+                // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                //  }
+                //else {
+                //    jQuery("#errorDiv").show();
+                //    jQuery("#errorPara").html(sMsg);
+                //}
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+
+        function ClearInputs() {
+            $("#LeavePolicy").val("");
+            $("#MinHalfDay").val("");
+            $("#MinFullDay").val("");
+            $("#ApplicableDay").val("");
+            $("#AvailDay").val("");
+
+        }
+
+        function DeleteRecord(name, id) {
+            // event.preventDefault();
+            url = $(this).attr('href');
+            history.pushState({ key: url }, '', url);
+            if (confirm("Sure, you want to delete policy '" + name + "'?")) {
+                window.location.href = "/Leave/DeleteLeaveCompoff/" + id;
+            }
+            return false;
+        }
+    </script>
+    }

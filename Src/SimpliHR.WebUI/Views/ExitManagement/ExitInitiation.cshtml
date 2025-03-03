@@ -1,0 +1,369 @@
+﻿@model SimpliHR.Infrastructure.Models.Exit.ExitViewModel
+@{
+    string lastWorkingDate = "", resignationDate = "";
+    int noticePeriod;
+
+    ViewData["Title"] = "ExitInitiation";
+}
+
+<style>
+    label.required:after {
+        content: "*";
+        color: #FF0000;
+        font-size: 14px;
+    }
+
+    .error-label {
+        color: #FF0000;
+    }
+</style>
+@*Page CSS*@
+<div class="container-xxl flex-grow-1 container-p-y">
+
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Exit Management /</span> Initiation
+    </h4>
+    @* <div class="card" id="List" style="@(Model.Action=="Add" || Model.Action=="Edit" ? "display:none" : "")">
+    <div class="card-body">
+    <input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />
+    <div style="clear:both"></div>
+    <div class="card-datatable table-responsive text-nowrap">
+    @if (Model.ResignationList != null)
+    {
+    <table class="datatables-ajax table table-bordered List" id="ResignationList">
+    <thead>
+    <tr>
+    <th>Name</th>
+    <th>Date of Resignation</th>
+    <th>Last Working Date</th>
+    <th>NoticePeriod</th>
+    <th>Reason</th>
+    <th>Comment</th>
+    <th>Edit</th>
+    </tr>
+    </thead>
+    @foreach (var item in Model.ResignationList)
+    {
+    <tr>
+    <td>@item.EmployeeId</td>
+    <td>@item.ResignationDate.Value.ToString("dd-MMM-yy")</td>
+    <td>@item.LastWorkingDate.Value.ToString("dd-MMM-yy")</td>
+    <td>@item.NoticePeriod</td>
+    <td>@item.ReasonForLeaving</td>
+    <td>@item.EmployeeComments</td>
+    <td><a href="/ExitManagement/EmployeeExitInfo/@item.ResignationListId">Edit</a></td>
+    </tr>
+    }
+
+    </table>
+    }
+    </div>
+    </div>
+
+    </div>*@
+    <div class="card" id="Add" style="@(Model.Action=="List" ? "display:none" : "")">
+
+
+        <div class="card-body">
+            @*            <input type="button" class="btn btn-primary" value="List Resignation" onclick="javascript:window.location.href='/ExitManagement/ExitInitiation'" style="float:right;" />*@
+            @if (@Model.ResignationDetails != null)
+            {
+                lastWorkingDate = @Model.ResignationDetails.LastWorkingDate == null ? "" : @Model.ResignationDetails.LastWorkingDate.Value.ToString("dd-MMM-yy");
+                resignationDate = @Model.ResignationDetails.ResignationDate == null ? "" : @Model.ResignationDetails.ResignationDate.Value.ToString("dd-MMM-yy");
+            }
+            @{
+                string pointerStyle = "";
+                if ((Model != null && Model.ResignationDetails != null && Model.ResignationDetails.ResignationListId > 0))
+                {
+                    pointerStyle = "pointer-events: none;";
+                }
+            }
+            <div>
+                <form method="post" id="EmployeeExitDetail" action="return false" style="@pointerStyle">
+                    <div class="row g-3">
+
+                        @{
+                            if ((Model != null && Model.ResignationDetails != null && Model.ResignationDetails.ResignationListId > 0))
+                            {
+                                if (Model.ResignationDetails.ManagerApproval == 0 && Model.ResignationDetails.AdminApproval == 0)
+                                {
+                                    <p class="error">Manager Approval Pending - Ticket No : @Model.ResignationDetails.TicketId</p>
+                                }
+                                else if (Model.ResignationDetails.ManagerApproval == 1 && Model.ResignationDetails.AdminApproval == 0)
+                                {
+                                    <p class="error">Admin Approval Pending - Ticket No : @Model.ResignationDetails.TicketId</p>
+                                }
+                                else if (Model.ResignationDetails.ManagerApproval == 1 && Model.ResignationDetails.AdminApproval == 1)
+                                {
+                                    <p class="error">Resignation Approved - Ticket No : @Model.ResignationDetails.TicketId</p>
+                                }
+                                else if (Model.ResignationDetails.ManagerApproval == 0 && Model.ResignationDetails.AdminApproval == 1)
+                                {
+                                    <p class="error">Resignation Approved - Ticket No : @Model.ResignationDetails.TicketId</p>
+                                }
+                            }
+                        }
+
+
+                        <div class="col-md-6">
+                            <label class="form-label required" for="multicol-last-name">Employee Name</label>
+                            @Html.DropDownList("EmployeeId", new SelectList(Model?.CompanyEmployees, "EmployeeId", "EmployeeName", Model?.ResignationDetails?.EmployeeId), "Select Employee", htmlAttributes: new { @class = "dbcol select2 form-select select2-hidden-accessible", @required = "required" })
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label required" for="multicol-last-name">Notice Period (In Days)</label>
+                            <input type="text" class="form-control-plaintext dbcol" readonly id="NoticePeriod" value="@Model?.ResignationDetails?.NoticePeriod" name="NoticePeriod" placeholder="Notice Period in Days">
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label required" for="multicol-last-name">Resignation Date</label>
+                            <input type="text" id="ResignationDate" required name="ResignationDate" value="@resignationDate" class="form-control flatpickr-date1 dbcol" onchange="getObject(this);" placeholder="Resignation Date">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="multicol-last-name">Last Working Day</label>
+                            <input type="text" id="LastWorkingDate" required name="LastWorkingDate" class="form-control dbcol" value="@lastWorkingDate" readonly placeholder="Last Working Date">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label required" for="multicol-last-name">Reason for Leaving</label>
+                            @Html.DropDownList("ReasonForLeaving", new SelectList(Model.ExitReasonList, "KeyName", "KeyValue", Model.ResignationDetails.ReasonForLeaving), "Select Reason", htmlAttributes: new { @class = "dbcol select2 form-select select2-hidden-accessible", @required = "required" })
+
+                        </div>
+
+                        @{
+
+                            if (Model.ResignationDetails.ManagerApproval == 1 && Model.ResignationDetails.AdminApproval == 0)
+                            {
+                                <div class="col-md-6">
+                                    <label class="form-label" for="multicol-last-name">Final Resignation Date</label>
+                                    <input type="text" value="@Model?.ResignationDetails?.ResignationDateManager?.ToString("dd-MMM-yyyy")" class="form-control" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="multicol-last-name">Final Last Working Day</label>
+                                    <input type="text" class="form-control" value="@Model?.ResignationDetails?.LastWorkingDateManager?.ToString(" dd-MMM-yyyy")" readonly>
+                                </div>
+                            }
+                            else if (Model.ResignationDetails.ManagerApproval == 1 && Model.ResignationDetails.AdminApproval == 1)
+                            {
+                                <div class="col-md-6">
+                                    <label class="form-label" for="multicol-last-name">Final Resignation Date</label>
+                                    <input type="text" value="@Model?.ResignationDetails?.ResignationDateAdmin?.ToString("dd-MMM-yyyy")" class="form-control" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="multicol-last-name">Final Last Working Day</label>
+                                    <input type="text" class="form-control" value="@Model?.ResignationDetails?.LastWorkingDateAdmin?.ToString(" dd-MMM-yyyy")" readonly>
+                                </div>
+                            }
+                            else if (Model.ResignationDetails.ManagerApproval == 0 && Model.ResignationDetails.AdminApproval == 1)
+                            {
+                                <div class="col-md-6">
+                                    <label class="form-label" for="multicol-last-name">Final Resignation Date</label>
+                                    <input type="text" value="@Model?.ResignationDetails?.ResignationDateAdmin?.ToString("dd-MMM-yyyy")" class="form-control" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="multicol-last-name">Final Last Working Day</label>
+                                    <input type="text" class="form-control" value="@Model?.ResignationDetails?.LastWorkingDateAdmin?.ToString(" dd-MMM-yyyy")" readonly>
+                                </div>
+                            }
+
+                        }
+
+                        <div class="col-md-6">
+                            <label class="form-label" for="multicol-last-name">Comments</label>
+                            <textarea class="form-control dbcol auto-resize" required id="EmployeeComments" name="EmployeeComments" rows="4" maxlength="255" oninput="validateCommentInput(this)">@Model.ResignationDetails.EmployeeComments</textarea>
+                            @{
+                                if (!(Model != null && Model.ResignationDetails != null && Model.ResignationDetails.ResignationListId > 0))
+                                {
+                                    <span name="EmployeeCommentsCharacterHelp" style="color:red">Max 255 characters allowed</span>
+                                }
+                            }
+
+                        </div>
+
+                    </div>
+                    <div class="pt-4">
+                        <input type="hidden" class="dbcol" id="ResignationListId" name="ResignationListId" value="@Model.ResignationDetails.ResignationListId" />
+                        <input type="hidden" class="dbcol" id="UnitId" name="UnitId" value="@Model.ResignationDetails.UnitId" />
+                        <input type="hidden" class="dbcol" id="ResignationInitiatedBy" name="ResignationInitiatedBy" value="@Model.ResignationDetails.ResignationInitiatedBy" />
+
+                        @{
+                            if (!(Model != null && Model.ResignationDetails != null && Model.ResignationDetails.ResignationListId > 0))
+                            {
+                                <button type="button" class="btn btn-primary me-sm-3 me-1" onclick="SaveResignationDetails()">Submit</button>
+                            }
+                        }
+
+                        @* <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/Leave/LeaveApply/'">Cancel</button>*@
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section scripts {
+    <script src="~/customjs/commonfunction.js"></script>
+    <script src="~/customjs/employeevalidation.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            let autoresize = $(".auto-resize");
+            autoresize.each((i, v) => {
+                $(v)[0].style.height = "auto";
+                $(v)[0].style.height = $(v)[0].scrollHeight + "px";
+            });
+
+            $("[name='recoverycheck']").click(function () {
+                if ($(this).is(":checked")) {
+                    $(this).parent().find("span").show();
+                }
+                else {
+                    $(this).parent().find("span").hide();
+                }
+            });
+
+            $(".flatpickr-date1").flatpickr({
+                //monthSelectorType: 'static',
+                dateFormat: "d-M-Y",
+                enable: [
+                    {
+                        from: "today",
+                        to: new Date().fp_incr(30) // 7 days from now
+                    }
+                ]
+            });
+
+        });
+
+        function SaveResignationDetails() {
+            //alert("ok")
+            var rowData = {};
+            var exitVM = {};
+            var isData = false;
+            var dataCollection = new Array();
+            exitVM.ResignationDetails = GetFormControls();
+            exitVM.ResignationDetails.EmployeeId = jQuery("#EmployeeId").val()
+            var url = '/ExitManagement/SaveResignationDetails'
+            if (!ValidForm("EmployeeExitDetail")) {
+                //alert("Please fill personal information and try again");
+                return false;
+            }
+            BlockUI();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: { exitVM: exitVM },
+                //cache: false,
+                //contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                success: function (data) {
+                    UnblockUI();
+                    // alert(data);
+                    if (data.displayMessage.toUpperCase() == "SUCCESS") {
+                        $successalert("Transaction Successful!", "Resignation Posted Successfully");
+
+                        setTimeout(function () {
+                            location.reload();
+                        }, 2000);
+                    }
+                    else {
+                        $erroralert("Employee Exit", data);
+                        //ShowServerMessage(data);
+                    }
+                },
+                error: function (result) {
+                    UnblockUI();
+                    var x = 1;
+                    jQuery("#FormName").val("");
+                }
+            });
+
+        }
+
+        function PopulateResignationTable(data) {
+
+            // alert("List");
+            var tableID = "resignationList";
+            var keyAttr = "resignationListId"
+            var tableCols = ['employeeName', 'noticePeriod', 'resignationDate', 'lastWorkingDate', 'reasonForLeaving', 'employeeComments', 'Action']
+            var tableCtrl = jQuery("#" + tableID)
+
+            jQuery("#" + tableID + " tr").slice(1).remove()
+
+            data.forEach(function (row) {
+                var tr = $('<tr>');
+                tableCols.forEach(function (attr) {
+                    if (attr.toUpperCase() == "ACTION")
+                        tr.append('<th><a class="btn btn-primary" href="/ExitManagement/GetEmployeeExitInfo/"' + row[keyAttr] + '>Edit</a>');
+                    else
+                        tr.append('<td>' + row[attr] + '</td>');
+
+                    //tr.append();
+                });
+                tableCtrl.append(tr);
+            });
+        }
+
+        function remove(currDiv) {
+            $(currDiv).parent().parent().parent().remove();
+        }
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+        }
+
+        function getObject(object) {
+
+            var date1 = new Date($("#ResignationDate").val());
+
+
+            var newLastWorkingDate = moment(date1.setDate(date1.getDate() + parseInt(jQuery("#NoticePeriod").val()))).format("DD-MMM-YYYY");
+            $("#LastWorkingDate").val(newLastWorkingDate);
+
+            //const diffTime = Math.abs(date2 - date1);
+            ////  alert(diffTime);
+            //if (date1 > date2) {
+            //    $(":submit").attr("disabled", true);
+            //    ShowServerMessage("End date cannot be less than Start date");
+            //    return;
+            //}
+            //const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            //// diffDays =diffDays +1;
+
+            //var tDays = diffDays + 1;
+            //// alert(tDays);
+            //if (parseInt($("#leaveBalance").val()) < tDays) {
+            //    $(":submit").attr("disabled", true);
+            //    $("#NoOfLeave").val(0);
+            //    alert("you can take maximum no of leave : " + $("#leaveBalance").val());
+            //    return;
+            //}
+            //$("#NoOfLeave").val(tDays);
+
+        }
+
+        function validateCommentInput(textarea) {
+            const maxLength = 255;
+            const regex = /^[a-zA-Z0-9\s.,'!@@#&()\-+]*$/;
+            const cleanText = textarea.value.split('').filter(char => regex.test(char)).join('');
+
+            if (textarea.value !== cleanText) {
+                textarea.value = cleanText;
+            }
+
+            const remaining = maxLength - textarea.value.length;
+            const helpText = document.getElementsByName("EmployeeCommentsCharacterHelp")[0];
+            helpText.textContent = remaining + " characters remaining";
+        }
+
+    </script>
+}
+
+
+

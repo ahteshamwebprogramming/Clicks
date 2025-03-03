@@ -1,0 +1,132 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.DistrictMasterDTO
+@{
+    ViewData["Title"] = "Job Title";
+    //Layout = null;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y ">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Masters /</span> Job Title</h4>
+    <div class="card" id="List">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+        </div>
+        <div class="card-datatable table-responsive">
+            <table class="datatables-basic table border-top List">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th>id</th>
+                        <th>District ID</th>
+                        <th>State Name</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.DistrictMasterList != null)
+                        @foreach (var item in Model.DistrictMasterList)
+                        {
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <td>@item.DistrictId</td>
+                                <td>@item.StateName</td>
+                                <td>@item.DistrictName</td>
+                                <th>@(item.IsActive == true ? "Active" : "Inactive")</th>
+                                <th>
+                                    <a class="btn btn-primary" onclick="EditRecord('Job Title','/District/GetDistrictInfo','@item.DistrictId','@item.IsActive')">Edit</a>
+                                    <button class="btn btn-primary" onclick="DeleteRecord('Job Title','@item.DistrictName','/District/DeleteDistrict','@item.DistrictId','@item.IsActive')"> Delete</button>
+                                </th>
+                            </tr>
+                        }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card" id="Add" style="display:none">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="List" onclick="ListView()" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/District/SaveDistrict">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-country">State</label>
+                        <div class="position-relative">
+                            <select id="multicol-country" name="StateId" required class="select2 form-select select2-hidden-accessible" data-allow-clear="true" data-select2-id="multicol-country" tabindex="-1" aria-hidden="true">
+                                <option value="">Select</option>
+                                @foreach (var item in Model.StateList)
+                                {
+                                    if (item.StateId == Model.StateId)
+                                    {
+                                        <option value="@item.StateId " selected> @item.StateName</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.StateId"> @item.StateName</option>
+                                    }
+
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">District Name</label>
+                        <input type="text" id="DistrictName" name="DistrictName" required value="@Model.DistrictName" class="form-control" placeholder="District Name">
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" id="DistrictId" name="DistrictId" value="@Model.DistrictId">
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/District/District/'">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Modal to add new record -->
+    <div class="offcanvas offcanvas-end" id="add-new-record">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title" id="exampleModalLabel">New District</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body flex-grow-1">
+            <form class="add-new-record pt-0 row g-2" id="form-add-new-country">
+                @*<input type="text" asp-for="CountryName" name="CountryName" class="CountryName" />
+                <button type="submit">Submit</button>*@
+                <div class="col-sm-12">
+                    <label class="form-label" for="basicFullname">Country</label>
+                    <div class="input-group input-group-merge">
+                        <span id="basicFullname2" class="input-group-text"><i class="bx bx-flag"></i></span>
+                        <input type="text" id="basicFullname" class="form-control CountryName" name="basicFullname" placeholder="India" aria-label="John Doe" aria-describedby="basicFullname2" />
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <button type="submit" class="btn btn-primary data-submit me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!--/ DataTable with Buttons -->
+</div>
+
+
+@section scripts {
+
+    @*    <script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            Init("@Model.DistrictId", "@Model.DisplayMessage");
+        });
+
+    </script>
+
+
+}

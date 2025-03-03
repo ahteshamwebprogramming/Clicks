@@ -1,0 +1,1103 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.SalaryProcessInputs
+@{
+    ViewData["Title"] = "PayrollAccount";
+    int iCtrNo = 1;
+}
+ 
+
+<link href="~/assets/css/exitclearance.css" rel="stylesheet" />
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll/</span> My Account</h4>
+
+    <div class="row">
+
+        <!-- User Content -->
+        <div class="col-xl-12 col-lg-12 col-md-12 order-1 order-md-1">
+            <!-- User Pills -->
+
+            <div class="nav-align-top mb-4">
+                <ul class="nav nav-pills mb-3" role="tablist">
+
+                    @* <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#salary-details" aria-controls="salary-details" aria-selected="true">
+                            Salary Structure
+                        </button>
+                    </li> *@
+                    <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#Pay-Slips" aria-controls="Pay-Slips" aria-selected="false">
+                            Pay Slips
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#investments" aria-controls="investments" aria-selected="false">
+                            My Investments
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#IT-Forms" aria-controls="IT-Forms" aria-selected="false">
+                            Loan
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#TDS" aria-controls="TDS" aria-selected="false">
+                            TDS
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#Form16" aria-controls="Form16" aria-selected="false">
+                            Form 16
+                        </button>
+                    </li>
+                    <!--li class="nav-item">
+                      <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-top-messages" aria-controls="navs-pills-top-messages" aria-selected="false">
+                        Pay slips
+                      </button>
+                    </li>
+                    <li class="nav-item">
+                      <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-top-messages" aria-controls="navs-pills-top-messages" aria-selected="false">
+                        Loans
+                      </button>
+                    </li-->
+                </ul>
+                <div class="tab-content">
+                    @* <div class="tab-pane fade show active" id="salary-details" role="tabpanel">
+                        <div class="text-uppercase fw-semibold mb-3 small">Salary Structure</div>
+                        <div class="info-container">
+                            <div class="row">
+                                @if (Model != null)
+                                {
+                                    if (Model.Count > 0)
+                                    {
+                                        decimal? totalMontlyAmt = 0;
+                                        decimal? totalAnualyAmt = 0;
+                                        @foreach (var item in Model)
+                                        {
+                                            if (@item.ComponentType.Trim() == "E")
+                                            {
+                                                totalMontlyAmt = totalMontlyAmt + @item.AmtPerMonth;
+                                            }
+
+
+                                        }
+                                        totalAnualyAmt = totalMontlyAmt * 12;
+                                        <div class="mb-3 col-md-6">
+                                            <div>Anual CTC : ₹ @totalAnualyAmt</div>
+                                        </div>
+                                        <div class="mb-3 col-md-6">
+                                            <div>Monthly CTC : ₹ @totalMontlyAmt</div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <div class="table-responsive text-nowrap">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th width="33.33%">SALARY COMPONENTS</th>
+                                            <th width="33.33%" class="text-end">MONTHLY AMOUNT</th>
+                                            <th width="33.33%" class="text-end">ANNUAL AMOUNT</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            if (Model != null)
+                                            {
+                                                if (Model.Count > 0)
+                                                {
+                                                    <table class="table table-borderless">
+                                                        <tr><td style="padding-left:0 ;">Earnings</td></tr>
+                                                        @foreach (var item in Model)
+                                                        {
+                                                            if (@item.ComponentType.Trim() == "E")
+                                                            {
+                                                                var annualAmt = @item.AmtPerMonth * 12;
+                                                                <tr>
+                                                                    <td width="33.33%" style="padding-left:0 ;">@item.ComponentName<br></td>
+                                                                    <td width="33.33%" class="text-end">₹ @item.AmtPerMonth</td>
+                                                                    <td width="33.33%" class="text-end" style="padding-right:0 ;">₹ @annualAmt</td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </table>
+                                                }
+                                            }
+                                        }
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div> *@
+                    <div class="tab-pane fade" id="investments" role="tabpanel">
+                        <div class="info-container">
+                            <div class="nav-align-top">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item" style="border: 1px solid #d9dee3;padding: 8px 10px 6px 24px;">
+                                        @*<select class="form-select" id="Regime" aria-label="">
+                                        <option selected value="New">New</option>
+                                        <option value="Old">Old</option>
+                                        </select>*@
+
+                                        <div id="Regime">
+                                            Regime
+                                            <input class="mr-3" type="radio" checked name="Regime" value="New" id="newRegime" onclick="onRegimeChange()" />
+                                            <label for="newRegime">New</label>
+
+                                            <input class="mr-3" type="radio" name="Regime" value="Old" id="oldRegime" onclick="onRegimeChange()" />
+                                            <label for="oldRegime">Old</label>
+                                        </div>
+
+                                    </li>
+                                    <li class="nav-item">
+                                        <select class="form-select" id="FY" aria-label="">
+                                            <option selected value="2023-24">FY 2023 - 2024</option>
+                                            <option value="2024-25">FY 2024 - 2025</option>
+                                            <option value="2025-26">FY 2025 - 2026</option>
+
+                                        </select>
+                                    </li>
+                                    <li class="nav-item" style="display:none" id="ITDeclarationTab">
+                                        <button type="button" class="nav-link active" role="tab"
+                                                data-bs-toggle="tab"
+                                                data-bs-target="#it-declarations"
+                                                aria-controls="it-declarations"
+                                                aria-selected="true">
+                                            Fill IT Declaration
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" style="display:none" id="ProofOfInvestment">
+                                        <button type="button"
+                                                class="nav-link"
+                                                role="tab"
+                                                data-bs-toggle="tab"
+                                                data-bs-target="#proof-of-investment"
+                                                aria-controls="proof-of-investment"
+                                                aria-selected="false">
+                                            Proof of Investment Declaration
+                                        </button>
+                                    </li>
+
+
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active" id="it-declarations" role="tabpanel" style="">
+                                        <div class="text-center align-middle">
+                                            <div class="mb-2"><img src="../../assets/img/illustrations/boy-with-laptop-light.png" width="200" height="auto"></div>
+                                            <div class="mb-1">Income Tax Declaration submission by the employee</div>
+                                            <button style="display:none" class="btn btn-primary me-2 mt-2" name="FID" onclick="redirectToITDeclaration()">Fill IT Declaration</button>
+                                            <button class="btn btn-primary me-2 mt-2" name="SubmitRegimeDetails" onclick="saveITDeclarationType()">Save</button>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="proof-of-investment" role="tabpanel">
+                                        <div class="text-center align-middle">
+                                            <div class="mb-2"><img src="../../assets/img/illustrations/boy-with-laptop-light.png" width="200" height="auto"></div>
+                                            <div class="mb-1">Income Tax Declaration Submission Proofs by the employee</div>
+                                            <button class="btn btn-primary me-2 mt-2" onclick="redirectToProofSubmission()">Submit Documents</button>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="navs-top-messages" role="tabpanel">
+                                        On select Fanancial Year data will populate here.
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade show active" id="Pay-Slips" role="tabpanel">
+                        <div class="text-uppercase fw-semibold mb-3 small">Pay Slips</div>
+                        <div class="card">
+                            <div class="card-body">
+                                <form id="ViewAttendanceForm" method="post" action="/PayrollSalary/PaySlip">
+                                <div class="row g-3">
+
+                                    <div class="col-md-6">
+                                        <label class="form-label" for=""> Year</label>
+                                        @*  <label class="form-control" id="lblyear" for="">2023</label>*@
+                                        <select class="form-select" id="selYear" name="Year" aria-label="Default select example">
+                                            <option value="0" selected>Select an option</option>
+                                               @*  <option value="2023" >Year2023</option>
+                                                 <option value="2024" >Year2024</option> *@
+                                                @*   <option value="2025" >FY2025</option>
+                                                <option value="2026" >FY2026</option>
+                                                   <option value="2027" >FY2027</option> *@
+                                           
+                                            @if (Model.Years != null)
+                                            {
+                                                    @foreach (var item in Model.Years)
+                                                {
+                                                    if (item == Model.Year)
+                                                    {
+                                                        <option value="@item" selected> @item</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item"> @item</option>
+                                                    }
+
+                                                }
+                                            }
+                                        </select>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for=""> Month</label>
+                                        <select class="form-select" id="selMonth" name="Month" aria-label="Default select example">
+                                              <option value="0" selected>Select an option</option>
+                                                @* <option value="01" >January</option>
+                                                <option value="02" >February</option>
+                                                <option value="03" >March</option>
+                                                <option value="04" >April</option>
+                                                <option value="05" >May</option>
+                                                <option value="06" >June</option>
+                                                <option value="07" >July</option>
+                                                <option value="08" >August</option>
+                                                <option value="09" >September</option>
+                                                <option value="10" >October</option>
+                                                <option value="11" >November</option>
+                                                <option value="12" >December</option> *@
+
+
+                                            @if (Model.SalMonths != null)
+                                            {
+                                                @foreach (var item in Model.SalMonths)
+                                                {
+                                                    if (item.ID == Model.Month)
+                                                    {
+                                                        <option value="@item.ID" selected> @item.Name</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.ID"> @item.Name</option>
+                                                    }
+
+                                                }
+                                            } 
+                                        </select>
+
+                                    </div>
+
+                                    @* <div class="col-md-4"><br />
+                                    <button type="submit" class="btn btn-primary btn-sm me-sm-3 me-1" onclick="return ValidateViewAttendance()">Show Details</button>
+                                    </div>*@
+
+                                </div>
+                                <div class="pt-4">
+
+                                    <button type="submit" class="btn btn-primary btn-sm me-sm-3 me-1" onclick="return ValidateInputs()">View and Download</button>
+                                </div>
+                            </form>
+                         @*    <div class="card-body">
+                                <div class="table-responsive text-nowrap">
+                                    <table class="datatables-ajax table table-bordered List" id="PayList">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Month</th>
+                                                <th>Year</th>
+                                                <th>Action</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>November</td>
+                                                <td>2023</td>
+                                                <th>
+                                                  
+                                                    <button class="btn btn-primary" onclick="javascript:window.location.href='/PayrollSalary/PaySlip'"> View and Download</button>
+                                                </th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div> *@
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="TDS" role="tabpanel">
+                        <div class="text-uppercase fw-semibold mb-3 small">My TDS</div>
+                        <div class="card">
+                            <div class="card-body">
+                                <form id="TdsForm" method="post" action="/PayrollSalary/TDSSheetDownload" target="_new">
+                                    <div class="row g-3">
+
+                                        <div class="col-md-6">
+                                            <label class="form-label" for=""> Year</label>
+                                            @*  <label class="form-control" id="lblyear" for="">2023</label>*@
+                                            <select class="form-select" id="TDSYear" name="Year" aria-label="Default select example">
+                                                <option value="0" selected>Select an option</option>
+                                               @*  <option value="2023">Year2023</option>
+                                                <option value="2024">Year2024</option> *@
+                                               @*  <option value="2025">FY2025</option>
+                                                <option value="2026">FY2026</option>
+                                                <option value="2027">FY2027</option> *@
+                                                @if (Model.Years != null)
+                                                {
+                                                    @foreach (var item in Model.Years)
+                                                    {
+                                                        if (item == Model.Year)
+                                                        {
+                                                            <option value="@item" selected> @item</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item"> @item</option>
+                                                        }
+
+                                                    }
+                                                }
+                                            </select>
+
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for=""> Month</label>
+                                            <select class="form-select" id="TDSMonth" name="Month" aria-label="Default select example">
+                                                <option value="0" selected>Select an option</option>
+                                               @*  <option value="01">January</option>
+                                                <option value="02">February</option>
+                                                <option value="03">March</option>
+                                                <option value="04">April</option>
+                                                <option value="05">May</option>
+                                                <option value="06">June</option>
+                                                <option value="07">July</option>
+                                                <option value="08">August</option>
+                                                <option value="09">September</option>
+                                                <option value="10">October</option>
+                                                <option value="11">November</option>
+                                                <option value="12">December</option> *@
+
+                                                
+                                                @if (Model.SalMonths != null)
+                                                {
+                                                @foreach (var item in Model.SalMonths)
+                                                {
+                                                if (item.ID == Model.Month)
+                                                {
+                                                <option value="@item.ID" selected> @item.Name</option>
+                                                }
+                                                else
+                                                {
+                                                <option value="@item.ID"> @item.Name</option>
+                                                }
+
+                                                }
+                                                }
+                                            </select>
+
+                                        </div>
+
+                                        @* <div class="col-md-4"><br />
+                                        <button type="submit" class="btn btn-primary btn-sm me-sm-3 me-1" onclick="return ValidateViewAttendance()">Show Details</button>
+                                        </div>*@
+
+                                    </div>
+                                    <div class="pt-4">
+                                @*         <a class="btn btn-primary btn-sm me-sm-3 me-1" onclick="return TDSValidateInputs()" href="/PayrollSalary/TDSSheetDownload" target="_blank">View & Download</a>.  *@
+                                       @*  <button type="button" class="btn btn-primary btn-sm me-sm-3 me-1" onclick="return TDSValidateInputs()">Download</button> *@
+                                        <button type="submit" class="btn btn-primary btn-sm me-sm-3 me-1" onclick="return TDSValidateInputs()">Download</button>
+                                    </div>
+                                </form>
+                                <div id="Grid" style="display:none;">
+                                    <br />
+                                    <table cellspacing="2" cellpadding="10" style="width: 50%; ">
+
+                                        <tr>
+                                            <td colspan="4"><div style="padding: 20px 0;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f"> (Employee Taxsheet Details for the month of November, 2023)</div></td>
+                                        </tr>
+                                    </table><br />
+                                    <table cellspacing="2" cellpadding="10" border="1" style="width: 50%;">
+
+
+                                        <tr>
+
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Emp.Code</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">164</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Designation</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">IT Dev</td>
+                                        </tr>
+                                        <tr>
+
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Emp.Name</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Pradeep Juyal</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Department</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Softwares</td>
+                                        </tr>
+                                        <tr>
+
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Location</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">South Delhi</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Date Of Joining</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">05-10-2023</td>
+                                        </tr>
+                                    </table><br />
+                                    <table cellspacing="2" cellpadding="10" border="1" style="width: 50%;">
+                                        <tr>
+                                            @* <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong> Sr.No</strong></td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Particulars</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Amount</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Actual</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Projected</strong></td>
+                                        </tr>
+                                        <tr>
+                                            @*      <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">1</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"> Basic</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">1,20,000.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">60,000.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">60,000.00</td>
+                                        </tr>
+                                        <tr>
+                                            @*  <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">2</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">HRA</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">60,000.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">24,000.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">36,000.00</td>
+                                        </tr>
+                                        <tr>
+                                            @*   <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">3</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Fixed Allowance</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">3,00,000.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">1,50,000.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">1,50,000.00</td>
+                                        </tr>
+                                        <tr>
+                                            @*    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">4</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Gross Salary</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">4,80,000.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">2,34,000.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">2,46,00.00</td>
+                                        </tr>
+                                        <tr>
+                                            @*    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">5</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Variables</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">2,900.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            @*  <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">6</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Arrears</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">7,250.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0</td>
+                                        </tr>
+                                        <tr>
+                                            @*      <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">7</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Total Gross Salary</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">4,90,150.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">2,34,000.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">2,46,00.00</td>
+                                        </tr>
+                                        <tr>
+                                            @*  <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">8</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Less HRA exemption u/s 10(13A)</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">30,000.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            @*   <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">9</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Less Profession Tax</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">200.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            @* <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">10</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">80C-Public Provident Fund</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">150000.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            @*   <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">11</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">80D-Medi Claim Policy For Self, Spouse, Children for Senior Citizen</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">100000.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            @*  <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">12</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Home Loan</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            @*  <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">13</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Rent Out Property</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            @*  <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">14</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">80EEA-Interest Paid On Education Loan</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">70000.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            @*     <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">15</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Other Sources</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                        </tr>
+
+                                        <tr>
+                                            @*     <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">16</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Standard Deduction</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">50000.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            @*         <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">17</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Taxable Income (Before Rebate)</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            @*  <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">18</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Tax Payable (Before Rebate)</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            @*      <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">19</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Rebate if any</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            @*    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">20</td> *@
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Previous Employement Deceleration</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">0.00</td>
+                                        </tr>
+
+
+                                    </table>
+
+                                </div>
+                                @* <br />
+                                <form method="post" asp-action="Export" asp-controller="PayrollSalary">
+                                    <input type="hidden" name="GridHtml" />
+                                    <input type="submit" id="btnSubmit" class="btn btn-primary btn-sm me-sm-3 me-1" value="Download" />
+                                </form>
+                              *@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="Form16" role="tabpanel">
+                        <div class="text-uppercase fw-semibold mb-3 small">My Form 16</div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="modal fade" id="vwAttachment" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl modal-simple modal-pricing">
+                                        <div class="modal-content p-3 p-md-5">
+                                            <div class="modal-body">
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                </button>
+                                                <div>
+                                                    <div class="row"><a id="downloadAttachment" download="">Click to Download the image</a></div>
+                                                    <div class="row" style="width:90%;height:90%"><object id="uploadedObject" data="" type="application/pdf"></object></div>
+                                                    <div class="row"><input id="uploadedImage" type="image" src="" /></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive text-nowrap mt-2" id="tableDiv">
+
+                                    <table class="datatables-ajax table List" id="form16DetailTable">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Employee Name</th>
+                                                <th>PAN</th>
+                                                <th>File Name</th>
+                                                <td>Year</td>
+                                                <th>View Form16</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.Form16DocList)
+                                            {
+                                                <tr>
+                                                    <td>@iCtrNo</td>
+                                                    <td>@item.EmployeeName</td>
+                                                    <td>@item.Pannumber</td>
+                                                    <td>@item.DocName</td>
+                                                    <td>@item.FinYear</td>
+                                                    <td><a href="javascript:void(0)" id="Form16_@item.FormId" onclick="ViewAttachment('@item.AttachmentBase64String','Form16','pdf')">Form16</a></td>
+                                                </tr>
+                                                iCtrNo += 1;
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="IT-Forms" role="tabpanel">
+                        <div class="text-uppercase fw-semibold mb-3 small">My Loan</div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-datatable table-responsive text-nowrap" id="tableInfo">
+                                    @* <table class="datatables-ajax table table-bordered List" id="List">
+                                        <thead>
+                                            <tr>
+                                                <th style="display:none;"></th>
+                                                <th>Month-Year</th>
+                                                <th>Opening Balance</th>
+                                                <th>Deduction</th>
+                                                <th>Closing Balance</th>
+                                                <th>Is Paid</th>
+                                                <th>Remarks</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @if (Model.GetLoanPaymentDetails != null)
+                                            {
+
+
+                                                foreach (var item in Model.GetLoanPaymentDetails)
+                                                {
+                                                    <tr>
+                                                        <td style="display:none;">@item.RepaymentId</td>
+                                                        <td>@item.Month-@item.RepaymentYear </td>
+                                                        <td>@item.OpeningBalance</td>
+                                                        <td>
+                                                            @item.Deduction
+                                                        </td>                                                      
+
+                                                        <td>@item.ClosingBalance</td>
+                                                        <td>@(item.Status == 1 ? "No" : item.Status == 2 ? "Yes" : item.Status)</td>
+                                                        <td>
+                                                           
+                                                                @item.Remarks
+                                                         
+                                                        </td>
+                                                                                                               
+                                                    </tr>
+
+
+                                                }
+                                            }
+
+                                        </tbody>
+                                    </table> *@
+
+                                    <div class="card-datatable table-responsive text-nowrap">
+                                        <table class="datatables-ajax table table-bordered List" id="List">
+                                            <thead>
+                                                <tr>
+                                                    <th>Start Month-Year</th>                                                 
+                                                    <th>Sanction Amount</th>
+                                                    <th>Repayment Tenure</th>
+                                                    <th>Installment</th>
+                                                    <th>Closing Amount</th>
+                                                    <th>Stop Month-Year</th>
+                                                    <th>status</th>
+                                                    <th>View</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GetSanctionLoan != null)
+                                                    @foreach (var item in Model.GetSanctionLoan)
+                                                    {
+                                                        <tr>
+                                                            <td>@item.Month-@item.RepaymentStartYear </td>                                                          
+                                                            <td>@item.SanctionAmount</td>
+                                                            <td>@item.RepaymentTenure</td>
+                                                            <td>@item.MonthlyInstallment</td>
+                                                            <td>@item.ClosingBalance</td>
+                                                            <td>@item.StopMonth-@item.RepaymentStopYear </td>
+                                                            <th>@(item.Status == 1 ? "Pending" : "Closed")</th>
+                                                          
+                                                            <th>
+                                                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#PahmentModal" onclick="ViewRecord(@item.SanctionId)"> View</button>
+                                                               @*  <button class="btn btn-primary" onclick="DeleteRecord('@item.SanctionId','@item.EncryptedId')"> View</button> *@
+                                                            </th>
+                                                        </tr>
+                                                    }
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                   @*  <div class="col-12 d-flex justify-content-between">
+                                        <button class="btn btn-primary" onclick="RegulerizePayroll()">
+                                            <span class="align-middle d-sm-inline-block d-none me-sm-1">Submit</span>
+                                        </button>
+                                        <input type="hidden" class="dbcol" id="ProcessYear" name="ProcessYear" />
+                                        <input type="hidden" class="dbcol" id="ProcessMonth" name="ProcessMonth" />
+                                    </div> *@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="PahmentModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-xl" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header border-bottom">
+                                        <div><h5 class="card-title mb-sm-0 me-2">Repayment View</h5></div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="card-datatable table-responsive text-nowrap">
+                                            <table class="datatables-ajax table table-bordered List" id="SummaryList">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="display:none;"></th>
+                                                        <th>Month-Year</th>
+                                                        <th>Opening Balance</th>
+                                                        <th>Deduction</th>
+                                                        <th>Closing Balance</th>
+                                                        <th>Is Processed</th>
+                                                        <th>Remarks</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="myleavetbl">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                  @*   <div class="modal fade" id="SalaryPayoutModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-xl" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header border-bottom">
+                                    <div><h5 class="card-title mb-sm-0 me-2">Salary Details</h5></div>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="info-container">
+                                        <div class="row">
+                                            @if (Model != null)
+                                            {
+                                                double? noOfDays = 0;
+                                                double? noOfLeave = 0;
+                                                if (Model.Count > 0)
+                                                {
+                                                    noOfLeave = Model[1].NoOfLeave;
+                                                    noOfDays = Model[1].NoOfDays;
+                                                }
+
+                                                <div class="mb-3 col-md-6">
+                                                    <div>Working Days : @noOfDays</div>
+                                                </div>
+                                                <div class="mb-3 col-md-6">
+                                                    <div>Leave Taken  : @noOfLeave</div>
+                                                </div>
+                                            }
+                                           
+
+                                        </div>
+                                        <div class="table-responsive text-nowrap">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="50%">SALARY COMPONENTS</th>
+                                                        <th width="50%" class="text-end">PAYOUT AMOUNT</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @{
+                                                        if (Model != null)
+                                                        {
+                                                            decimal? earningAmt = 0;
+                                                            decimal? deductAmt = 0;
+                                                            decimal? balanceAmt = 0;
+                                                            if (Model.Count > 0)
+                                                            {
+                                                                
+                                                               
+                                                                <table class="table table-borderless">
+                                                                  
+                                                                    @foreach (var item in Model)
+                                                                    {
+                                                                        
+                                                                        if (@item.ComponentType.Trim() == "E")
+                                                                        {
+                                                                            earningAmt = earningAmt + @item.AmtWithdrawPerMonth;
+                                                                            <tr>
+                                                                                <td width="40%" style="padding-left:0 ;">@item.ComponentName<br></td>
+                                                                                <td width="40%" class="text-end">₹ @item.AmtWithdrawPerMonth</td>
+
+                                                                            </tr>
+                                                                           
+                                                                        }
+                                                                        if (@item.ComponentType.Trim() == "D")
+                                                                        {
+                                                                            <tr>
+                                                                                <td width="40%" colspan="2" style="padding-left:0 ;">-------------------------------</td>
+
+
+                                                                            </tr>
+                                                                            balanceAmt = earningAmt- @item.AmtWithdrawPerMonth;
+                                                                            
+                                                                            <tr>
+                                                                                <td width="40%" style="padding-left:0 ;">@item.ComponentName<br></td>
+                                                                                <td width="40%" class="text-end">₹ @item.AmtWithdrawPerMonth</td>
+
+                                                                            </tr>
+                                                                        }
+                                                                    }
+                                                                   
+                                                                    <tr>
+                                                                        <td width="40%" colspan="2" style="height:20px;"></td>
+                                                                       
+
+                                                                    </tr>
+                                                                    <tr>
+                                                                       
+                                                                        <td width="40%" style="padding-left:0 ;">Balance Amount<br></td>
+                                                                        <td width="40%" class="text-end">₹ @balanceAmt</td>
+
+                                                                    </tr>
+                                                                </table>
+                                                            }
+                                                        }
+                                                    }
+                                                                                                      
+
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div> *@
+                </div>
+            </div>
+            <!--/ User Pills -->
+
+        </div>
+        <!--/ User Content -->
+    </div>
+
+
+</div>
+<!-- / Content -->
+<script src="~/customjs/commonfunction.js"></script>
+<script src="~/customjs/employeevalidation.js"></script>
+@section scripts {
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            // jQuery("#PayList").dataTable();
+           $(".List").dataTable();
+        });
+
+        function onRegimeChange() {
+
+            let Regime = $("#Regime").find($("input[type='radio'][name='Regime']:checked")).val();
+
+            if (Regime == "New") {
+                //$("#it-declarations").slideUp();
+
+                $("#it-declarations").find("[name='FID']").hide();
+                $("#it-declarations").find("[name='SubmitRegimeDetails']").show();
+
+                $("#ITDeclarationTab").hide();
+                $("#ProofOfInvestment").hide();
+            }
+            else {
+                //$("#it-declarations").slideDown();
+
+                $("#it-declarations").find("[name='FID']").show();
+                $("#it-declarations").find("[name='SubmitRegimeDetails']").hide();
+
+                $("#ITDeclarationTab").show();
+                $("#ProofOfInvestment").show();
+            }
+        }
+
+
+
+        function saveITDeclarationType() {
+            SaveITDeclarationTypePromise().then((data) => {
+
+                $successalert("Success!", "Regime saved for this financial year.");
+
+            });
+        }
+
+        function SaveITDeclarationTypePromise() {
+            return new Promise((resolve, reject) => {
+                let FY = $("#FY").val();
+                let Regime = $("#Regime").find($("input[type='radio'][name='Regime']:checked")).val();
+
+                var inputDTO = {};
+                inputDTO.RegimeType = Regime;
+                inputDTO.FY = FY;
+                $.ajax({
+                    type: "POST",
+                    url: '/PayrollAccount/SaveITDeclarationType',
+                    contentType: 'application/json',
+                    data: JSON.stringify(inputDTO),
+                    success: function (data) {
+                        resolve(data);
+                    },
+                    error: function (error) {
+                        $erroralert("Error!", error.responseText + '!'); UnblockUI();
+                        reject(error);
+                    }
+                });
+            });
+        }
+
+        function redirectToITDeclaration() {
+            SaveITDeclarationTypePromise().then((data) => {
+                let FY = $("#FY").val();
+                let Regime = $("#Regime").find($("input[type='radio'][name='Regime']:checked")).val();
+                window.location.href = '/PayrollAccount/ITDeclarations/' + FY + '_' + Regime;
+            });
+        }
+        function redirectToProofSubmission() {
+            let FY = $("#FY").val();
+            let Regime = $("#Regime").val();
+            window.location.href = '/PayrollAccount/ProofSubmission/' + FY + '_' + Regime;
+        }
+
+        function ValidateInputs() {
+
+
+
+         
+
+            year = jQuery("#selYear").val();
+            month = jQuery("#selMonth").val();
+
+            //  alert(year);
+          //  BlockUI();
+            if (year == 0) {
+                alert("Please select the year");
+             
+                //  ShowServerMessage("Please select the year");
+               // UnblockUI();
+                return false;
+            }
+            if (month == 0) {
+                //UnblockUI();
+                alert("Please select the month");
+               
+                //  ShowServerMessage("Please select the month");
+                return false;
+            }
+
+
+        }
+
+        function TDSValidateInputs() {
+
+
+
+
+
+            year = jQuery("#TDSYear").val();
+            month = jQuery("#TDSMonth").val();
+
+            //  alert(year);
+            //  BlockUI();
+            if (year == 0) {
+                alert("Please select the year");
+
+                //  ShowServerMessage("Please select the year");
+                // UnblockUI();
+                return false;
+            }
+            if (month == 0) {
+                //UnblockUI();
+                alert("Please select the month");
+
+                //  ShowServerMessage("Please select the month");
+                return false;
+            }
+
+           // window.location.href = "/Department/DeleteDepartment/" + departmentId;
+
+        }
+
+        $("#btnSubmit").click(function () {
+            $("input[name='GridHtml']").val($("#Grid").html());
+        });
+
+        function ViewRecord(SanctionId) {
+            if (SanctionId > 0) {
+                jQuery("#myleavetbl").html("")
+                $("#Add").hide();
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/PayrollAccount/GetLoanDetails",
+                    data: { SanctionId: SanctionId },
+                    success: function (response) {
+
+                        var status = 'Yes';
+                       // var aprdate = '';
+                        var  remarks = '';
+                        if (response != null) {
+                            if (response.getLoanPaymentDetails.length > 0) {
+                                for (var i = 0; i < response.getLoanPaymentDetails.length; i++) {
+
+                                    if (response.getLoanPaymentDetails[i].status == 1)
+                                        status = 'No';
+
+                                   // alert(response.getLoanPaymentDetails[i].remarks.length)
+                                    if (response.getLoanPaymentDetails[i].remarks === null) {
+                                        remarks = '';
+                                    }
+                                    else
+                                        remarks = response.getLoanPaymentDetails[i].remarks;
+                                   // alert(response.getLoanPaymentDetails[i].month);
+                                    $("#myleavetbl").append('<tr><td>' + response.getLoanPaymentDetails[i].month + '-' + response.getLoanPaymentDetails[i].repaymentYear + '</td><td>' + response.getLoanPaymentDetails[i].openingBalance + '</td><td>' + response.getLoanPaymentDetails[i].deduction + '</td><td>' + response.getLoanPaymentDetails[i].closingBalance + '</td><td>' + status + '</td><td>' + remarks + '</td></tr>');
+                                }
+                            }
+                        }
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+
+                });
+            }
+        }
+
+        function ViewAttachment(base64Image, fieldName, ext) {
+            jQuery("#downloadAttachment").attr("href", base64Image);
+            jQuery("#downloadAttachment").attr("download", fieldName + ".pdf");
+            if (ext == "pdf") {
+                //jQuery("#uploadedObject").data(base64Image)
+                jQuery("#uploadedObject").attr("data", base64Image);
+                jQuery("#vwAttachment").modal('show');
+            }
+            else if (",png,jpeg,jpg,bmp,gif,tiff,".indexOf("," + ext + ",") >= 0) {
+                jQuery("#uploadedImage").attr("src", base64Image)
+                jQuery("#vwAttachment").modal('show');
+            }
+        }
+    </script>
+}

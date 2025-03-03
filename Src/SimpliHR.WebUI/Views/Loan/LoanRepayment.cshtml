@@ -1,0 +1,342 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.LoanMasterDTO
+@{
+    ViewData["Title"] = "LoanRepayment";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll/</span> Loan Repayment</h4>
+    <div class="row">
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="card">
+                <div class="card-body">
+                    <div>
+                        <form id="LoanForm" method="post" action="/Loan/GetEmployeeLoan">
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <label class="form-label" for=""> Employees</label>
+                                    <select class="form-select" id="selEmp" name="Employee" aria-label="Default select example">
+                                        <option value="0" selected>Select an option</option>
+
+
+                                        @if (Model.GetSanctionLoan != null)
+                                        {
+                                            @foreach (var item in Model.GetSanctionLoan)
+                                            {
+                                                if (item.EmployeeId == Model.EmployeeId)
+                                                {
+                                                    <option value="@item.EmployeeId" selected> @item.Employee</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.EmployeeId"> @item.Employee</option>
+                                                }
+
+
+                                            }
+                                        }
+                                    </select>
+
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label" for=""> Processed</label>
+                                    <select class="form-select" id="selStatus" name="Status" aria-label="Default select example">
+                                        <option value="0" selected>-- All--</option>
+                                        <option value="2">Yes</option>
+                                        <option value="1">No</option>
+
+
+                                    </select>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for=""> Month</label>
+                                    <select class="form-select" id="selMonth" name="Month" aria-label="Default select example" required>
+                                        <option value="0" selected>Select an option</option>
+
+                                        @if (Model.SalMonths != null)
+                                        {
+                                            @foreach (var item in Model.SalMonths)
+                                            {
+                                                if (item.ID == Model.RepaymentStartMonth)
+                                                {
+                                                    <option value="@item.ID" selected> @item.Name</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.ID"> @item.Name</option>
+                                                }
+
+                                            }
+                                        }
+                                    </select>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for=""> Year</label>
+                                    @*  <label class="form-control" id="lblyear" for="">2023</label>*@
+                                    <select class="form-select" id="selYear" name="Year" aria-label="Default select example">
+                                        <option value="0" selected>Select an option</option>
+
+                                        @if (Model.Years != null)
+                                        {
+                                            @foreach (var item in Model.Years)
+                                            {
+                                                if (item == Model.RepaymentStartYear)
+                                                {
+                                                    <option value="@item" selected> @item</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item"> @item</option>
+                                                }
+
+                                            }
+                                        }
+                                    </select>
+
+                                </div>
+
+
+
+                            </div>
+                            <div class="pt-4">
+
+                                @* <button type="button" class="btn btn-primary me-sm-3 me-1" onclick="getLocation();">View Attendance</button>*@
+                                <button type="submit" class="btn btn-primary btn-sm me-sm-3 me-1" onclick="return ValidateInputs()">Show Details</button><br />
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-datatable table-responsive text-nowrap" id="tableInfo">
+                        <table class="datatables-ajax table List" id="List1">
+                            <thead>
+                                <tr>
+                                    @*  <th><input type="checkbox" class="form-check-input" onclick="CheckAll(this)"> All</th> *@
+                                    <th style="display:none;"></th>
+                                    <th>Month-Year</th>
+                                    <th>Opening Balance</th>
+                                    <th>Deduction</th>
+                                    <th>Closing Balance</th>
+                                    <th>Processed</th>
+                                    <th>Remarks</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+
+                            <tbody>
+
+                                @if (Model.GetLoanPaymentDetails != null)
+                                {
+
+
+                                    foreach (var item in Model.GetLoanPaymentDetails)
+                                    {
+                                        <tr>
+                                            <td style="display:none;">@item.RepaymentId</td>
+                                            <td>@item.Month-@item.RepaymentYear </td>
+                                            <td>@item.OpeningBalance</td>
+                                            <td>
+                                                @if (item.Status == 1)
+                                                {
+                                                    <input type="number" id="txtdeduction" name="Deduction" style="width:auto;" class="form-control" onKeyPress="if(this.value.length==7) return false;" value="@item.Deduction">
+                                                }
+                                                else
+                                                {
+                                                    @item.Deduction
+                                                }
+                                            </td>
+
+                                            <td>@item.ClosingBalance</td>
+                                            <td>@(item.Status == 1 ? "No" : item.Status == 2 ? "Yes" : item.Status)</td>
+                                            <td>
+                                                @if (item.Status == 1)
+                                                {
+                                                    <textarea type="text" id="LoanRemark" cols="15" rows="2" maxlength="200" value="@item.Remarks">  @item.Remarks</textarea>
+                                                }
+                                                else
+                                                {
+                                                    @item.Remarks
+                                                }
+                                            </td>
+
+                                            <th>
+                                                @if (item.Status == 1)
+                                                {
+                                                    <button class="btn btn-primary" onclick="SubmitRecords('@item.RepaymentId','@item.EncryptedId')"> Submit</button>
+                                                }
+                                                else
+                                                {
+                                                    <div>Processed</div>
+                                                }
+                                            </th>
+                                        </tr>
+
+
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+
+                    </div>
+
+
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <div class="modal-body">
+                    <button type="button" class="btn-close" name="btnPopupClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-4">
+                    </div>
+                    <form id="showAlert" class="row g-3" onsubmit="return false">
+                        <div class="col-12 text-center" id="errorDiv">
+                            <p id="errorPara" class="error" style="color:red"></p>
+                        </div>
+                        <div class="col-12 text-center" id="successDiv">
+                            <p id="successPara" class="error" style="color:black"></p>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="popupBtnDiv" class="col-12 text-center">
+                    @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                    <button type="reset" name="btnPopupClose"
+                            class="btn btn-label-secondary btn-reset mt-3"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                        Close
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/customjs/commonfunction.js"></script>
+    <script src="~/customjs/employeevalidation.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //$(".List").dataTable();
+            $('.List').dataTable({
+                order: [[0, 'desc']]
+            });
+
+            // jQuery(" #tableInfo").hide();
+          //  BlockUI();
+            if ("@Model.DisplayMessage.Trim().ToUpper()" != "_BLANK") {
+                ShowServerMessage("@Model.DisplayMessage");
+                UnblockUI();
+            }
+            
+
+
+
+        });
+
+       
+
+      
+
+        
+        function ValidateInputs() {
+            BlockUI();
+
+            if (jQuery("#selEmp").val() == 0) {
+
+                alert("Please select the employee");
+
+                UnblockUI();
+                return false;
+            }
+            jQuery(" #tableInfo").show();
+
+        }
+
+
+
+
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                // if (sMsg.toUpperCase() == "SUCCESS") {
+                // sMsg = "Earnnig component created/updated successfully";
+                jQuery("#successDiv").show();
+                jQuery("#successPara").html(sMsg);
+
+                // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                //  }
+                //else {
+                //    jQuery("#errorDiv").show();
+                //    jQuery("#errorPara").html(sMsg);
+                //}
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+
+
+        function SubmitRecords(repaymetId) {
+
+            //alert(repaymetId);
+            var rowData = {};
+
+            if (repaymetId > 0) {
+
+
+                rowData.Deduction = jQuery("#txtdeduction").val();
+                rowData.Remarks = jQuery("#LoanRemark").val();
+                rowData.RepaymetId = repaymetId;
+
+                // alert(rowData.Remarks);
+                // alert(rowData.Deduction);
+                // alert(rowData.RepaymetId);
+                BlockUI();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/Loan/RepaymentLoanAmountUpdate",
+                    data: { userAction: rowData },
+                    success: function (data) {
+                        ShowServerMessage(data);
+                        window.location.href = "/Loan/LoanRepayment";
+                        UnblockUI();
+                       // ShowServerMessage(data);
+
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        alert("errror<br>" + result.responseText);
+                        UnblockUI();
+                    }
+                });
+            }
+
+
+
+
+
+
+
+        }
+
+
+
+    </script>
+}

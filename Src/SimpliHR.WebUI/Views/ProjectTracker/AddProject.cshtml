@@ -1,0 +1,408 @@
+﻿@{
+    ViewData["Title"] = "Add Project";
+}
+@model SimpliHR.Infrastructure.Models.ProjectTracker.ProjectViewModel
+<link rel="stylesheet" href="~/assets/vendor/libs/quill/typography.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/quill/katex.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/quill/editor.css" />
+
+<link rel="stylesheet" href="~/assets/vendor/libs/dropzone/dropzone.css" />
+
+@*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.css">*@
+
+<link rel="stylesheet" href="~/assets/vendor/libs/tagify/tagify.css" />
+<link href="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.css" rel="stylesheet">
+<style>
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+
+    .tagify__tag-text {
+        white-space: nowrap !important;
+    }
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Project Tracker/</span> Add Project
+        </h4>
+    <div class="row">
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="card">
+                <div class="card-body">
+                    <input type="button" class="btn btn-primary btn-sm mb-3" value="List Of Projects" style="float:right;margin-bottom:5px;" onclick="window.location.href='/ProjectTracker/ProjectList1'" />
+                    <div class="clearfix"></div>
+                    <form id="AddProjectForm" method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 style="text-decoration: underline;">Project Details</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label for="defaultFormControlInput" class="form-label required" required>Project Name</label>
+                                        <input type="text" class="form-control" asp-for="Project.ProjectName" required>
+                                        @*<div class="form-text">Title for the Announcement/Post</div>*@
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label for="defaultFormControlInput" class="form-label required" required>Project Category</label>
+                                        <select class="form-control select2" required asp-for="Project.CategoryID">
+                                            <option value="0">Select</option>
+                                            @{
+                                                if (Model != null && Model.ProjectCategoryList != null)
+                                                {
+                                                    foreach (var item in Model.ProjectCategoryList)
+                                                    {
+                                                        <option value="@item.CategoryID">@item.CategoryName</option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+                                        @*<div class="form-text">Title for the Announcement/Post</div>*@
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+
+                                    <div class="form-group col-md-12 mb-3">
+                                        <label for="defaultFormControlInput" class="form-label">Description</label>
+                                        <textarea class="form-control" asp-for="Project.Description"></textarea>
+                                        @*<div class="form-text">Title for the Announcement/Post</div>*@
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label for="defaultFormControlInput" class="form-label required" required>Start Date</label>
+                                        <input type="text" class="form-control" asp-for='Project.StartDate' placeholder="DD-MMM-YYYY" id="flatpickr-date-StartDate" required value="@((Model!=null && Model.Project!=null)? Model.Project.StartDate.ToString("dd-MMM-yyyy") : "")" />
+                                        @*<div class="form-text">Title for the Announcement/Post</div>*@
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label for="defaultFormControlInput" class="form-label required" required>End Date</label>
+                                        <input type="text" class="form-control" asp-for="Project.EndDate" placeholder="DD-MMM-YYYY" id="flatpickr-date-EndDate" required value="@((Model!=null && Model.Project!=null)? Model.Project.EndDate.ToString("dd-MMM-yyyy") : "")" />
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label for="defaultFormControlInput" class="form-label required" required>Priority</label>
+                                        <select class="form-control select2" required asp-for="Project.PriorityId">
+                                            <option value="0">Select</option>
+                                            @{
+                                                if (Model != null && Model.PriorityList != null)
+                                                {
+                                                    foreach (var item in Model.PriorityList)
+                                                    {
+                                                        <option value="@item.PriorityId">@item.Priority</option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+                                        @*<div class="form-text">Title for the Announcement/Post</div>*@
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label for="defaultFormControlInput" class="form-label required" required>Status</label>
+                                        <select class="form-control select2" required asp-for="Project.StatusID">
+                                            <option value="0">Select</option>
+                                            @{
+                                                if (Model != null && Model.StatusList != null)
+                                                {
+                                                    foreach (var item in Model.StatusList)
+                                                    {
+                                                        <option value="@item.StatusID">@item.StatusName</option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+                                        @*<div class="form-text">Title for the Announcement/Post</div>*@
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+                                    <div class="form-group col-md-12 mb-3">
+                                        <span class="badge bg-label-primary"><a href="javascript:void(0)" onclick="DefineMilestonesPopup()" data-bs-toggle="modal" data-bs-target="#MilestonesModal">Define Milestones</a></span>
+                                        @* <span class="badge bg-label-primary" style="margin-left:5px;"><a class="ml-3" href="javascript:void(0)" onclick="DefineDeliverablesPopup()" data-bs-toggle="modal" data-bs-target="#DeliverablesModal">Define Deliverables</a></span> *@
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 style="text-decoration: underline;">Assign Team Members</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label for="defaultFormControlInput" class="form-label" required>Approvers (if any)</label>
+                                        <select class="form-control select2 approvers" asp-for="ApproverId">
+                                            <option value="0">Select</option>
+                                            @{
+                                                if (Model != null && Model.EmployeeList != null)
+                                                {
+                                                    foreach (var item in Model.EmployeeList)
+                                                    {
+                                                        <option value="@item.EmployeeId">@item.EmployeeName - @item.EmployeeCode (@item.Department)</option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+                                        @*<div class="form-text">Title for the Announcement/Post</div>*@
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+                                    <div class="form-group col-md-6 mb-3">
+                                        <label for="defaultFormControlInput" class="form-label" required>Collaborators (if any)</label>
+                                        <select class="form-control select2 collaborators" multiple asp-for="CollaboratorIds">
+                                            <option value="0">Select</option>
+                                            @{
+                                                if (Model != null && Model.EmployeeList != null)
+                                                {
+
+                                                    foreach (var item in Model.EmployeeList)
+                                                    {
+                                                        // Determine if the current item is in the selected list
+                                                        var isSelected = Model.CollaboratorIds != null && Model.CollaboratorIds.Split(',').Contains(item.EmployeeId.ToString());
+
+                                                        if (isSelected)
+                                                        {
+                                                            <option value="@item.EmployeeId" selected>
+                                                                @item.EmployeeName - @item.EmployeeCode @((item.Department != null && item.Department != "") ? (item.Department) : "")
+                                                            </option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.EmployeeId">
+                                                                @item.EmployeeName - @item.EmployeeCode @((item.Department != null && item.Department != "") ? (item.Department) : "")
+                                                            </option>
+                                                        }
+
+
+                                                    }
+
+
+                                                    // foreach (var item in Model.EmployeeList)
+                                                    // {
+                                                    //     <option value="@item.EmployeeId">@item.EmployeeName - @item.EmployeeCode @((item.Department != null && item.Department != "") ? (item.Department) : "")</option>
+                                                    // }
+                                                }
+                                            }
+                                        </select>
+                                        @*<div class="form-text">Title for the Announcement/Post</div>*@
+                                        <span class="text-danger validation-error" style="display:none"></span>
+                                    </div>
+                                    <div class="col-md-12">
+                                        @{
+                                            if (Model != null && Model.Project != null && Model.Project.encProjectID != null)
+                                            {
+                                                <input type="button" class="btn btn-primary btn-sm" onclick="SaveProject()" value="Update Project">
+                                            }
+                                            else
+                                            {
+                                                <input type="button" class="btn btn-primary btn-sm" onclick="SaveProject()" value="Add Project">
+                                            }
+                                        }
+
+                                        <input type="hidden" asp-for="Project.encProjectID" />
+                                        <input type="hidden" asp-for="SerializedMilestones" />
+                                        <input type="hidden" asp-for="SerializedDeliverables" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="MilestonesModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">Milestones</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" id="tblMilestones">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <a id="btnAddMilestones" href="javascript:void(0)" onclick="AddMilestones()">Add Milestones</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row" id="MilestonesDiv">
+                        </div>
+                        @*<div class="form-group col-md-12 mb-3">
+                        <label for="defaultFormControlInput" class="form-label required" required>Question Name</label>
+                        <input type="text" class="form-control" placeholder="Question" name="Question" required>
+                        <span class="text-danger validation-error" style="display:none"></span>
+                        </div>
+                        <div class="optionsDiv">
+                        <div class="form-group col-md-12 mb-3">
+                        <label for="defaultFormControlInput" class="form-label required" required>Option 1</label>
+                        <input type="text" class="form-control" name="Options_1" placeholder="Option 1" required>
+                        <span class="text-danger validation-error" style="display:none"></span>
+                        </div>
+                        </div>
+                        <div class="form-group col-md-12 mb-3">
+                        <a href="javascript:void(0)" onclick="addOption(this)">Add Option</a>
+                        </div>*@
+                    </div>
+                </div>
+            </div>
+            @*<div class="modal-footer">
+            <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">
+            Close
+            </button>
+            <button type="button" class="btn btn-primary" onclick="SaveSurveyPoll()">Save Poll</button>
+            </div>*@
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="DeliverablesModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">Deliverables</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" id="tblDeliverables">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <a id="btnAddDeliverables" href="javascript:void(0)" onclick="AddDeliverables()">Add Deliverables</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row" id="DeliverablesDiv">
+                            @*  <div class="form-group col-md-3 mb-3">
+                            <label for="defaultFormControlInput" class="form-label required" required=""> SNo</label>
+                            <input type="text" class="form-control" placeholder="Question" name="Question" index="-1" required="">
+                            <span class="text-danger validation-error" style="display:none"></span>
+                            </div>
+                            <div class="form-group col-md-9 mb-3">
+                            <label for="defaultFormControlInput" class="form-label required" required=""> Milestone Name</label>
+                            <input type="text" class="form-control" placeholder="Question" name="Question" index="-1" required="">
+                            <span class="text-danger validation-error" style="display:none"></span>
+                            </div> *@
+                        </div>
+
+                        @*<div class="form-group col-md-12 mb-3">
+                        <label for="defaultFormControlInput" class="form-label required" required>Question Name</label>
+                        <input type="text" class="form-control" placeholder="Question" name="Question" required>
+                        <span class="text-danger validation-error" style="display:none"></span>
+                        </div>
+                        <div class="optionsDiv">
+                        <div class="form-group col-md-12 mb-3">
+                        <label for="defaultFormControlInput" class="form-label required" required>Option 1</label>
+                        <input type="text" class="form-control" name="Options_1" placeholder="Option 1" required>
+                        <span class="text-danger validation-error" style="display:none"></span>
+                        </div>
+                        </div>
+                        <div class="form-group col-md-12 mb-3">
+                        <a href="javascript:void(0)" onclick="addOption(this)">Add Option</a>
+                        </div>*@
+                    </div>
+                </div>
+            </div>
+            @*<div class="modal-footer">
+            <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">
+            Close
+            </button>
+            <button type="button" class="btn btn-primary" onclick="SaveSurveyPoll()">Save Poll</button>
+            </div>*@
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="ScheduleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">Schedule Publish</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col mb-3">
+                        <label for="flatpickr-date" class="form-label">Date</label>
+                        <input type="text" class="form-control" name="PublishDate" placeholder="DD-MMM-YYYY" id="flatpickr-date" />
+                    </div>
+                </div>
+                <div class="row g-2">
+                    <div class="col mb-0">
+                        <label for="flatpickr-time" class="form-label">Time</label>
+                        <input type="text" class="form-control" placeholder="HH:MM" name="PublishTime" id="flatpickr-time" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary" onclick="SaveAnnouncement('Schedule')">Schedule Publish</button>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="button" id="btnModalImageCrop" data-bs-toggle="modal" data-bs-target="#backDropModal" data-bs-backdrop="static" value="Test" style="display:none" />
+<style>
+    #croppedImage {
+        max-width: 100%; /* This rule is very important, please do not ignore this! */
+        display: block;
+    }
+</style>
+<div class="modal fade" id="backDropModal" data-bs-backdrop="static" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <form class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="backDropModalTitle">Crop Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div style="width:100%;margin:auto">
+                    <img id="croppedImage" src="#" alt="Cropped Image" style="margin:auto">
+                </div>
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>*@
+                <button type="button" class="btn btn-primary" id="cropButton">Crop Image</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section scripts {
+    <script src="~/assets/vendor/libs/quill/katex.js"></script>
+    <script src="~/assets/vendor/libs/quill/quill.js"></script>
+    <script src="~/assets/js/forms-editors.js"></script>
+
+    <script src="~/assets/vendor/libs/dropzone/dropzone.js"></script>
+    <script src="~/assets/js/forms-file-upload.js"></script>
+
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>*@
+
+    <script src="~/assets/vendor/libs/tagify/tagify.js"></script>
+    <script src="~/assets/js/forms-tagify.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
+    <script src="~/customjs/ProjectTracker/AddProject.js"></script>
+    <script type="text/javascript">
+
+
+
+    </script>
+}
+

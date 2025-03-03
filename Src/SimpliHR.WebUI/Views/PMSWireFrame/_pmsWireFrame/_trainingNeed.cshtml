@@ -1,0 +1,158 @@
+﻿@model SimpliHR.Infrastructure.Models.Performace.PerformanceSettingViewModel
+
+
+@{
+    if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.TNRByManager == true)
+    {
+        <h5 class="mt-5">Training Needs Reco. By Manager (Up to 3)</h5>
+        <div class="row g-3">
+            <div class="col-md-12">
+                <table class="table table-bordered table-striped @((Model.ViewType=="Manager"&& (Model.PerformanceEmployeeData!=null && Model.PerformanceEmployeeData.FilledByManager != true && Model.PerformanceEmployeeData.FilledByEmployee==true)) ? "" : "not-authorised")" name="tblTrainingNeeds">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Training Need/s</th>
+                            <th>Type</th>
+                            <th>Urgency</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @{
+                            if (Model != null)
+                            {
+
+                                if (
+                                ((Model.ViewType == "Employee") && (Model.PerformanceEmployeeData != null && Model.PerformanceEmployeeData.Published == true))
+                                ||
+                                (Model.ViewType == "Manager")
+                                ||
+                                (Model.ViewType == "HOD")
+                                ||
+                                (Model.ViewType == "ClientAdmin")
+                                )
+                                {
+                                    if (Model.PerformanceEmployeeTrainingDataList != null)
+                                    {
+                                        int sn = 1;
+                                        foreach (var item in Model.PerformanceEmployeeTrainingDataList)
+                                        {
+                                            <tr TrainingNeedsMasterId="@item.TrainingNeedsMasterId">
+                                                <td>@sn</td>
+                                                <td name="">@item.Training</td>
+                                                <td name="TrainingType">
+                                                    <select>
+                                                        <option value="0">Select</option>
+                                                        @{
+                                                            if (Model != null)
+                                                            {
+                                                                if (Model.PageKeyValueTrainingTypeList != null)
+                                                                {
+                                                                    foreach (var tItem in Model.PageKeyValueTrainingTypeList)
+                                                                    {
+                                                                        if (item.TrainingType.ToString() == tItem.KeyValue)
+                                                                        {
+                                                                            <option selected value="@tItem.KeyValue">@tItem.KeyName</option>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <option value="@tItem.KeyValue">@tItem.KeyName</option>
+                                                                        }
+
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    </select>
+                                                </td>
+                                                <td name="TrainingUrgency">
+                                                    <select>
+                                                        <option value="0">Select</option>
+                                                        @{
+                                                            if (Model != null)
+                                                            {
+                                                                if (Model.PageKeyValueTrainingUrgencyList != null)
+                                                                {
+                                                                    foreach (var tItem in Model.PageKeyValueTrainingUrgencyList)
+                                                                    {
+                                                                        if (item.TrainingUrgency.ToString() == tItem.KeyValue)
+                                                                        {
+                                                                            <option selected value="@tItem.KeyValue">@tItem.KeyName</option>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <option value="@tItem.KeyValue">@tItem.KeyName</option>
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    </select>
+                                                </td>
+                                            </tr>
+
+                                            sn += 1;
+                                        }
+
+                                    }
+                                }
+                                else
+                                {
+                                    if (Model.PerformanceEmployeeTrainingDataList != null)
+                                    {
+                                        int sn = 1;
+                                        foreach (var item in Model.PerformanceEmployeeTrainingDataList)
+                                        {
+                                            <tr TrainingNeedsMasterId="@item.TrainingNeedsMasterId">
+                                                <td>@sn</td>
+                                                <td name="">@item.Training</td>
+                                                <td name="TrainingType">
+                                                    <select>
+                                                        <option value="0">Select</option>
+                                                        @{
+                                                            if (Model != null)
+                                                            {
+                                                                if (Model.PageKeyValueTrainingTypeList != null)
+                                                                {
+                                                                    foreach (var tItem in Model.PageKeyValueTrainingTypeList)
+                                                                    {
+                                                                        <option value="@tItem.KeyValue">@tItem.KeyName</option>
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    </select>
+                                                </td>
+                                                <td name="TrainingUrgency">
+                                                    <select>
+                                                        <option value="0">Select</option>
+                                                        @{
+                                                            if (Model != null)
+                                                            {
+                                                                if (Model.PageKeyValueTrainingUrgencyList != null)
+                                                                {
+                                                                    foreach (var tItem in Model.PageKeyValueTrainingUrgencyList)
+                                                                    {
+                                                                        <option value="@tItem.KeyValue">@tItem.KeyName</option>
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            sn += 1;
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+}

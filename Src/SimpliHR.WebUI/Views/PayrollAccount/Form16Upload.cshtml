@@ -1,0 +1,170 @@
+@model SimpliHR.Infrastructure.Models.Payroll.Fom16DocViewModel
+@{
+    ViewData["Title"] = "Employee Form 16 Upload";
+    int iCtrNo = 1;
+}
+<link rel="stylesheet" href="../../assets/vendor/libs/tagify/tagify.css" />
+<!-- Content wrapper -->
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll /</span> Form 16 Bulk Upload</h4>
+    <!-- Location  -->
+
+    <div id="tableInfo">
+        <div class="card">
+            <div class="card-body">
+
+                <div style="" class="containerdiv">
+                    <form id="UploadForm16">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="formFile" class="form-label required" for="form16ZipFile">
+                                    Form 16 PDF(zip)
+                                </label>
+                                <input class="form-control" type="file" id="DocAttachmentFile" name="DocAttachmentFile" required style="width:450px; margin:0 auto" />
+
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="FinYear required">Finance Year</label>
+                                <select id="FinYear" required>
+                                    <option>2023-2024</option>
+                                    <option selected>2024-2025</option>
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="pt-4">
+                            <button type="button" class="btn btn-primary mb-2" onclick="return ValidateAndUploadForm16()">Upload</button>
+                            <button type="button" class="btn btn-primary mb-2" onclick="ResetForm()">Reset</button>
+                        </div>
+                    </form>
+                </div>
+
+
+                
+                <div class="table-responsive text-nowrap mt-2" id="tableDiv">
+                    <div>Could not upload following Form16 PDFs. Try again to upload them...</div>
+                    <table class="datatables-ajax table List" id="form16NotFoundTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>File Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model.Form16DocList)
+                        {
+                            <tr>
+                                <td>@iCtrNo</td>
+                                <td>@item.DocName</td>
+                            </tr>
+                            iCtrNo += 1;
+                        }
+                       </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<input type="hidden" id="Longitude" name="Longitude" class="form-control" />
+<input type="hidden" id="Latitude" name="Latitude" class="form-control" />
+
+<!-- Content wrapper -->
+<script src="../../assets/vendor/libs/tagify/tagify.js"></script>
+<script src="../../assets/js/forms-tagify.js"></script>
+<script src="~/customjs/commonfunction.js"></script>
+<script src="~/customjs/common.js"></script>
+<script src="~/customjs/employeevalidation.js"></script>
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            jQuery("#tableDiv").hide();
+
+        });
+
+        function ValidateAndUploadForm16() {
+            let formData = new FormData();
+            if (!ValidForm("UploadForm16")) {
+                return false;
+            }
+            else {
+                formData.append("DocAttachmentFile", jQuery("#DocAttachmentFile")[0].files[0]);
+                formData.append("FinYear", jQuery("#FinYear").val());
+            }
+            BlockUI();
+            jQuery.ajax({
+                type: "POST",
+                url: "/PayrollAccount/Form16Upload",
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                dataType: "json",
+                success: function (data) {
+                    UnblockUI();
+                    if (data.form16DocList.length == 0 && data.displayMessage.toLowerCase() == "_blank")
+                    {
+                        $htmlalert("Error", "Transaction Successful");
+                        jQuery("#form16NotFoundTable tr").slice(1).remove()
+                        jQuery("#tableDiv").hide();
+                    }
+                    else if (data.form16DocList.length > 0) {
+                        var tableCols = ["docName"];
+                        jQuery("#tableDiv").show();
+                        PopulateTable("form16NotFoundTable", data.form16DocList, tableCols, "")
+                        if (data.displayMessage.toLowerCase() != "_blank") 
+                            $htmlalert("Error", "Transaction Failed!", data.displayMessage);
+                    }
+                    else if (data.displayMessage.toLowerCase() != "_blank") {
+                        $htmlalert("Error", "Transaction Failed!", data.displayMessage);
+                        jQuery("#form16NotFoundTable tr").slice(1).remove()
+                    }
+                },
+                error: function (result) {
+                    UnblockUI();
+                    var x = 1;
+                    // jQuery("#FormName").val("");
+                    // MoveNext(formID);
+                }
+            });
+        }
+
+        function PopulateTable(tableID, data, tableCols, keyAttr) {
+            // alert("List");
+            var tableCtrl = jQuery("#" + tableID)
+            //var tBody = jQuery('<tbody>')
+            //jQuery("#" + tableID + " tbody").remove();
+            //jQuery("#" + tableID + " tr").each(function () {
+            //    this.parentNode.removeChild(this);
+            //});
+            jQuery("#" + tableID + " tr").slice(1).remove()
+            var iCtr = 1;
+            data.forEach(function (row) {
+                var tr = $('<tr>');
+                tableCols.forEach(function (attr) {
+                    tr.append('<td>'+iCtr+'</td><td><span id="' + CapitalizeSmallFirstLetter(attr, "C") + '_' + row[keyAttr] + '">' + row[attr] + '</span></td>');
+                });
+                tableCtrl.append(tr);
+                iCtr++;
+            });
+        }
+
+        function CapitalizeSmallFirstLetter(sStr, sChange) {
+            var string = sStr;
+            if (sChange == "S")
+                newString = string[0].toLowerCase() + string.slice(1);
+            else
+                newString = string[0].toUpperCase() + string.slice(1);
+
+            return newString
+        }
+
+    </script>
+    }

@@ -1,0 +1,223 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.EmployeeValidationVM
+@{
+    ViewData["Title"] = "Employee Valiation";
+    //Layout = null;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Masters /</span> Employee Master Screen Settings</h4>
+    <div class="row">
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" action="EmployeeValidation">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="multicol-last-name"><strong>Screen</strong> </label>
+                                <input type="text" class="form-control-plaintext mr-2" id="ScreenName" name="ScreenName" value="@Model.ScreenName" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="multicol-last-name"><strong>Select Tab</strong></label>
+                                @Html.DropDownList("ScreenTab", new SelectList(Model.ScreenTabList.DistinctBy(p => p.ScreenTab), "ScreenTab", "ScreenTab", Model.EmployeeValidation.ScreenTab), "Select Tab", htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible", @name = "ScreenTab", @required = "required", onchange = "javascript:$('#submit').click();" })
+                            </div>
+                        </div>
+                        <div class="pt-4" style="display:none">
+                            <button id="submit" type="submit" class="btn btn-primary me-sm-3 me-1" >Submit</button>
+                        </div>
+                    </form>
+
+                    <div class="card-datatable table-responsive">
+                        <table class="table List">
+                            <thead>
+                                <tr>
+                                    <th>Display Text</th>
+                                    <th>
+                                        <input type="checkbox" id="AllMandatory" class="form-check-input selectAllMandatory" onchange="SelectAllCheckBox(this,'selectAllMandatory')">Mandatory
+                                    </th>
+                                    <th><input type="checkbox" id="AllAddAttachment" class="form-check-input selectAddMandatory" onchange="SelectAllCheckBox(this,'selectAddMandatory')">Attachment Required(Add)</th>
+                                    <th style="width:320px!important"><input type="checkbox" id="AllEddAttachment" class="form-check-input selectEditMandatory" onchange="SelectAllCheckBox(this,'selectEditMandatory')">Attachment Required(Update)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    if (Model.EmployeeValidationList != null && Model.EmployeeValidationList.Count > 0)
+                                    {
+                                        int iCtr = 1;
+                                        foreach (var item in Model.EmployeeValidationList)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @item.DisplayText
+                                                    <input type="hidden" name="" id="EmployeeValidationId_@iCtr" value="@item.EmployeeValidationId" />
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" id="IsMandatory_@iCtr" row="@iCtr" value="@item.IsMandatory" class="form-check-input editableControl selectAllMandatory"
+                                                    @(((item.IsMandatory == null || item.IsMandatory == false) ? "" : Html.Raw("checked=\'checked\'"))) onclick="SelectCheckAll('AllMandatory','selectAllMandatory')" />
+                                                </td>
+                                                <td>
+
+                                                    @{
+                                                        if (item.ScreenName == "Employee Master" && item.ScreenTab == "Profile Picture")
+                                                        {
+                                                            <input type="checkbox" disabled="disabled" id="AddAttachment_@iCtr" row="@iCtr" value="@item.AddAttachment" class="form-check-input editableControl selectAddMandatory"
+                                                            @(((item.AddAttachment == null || item.AddAttachment == false) ? "" : Html.Raw("checked=\'checked\'"))) onclick="SelectCheckAll('AllAddAttachment','selectAllMandatory')" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="AddAttachment_@iCtr" row="@iCtr" value="@item.AddAttachment" class="form-check-input editableControl selectAddMandatory"
+                                                            @(((item.AddAttachment == null || item.AddAttachment == false) ? "" : Html.Raw("checked=\'checked\'"))) onclick="SelectCheckAll('AllAddAttachment','selectAllMandatory')" />
+                                                        }
+                                                    }
+
+
+                                                </td>
+                                                <td>
+                                                    @{
+                                                        if (item.ScreenName == "Employee Master" && item.ScreenTab == "Profile Picture")
+                                                        {
+                                                            <input type="checkbox" disabled="disabled" id="EditAttachment_@iCtr" row="@iCtr" value="@item.EditAttachment" class="form-check-input editableControl selectEditMandatory"
+                                                            @(((item.EditAttachment == null || item.EditAttachment == false) ? "" : Html.Raw("checked=\'checked\'"))) onclick="SelectCheckAll('AllEddAttachment','selectAllMandatory')" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" id="EditAttachment_@iCtr" row="@iCtr" value="@item.EditAttachment" class="form-check-input editableControl selectEditMandatory"
+                                                            @(((item.EditAttachment == null || item.EditAttachment == false) ? "" : Html.Raw("checked=\'checked\'"))) onclick="SelectCheckAll('AllEddAttachment','selectAllMandatory')" />
+                                                        }
+                                                    }
+                                                </td>
+                                            </tr>
+
+                                            iCtr = iCtr + 1;
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pt-4">
+                        <button type="button" class="btn btn-primary me-sm-3 me-1" onclick="ValidateAndSaveEmployeeValidation()">Save</button>
+                        <input type="hidden" id="PageAction" value="@Model.PageAction" class="btn btn-primary me-sm-3 me-1" />
+                        <input type="hidden" id="ClientId" value="@Model.ClientId" class="form-check-input" />
+                        <input type="hidden" id="UnitId" value="@Model.UnitId" class="form-check-input" />
+                        @*<input type="hidden" id="ScreenName" value="@Model.ScreenName" class="form-check-input editableControl" />*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal to add new record -->
+    <!--/ DataTable with Buttons -->
+</div>
+
+
+@section scripts {
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            jQuery(".editableControl").each(function (key) {
+                jQuery(this).change(function () {
+                    if (this.checked)
+                        jQuery(this).addClass('dirty');
+                    else
+                        jQuery(this).addClass('dirty');
+                });
+            });
+            jQuery(".List").dataTable({
+                "pageLength": 25
+            });
+        });
+
+        function ValidateAndSaveEmployeeValidation() {
+            if (jQuery(".dirty").length != 0) {
+                SaveEmployeeValidation();
+            }
+            else {
+                $erroralert("Employee Validation", "No changes detected to save");
+            }
+        }
+
+        function SelectAllCheckBox(id, clsName) {
+            if (id.checked) {
+                jQuery('.' + clsName).each(function () {
+                    this.checked = true;
+
+                    jQuery(this).addClass('dirty');
+                });
+            } else {
+                jQuery('.' + clsName).each(function () {
+                    this.checked = false;
+                    jQuery(this).addClass('dirty');
+                });
+            }
+        }
+
+
+        function SelectCheckAll(idName, clsName) {
+            if (jQuery('.' + clsName + ':checked').length == jQuery('.' + clsName).length) {
+                jQuery('#' + idName).prop("checked", true);
+            } else {
+                jQuery('#' + idName).prop("checked", false);
+            }
+        }
+
+        function SaveEmployeeValidation() {
+            //CreateVM Model
+            var employeeValidationVM = {};
+            var detailCollection = new Array();
+            var rowList = "", iRow;
+            jQuery(".dirty").each(function (key) {
+                //alert(this.id);
+                iRow = jQuery(this).attr('row')
+                if (iRow)
+                    if (("," + rowList + ",").indexOf("," + iRow + ",") < 0)
+                        rowList = (rowList != "" ? rowList + "," : rowList) + jQuery(this).attr('row')
+
+            })
+
+            var arrRows = rowList.split(',')
+            for (var iCtr = 0; iCtr <= arrRows.length - 1; iCtr++) {
+                var detailData = {};
+                iRow = arrRows[iCtr]
+                detailData.EmployeeValidationId = jQuery("#EmployeeValidationId_" + iRow).val();
+                detailData.IsMandatory = jQuery("#IsMandatory_" + iRow).is(":checked");
+                detailData.AddAttachment = jQuery("#AddAttachment_" + iRow).is(":checked")
+                detailData.EditAttachment = jQuery("#EditAttachment_" + iRow).is(":checked")
+                detailData.ClientId = jQuery("#ClientId").val();
+                detailData.UnitId = jQuery("#UnitId").val();
+                detailCollection.push(detailData)
+            }
+            if (detailCollection.length > 0) {
+                employeeValidationVM.EmployeeValidationList = detailCollection;
+                employeeValidationVM.PageAction = jQuery("#PageAction").val();
+            }
+
+            BlockUI();
+            jQuery.ajax({
+                type: "POST",
+                url: "/EmployeeValidation/SaveEmployeeValidation",
+                data: { employeeValidationVM: employeeValidationVM },
+                success: function (data) {
+                    //alert(data)
+                    UnblockUI();
+                    // var sMsg = data.displayMessage  //.Trim().Replace("< br > ", "\r\n")
+                    if (data.displayMessage.toUpperCase() == "SUCCESS") {
+                        //jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                        $successalert("Employee Validation", "Employee Validation Setting saved successfully");
+                        //window.location.href = "/EmployeeValidation/EmployeeValidation/EmployeeMaster";
+                    }
+                    // window.location.href = "/EmployeeAttendanceUI/RegularizeAttendance"
+                },
+                error: function (result) {
+                    var x = 1;
+                    $erroralert("Employee Exit", "errror<br>" + result.responseText);
+                    UnblockUI();
+                }
+            });
+
+        }
+
+    </script>
+
+
+}

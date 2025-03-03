@@ -1,0 +1,133 @@
+﻿@model SimpliHR.Infrastructure.Models.Performace.PerformanceSettingDTO
+@{
+    ViewData["Title"] = "Training Need Master";
+}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">PMS /</span> Training Need Master</h4>
+    <div id="divListMenus">
+    </div>
+</div>
+<input type="hidden" asp-for="PerformanceSettingId" />
+
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            ListPartialView();
+            $("#ParentMenu").change(function () {
+                ListMenus($(this).val());
+            });
+        });
+
+        function Edit() {
+
+            window.location.href = "";
+
+        }
+        function DeleteRecord(Id) {
+
+            Swal.fire({ title: 'Are you sure?', text: "This will get deleted permanently!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, delete it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+
+                    var inputDTO = {};
+                    inputDTO.TrainingNeedsMasterId = Id;
+                    BlockUI();
+                    $.ajax({
+                        type: "POST",
+                        url: '/TrainingNeedMaster/DeleteTraining',
+                        contentType: 'application/json',
+                        data: JSON.stringify(inputDTO),
+                        success: function (data) {
+                            $successalert("", "Transaction Successful!");
+                            UnblockUI();
+                            ListPartialView();
+                        },
+                        error: function (error) {
+                            $erroralert("Error!", error.responseText + '!'); UnblockUI();
+                            UnblockUI();
+                        }
+                    });
+                }
+            });
+
+
+        }
+
+
+        function ListPartialView() {
+            let performanceSettingId = $("[name='PerformanceSettingId']").val();
+            var inputDTO = {};
+            inputDTO.PerformanceSettingId = performanceSettingId;
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/TrainingNeedMaster/TrainingNeedMaster_ListPartialView',
+                data: JSON.stringify(inputDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    UnblockUI();
+                    $('#divListMenus').html(data);
+                    $(".List").dataTable({
+                        "order": []
+                    });
+                    UnblockUI();
+                },
+                error: function (result) {
+                    //alert(result);
+                    UnblockUI();
+                }
+            });
+        }
+        function AddPartialView(TrainingNeedsMasterId) {
+            var inputDTO = {};
+            inputDTO.TrainingNeedsMasterId = TrainingNeedsMasterId;
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/TrainingNeedMaster/TrainingNeedMaster_AddPartialView',
+                data: JSON.stringify(inputDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    UnblockUI();
+                    $('#divListMenus').html(data);
+                    //$(".List").dataTable({
+                    //    "order": []
+                    //});
+                    UnblockUI();
+                },
+                error: function (result) {
+                    //alert(result);
+                    UnblockUI();
+                }
+            });
+        }
+        function Save() {
+            var inputDTO = {
+                "Training": $("[name='Training']").val(),
+                "TrainingNeedsMasterId": $.trim($("[name='TrainingNeedsMasterId']").val()) == "" ? 0 : $("[name='TrainingNeedsMasterId']").val(),
+                "PerformanceSettingId": $.trim($("[name='PerformanceSettingId']").val()) == "" ? 0 : $("[name='PerformanceSettingId']").val()
+            };
+            $.ajax({
+                type: "POST",
+                url: "/TrainingNeedMaster/SaveTraining",
+                contentType: 'application/json',
+                data: JSON.stringify(inputDTO),
+                success: function (data) {
+                    $successalert("", "Transaction Successful!");
+                    UnblockUI();
+                    ListPartialView();
+                },
+                error: function (error) {
+                    $erroralert("Error!", error.responseText + '!'); UnblockUI();
+                    UnblockUI();
+                }
+            });
+        }
+    </script>
+}

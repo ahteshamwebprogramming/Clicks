@@ -1,0 +1,237 @@
+﻿@model SimpliHR.Infrastructure.Models.ClientManagement.PolicyDocumentsMasterDTO
+@{
+    Model.DisplayMessage += "";
+}
+
+@*Page CSS*@
+<link rel="stylesheet" href="~/assets/vendor/libs/bs-stepper/bs-stepper.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/bootstrap-select/bootstrap-select.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/select2/select2.css" />
+<style>
+
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+</style>
+<style>
+    .tree {
+        --spacing: 1.5rem;
+        --radius: 10px;
+        padding: 20px
+    }
+
+        .tree li {
+            display: block;
+            position: relative;
+            padding-left: calc(2 * var(--spacing) - var(--radius) - 2px);
+            padding-bottom: 5px;
+            padding-top: 2px;
+        }
+
+        .tree ul {
+            margin-left: calc(var(--radius) - var(--spacing));
+            padding-left: 0;
+        }
+
+            .tree ul li {
+                border-left: 2px solid #ddd;
+            }
+
+                .tree ul li:last-child {
+                    border-color: transparent;
+                }
+
+                .tree ul li::before {
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    top: calc(var(--spacing) / -2);
+                    left: -2px;
+                    width: calc(var(--spacing) + 2px);
+                    height: calc(var(--spacing) + 1px);
+                    border: solid #ddd;
+                    border-width: 0 0 2px 2px;
+                }
+
+        .tree summary {
+            display: block;
+            cursor: pointer;
+            padding-bottom: 15px;
+            padding-top: 2px;
+        }
+
+            .tree summary::marker,
+            .tree summary::-webkit-details-marker {
+                display: none;
+            }
+
+            .tree summary:focus {
+                outline: none;
+            }
+
+            .tree summary:focus-visible {
+                outline: 1px dotted #000;
+            }
+
+            .tree li::after,
+            .tree summary::before {
+                content: '';
+                display: block;
+                position: absolute;
+                top: calc(var(--spacing) / 2 - var(--radius));
+                left: calc(var(--spacing) - var(--radius) - 1px);
+                width: calc(2 * var(--radius));
+                height: calc(2 * var(--radius));
+                border-radius: 50%;
+                background: #ddd;
+            }
+
+            .tree summary::before {
+                z-index: 1;
+                background: #697a8d url('../../assets/img/expand-collapse.svg') 0 0;
+            }
+
+        .tree details[open] > summary::before {
+            background-position: calc(-2 * var(--radius)) 0;
+        }
+
+    .selectName {
+        padding: 10px 0;
+    }
+
+    .selectMain {
+        padding-top: 20px;
+    }
+
+    .card.border.border-secondary {
+        padding: 30px;
+    }
+</style>
+@*Page CSS*@
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Repository /</span> Policies</h4>
+    <!-- Checkout Wizard -->
+    <div id="wizard-checkout" class="bs-stepper wizard-icons wizard-icons-example mt-2">
+        <div class="container selectMain">
+            <div class="row">
+            </div>
+            <form action="/PolicyDocumentManagement/SavePolicyDocuments" method="post" enctype="multipart/form-data">
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-4">
+                        <div class="card border border-secondary">
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label" for="multicol-country">Category</label>
+                                    <div class="position-relative">
+                                        <select id="PolicyDocumentsCategoryId" asp-for="PolicyDocumentsCategoryId" name="PolicyDocumentsCategoryId" required onchange="javascript:PopulateSubCategoryDDL(this.value)" class="form-select" tabindex="-1" aria-hidden="true" data-allow-clear="true">
+                                            <option value="" selected>Select</option>
+                                            @if (Model.PolicyDocumentCategoryKeyValues != null)
+                                                @foreach (var item in Model.PolicyDocumentCategoryKeyValues)
+                                                {
+                                                    if (item.PolicyDocumentsCategoryId == Model.PolicyDocumentsCategoryId)
+                                                    {
+                                                        <option value="@item.PolicyDocumentsCategoryId" selected> @item.PolicyDocumentsCategory</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.PolicyDocumentsCategoryId"> @item.PolicyDocumentsCategory</option>
+                                                    }
+                                                }
+                                        </select>
+                                        @*<span asp-validation-for="CountryId" class="text-danger"></span>*@
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label" for="multicol-country">Sub Category</label>
+                                    <div class="position-relative">
+                                        <select id="PolicyDocumentsSubCategoryId" asp-for="PolicyDocumentsSubCategoryId" name="PolicyDocumentsSubCategoryId" required class="form-select" data-allow-clear="true" data-select2-id="multicol-country" tabindex="-1" aria-hidden="true">
+                                            <option value="">Select</option>
+                                        </select>
+                                        @*<span asp-validation-for="StateId" class="text-danger"></span>*@
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="pt-4">
+                            <input type="hidden" id="CityId" name="CityId" value="">
+                            <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                            <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/PolicyDocumentManagement/PolicyDocumentManagement'">Cancel</button>
+                        </div>
+                        <div class="pt-4">
+                            @Html.ValidationSummary("" ,new{@class = "text-danger"})
+                        </div>
+
+
+
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card border border-secondary">
+                            <div class="container selectMain">
+
+                                <div class="row mb-4">
+                                    <div class="mt-3">
+                                        <label class="form-label" for="">Files</label>
+                                        <input asp-for="PolicyDocumentFile" type="file" class="form-control" id="inputGroupFile02" />
+                                    </div>
+                                    <div class="mt-3">
+                                        <label class="form-label" for="">Description</label>
+                                        <textarea class="form-control" asp-for="Description" aria-label="With textarea" data-allow-clear="true" placeholder="Comment"></textarea>
+                                    </div>
+                                    <div class="mt-3">
+                                        <label class="form-check-label" for="collapsible-address-type-home">Acceptance Required :</label>
+                                        <input name="AcceptanceRequired" class="form-check-input" asp-for="AcceptanceRequired" type="checkbox" id="AcceptanceRequired" />
+                                        @*<input asp-for="AcceptanceRequired" type="checkbox" />*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            if (jQuery("#PolicyDocumentsCategoryId").val() > 0)
+                PopulateSubCategoryDDL(jQuery("#PolicyDocumentsCategoryId").val())
+            else
+                jQuery("#PolicyDocumentsCategoryId").val("").change();
+        });
+
+        function PopulateSubCategoryDDL(categoryId) {
+            jQuery("#PolicyDocumentsSubCategoryId").html("")
+            jQuery.ajax({
+                type: "GET",
+                url: "/PolicyDocumentManagement/GetSubCategories",
+                data: { categoryId: categoryId },
+                success: function (response) {
+
+                    PopulateDropDown("PolicyDocumentsSubCategoryId", response, '@Model.PolicyDocumentsSubCategoryId', 'policyDocumentsSubCategoryId', 'policyDocumentsSubCategory');
+                    jQuery("#PolicyDocumentsSubCategoryId").change();
+                },
+                failure: function (response) {
+                    $erroralert("Transaction Failed!", "errror<br>" + response.responseText);
+                },
+                error: function (response) {
+                    $erroralert("Transaction Failed!", "errror<br>" + response.responseText);
+                }
+            });
+        }
+    </script>
+}
+

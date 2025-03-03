@@ -1,0 +1,218 @@
+﻿@model SimpliHR.Infrastructure.Models.Performace.PerformanceSettingViewModel
+<h5 class="mt-5">Goals / Key Result Areas</h5>
+<div class="row g-3">
+    <div class="col-md-12">
+        <table class="table table-bordered table-striped tblWeightedAverageMethod" name="tblWeightedAverageMethodKRA">
+            <thead>
+                <tr>
+                    <th>S No</th>
+                    <th>Goals / Key Result Areas</th>
+                    @{
+                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.Mechanism == 2)
+                        {
+                            <th>Weight age</th>
+                        }
+                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.EmployeeRating == true)
+                        {
+                            <th>Employee Rating</th>
+                        }
+                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.EmployeeRemarks == true)
+                        {
+                            <th>Employee Remarks</th>
+                        }
+                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.ManagerRating == true)
+                        {
+                            <th>Manager's Rating</th>
+                        }
+                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.ManagerRemarks == true)
+                        {
+                            <th>Manager's Remarks</th>
+                        }
+                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.Mechanism == 2)
+                        {
+                            <th>WA Score</th>
+                        }
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    if (Model != null)
+                    {
+                        if (Model.PerformanceEmployeeKRAList != null)
+                        {
+                            int sn = 1;
+                            foreach (var item in Model.PerformanceEmployeeKRAList)
+                            {
+                                <tr sn="@sn">
+                                    <td name="sn">@sn</td>
+                                    <td name="attribute">@item.KRA</td>
+                                    @{
+                                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.Mechanism == 2)
+                                        {
+                                            <td name="weightage">@item.Weightage</td>
+                                        }
+                                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.EmployeeRating == true)
+                                        {
+                                            //<td name="employeerating" class="@(Model.ViewType=="Employee"?"": "not-authorised")">
+                                            <td name="employeerating" class="@(((Model.PerformanceEmployeeData!=null && Model.PerformanceEmployeeData.Published==true) || (Model.ViewType!="Employee") || (Model.PerformanceEmployeeData!=null && Model.PerformanceEmployeeData.FilledByEmployee==true)) ? "not-authorised" : "" )">
+                                                <select class="form-control">
+                                                    <option value="0">Select</option>
+                                                    @{
+                                                        if (Model != null)
+                                                        {
+                                                            if (Model.PerformanceSettingMechanismList != null)
+                                                            {
+                                                                foreach (var item1 in Model.PerformanceSettingMechanismList)
+                                                                {
+                                                                    if (item.EmployeeRating == item1.Point)
+                                                                    {
+                                                                        <option selected="selected" value="@item1.Point" PerformanceSettingMechanismId="@item1.PerformanceSettingMechanismId">@item1.Point</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="@item1.Point" PerformanceSettingMechanismId="@item1.PerformanceSettingMechanismId">@item1.Point</option>
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                </select>
+                                            </td>
+                                        }
+                                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.EmployeeRemarks == true)
+                                        {
+                                            <td name="employeeremark"><a href='javascript:void(0)' class='@(((Model.PerformanceEmployeeData!=null && Model.PerformanceEmployeeData.Published==true)|| (Model.ViewType!="Employee")|| (Model.PerformanceEmployeeData!=null && Model.PerformanceEmployeeData.FilledByEmployee==true)) ? "plain-text not-authorised" : "edit_text" )'>@item.EmployeeRemarks</a></td>
+                                        }
+                                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.ManagerRating == true)
+                                        {
+
+                                            if ((Model != null && Model.ViewType == "Employee"))
+                                            {
+                                                <td name="managerrating" class="not-authorised">
+                                                    <select class="form-control">
+                                                        <option value="0">Select</option>
+                                                        @{
+                                                            if (Model != null)
+                                                            {
+                                                                if (Model.PerformanceSettingMechanismList != null)
+                                                                {
+                                                                    foreach (var item1 in Model.PerformanceSettingMechanismList)
+                                                                    {
+                                                                        if ((Model != null && Model.PerformanceEmployeeData != null && Model.PerformanceEmployeeData.Published == true))
+                                                                        {
+                                                                            if (item.ManagerRating == item1.Point)
+                                                                            {
+                                                                                <option selected="selected" value="@item1.Point" PerformanceSettingMechanismId="@item1.PerformanceSettingMechanismId">@item1.Point</option>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <option value="@item1.Point" PerformanceSettingMechanismId="@item1.PerformanceSettingMechanismId">@item1.Point</option>
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <option value="@item1.Point" PerformanceSettingMechanismId="@item1.PerformanceSettingMechanismId">@item1.Point</option>
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    </select>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td name="managerrating" class="@((Model.ViewType=="Manager" && (Model.PerformanceEmployeeData!=null && Model.PerformanceEmployeeData.FilledByManager!=true && Model.PerformanceEmployeeData.FilledByEmployee==true))?"":"not-authorised")">
+                                                    <select class="form-control">
+                                                        <option value="0">Select</option>
+                                                        @{
+                                                            if (Model != null)
+                                                            {
+                                                                if (Model.PerformanceSettingMechanismList != null)
+                                                                {
+                                                                    foreach (var item1 in Model.PerformanceSettingMechanismList)
+                                                                    {
+                                                                        if (item.ManagerRating == item1.Point)
+                                                                        {
+                                                                            <option selected="selected" value="@item1.Point" PerformanceSettingMechanismId="@item1.PerformanceSettingMechanismId">@item1.Point</option>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <option value="@item1.Point" PerformanceSettingMechanismId="@item1.PerformanceSettingMechanismId">@item1.Point</option>
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    </select>
+                                                </td>
+                                            }
+                                        }
+                                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.ManagerRemarks == true)
+                                        {
+                                            if (Model != null && Model.ViewType == "Employee")
+                                            {
+                                                if (Model.PerformanceEmployeeData != null && Model.PerformanceEmployeeData.Published == true)
+                                                {
+                                                    <td name="managerremark"><a href='javascript:void(0)' class='@(Model.ViewType=="Manager" ? "edit_text" : "plain-text not-authorised")'>@item.ManagerRemarks</a></td>
+                                                }
+                                                else
+                                                {
+                                                    <td name="managerremark"><a href='javascript:void(0)' class='@(Model.ViewType=="Manager" ? "edit_text" : "plain-text not-authorised")'></a></td>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <td name="managerremark"><a href='javascript:void(0)' class='@((Model.ViewType=="Manager" && (Model.PerformanceEmployeeData!=null && Model.PerformanceEmployeeData.FilledByManager!=true  && Model.PerformanceEmployeeData.FilledByEmployee==true)) ? "edit_text" : "plain-text not-authorised")'>@item.ManagerRemarks</a></td>
+                                            }
+                                        }
+                                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.Mechanism == 2)
+                                        {
+                                            <td name="score">@item.WAScore</td>
+                                        }
+                                    }
+
+                                </tr>
+                                sn += 1;
+                            }
+                        }
+                    }
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th></th>
+                    <th name="attribute">Grand Total</th>
+                    @{
+                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.Mechanism == 2)
+                        {
+                            <th name="weightage"></th>
+                        }
+                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.EmployeeRating == true)
+                        {
+                            <th></th>
+                        }
+                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.EmployeeRemarks == true)
+                        {
+                            <th></th>
+                        }
+                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.ManagerRating == true)
+                        {
+                            <th name="managerrating"></th>
+                        }
+                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.ManagerRemarks == true)
+                        {
+                            <th></th>
+                        }
+                        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.Mechanism == 2)
+                        {
+                            <th name="score"></th>
+                        }
+                    }
+
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

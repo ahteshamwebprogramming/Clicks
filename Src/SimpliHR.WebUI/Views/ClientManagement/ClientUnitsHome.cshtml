@@ -1,0 +1,115 @@
+﻿@model SimpliHR.Infrastructure.Models.ClientManagement.UnitMasterDTO
+@{
+    ViewData["Title"] = "ClientUnitsHome";
+    Layout = "~/Views/Shared/_LayoutEmpty.cshtml";
+}
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+@*<link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&display=swap" rel="stylesheet">*@
+<link href='https://fonts.googleapis.com/css?family=Rampart One' rel='stylesheet'>
+<link href="~/assets/vendor/libs/hover-master/css/hover-min.css" rel="stylesheet" />
+<style>
+    .marginAuto {
+        margin: 0 auto
+    }
+
+    .number-bg {
+        background: url("../../assets/img/number-bg.jpg") no-repeat;
+        background-size: cover;
+        width: 95px;
+        height: 95px;
+        padding: 15px 0 0;
+        font-size: 45px;
+        font-family: 'Rampart One';
+        color: #003155
+    }
+
+</style>
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+
+    <div class="row">
+        <div class="col-md-11 col-7">
+            <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Client /</span> Units</h4>
+        </div>
+        <div class="col-md-1 col-5 py-3 mb-4">
+            <ul class="nav nav-pills flex-column flex-sm-row">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/Account/Login">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    @*<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Client /</span> Units</h4>*@
+    <!-- Location  -->
+    <div id="wizard-checkout" class="bs-stepper wizard-icons wizard-icons-example mt-2">
+        <div class="container selectMain">
+            <div class="m pt-4">
+                @*   <h5 class="card-header">Unit Details</h5>*@
+                <div class="card-body pt-4 pb-4">
+                    <div class="row g-3" style="justify-content:center;">
+
+
+                        @{
+                            int indx = 1;
+                            foreach (var item in Model.UnitMasterList)
+                            {
+                                <div class="col-lg-3 col-md-6 col-sm-12 hvr-float-shadow" style="cursor:pointer" onclick="SetUnit(this)">
+                                    <input type="hidden" value="@item.UnitID" name="UnitID">
+                                    <div class="card drag-item mb-lg-0 mb-4">
+                                        <div class="card-body text-center">
+                                            <div class="number-bg text-center marginAuto"><strong>@indx</strong></div>
+                                            <div class="pt-4 mb-4">
+                                                <div><h6>@item.UnitName</h6></div>
+                                                <div>@item.Address</div>
+                                                <div>@item.CityName</div>
+                                                <div>@item.Pincode</div>
+                                                <div>@item.State</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                indx++;
+                            }
+                        }                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+        });
+
+        function SetUnit(currDiv) {
+
+            let unitId = $(currDiv).find("[name='UnitID']").val();
+          
+            jQuery.ajax({
+                type: "POST",
+                url: "/ClientManagement/SetUnit/",
+                data: { UnitID: unitId },
+                cache: false,
+                dataType: "json",
+                success: function (data) {
+
+                    window.location.href = "/Admin/Index"
+
+                },
+                error: function (result) {
+                    alert(result.responseText);
+                }
+            });
+        }
+
+
+    </script>
+}

@@ -1,0 +1,314 @@
+﻿@model SimpliHR.Infrastructure.Models.StatutoryComponent.ProfessionalTaxDTO
+@{
+    ViewData["Title"] = "TaxSlabs";
+}
+
+<style>
+
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 18px;
+    }
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll /</span> Professional Tax</h4>
+
+    <div class="card" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+                           
+                            <th>Gender</th>
+                            <th>State</th>
+                            <th>Prof Tax</th>
+                            <th>Min Salary</th>
+                            <th>Max Salary</th>
+                            <th>WEF Date</th>                           
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model.ProfessionalTaxList != null)
+                            @foreach (var item in Model.ProfessionalTaxList)
+                            {
+                                <tr>
+                                    <td>@(item.Gender.Trim() == "M" ? "Male" : item.Gender.Trim() == "F" ? "FeMale" : "")</td>
+                                      <td>@item.StateName</td>
+                                     <td>@item.ProfTax</td>                                   
+                                    <td>@item.MinSalary</td>
+                                    <td>@item.MaxSalary</td>
+                                    <td>@(item.WEFDate == null ? "" : item.WEFDate.Value.ToString("dd-MMM-yyyy"))</td>
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="/StatutoryComponent/GetProfessinalTax/@item.EncryptedId"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="#" onclick="DeleteRecord('@item.EncryptedId')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                  @*   <th>
+                                        <a class="btn btn-primary" href="/StatutoryComponent/GetProfessinalTax/@item.EncryptedId">Edit</a>
+                                        <button class="btn btn-primary" onclick="DeleteRecord('@item.EncryptedId')"> Delete</button>
+                                    </th> *@
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="ListView()" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/StatutoryComponent/SaveProfessionalTax">
+            <div class="row g-3">
+                    <div class="col-sm-12">
+                        <label class="form-label d-block" for="address">Gender</label>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="Gender"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="M"
+                                   id="GenderM" checked />
+                            <label class="form-check-label" for="defaultRadio1">Male</label>
+                        </div>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="Gender"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="F"
+                                   id="GenderF" />
+                            <label class="form-check-label" for="defaultRadio2">FeMale</label>
+                        </div>
+                       
+                    </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="multicol-last-name">Country</label>
+                    <div class="position-relative">
+                        <select id="CountryId" name="CountryId" required onchange="javascript:PopulateStateDDL(this.value)" class="select2 form-select select2-hidden-accessible" data-allow-clear="true" tabindex="-1" aria-hidden="true">
+                            <option value="0">Select</option>
+                             @if (Model.CountryList != null)
+                            foreach (var item in Model.CountryList)
+                            {
+                            if (item.CountryId == Model.CountryId)
+                            {
+                            <option value="@item.CountryId" selected> @item.CountryName</option>
+                            }
+                            else
+                            {
+                            <option value="@item.CountryId"> @item.CountryName</option>
+                            }
+
+                            }
+                        </select>
+                        @*<span asp-validation-for="CountryId" class="text-danger"></span>*@
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="multicol-last-name">State</label>
+                    <div class="position-relative">
+                        <select id="StateId" name="StateId" required class="select2 form-select select2-hidden-accessible" data-allow-clear="true" tabindex="-1" aria-hidden="true">
+                            <option value="0">Select</option>
+                        </select>
+                        @*<span asp-validation-for="StateId" class="text-danger"></span>*@
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Min Salary</label>
+                        <input type="number" id="MinSalary" required name="MinSalary" class="form-control" value="@Model.MinSalary">
+
+                </div>
+                <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Max Salary</label>
+                        <input type="number" id="MaxSalary" required name="MaxSalary" class="form-control" value="@Model.MaxSalary">
+
+                </div>
+                <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Prof Tax Rate</label>
+                        <input type="number" id="ProfTax" name="ProfTax" required class="form-control" value="@Model.ProfTax">
+
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label required" for="multicol-last-name">WEF Date</label>
+                        <input type="text" id="WEFDate" name="WEFDate" required  class="form-control flatpickr-date1" value="@(Model.WEFDate==null ? "" : ((DateTime)Model.WEFDate).ToString("dd-MMM-yyyy"))"
+                           placeholder="DD-MMM-YYYY">
+
+
+                </div>
+            </div>
+            <div class="pt-4">
+
+                    <input type="hidden" id="hdnProfTaxId" name="ProfTaxId" value="@Model.ProfTaxId">
+                <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                @* <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/Leave/LeaveApply/'">Cancel</button>*@
+            </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <div class="modal-body">
+                    <button type="button" class="btn-close" name="btnPopupClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-4">
+                    </div>
+                    <form id="showAlert" class="row g-3" onsubmit="return false">
+                        <div class="col-12 text-center" id="errorDiv">
+                            <p id="errorPara" class="error" style="color:red"></p>
+                        </div>
+                        <div class="col-12 text-center" id="successDiv">
+                            <p id="successPara" class="error" style="color:black"></p>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="popupBtnDiv" class="col-12 text-center">
+                    @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                    <button type="reset" name="btnPopupClose"
+                            class="btn btn-label-secondary btn-reset mt-3"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                        Close
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script src="../../customjs/CommonFunction.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            jQuery(".List").dataTable();
+
+            if ("@Model.Gender"!= "")
+            {
+                    if ("@Model.Gender" == "M" ) {
+                        $("#GenderM").prop('checked', true);
+                    }
+                    else if ("@Model.Gender" == "F") {
+                        $("#GenderF").prop('checked', true);
+                    }
+
+            }
+            
+
+            $(".flatpickr-date1").flatpickr({
+                // monthSelectorType: 'static',
+                dateFormat: "d-M-Y"
+
+            });
+            if (@Model.ProfTaxId != 0 || @Model.HttpStatusCode!= 200) {
+                $("#List").hide();
+                $("#Add").show();         
+            }
+
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                $successalert("Professional Tax", "@Model.DisplayMessage");
+            }
+
+            var countryId = ('@Model.CountryId' == '') ? 0 : '@Model.CountryId'           
+            if (countryId > 0)
+                PopulateStateDDL(countryId);
+            
+
+        });
+
+        $('#selFY').val($('#hdnFY').val().trim());
+
+        function ListView() {
+           $("#Add").hide();
+           $("#List").show();
+        }
+        function AddView() {
+           $("#Add").show();
+           $("#List").hide();
+            EmptyInputs();
+
+        }
+
+        function EmptyInputs()
+        {
+            $("#MinSalary").val("");
+            $("#MaxSalary").val("");
+            $("#ProfTax").val("");
+            $("#WEFDate").val("");
+           // $("#StateId").val("0");
+            $("#StateId").prop('selectedIndex', 0);
+           // $('select option[value="0"]').attr("selected", true);
+        }
+
+        function DeleteRecord(id) {
+            // event.preventDefault();
+            url = $(this).attr('href');
+            history.pushState({ key: url }, '', url);
+            if (confirm("Sure, you want to delete it?")) {
+                window.location.href = "/StatutoryComponent/DeleteProfTax/" + id;
+            }
+            return false;
+        }
+
+        function PopulateStateDDL(countryId) {
+            //var objDDL = countryDDL
+            jQuery("#CountryId").attr("disabled", true)
+            jQuery("#StateId").html("")
+            jQuery.ajax({
+                type: "GET",
+                url: "/WorkLocation/GetCounryStates",
+                data: { CountryId: countryId },
+                success: function (response) {
+                    PopulateDropDown("StateId", response, '@Model.StateId', 'stateId', 'stateName')
+                    jQuery("#CountryId").attr("disabled", false)
+                },
+                failure: function (response) {
+                    $erroralert("Error!", "errror<br>" + response.responseText);
+                },
+                error: function (response) {
+                    $erroralert("Error!", "errror<br>" + response.responseText);
+                }
+            });
+        }
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                if (sMsg.toUpperCase() == "SUCCESS") {
+                    sMsg = "Ticket Created Successfully";
+                    jQuery("#successDiv").show();
+                    jQuery("#successPara").html(sMsg);
+
+                    // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                }
+                else {
+                    jQuery("#errorDiv").show();
+                    jQuery("#errorPara").html(sMsg);
+                }
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+
+    </script>
+    }
+

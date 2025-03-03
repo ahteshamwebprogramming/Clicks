@@ -1,0 +1,19 @@
+﻿@model SimpliHR.Infrastructure.Models.ProjectTracker.PTProjectPriorityDTO
+<form id="ProjectPriorityForm" method="post">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="form-group col-md-6 mb-3">
+                    <label for="defaultFormControlInput" class="form-label required" required>Project Priority</label>
+                    <input type="text" class="form-control" asp-for="Priority" required>
+                    <span class="text-danger validation-error" style="display:none"></span>
+                </div>
+                <div class="col-md-12">
+                    <input type="button" class="btn btn-primary btn-sm" onclick="Save()" value="@((Model!=null && Model.encPriorityId!=null) ? "Update" : "Save")">
+                    <input type="button" class="btn btn-primary btn-sm" onclick="Reset()" value="Reset">
+                    <input type="hidden" asp-for="encPriorityId" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,196 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.QuickAccessUnitListDTO
+@{
+    ViewData["Title"] = "QuickAccessSetting";
+    Layout = "~/Views/Shared/_LayoutVertical.cshtml";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"></span> Quick Access Settings</h4>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="float-start"><h5 class="card-title mt-2">Links</h5></div>
+                    <div class="float-end"><button class="btn btn-primary" onclick="MappedLinksSelected()"><i class="bx bx-plus me-sm-1"></i>Save Links</button></div>
+                    <div class="clearfix"></div>
+                    <div class="table-responsive text-nowrap mb-2">
+                        <table class="datatables-ajax table List" id="List">
+                            <thead>
+                                <tr>
+                                    <th>Select</th>
+                                    <th>Logo</th>
+                                    <th>Name</th>
+                                    <th>Link</th>
+                                    <th>Position</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int iCtr = 1;
+                                    var showReason = false;
+                                    var ctrlId = string.Empty;
+                                    if (Model.QuickAccessUnitLists.Count != 0)
+                                    {
+                                        foreach (var item in Model.QuickAccessUnitLists)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @if (item.IsActive == true)
+                                                    {
+                                                        <input type="checkbox" id="QuickAccessId_@iCtr" checked value="@item.QuickAccessId" class="form-check-input">
+                                                    }
+                                                    else
+                                                    {
+                                                                <input type="checkbox" id="QuickAccessId_@iCtr"  value="@item.QuickAccessId" class="form-check-input">
+                                                    }
+
+                                                </td>
+                                                <td><strong><img src="../../assets/img/@item.QuickAccessLogo" width="30" height="30" alt=""></strong></td>
+                                                <td>@item.QuickAccessName</td>
+                                                <td><input type="text" id="Links_@iCtr" value="@item.QuickAccessLink" class="form-control" /></td>
+                                                <td>
+                                                    <select id="selPositionId_@iCtr" name="PositionId" class="form-select" tabindex="-1" aria-hidden="true">
+                                                        <option value="0">Select</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            iCtr++;
+                                        }
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <style>
+            .select2-container--default .select2-selection--single .select2-selection__clear {
+                display: none
+            }
+        </style>
+
+    </div>
+
+</div>
+
+@section scripts {
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $(".List").dataTable({
+                "bPaginate": false
+            });
+
+        });
+
+        function MappedLinksSelected() {
+            //alert('Regularize')
+            var rowData = {};
+            //   var formData = {};
+            var isData = false;
+            var isActive = 0;
+            var dataCollection = new Array();
+            // var results = new Array();
+            //var formData = new FormData();
+            var iCtr = 0;
+            var iCnt = 0;
+            // var sValidMsg = "";
+            // var isData = true;
+
+            if (@Model.QuickAccessUnitLists.Count> 0) {
+                for (iCtr = 1; iCtr <= @Model.QuickAccessUnitLists.Count; iCtr = iCtr + 1) {
+                    isChecked = jQuery("#QuickAccessId_" + iCtr).is(":checked")
+
+                    // if (isChecked) {
+
+                    if (isChecked) {
+                        var sLinks = jQuery("#Links_" + iCtr).val();
+                        if (sLinks != "") {
+                            sLinks = sLinks.replace(",", "{#~#}")
+
+
+                        }
+                        else {
+                            $erroralert("Transaction Failed!", "Please Insert Link");
+                            return;
+                        }
+                        isActive = 1;
+                        isData = true;
+                        iCnt++;
+                    }
+                    else {
+                        var sLinks = jQuery("#Links_" + iCtr).val();
+                        if (sLinks != "") {
+                            sLinks = sLinks.replace(",", "{#~#}")
+                        }
+                        isActive = 0;
+                    }
+                    // var sLinks = jQuery("#Links_" + iCtr).val();
+                    // if (sLinks != "") {
+                    //     sLinks = sLinks.replace(",", "{#~#}")
+                    // }
+                    // else {
+                    //     $erroralert("Validation", "Please insert the link");
+                    //     return;
+                    // }
+
+                    rowData.QuickAccessIds = rowData.QuickAccessIds != undefined ? rowData.QuickAccessIds + "," + jQuery("#QuickAccessId_" + iCtr).val() : jQuery("#QuickAccessId_" + iCtr).val();
+                    rowData.PositionIds = rowData.PositionIds != undefined ? rowData.PositionIds + "," + jQuery("#selPositionId_" + iCtr).val() : jQuery("#selPositionId_" + iCtr).val();
+                    rowData.Links = rowData.Links != undefined ? rowData.Links + "," + jQuery("#Links_" + iCtr).val() : jQuery("#Links_" + iCtr).val() + "";
+                    rowData.IsActives = rowData.IsActives != undefined ? rowData.IsActives + "," + isActive : isActive + "";
+
+                }
+            }
+
+            if (!isData) {
+                $erroralert("Transaction Failed!", "Please Select Atleast 1 Quick Access Link");
+                return;
+            }
+
+
+            if (iCnt <= 5) {
+
+
+                BlockUI();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/QuickAccess/SaveQuickAccessUnitLink",
+                    data: { userAction: rowData },
+                    success: function (data) {
+                        UnblockUI();
+                        $successalert("", "Transaction Successful!");
+                        if (data.toUpperCase() == "SUCCESS") {
+                            // jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                        }
+
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        $erroralert("Transaction Failed!", "" + result.responseText);
+                        UnblockUI();
+                    }
+                });
+
+            }
+            else {
+                $erroralert("Transaction Failed!", "You can select max 5 quick access links");
+            }
+
+        }
+
+
+    </script>
+}
+

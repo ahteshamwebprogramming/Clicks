@@ -1,0 +1,1275 @@
+﻿@model SimpliHR.Infrastructure.Models.Leave.EmployeeLeaveDetailsDTO
+@{
+    ViewData["Title"] = "Leave Application";
+}
+<style>
+
+
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+
+</style>
+
+<!-- Content -->
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Leave /</span> Manage</h4>
+
+    <div class="row">
+        <!-- User Content -->
+
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <!-- User Pills -->
+
+            <div class="nav-align-top mb-4">
+
+                <ul class="nav nav-pills mb-3" role="tablist">
+                   @*  <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#Apply" aria-controls="Apply" aria-selected="true">
+                            Apply
+                        </button>
+                    </li> *@
+                    <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#View" aria-controls="View" aria-selected="false">
+                            View
+                        </button>
+                    </li>
+                   @*  <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#History" aria-controls="History" aria-selected="false">
+                            History
+                        </button>
+                    </li> *@
+                    <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#Reversal" aria-controls="Reversal" aria-selected="false">
+                            Reversal
+                        </button>
+                    </li>
+                     @* <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#CompOff" aria-controls="CompOff" aria-selected="false">
+                            CompOff
+                    </button>
+                    </li> *@
+                </ul>
+                <div class="tab-content">
+                  @*   <div class="tab-pane fade" id="CompOff" role="tabpanel">
+                        <div class="" id="List">
+                            <div class="">
+                                <div class="card-datatable table-responsive text-nowrap">
+                                    <table class="datatables-ajax table">
+                                        <thead>
+                                            <tr>
+                                               
+                                                <th>Type</th>
+                                                <th>Date</th>
+                                                <th>Remarks</th>                                               
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <select id="selApplicableFor" name="ApplicableFor" class="form-select" required>
+                                                        <option value="S">Select</option>
+                                                        <option value="W">Weekly Off</option>
+                                                        <option value="H">Holidays</option>                                                      
+                                                    </select>
+                                                    </td>
+                                                <td>
+                                                    <input type="date" id="StartDate" name="StartDate" maxlength="50" class="form-control flatpickr-date1"
+                                                           placeholder="DD-MMM-YYYY">
+                                                </td>
+                                                <td>
+                                                    <textarea type="text" id="Remark" cols="15" rows="2" maxlength="300"></textarea>
+                                                </td>
+                                                
+                                                <td>
+                                                   
+                                                    <button class="btn btn-primary" onclick="ApplyCompoff()"> Apply</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div> *@
+                    <div class="tab-pane fade show active" id="View" role="tabpanel">
+                        <div class="" id="List">
+                            <div class="">
+                                <div class="card-datatable table-responsive text-nowrap">
+                                    <table class="datatables-ajax table" id="ViewList">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Leave Type</th>
+                                                <th>Opening Balance</th>
+                                                <th>Availed</th>
+                                                <th>Applied</th>
+                                                <th>Close Balance</th>
+                                                <th>View</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.EmployeeLeaveSummary != null)
+                                                @foreach (var item in Model.EmployeeLeaveSummary)
+                                                {
+                                                    <tr>
+                                                        <td><input type="hidden" id="hdn" name="AssignmentId" class="form-control" value=@item.LeaveTypeId></td>
+                                                        @* <td>
+                                                            @(item.LeaveTypeCode.Trim() == "EL" ? "Earned/Annual Leave" : item.LeaveTypeCode.Trim() == "LWP" ? "Leave without pay" : item.LeaveTypeCode.Trim() == "SL" ? "Sick Leave" : (item.LeaveTypeCode.Trim() == "MTL" || item.LeaveTypeCode.Trim() == "ML" || item.LeaveTypeCode.Trim() == "MT") ? "Maternity leave" : item.LeaveTypeCode.Trim() == "CL" ? "Casual Leave" : item.LeaveTypeCode.Trim() == "CML" ? "Causal Medical Leave" : (item.LeaveTypeCode.Trim() == "PTL" || item.LeaveTypeCode.Trim() == "PL" || item.LeaveTypeCode.Trim() == "PT") ? "Paternity Leave" : "")
+                                                        </td> *@
+                                                        <td>@item.LeaveType</td>
+                                                        <td>@item.OpeningBalance</td>
+                                                        <td><a href="#" data-bs-toggle="modal" data-bs-target="#exLargeModal" onclick="ViewRecord(@item.LeaveTypeId)"> @item.TotalAvailed</a></td>
+                                                        <td><a href="#" data-bs-toggle="modal" data-bs-target="#pendingLeaveModal" onclick="ViewPendingRecord(@item.LeaveTypeId)">@item.TotalApplied</a></td>
+                                                        <td>@item.LeaveBalance</td>
+                                                        <td>
+                                                            <!--button class="btn btn-primary" onclick="ViewRecord(@item.LeaveTypeId)"> View</button-->
+                                                            <button class="btn btn-primary" onclick="ApplyLeave(@item.LeaveTypeId)"> Apply</button>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="Apply" style="display:none;" ><br />
+                            <div class="">
+                                <div class="">
+                                    <form method="post" enctype="multipart/form-data" asp-controller="Leave" asp-action="SaveEmployeeLeaveDetails">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label required" for="multicol-last-name">Leave Type</label>
+                                                <select class="form-select" id="LeaveTypeId"  name="LeaveTypeId" onchange="javascript:PopulateLeaveBalance(this.value)" data-allow-clear="true" data-select2-id="multicol-country" aria-hidden="true">
+                                                    <option selected>Select an option</option>
+
+                                                    @if (Model.LeaveAttributeKeyValues.LeaveTypeKeyValues != null)
+                                                        foreach (var item in Model.LeaveAttributeKeyValues.LeaveTypeKeyValues)
+                                                        {
+                                                            if (item.LeaveTypeId == Model.LeaveTypeId)
+                                                            {
+                                                                <option value="@item.LeaveTypeId" selected> @item.LeaveType</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item.LeaveTypeId"> @item.LeaveType</option>
+                                                            }
+
+                                                        }
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label" for="multicol-last-name">Leave Balance</label>
+                                                <input type="number" id="leaveBalance" name="leaveBalance" readonly class="form-control" value="0">
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label required" for="multicol-last-name">Start Date</label>
+                                                <input type="date" id="StartDate" name="StartDate" maxlength="50" onchange="getObject(this);" class="form-control flatpickr-date1"
+                                                       placeholder="DD-MMM-YYYY">
+
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label required" for="multicol-last-name">End Date</label>
+                                                <input type="date" id="EndDate" name="EndDate" maxlength="50" onchange="getObject(this);" class="form-control flatpickr-date1" placeholder="DD-MMM-YYYY">
+
+                                            </div>
+                                            <div class="col-md-6" id="divtxt">
+                                                <label class="form-label required" for="multicol-last-name">No Of Leave</label>
+                                                <input type="number" id="NoOfLeave" name="NoOfLeave" readonly class="form-control" value="0">
+                                               
+
+                                            </div>
+                                            <div class="col-md-6" id="divsel" style="display:none;">
+                                                <label class="form-label" for="multicol-last-name">No Of Leave</label>                                           
+                                                <select class="form-select" id="NoOfLeaveId" onchange="javascript:GetNoOfLeave(this.value)" name="NoOfLeave">
+                                                    <option value="1" selected>Full Day</option>
+                                                    <option value=".5">First Half</option>
+                                                    <option value=".5">Second Half</option>
+                                                </select>
+
+                                            </div>
+                                            <div class="col-md-6" id="isbillupload" style="display:none;">
+                                                <label class="form-label" for="multicol-last-name">Upload Bill</label>
+                                                <input class="form-control" type="file" id="formFile" name="formFile" />
+
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label class="form-label" for="multicol-last-name">Remarks</label>
+                                                <textarea class="form-control" id="Remarks" name="Remarks" rows="2"></textarea>
+
+
+                                            </div>
+
+                                        </div>
+                                        <div class="pt-4">
+                                            <input type="hidden" id="IsHalfDay" name="IsHalfDay">
+                                            <input type="hidden" id="IsHoliDay" name="IsHoliDay">
+                                            <input type="hidden" id="IsWDay" name="IsWDay">
+                                            <input type="hidden" id="MaxAvailLimit" name="MaxAvailLimit">
+                                            <input type="hidden" id="NoOfBill" name="NoOfBill">
+                                            <input type="hidden" id="IsBill" name="IsBill">
+                                            <input type="hidden" id="MinAvailLimit" name="MinAvailLimit">
+                                            <input type="hidden" id="NoOfMonth" name="NoOfMonth">
+                                            <input type="hidden" id="DOC" name="DOC" value="@Model.DOC" >
+                                            <input type="hidden" id="DOJ" name="DOJ" value="@Model.DOJ">
+                                            <button type="submit" class="btn btn-primary me-sm-3 me-1" onclick="return ProgressAlert();">Submit</button>
+                                            <button type="button" class="btn btn-primary me-sm-3 me-1" onclick="CancelLeave();">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="exLargeModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-xl" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header border-bottom">
+                                        <div><h5 class="card-title mb-sm-0 me-2">Leave Summary</h5></div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="card-datatable table-responsive text-nowrap">
+                                            <table class="datatables-ajax table" id="SummaryList">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Ticket Id</th>
+                                                        <th>Type</th>
+                                                        <th>From</th>
+                                                        <th>To</th>
+                                                        <th>Status</th>
+                                                       @*  <th>Remarks</th> *@
+                                                        <th>Applied On</th>
+                                                        <th>Appr/Rej By</th>
+                                                        <th>Appr/Rej On</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="myleavetbl">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="pendingLeaveModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-xl" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header border-bottom">
+                                        <div><h5 class="card-title mb-sm-0 me-2">Pending Leave Summary</h5></div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="card-datatable table-responsive text-nowrap">
+                                            <table class="datatables-ajax table" id="SummaryList">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Ticket Id</th>
+                                                        <th>Type</th>
+                                                        <th>From</th>
+                                                        <th>To</th>
+                                                        <th>Status</th>
+                                                      @*   <th>Remarks</th> *@
+                                                        <th>Applied On</th>
+                                                        <th>Appr/Rej By</th>
+                                                        <th>Appr/Rej On</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="myPendingleavetbl">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="History" role="tabpanel">
+                        <div class="">
+                            <div class="">
+                                <div class="table-responsive text-nowrap">
+                                    <table class="datatables-ajax table List" id="HistroyList">
+                                        <thead>
+                                            <tr>
+                                                <td style="display:none;"></td>
+                                                <th>Ticket Id</th>
+                                                <th>Leave Type</th>
+                                                <th>Status</th>
+                                                <th>Remarks</th>
+                                                <th>Created/Approved By</th>
+                                                <th>Created/Approved On</th>
+                                                <th>Opening Balance</th>
+                                                <th>Used</th>
+                                                <th>Balance</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.EmployeeLeaveHistoryList != null)
+                                                @foreach (var item in Model.EmployeeLeaveHistoryList)
+                                                {
+                                                    <tr>
+                                                        <td style="display:none;">@item.LeaveId</td>
+                                                        <td>@item.TicketId</td>
+                                                        <td>@item.LeaveType</td>
+                                                        <td>@(item.LeaveStatus == 0 ? "Approved" : item.LeaveStatus == 1 ? "Pending" : item.LeaveStatus == 99 ? "Rejected" : item.LeaveStatus == 98 ? "Reversal" : "Awaiting")</td>
+                                                        <td>@item.LeaveReason</td>
+                                                        <td>@item.CreatedBy</td>
+                                                        <td>@item.CreatedOn.Value.ToString("dd-MMM-yy")</td>
+                                                        <td>@item.OpeningBalance</td>
+                                                        <td>@item.Used</td>
+                                                        <td>@item.ClosingBalance</td>
+
+                                                    </tr>
+                                                }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="Reversal" role="tabpanel">
+                        <div class="">
+                            <div class="">
+                                <div class="table-responsive text-nowrap">
+                                    <table class="datatables-ajax table List" id="ReversList">
+                                        <thead>
+                                            <tr>
+                                                <th>Select One</th>
+                                                <th>Ticket No</th>
+                                                <th>Employee Name</th>
+                                                <th>From</th>
+                                                <th>To</th>
+                                                <th>Leave Type</th>
+                                                <th>Status</th>
+
+                                                <th>Created On</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                int iCtr = 1;
+                                                var showReason = false;
+                                                var ctrlId = string.Empty;
+                                                if (Model.EmployeeRevarsalList.Count != 0)
+                                                {
+                                                    foreach (var item in Model.EmployeeRevarsalList)
+                                                    {
+                                                        showReason = false;
+                                                        ctrlId = $"{item.EmployeeId}_{item.TicketId}";
+
+                                                                                                                            <tr>
+                                                                                                                                <td>
+                                                                                                                                    <input type="radio" id="LeaveId_@iCtr" name="LeaveId" value="@item.LeaveDetailsId" onclick="return UpdateCaption();" class="form-check-input">
+                                                                                                                                    <input type="hidden" id="LeaveStatus_@iCtr" name="LeaveStatus" class="form-control" value=@item.LeaveStatus>
+                                                                                                                                </td>
+                                                                                                                                <td>@item.TicketId </td>
+                                                                                                                                <td>@item.EmployeeName </td>
+                                                                                                                                <td>@item.StartDate.Value.ToString("dd-MMM-yy")</td>
+                                                                                                                                <td>@item.EndDate.Value.ToString("dd-MMM-yy")</td>
+                                                                                                                                <td>
+                                                                                                                                    <span data-bs-toggle="tooltip"
+                                                                                                                                          data-bs-offset="0,4"
+                                                                                                                                          data-bs-placement="top"
+                                                                                                                                          data-bs-html="true"
+                                                                                                                                          data-bs-custom-class="tooltip-secondary"
+                                                                                                                                          title="<span>@item.LeaveType</span>">
+                                                                                                                                        @item.LeaveTypeCode
+                                                                                                                                    </span>
+
+                                                                                                                                </td>
+                                                                                                                                <td>@(item.LeaveStatus == 0 ? "Approved" : item.LeaveStatus == 1 ? "Pending" : "")</td>
+
+                                                                                                                                <td>@item.CreatedOn.Value.ToString("dd-MMM-yy")</td>
+
+
+                                                                                                                            </tr>
+
+                                                        iCtr++;
+                                                    }
+                                                }
+
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="">
+                                <div class="row g-3">
+                                    <div class="col-md-12 text-center">
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <div class="w-px-400">
+                                                <label class="form-label required" for="">Remark</label>
+                                                <textarea class="form-control" required id="txtRemarks" rows="2"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-4 text-center">
+                                    <button type="button" id="btncreate" class="btn btn-primary me-sm-3 me-1" onclick=" return ReversalSelected();">Create Ticket</button>
+                                    <button type="button" id="btncancel" class="btn btn-primary me-sm-3 me-1" style="display:none;" onclick=" return ReversalSelected();">Cancel Ticket</button>
+                                    <button type="reset" class="btn btn-label-secondary">Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+                            <h2>SimpliHR2.0</h2>
+                            <div class="modal-content p-3 p-md-5">
+                                <div class="modal-body">
+                                    <button type="button" class="btn-close" name="btnPopupClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <div class="text-center mb-4">
+                                    </div>
+                                    <form id="showAlert" class="row g-3" onsubmit="return false">
+                                        <div class="col-12 text-center" id="errorDiv">
+                                            <p id="errorPara" class="error" style="color:red"></p>
+                                        </div>
+                                        <div class="col-12 text-center" id="successDiv">
+                                            <p id="successPara" class="error" style="color:black"></p>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div id="popupBtnDiv" class="col-12 text-center">
+                                    @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                                    <button type="reset" name="btnPopupClose"
+                                            class="btn btn-label-secondary btn-reset mt-3"
+                                            data-bs-dismiss="modal"
+                                            aria-label="Close">
+                                        Close
+                                    </button>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--/ User Pills -->
+
+        </div>
+        <!--/ User Content -->
+    </div>
+</div>
+<!-- / Content -->
+<script src="~/customjs/commonfunction.js"></script>
+<script src="~/customjs/employeevalidation.js"></script>
+
+@section scripts {
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            jQuery("#ViewList").dataTable();
+            // jQuery("#SummaryList").dataTable();
+            jQuery("#HistroyList").dataTable({
+                order: [[0, 'desc']]
+            });
+            jQuery("#ReversList").dataTable();
+
+            jQuery(".flatpickr-date1").flatpickr({
+                // monthSelectorType: 'static',
+                dateFormat: "d-M-Y"
+
+            });
+
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                $successalert("", "@Model.DisplayMessage");
+                jQuery("#StartDate").val("");
+                jQuery("#EndDate").val("");
+                jQuery("#Apply").hide();
+            }
+
+
+
+
+            //var date = new Date().toISOString().slice(0, 10);
+            //alert(date);
+            //var d = new Date($("#StartDate").val().attr('min', date));
+
+           // $('#StartDate').attr('min', date);
+           // $('#EndDate').attr('min', date);
+        });
+        function ProgressAlert() {
+          //  alert($("#StartDate").val());
+            BlockUI();
+            if (isBlank($("#StartDate").val())) {
+                $erroralert("Validation", "Please select Start Date");
+                UnblockUI();
+                return false;
+            }
+            if (isBlank($("#EndDate").val())) {
+                $erroralert("Validation", "Please insert End Date");
+                UnblockUI();
+                return false;
+            }
+           // $("#NoOfLeave").val(14);
+            // alert($("#MinAvailLimit").val());
+           // alert($("#MaxAvailLimit").val());
+           // alert($("#NoOfLeave").val());
+            if (parseInt($("#NoOfLeave").val()) < parseInt($("#MinAvailLimit").val()) || parseInt($("#NoOfLeave").val()) > parseInt($("#MaxAvailLimit").val())) {
+
+                $erroralert("Transaction Failed!", "You can avail per request min " + $("#MinAvailLimit").val() + " leave/s, and max " + $("#MaxAvailLimit").val() + " leave/s");
+               
+                UnblockUI();
+                return false;
+
+            }
+            // UnblockUI();|| 
+            // return false;
+          
+            if ($("#IsBill").val()=="true") {
+
+                if (parseInt($("#NoOfLeave").val()) >= parseInt($("#NoOfBill").val())) {
+
+                    if ($("#formFile").val() == '') {
+
+                        $erroralert("Transaction Failed!", "Please upload the medical document");
+                       // ShowServerMessage("Please upload the medical document");
+                        UnblockUI();
+                        return false;
+                    }
+                }
+
+            }
+
+          
+
+          
+            return true;
+        }
+        function isBlank(str) {
+            return (!str || /^\s*$/.test(str));
+        }
+        function ValidateDate() {
+            // alert('test');
+            var crrDate = new Date().toISOString().slice(0, 10);
+           
+            var date1 = new Date($("#StartDate").val()).toISOString().slice(0, 10);
+            // var date11 = Date1.toISOString().slice(0, 10);
+            //  alert(date1);
+
+            var variable1 = new Date();
+            var variable2 = variable1.toISOString().split('T')[0];
+           
+            if (new Date($("#StartDate").val()).getDate() < new Date(variable2).getDate()) {
+                $erroralert("Transaction Failed!", "The Date must be Bigger or Equal to today date");
+                //ShowServerMessage("The Date must be Bigger or Equal to today date");
+                return false;
+            } else {
+                //input date bigger than todays date
+            }
+          
+
+            return false;
+            //  var date1 = new Date($("#StartDate").val());
+            //var date2 = new Date($("#EndDate").val());
+        }
+
+        function getObject(object) {
+
+
+        
+            $(":submit").removeAttr("disabled");
+
+           // alert($("#NoOfMonth").val());
+
+          
+            var date1 = new Date($("#StartDate").val());
+            var date2 = new Date($("#EndDate").val());
+
+          
+            if ($("#DOJ").val() != '') {
+                
+                var dtDOJ = new Date($("#DOJ").val());
+               // alert(dtDOJ);
+                var newDOJDate = new Date(dtDOJ.setMonth(dtDOJ.getMonth() + parseInt($("#NoOfMonth").val())));
+
+
+             //   alert(newDOJDate.toISOString().split('T')[0]);
+                if (date1 < newDOJDate) {
+                    $erroralert("Transaction Failed!", "Start date cannot be less than Date Of Joinnig " + newDOJDate.toISOString().split('T')[0]);
+                  
+                    return;
+                }
+            }
+           
+            const diffTime = Math.abs(date2 - date1);
+            //  alert(diffTime);
+            if (date1 > date2) {
+                $(":submit").attr("disabled", true);
+                $erroralert("Transaction Failed!", "End date cannot be less than Start date");
+               // ShowServerMessage("End date cannot be less than Start date");
+                return;
+            }
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            // diffDays =diffDays +1;
+            var tDays = diffDays + 1;
+
+
+
+
+            if (parseInt($("#IsHoliDay").val()) == 2 && parseInt($("#IsWDay").val()) == 2) {
+
+                if (date2 >= date1) {
+
+                    jQuery.ajax({
+                        type: "GET",
+                        url: "/Leave/GetWorkingnHoliday",
+                        data: { sDate: $("#StartDate").val(), eDate: $("#EndDate").val(), isCondition:3 },
+                        success: function (response) {
+                          
+                            // tDays = tDays - parseInt(response);
+                            tDays = parseInt(response);
+                           // alert(tDays);
+                           // alert($("#leaveBalance").val());
+                            if (parseInt($("#leaveBalance").val()) < tDays) {
+                                $(":submit").attr("disabled", true);
+                                $("#NoOfLeave").val(0);
+
+                                if (parseInt($("#leaveBalance").val()) > 0) {
+                                    $erroralert("Transaction Failed!", "You can take maximum no of leave : " + $("#leaveBalance").val());
+                                }
+                                else {
+                                    $erroralert("Transaction Failed!", "You are not able to take leave as your balance is 0");
+                                }
+                             
+                                return;
+                            }
+                            if (parseInt(response) > 0 && tDays == 0) {
+                                $erroralert("Transaction Failed!", "You cannot apply due to the Holiday/ Weekend");
+                              
+                                return;
+                            }
+                           
+                            if (tDays <= 1) {
+                                var isHalfDay = $("#IsHalfDay").val();                             
+                                if (isHalfDay == "true") {
+                                    $("#divsel").show();
+                                    $("#divtxt").hide();
+                                    $("#NoOfLeave").val(tDays);
+                                }
+                                else {
+                                    $("#divsel").hide();
+                                    $("#divtxt").show();
+                                    $("#NoOfLeave").val(tDays);
+                                }
+                            }
+                            else {
+                                $("#divsel").hide();
+                                $("#divtxt").show();
+                                $("#NoOfLeave").val(tDays);
+                            }
+
+                        },
+                        failure: function (response) {
+                            $erroralert("Error!", "errror<br>" + response.responseText);
+                        },
+                        error: function (response) {
+                            $erroralert("Error!", "errror<br>" + response.responseText);
+                        }
+                    });
+                }
+                
+            }
+            else if (parseInt($("#IsHoliDay").val()) == 2 && parseInt($("#IsWDay").val()) == 1) {
+
+                if (date2 >= date1) {
+
+                    jQuery.ajax({
+                        type: "GET",
+                        url: "/Leave/GetWorkingnHoliday",
+                        data: { sDate: $("#StartDate").val(), eDate: $("#EndDate").val(), isCondition: 1 },
+                        success: function (response) {
+
+                            tDays = tDays - parseInt(response);
+
+                            // if (parseInt($("#leaveBalance").val()) < tDays) {
+                            //     $(":submit").attr("disabled", true);
+                            //     $("#NoOfLeave").val(0);
+                            //     $erroralert("Transaction Failed!", "you can take maximum no of leave : " + $("#leaveBalance").val());
+
+                            //     return;
+                            // }
+                           // alert(tDays);
+                           // alert($("#leaveBalance").val());
+
+                            if (parseInt($("#leaveBalance").val()) < tDays) {
+                                $(":submit").attr("disabled", true);
+                                $("#NoOfLeave").val(0);
+
+                                if (parseInt($("#leaveBalance").val()) > 0) {
+                                    $erroralert("Transaction Failed!", "You can take maximum no of leave : " + $("#leaveBalance").val());
+                                }
+                                else {
+                                    $erroralert("Transaction Failed!", "You are not able to take leave as your balance is 0");
+                                }
+
+                                return;
+                            }
+                            if (parseInt(response) > 0 && tDays == 0) {
+                                $erroralert("Transaction Failed!", "You cannot apply due to the Holiday/ Weekend");
+
+                                return;
+                            }
+
+                            if (tDays <= 1) {
+                                var isHalfDay = $("#IsHalfDay").val();
+                                if (isHalfDay == "true") {
+                                    $("#divsel").show();
+                                    $("#divtxt").hide();
+                                    $("#NoOfLeave").val(tDays);
+                                }
+                                else {
+                                    $("#divsel").hide();
+                                    $("#divtxt").show();
+                                    $("#NoOfLeave").val(tDays);
+                                }
+                            }
+                            else {
+                                $("#divsel").hide();
+                                $("#divtxt").show();
+                                $("#NoOfLeave").val(tDays);
+                            }
+
+                        },
+                        failure: function (response) {
+                            $erroralert("Error!", "errror<br>" + response.responseText);
+                        },
+                        error: function (response) {
+                            $erroralert("Error!", "errror<br>" + response.responseText);
+                        }
+                    });
+                }
+
+            }
+
+            else if (parseInt($("#IsHoliDay").val()) == 1 && parseInt($("#IsWDay").val()) == 2) {
+
+                if (date2 >= date1) {
+
+                    jQuery.ajax({
+                        type: "GET",
+                        url: "/Leave/GetWorkingnHoliday",
+                        data: { sDate: $("#StartDate").val(), eDate: $("#EndDate").val(), isCondition: 2 },
+                        success: function (response) {
+
+                           // tDays = tDays - parseInt(response);
+                            tDays = parseInt(response);
+
+                          //  alert(tDays);
+                           // alert($("#leaveBalance").val());
+                            if (parseInt($("#leaveBalance").val()) < tDays) {
+                                $(":submit").attr("disabled", true);
+                                $("#NoOfLeave").val(0);
+                                if (parseInt($("#leaveBalance").val()) > 0) {
+                                    $erroralert("Transaction Failed!", "You can take maximum no of leave : " + $("#leaveBalance").val());
+                                }
+                                else {
+                                    $erroralert("Transaction Failed!", "You are not able to take leave as your balance is 0");
+                                }
+
+                                return;
+                            }
+                            if (parseInt(response) > 0 && tDays == 0) {
+                                $erroralert("Transaction Failed!", "You cannot apply due to the Holiday/ Weekend");
+
+                                return;
+                            }
+
+                            if (tDays <= 1) {
+                                var isHalfDay = $("#IsHalfDay").val();
+                                if (isHalfDay == "true") {
+                                    $("#divsel").show();
+                                    $("#divtxt").hide();
+                                    $("#NoOfLeave").val(tDays);
+                                }
+                                else {
+                                    $("#divsel").hide();
+                                    $("#divtxt").show();
+                                    $("#NoOfLeave").val(tDays);
+                                }
+                            }
+                            else {
+                                $("#divsel").hide();
+                                $("#divtxt").show();
+                                $("#NoOfLeave").val(tDays);
+                            }
+
+                        },
+                        failure: function (response) {
+                            $erroralert("Error!", "errror<br>" + response.responseText);
+                        },
+                        error: function (response) {
+                            $erroralert("Error!", "errror<br>" + response.responseText);
+                        }
+                    });
+                }
+
+            }
+            else {
+                alert(tDays);
+                alert($("#leaveBalance").val());
+                if (parseInt($("#leaveBalance").val()) < tDays) {
+                    $(":submit").attr("disabled", true);
+                    $("#NoOfLeave").val(0);
+                    $erroralert("Transaction Failed!", "You can take maximum no of leave : " + $("#MaxAvailLimit").val());
+              
+                    return;
+                }
+
+                if (tDays <= 1) {
+                    var isHalfDay = $("#IsHalfDay").val();
+                    // alert(isHalfDay);
+                    if (isHalfDay == "true") {
+                        $("#divsel").show();
+                        $("#divtxt").hide();
+                        $("#NoOfLeave").val(tDays);
+                    }
+                    else {
+                        $("#divsel").hide();
+                        $("#divtxt").show();
+                        $("#NoOfLeave").val(tDays);
+                    }
+                }
+                else {
+                    $("#divsel").hide();
+                    $("#divtxt").show();
+                    $("#NoOfLeave").val(tDays);
+                }
+            }
+          
+         
+
+          
+           
+
+        }
+     
+        function GetNoOfLeave(leave) {
+            $("#NoOfLeave").val(leave);
+           
+          
+        }
+        function PopulateLeaveBalance(leaveTypeId) {
+            //var objDDL = countryDDL
+            // jQuery("#CountryId").attr("disabled", true)
+            $("#NoOfLeave").val(0);
+            jQuery("#leaveBalance").val(0);
+            jQuery.ajax({
+                type: "GET",
+                url: "/Leave/GetLeaveBalance",
+                data: { leaveTypeId: leaveTypeId },
+                success: function (response) {
+                   
+                    if (response.displayMessage.trim() != "None") {
+                        $erroralert("Transaction Failed!", response.displayMessage);
+                        $(":submit").attr("disabled", true);
+                    }
+                    else {
+                        $(":submit").attr("disabled", false);
+                    }
+
+                   
+                    $("#IsBill").val(response.isBill);
+                    $("#NoOfBill").val(response.noOfLeave);
+                    $("#MinAvailLimit").val(response.minAvailLimit);             
+                    $("#leaveBalance").val(response.leaveBalance.toFixed(2));
+                     $("#IsHalfDay").val(response.isHalfDay);
+                    $("#MaxAvailLimit").val(response.maxAvailLimit);
+
+                    $("#IsBill").val(response.isBill);
+                    $("#NoOfBill").val(response.noOfLeave);
+
+                    $("#IsHoliDay").val(response.interveningHolidays);
+                    $("#IsWDay").val(response.weekOffType);
+                    $("#NoOfMonth").val(response.noOfMonth);
+                    
+
+                    if (response.isBill)
+                        $("#isbillupload").show();
+                    else
+                        $("#isbillupload").hide();
+
+
+
+
+
+
+                },
+                failure: function (response) {
+                    $erroralert("Error!", "errror<br>" + response.responseText);
+                },
+                error: function (response) {
+                    $erroralert("Error!", "errror<br>" + response.responseText);
+                }
+            });
+        }
+
+        function ViewRecord(leaveTypeId) {
+          //  alert(leaveTypeId);
+           // return;
+           
+            if (leaveTypeId > 0) {
+                jQuery("#myleavetbl").html("")
+              //  $("#Add").hide();
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/Leave/GetLeaveDetails",
+                    data: { LeaveTypeId: leaveTypeId },
+                    success: function (response) {
+
+                        var status = 'pending';
+                        var aprdate = '';
+                        var aprBy = '', remarks = '';
+                        if (response != null) {
+                            if (response.employeeLeaveList.length > 0) {
+                              //  $("#Add").show();
+                                for (var i = 0; i < response.employeeLeaveList.length; i++) {
+
+
+                                    if (response.employeeLeaveList[i].leaveStatus == 1)
+                                        status = 'Pending';
+                                    else if (response.employeeLeaveList[i].leaveStatus == 0)
+                                        status = 'Approved';
+                                    else if (response.employeeLeaveList[i].leaveStatus == 90)
+                                        status = 'Reversal';
+                                    else if (response.employeeLeaveList[i].leaveStatus == 98)
+                                        status = 'Rejected/Reversaled';
+
+                                    //   const offset = response.employeeLeaveList[i].startDate.getTimezoneOffset()
+                                    var sdate = response.employeeLeaveList[i].startDate.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                    sdate = sdate.slice(0, 10);
+                                    var edate = response.employeeLeaveList[i].endDate.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                    edate = edate.slice(0, 10);
+                                    var adate = response.employeeLeaveList[i].createdOn.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                    adate = adate.slice(0, 10);
+                                    if (response.employeeLeaveList[i].approvedOn != null) {
+                                        aprdate = response.employeeLeaveList[i].approvedOn.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                        aprdate = aprdate.slice(0, 10);
+                                    }
+                                    else
+                                        aprdate = '';
+
+                                    if (response.employeeLeaveList[i].approvedBy == null) {
+                                        aprBy = '';
+                                    }
+                                    else
+                                        aprBy = response.employeeLeaveList[i].approvedBy;
+
+                                    if (response.employeeLeaveList[i].reason == null) {
+                                        remarks = '';
+                                    }
+                                    else
+                                        remarks = response.employeeLeaveList[i].reason;
+
+
+                                    //  return response.employeeLeaveList[i].startDate.toISOString().split('T')[0]
+
+                                    $("#myleavetbl").append('<tr><td>' + response.employeeLeaveList[i].ticketId + '</td><td>' + response.employeeLeaveList[i].leaveTypeCode + '</td><td>' + sdate + '</td><td>' + edate + '</td><td>' + status + '</td>><td>' + adate + '</td><td>' + aprBy + '</td><td>' + aprdate + '</td></tr>');
+                                }
+                            }
+                        }
+                    },
+                    failure: function (response) {
+                        $erroralert("Error!", "errror<br>" + response.responseText);
+                    },
+                    error: function (response) {
+                        $erroralert("Error!", "errror<br>" + response.responseText);
+                    }
+
+                });
+            }
+        }
+
+        function ViewPendingRecord(leaveTypeId) {
+
+         
+            if (leaveTypeId > 0) {
+                jQuery("#myPendingleavetbl").html("")
+              //  $("#Add").hide();
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/Leave/GetEmployeePendingLeaveDetails",
+                    data: { LeaveTypeId: leaveTypeId },
+                    success: function (response) {
+
+                        var status = 'pending';
+                        var aprdate = '';
+                        var aprBy = '', remarks = '';
+                        if (response != null) {
+                            if (response.employeeLeaveList.length > 0) {
+                               // alert(response.employeeLeaveList.length);
+                               // $("#Add").show();
+                                for (var i = 0; i < response.employeeLeaveList.length; i++) {
+
+
+                                    if (response.employeeLeaveList[i].leaveStatus == 1 && response.employeeLeaveList[i].lavel1 == 0)
+                                        status = 'Pending';
+                                    else if (response.employeeLeaveList[i].lavel1 == 1 && response.employeeLeaveList[i].lavel2 == 0)
+                                        status = 'Partially Approved';
+                                    else if (response.employeeLeaveList[i].leaveStatus == 0)
+                                        status = 'Approved';
+                                    else if (response.employeeLeaveList[i].leaveStatus == 90)
+                                        status = 'Reversal';
+                                    else if (response.employeeLeaveList[i].leaveStatus == 98)
+                                        status = 'Rejected/Reversaled';
+
+                                    //   const offset = response.employeeLeaveList[i].startDate.getTimezoneOffset()
+                                    var sdate = response.employeeLeaveList[i].startDate.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                    sdate = sdate.slice(0, 10);
+                                    var edate = response.employeeLeaveList[i].endDate.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                    edate = edate.slice(0, 10);
+                                    var adate = response.employeeLeaveList[i].createdOn.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                    adate = adate.slice(0, 10);
+                                    if (response.employeeLeaveList[i].approvedOn != null) {
+                                        aprdate = response.employeeLeaveList[i].approvedOn.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                        aprdate = aprdate.slice(0, 10);
+                                    }
+                                    else
+                                        aprdate = '';
+
+                                    if (response.employeeLeaveList[i].approvedBy == null) {
+                                        aprBy = '';
+                                    }
+                                    else
+                                        aprBy = response.employeeLeaveList[i].approvedBy;
+
+                                    if (response.employeeLeaveList[i].reason == null) {
+                                        remarks = '';
+                                    }
+                                    else
+                                        remarks = response.employeeLeaveList[i].reason;
+
+
+                                    //  return response.employeeLeaveList[i].startDate.toISOString().split('T')[0]
+
+                                    $("#myPendingleavetbl").append('<tr><td>' + response.employeeLeaveList[i].ticketId + '</td><td>' + response.employeeLeaveList[i].leaveTypeCode + '</td><td>' + sdate + '</td><td>' + edate + '</td><td>' + status + '</td><td>' + adate + '</td><td>' + aprBy + '</td><td>' + aprdate + '</td></tr>');
+                                }
+                            }
+                        }
+                    },
+                    failure: function (response) {
+                        $erroralert("Error!", "errror<br>" + response.responseText);
+                    },
+                    error: function (response) {
+                        $erroralert("Error!", "errror<br>" + response.responseText);
+                    }
+
+                });
+            }
+        }
+
+        function ApplyLeave(leaveTypeId) {
+          
+            jQuery("#Apply").show();
+            $("#LeaveTypeId").val(leaveTypeId);
+            $("#LeaveTypeId").change();
+           
+        }
+        function CancelLeave() {
+            jQuery("#Apply").hide();
+        }
+        
+        function UpdateCaption() {
+
+            if (@Model.EmployeeRevarsalList.Count> 0) {
+                for (iCtr = 1; iCtr <= @Model.EmployeeRevarsalList.Count; iCtr = iCtr + 1) {
+
+                    isChecked = jQuery("#LeaveId_" + iCtr).is(":checked")
+                    if (isChecked) {
+                        lStatus = jQuery("#LeaveStatus_" + iCtr).val();
+                    }
+                }
+            }
+            if (lStatus == 1) {
+                jQuery("#btncreate").hide();
+                jQuery("#btncancel").show();
+            }
+            else {
+                jQuery("#btncreate").show();
+                jQuery("#btncancel").hide();
+            }
+
+        }
+        function ReversalSelected() {
+
+            //  alert('Regularize')
+
+            // return;
+            var rowData = {};
+            var formData = {};
+            var isData = false;
+            var dataCollection = new Array();
+            var results = new Array();
+            //var formData = new FormData();
+            var iCtr = 0;
+
+            var sValidMsg = "";
+            // var isData = true;
+
+            if (@Model.EmployeeRevarsalList.Count> 0) {
+                for (iCtr = 1; iCtr <= @Model.EmployeeRevarsalList.Count; iCtr = iCtr + 1) {
+
+                    isChecked = jQuery("#LeaveId_" + iCtr).is(":checked")
+                    if (isChecked) {
+                        rowData.LeaveIds = rowData.LeaveIds != undefined ? rowData.LeaveIds + "," + jQuery("#LeaveId_" + iCtr).val() : jQuery("#LeaveId_" + iCtr).val();
+                        isData = true;
+                    }
+                }
+            }
+
+            if (isData) {
+                rowData.ActionRemarks = jQuery("#txtRemarks").val();
+                rowData.ActionType = "R";
+                dataCollection.push(rowData);
+            }
+            else
+              $erroralert("Validation", "Please select leave to reversal");
+
+
+
+
+
+
+            if (dataCollection.length > 0) {
+
+                if (jQuery("#txtRemarks").val() == '') {
+                    $erroralert("Validation", "Please insert the remarks");                   
+                    return;
+                }
+
+                BlockUI();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/Leave/LeaveReversalProcessing",
+                    data: { userAction: rowData },
+                    success: function (data) {
+
+                        UnblockUI();
+                        $successalert("", "Transaction Successful!");
+                      //  ShowServerMessage(data);
+                        //if (data.toUpperCase() == "SUCCESS") {
+                            window.location.href = '/Leave/LeaveApp'
+                       // }
+
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        $erroralert("Error!", "errror<br>" + result.responseText);
+                        UnblockUI();
+                    }
+                });
+
+            }
+
+        }
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                if (sMsg.toUpperCase() == "SUCCESS") {
+                    sMsg = "Ticket Created Successfully";
+                    jQuery("#successDiv").show();
+                    jQuery("#successPara").html(sMsg);
+
+                    // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                }
+                else {
+                    jQuery("#errorDiv").show();
+                    jQuery("#errorPara").html(sMsg);
+                }
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+
+        function RediretToView() {
+            window.location.href = '/Leave/LeaveApp'
+        }
+
+        function ApplyCompoff() {
+
+            //  alert('Regularize')
+
+            // return;
+            var rowData = {};
+            var formData = {};
+            var isData = false;
+            var dataCollection = new Array();
+            var results = new Array();
+            //var formData = new FormData();
+            var iCtr = 0;
+
+            var sValidMsg = "";
+            // var isData = true;
+
+            // if (@Model.EmployeeRevarsalList.Count> 0) {
+            //     for (iCtr = 1; iCtr <= @Model.EmployeeRevarsalList.Count; iCtr = iCtr + 1) {
+
+            //         isChecked = jQuery("#LeaveId_" + iCtr).is(":checked")
+            //         if (isChecked) {
+            //             rowData.LeaveIds = rowData.LeaveIds != undefined ? rowData.LeaveIds + "," + jQuery("#LeaveId_" + iCtr).val() : jQuery("#LeaveId_" + iCtr).val();
+            //             isData = true;
+            //         }
+            //     }
+            // }
+
+            // if (isData) {
+            //     rowData.ActionRemarks = jQuery("#txtRemarks").val();
+            //     dataCollection.push(rowData);
+            // }
+            // else
+            //     $erroralert("Validation", "Please select leave to reversal");
+            // if (dataCollection.length > 0) {
+
+            //     if (jQuery("#txtRemarks").val() == '') {
+            //         ShowServerMessage("Please insert the remarks");
+            //         return;
+            //     }
+
+            //     BlockUI();
+            //     jQuery.ajax({
+            //         type: "POST",
+            //         url: "/Leave/LeaveReversalProcessing",
+            //         data: { userAction: rowData },
+            //         success: function (data) {
+
+            //             UnblockUI();
+            //             $successalert("Leave", data);
+            //             //  ShowServerMessage(data);
+            //             if (data.toUpperCase() == "SUCCESS") {
+            //                 jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+            //             }
+
+            //         },
+            //         error: function (result) {
+            //             var x = 1;
+            //             $erroralert("Error!", "errror<br>" + result.responseText);
+            //             UnblockUI();
+            //         }
+            //     });
+
+            // }
+
+        }
+    </script>
+
+}

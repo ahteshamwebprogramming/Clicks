@@ -1,0 +1,32 @@
+﻿@model SimpliHR.Infrastructure.Models.ProjectTracker.PTProjectCategoryMasterViewModel
+<div class="row" style="margin-top:25px;">
+    <div class="col-md-12">
+        <div class="table-responsive text-nowrap">
+            <table class="datatables-ajax table List">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        if (Model != null && Model.projectCategoryList != null)
+                        {
+                            foreach (var item in Model.projectCategoryList)
+                            {
+                                <tr>
+                                    <td>@item.CategoryName</td>
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="#" onclick="AddPartialView('@item.encCategoryID')"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="#" onclick="deleteRecord('@item.encCategoryID')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

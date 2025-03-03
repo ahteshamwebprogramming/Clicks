@@ -1,0 +1,54 @@
+﻿@model SimpliHR.Infrastructure.Models.ClientManagement.ClientSettingDTO
+
+@using SimpliHR.Infrastructure.Helper
+
+@{
+    if (Model.ColorTheme == null)
+    {
+        if (Model.ClientId == -1)
+        {
+            <link rel="stylesheet" href="../../assets/vendor/css/rtl/theme-default.css" />
+        }
+    }
+    else
+    {
+        int colorTheme;
+        if (int.TryParse(Model.ColorTheme, out colorTheme))
+        {
+            if (colorTheme == (int)ColorThemes.Blue)
+            {
+                <link rel="stylesheet" href="../../assets/vendor/css/rtl/theme-blue.css" />
+                <link rel="stylesheet" href="../../assets/vendor/css/rtl/theme-client-blue.css" />
+            }
+            else if (colorTheme == (int)ColorThemes.Green)
+            {
+                <link rel="stylesheet" href="../../assets/vendor/css/rtl/theme-green.css" />
+                <link rel="stylesheet" href="../../assets/vendor/css/rtl/theme-client-green.css" />
+            }
+            else if (colorTheme == (int)ColorThemes.Orange)
+            {
+                <link rel="stylesheet" href="../../assets/vendor/css/rtl/theme-orange.css" />
+                <link rel="stylesheet" href="../../assets/vendor/css/rtl/theme-client-orange.css" />
+            }
+            else if (colorTheme == (int)ColorThemes.Pink)
+            {
+                <link rel="stylesheet" href="../../assets/vendor/css/rtl/theme-pink.css" />
+                <link rel="stylesheet" href="../../assets/vendor/css/rtl/theme-client-pink.css" />
+            }
+            else if (colorTheme == (int)ColorThemes.Red)
+            {
+                <link rel="stylesheet" href="../../assets/vendor/css/rtl/theme-raspberry.css" />
+            }
+            else
+            {
+                <link rel="stylesheet" href="../../assets/vendor/css/rtl/theme-default.css" />
+            }
+        }
+        else
+        {
+            <link rel="stylesheet" href="../../assets/vendor/css/rtl/theme-default.css" />
+        }
+    }
+}
+
+

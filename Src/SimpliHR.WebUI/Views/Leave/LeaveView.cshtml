@@ -1,0 +1,180 @@
+﻿@model SimpliHR.Infrastructure.Models.Leave.EmployeeLeaveDetailsDTO
+@{
+    ViewData["Title"] = "LeaveView";
+    Model.DisplayMessage += "";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Leave /</span> View
+    </h4>
+    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Apply Leave" onclick="javascript:window.location.href='/Leave/LeaveApply/'" style="float:right" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table table-bordered List" id="List">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Leave Type</th>
+                            <th>Opening Balance</th>
+                            <th>Availed</th>
+                            <th>Applied</th>
+                            <th>Close Balance</th>
+                            <th>View</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.EmployeeLeaveSummary != null)
+                            @foreach (var item in Model.EmployeeLeaveSummary)
+                            {
+                                <tr>
+                                    <td><input type="hidden" id="hdn" name="AssignmentId" class="form-control" value=@item.LeaveTypeId></td>
+                                    <td>@(item.LeaveTypeCode.Trim() == "EL" ? "Earned/Annual Leave" : item.LeaveTypeCode.Trim() == "SL" ? "Sick Leave" : item.LeaveTypeCode.Trim() == "ML" ? "Maternity leave" : item.LeaveTypeCode.Trim() == "CL" ? "Casual Leave" : item.LeaveTypeCode.Trim() == "PL" ? "Paternity Leave" : "")</td>
+                                    <td>@item.OpeningBalance</td>
+                                    <td>@item.TotalAvailed</td>
+                                    <td>@item.TotalApplied</td>
+                                    <td>@item.LeaveBalance</td>
+                                    <td>
+                                        <button class="btn btn-primary" onclick="ViewRecord(@item.LeaveTypeId)"> View</button>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+
+        <div class="card-datatable table-responsive text-nowrap">
+            <table class="datatables-ajax table table-bordered" id="List1">
+                <thead>
+                    <tr>
+                        <th>Ticket Id</th>
+                        <th>Type</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                        <th>Applied On</th>
+                        <th>Appr/Rej By</th>
+                        <th>Appr/Rej On</th>
+                    </tr>
+                </thead>
+                <tbody id="myleavetbl">
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+            $("#List1").dataTable();
+
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                alert("@Model.DisplayMessage")
+            }
+        });
+
+
+        //function ListView() {
+        //    $("#Add").hide();
+        //    $("#List").show();
+        //}
+
+        //function AddView() {
+        //    $("#Add").show();
+        //    $("#List").hide();
+
+        //}
+
+
+
+        function ViewRecord(leaveTypeId) {
+            if (leaveTypeId > 0) {
+                jQuery("#myleavetbl").html("")
+                $("#Add").hide();
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/Leave/GetLeaveDetails",
+                    data: { LeaveTypeId: leaveTypeId },
+                    success: function (response) {
+
+                        var status = 'pending';
+                        var aprdate = '';
+                        var aprBy = '',remarks='';
+                        if (response != null) {
+                            if (response.employeeLeaveList.length > 0) {
+                                $("#Add").show();
+                                for (var i = 0; i < response.employeeLeaveList.length; i++) {
+
+
+                                    if (response.employeeLeaveList[i].leaveStatus == 1)
+                                        status = 'Pending';
+                                    else if (response.employeeLeaveList[i].leaveStatus == 0)
+                                        status = 'Approved';
+                                    else if (response.employeeLeaveList[i].leaveStatus == 99)
+                                        status = 'Rejected';
+                                    else if (response.employeeLeaveList[i].leaveStatus == 98)
+                                        status = 'Reversal';
+
+                                    //   const offset = response.employeeLeaveList[i].startDate.getTimezoneOffset()
+                                    var sdate = response.employeeLeaveList[i].startDate.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                    sdate = sdate.slice(0, 10);
+                                    var edate = response.employeeLeaveList[i].endDate.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                    edate = edate.slice(0, 10);
+                                    var adate = response.employeeLeaveList[i].createdOn.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                    adate = adate.slice(0, 10);
+                                    if (response.employeeLeaveList[i].approvedOn != null) {
+                                        aprdate = response.employeeLeaveList[i].approvedOn.replace(/^(\d+)-(\d+)-(\d+)(.*):\d+$/, '$3/$2/$1$4');
+                                        aprdate = aprdate.slice(0, 10);
+                                    }
+                                    else
+                                        aprdate='';
+
+                                    if (response.employeeLeaveList[i].approvedBy == null) {
+                                        aprBy = '';
+                                    }
+                                    else
+                                        aprBy = response.employeeLeaveList[i].approvedBy;
+
+                                    if (response.employeeLeaveList[i].reason == null) {
+                                        remarks = '';
+                                    }
+                                    else
+                                        remarks = response.employeeLeaveList[i].reason;
+                                    
+
+                                    //  return response.employeeLeaveList[i].startDate.toISOString().split('T')[0]
+
+                                    $("#myleavetbl").append('<tr><td>' + response.employeeLeaveList[i].ticketId + '</td><td>' + response.employeeLeaveList[i].leaveTypeCode + '</td><td>' + sdate + '</td><td>' + edate + '</td><td>' + status + '</td><td>' + remarks + '</td><td>' + adate + '</td><td>' + aprBy + '</td><td>' + aprdate + '</td></tr>');
+                                }
+                            }
+                        }
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+
+                });
+            }
+        }
+    </script>
+    }
+

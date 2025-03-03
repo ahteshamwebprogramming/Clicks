@@ -1,0 +1,755 @@
+﻿@model SimpliHR.WebUI.Modals.ITDeclarations.ITDeclarationsViewModel
+@{
+    ViewData["Title"] = "ITDeclarations";
+}
+<style>
+    .input-group .select2-container {
+        width: 50% !important;
+    }
+
+    span:has(#select2-inputGroupSelect04-container) {
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+    }
+
+    span:has(#select2-inputGroupSelect03-container) {
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+    }
+
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+
+    .error_msg {
+        text-align: center;
+        color: #f00
+    }
+
+    .error {
+        color: #f00
+    }
+
+    input.error {
+        border: 1px solid red;
+    }
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll/</span> IT Declarations Form</h4>
+    <div class="row">
+
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="card">
+                <div class="card-body">
+                    <div class="alert alert-secondary mb-3"><i class="fa-solid fa-circle-info"></i> Enter your planned investment declarations here and choose the desired regime in the following page.</div>
+                    <div class="table-responsive text-nowrap">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="75%">PARTICULARS</th>
+                                    <th width="25%">DECLARED AMOUNT</th>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="border-0" style="padding: 0;">
+                                        <table class="table table-bordered pb-2" id="particulars">
+                                            <tr class="bg-label-secondary">
+                                                <td width="90%">Is staying in a rented Premises?</td>
+                                                <td width="10%">
+                                                    @{
+                                                        if (Model != null)
+                                                        {
+                                                            if (Model.ItDeclarationHouseRentDetailList != null)
+                                                            {
+                                                                if (Model.ItDeclarationHouseRentDetailList.Count > 0)
+                                                                {
+                                                                    <label class="switch">
+                                                                        <span class="switch-label">Yes</span>
+                                                                        <input type="checkbox" checked="checked" class="switch-input" name="IsStayingInRentedPremises">
+                                                                        <span class="switch-toggle-slider">
+                                                                            <span class="switch-on"></span>
+                                                                            <span class="switch-off"></span>
+                                                                        </span>
+                                                                    </label>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <label class="switch">
+                                                                        <span class="switch-label">No</span>
+                                                                        <input type="checkbox" class="switch-input" name="IsStayingInRentedPremises">
+                                                                        <span class="switch-toggle-slider">
+                                                                            <span class="switch-on"></span>
+                                                                            <span class="switch-off"></span>
+                                                                        </span>
+                                                                    </label>
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                <label class="switch">
+                                                                    <span class="switch-label">No</span>
+                                                                    <input type="checkbox" class="switch-input" name="IsStayingInRentedPremises">
+                                                                    <span class="switch-toggle-slider">
+                                                                        <span class="switch-on"></span>
+                                                                        <span class="switch-off"></span>
+                                                                    </span>
+                                                                </label>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <label class="switch">
+                                                                <span class="switch-label">No</span>
+                                                                <input type="checkbox" class="switch-input" name="IsStayingInRentedPremises">
+                                                                <span class="switch-toggle-slider">
+                                                                    <span class="switch-on"></span>
+                                                                    <span class="switch-off"></span>
+                                                                </span>
+                                                            </label>
+                                                        }
+                                                    }
+
+                                                </td>
+                                            </tr>
+                                            <!-- colapsable tr start-->
+                                            <tr>
+                                                <td colspan="2">
+                                                    <div name="RentedPremisesDetailForm" style="@(Model==null ? "display:none" : Model.ItDeclarationHouseRentDetailList==null ? "display:none" : Model.ItDeclarationHouseRentDetailList.Count>0 ? "" : "display:none")">
+                                                        <div name="HouseRentDetailsFormCollection">
+                                                            @{
+                                                                SimpliHR.Infrastructure.Models.ITDeclaration.ItDeclarationHouseRentDetailDTO itDeclarationHouseRentDetailDTO = new SimpliHR.Infrastructure.Models.ITDeclaration.ItDeclarationHouseRentDetailDTO();
+                                                                if (Model != null)
+                                                                {
+                                                                    itDeclarationHouseRentDetailDTO.Regime = Model.Regime;
+                                                                    itDeclarationHouseRentDetailDTO.FY = Model.FY;
+                                                                    if (Model.ItDeclarationHouseRentDetailList != null)
+                                                                    {
+                                                                        if (Model.ItDeclarationHouseRentDetailList.Count > 0)
+                                                                        {
+                                                                            foreach (var item in Model.ItDeclarationHouseRentDetailList)
+                                                                            {
+                                                                                item.Regime = Model.Regime;
+                                                                                item.FY = Model.FY;
+                                                                                <div name="HouseRentDetailsForm1" style="padding: 15px;border: 1px solid #f9e8e8;margin-top:5px;">
+                                                                                    @Html.Partial("_ITDeclaration/_HouseRentDetailsForm.cshtml",item)
+                                                                                </div>
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <div name="HouseRentDetailsForm1" style="padding: 15px;border: 1px solid #f9e8e8;margin-top:5px;">
+                                                                                @Html.Partial("_ITDeclaration/_HouseRentDetailsForm.cshtml",itDeclarationHouseRentDetailDTO)
+                                                                            </div>
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <div name="HouseRentDetailsForm1" style="padding: 15px;border: 1px solid #f9e8e8;margin-top:5px;">
+                                                                            @Html.Partial("_ITDeclaration/_HouseRentDetailsForm.cshtml",itDeclarationHouseRentDetailDTO)
+                                                                        </div>
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    <div name="HouseRentDetailsForm1" style="padding: 15px;border: 1px solid #f9e8e8;margin-top:5px;">
+                                                                        @Html.Partial("_ITDeclaration/_HouseRentDetailsForm.cshtml",itDeclarationHouseRentDetailDTO)
+                                                                    </div>
+                                                                }
+                                                            }
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-9 mb-3"><span onclick="addHouseRentDetailDiv()"><i class="fa-solid fa-circle-plus"></i><a href="#">Add More Rented Premises</a></span></div>
+                                                        </div>
+                                                    </div>
+
+                                                </td>
+                                            </tr>
+                                            <!-- colapsable tr Ends-->
+
+                                            <tr class=" border-bottom bg-label-secondary">
+                                                <td width="80%">Is the employee repaying the home loan?</td>
+                                                <td width="10%">
+
+                                                    @{
+                                                        if (Model != null)
+                                                        {
+                                                            if (Model.ItDeclarationHomeLoanDetailDTO != null)
+                                                            {
+
+                                                                <label class="switch">
+                                                                    <span class="switch-label">Yes</span>
+                                                                    <input type="checkbox" checked class="switch-input" name="IsEmployeeRepayingHomeLone">
+                                                                    <span class="switch-toggle-slider">
+                                                                        <span class="switch-on"></span>
+                                                                        <span class="switch-off"></span>
+                                                                    </span>
+                                                                </label>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <label class="switch">
+                                                                    <span class="switch-label">No</span>
+                                                                    <input type="checkbox" class="switch-input" name="IsEmployeeRepayingHomeLone">
+                                                                    <span class="switch-toggle-slider">
+                                                                        <span class="switch-on"></span>
+                                                                        <span class="switch-off"></span>
+                                                                    </span>
+                                                                </label>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <label class="switch">
+                                                                <span class="switch-label">No</span>
+                                                                <input type="checkbox" class="switch-input" name="IsEmployeeRepayingHomeLone">
+                                                                <span class="switch-toggle-slider">
+                                                                    <span class="switch-on"></span>
+                                                                    <span class="switch-off"></span>
+                                                                </span>
+                                                            </label>
+                                                        }
+                                                    }
+
+
+                                                </td>
+                                            </tr>
+                                            <!-- colapsable tr start-->
+                                            <tr class=" border-bottom">
+                                                <td colspan="2">
+                                                    <div name="EmployeeRepayingHomeLoneDetailForm" style="@(Model==null ? "display:none" : Model.ItDeclarationHomeLoanDetailDTO==null ? "display:none" : Model.ItDeclarationHomeLoanDetailDTO.ItDeclarationHomeLoanDetailsId > 0 ? "" : "display:none")">
+                                                        <div class="row">
+                                                            <div class="col-md-9 mb-3">
+                                                                <label class="form-label" for="">Principal Paid on Home Loan</label>
+                                                                <input type="hidden" name="ItDeclarationHomeLoanDetailsId" value="@(Model == null ? "" : Model.ItDeclarationHomeLoanDetailDTO == null ? "" : Model.ItDeclarationHomeLoanDetailDTO.ItDeclarationHomeLoanDetailsId)" />
+                                                            </div>
+                                                            <div class="col-md-3 mb-3">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text" id="basic-addon11">₹</span>
+                                                                    <input type="text" class="form-control mr-2" name="PrincipalPaidOnHomeLoan" value="@(Model==null ? "" : Model.ItDeclarationHomeLoanDetailDTO==null ? "" : Model.ItDeclarationHomeLoanDetailDTO.PrincipalPaidOnHomeLoan)" id="PrincipalPaidOnHomeLoan" placeholder="" aria-label="" aria-describedby="">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-9 mb-3">
+                                                                <label class="form-label" for="">Interest Paid on Home Loan</label>
+                                                            </div>
+                                                            <div class="col-md-3 mb-3">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text" id="basic-addon11">₹</span>
+                                                                    <input type="text" class="form-control mr-2" placeholder="" value="@(Model == null ? "" : Model.ItDeclarationHomeLoanDetailDTO == null ? "" : Model.ItDeclarationHomeLoanDetailDTO.InterestPaidOnHomeLoan)" name="InterestPaidOnHomeLoan" aria-label="" aria-describedby="">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-9 mb-3">
+                                                                <label class="form-label" for="">Name of the Lender</label>
+                                                            </div>
+                                                            <div class="col-md-3 mb-3">
+                                                                <div class="input-group">
+                                                                    <input type="text" name="NameOfTheLender" value="@(Model == null ? "" : Model.ItDeclarationHomeLoanDetailDTO == null ? "" : Model.ItDeclarationHomeLoanDetailDTO.NameOfTheLender)" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-9 mb-3">
+                                                                <label class="form-label" for="">Lender PAN</label>
+                                                            </div>
+                                                            <div class="col-md-3 mb-3">
+                                                                <div class="input-group">
+                                                                    <input type="text" class="form-control mr-2" value="@(Model == null ? "" : Model.ItDeclarationHomeLoanDetailDTO == null ? "" : Model.ItDeclarationHomeLoanDetailDTO.LenderPancard)" name="LenderPancard" placeholder="" aria-label="" aria-describedby="">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <!-- colapsable tr ends-->
+
+                                            <tr class=" border-bottom bg-label-secondary">
+                                                <td width="90%">Is the employee receiving rental income from let out property?</td>
+                                                <td width="10%">
+
+                                                    @{
+                                                        if (Model != null)
+                                                        {
+                                                            if (Model.ItDeclarationLentOutPropertyDetailList != null)
+                                                            {
+                                                                if (Model.ItDeclarationLentOutPropertyDetailList.Count > 0)
+                                                                {
+                                                                    <label class="switch">
+                                                                        <span class="switch-label">Yes</span>
+                                                                        <input type="checkbox" checked class="switch-input" name="IsLetOutProperty">
+                                                                        <span class="switch-toggle-slider">
+                                                                            <span class="switch-on"></span>
+                                                                            <span class="switch-off"></span>
+                                                                        </span>
+                                                                    </label>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <label class="switch">
+                                                                        <span class="switch-label">No</span>
+                                                                        <input type="checkbox" class="switch-input" name="IsLetOutProperty">
+                                                                        <span class="switch-toggle-slider">
+                                                                            <span class="switch-on"></span>
+                                                                            <span class="switch-off"></span>
+                                                                        </span>
+                                                                    </label>
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                <label class="switch">
+                                                                    <span class="switch-label">No</span>
+                                                                    <input type="checkbox" class="switch-input" name="IsLetOutProperty">
+                                                                    <span class="switch-toggle-slider">
+                                                                        <span class="switch-on"></span>
+                                                                        <span class="switch-off"></span>
+                                                                    </span>
+                                                                </label>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <label class="switch">
+                                                                <span class="switch-label">No</span>
+                                                                <input type="checkbox" class="switch-input" name="IsLetOutProperty">
+                                                                <span class="switch-toggle-slider">
+                                                                    <span class="switch-on"></span>
+                                                                    <span class="switch-off"></span>
+                                                                </span>
+                                                            </label>
+                                                        }
+                                                    }
+                                                </td>
+                                            </tr>
+                                            <!-- colapsable tr start-->
+                                            <tr class="border-bottom mb-3">
+                                                <td colspan="2">
+                                                    <div name="LetOutPropertyDetailForm" style="@(Model==null ? "display:none" : Model.ItDeclarationLentOutPropertyDetailList==null ? "display:none" : Model.ItDeclarationLentOutPropertyDetailList.Count>0 ? "" : "display:none")">
+                                                        <div name="LetOutPropertyDetailCollection">
+                                                            @{
+                                                                SimpliHR.Infrastructure.Models.ITDeclaration.ItDeclarationLentOutPropertyDetailDTO itDeclarationLentOutPropertyDetailDTO = new SimpliHR.Infrastructure.Models.ITDeclaration.ItDeclarationLentOutPropertyDetailDTO();
+                                                                if (Model != null)
+                                                                {
+                                                                    if (Model.ItDeclarationLentOutPropertyDetailList != null)
+                                                                    {
+                                                                        if (Model.ItDeclarationLentOutPropertyDetailList.Count > 0)
+                                                                        {
+                                                                            foreach (var item in Model.ItDeclarationLentOutPropertyDetailList)
+                                                                            {
+                                                                                <div name="LetOutPropertyDetailForm1" style="padding: 15px;border: 1px solid #f9e8e8;margin-top:5px;">
+                                                                                    @Html.Partial("_ITDeclaration/_LentOutPropertyDetailsForm.cshtml",item)
+                                                                                </div>
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <div name="LetOutPropertyDetailForm1" style="padding: 15px;border: 1px solid #f9e8e8;margin-top:5px;">
+                                                                                @Html.Partial("_ITDeclaration/_LentOutPropertyDetailsForm.cshtml",itDeclarationLentOutPropertyDetailDTO)
+                                                                            </div>
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <div name="LetOutPropertyDetailForm1" style="padding: 15px;border: 1px solid #f9e8e8;margin-top:5px;">
+                                                                            @Html.Partial("_ITDeclaration/_LentOutPropertyDetailsForm.cshtml",itDeclarationLentOutPropertyDetailDTO)
+                                                                        </div>
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    <div name="LetOutPropertyDetailForm1" style="padding: 15px;border: 1px solid #f9e8e8;margin-top:5px;">
+                                                                        @Html.Partial("_ITDeclaration/_LentOutPropertyDetailsForm.cshtml",itDeclarationLentOutPropertyDetailDTO)
+                                                                    </div>
+                                                                }
+                                                            }
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-9 mb-3"><span onclick="addLetOutPropertyDetailDiv()"><i class="fa-solid fa-circle-plus"></i><a href="#">Add More Rented Income</a></span></div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <!-- colapsable tr ends-->
+                                        </table>
+                                    </td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-md mb-4 mb-md-0">
+                            <div class="accordion mt-3" id="accordionExample">
+                                <div class="accordion-item mb-3">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button type="button" class="accordion-button collapsed bg-label-secondary" data-bs-toggle="collapse" data-bs-target="#accordionOne" aria-expanded="true" aria-controls="accordionOne" style="border-radius: 0!important">Other Sources of Income</button>
+                                    </h2>
+
+                                    <div id="accordionOne"
+                                         class="accordion-collapse collapse pt-3"
+                                         data-bs-parent="#accordionExample">
+                                        <div class="accordion-body" name="ItDeclarationOtherSourceOfIncomeDTO">
+                                            <div class="row">
+                                                <div class="col-md-9 mb-3">
+                                                    <label class="form-label" for="username">Income from other sources</label>
+                                                    <input type="hidden" value="@(Model == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO.ItDeclarationOtherSourceOfIncomeId)" name="ItDeclarationOtherSourceOfIncomeId" />
+                                                </div>
+                                                <div class="col-md-3 mb-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                                        <input type="text" class="form-control mr-2" value="@(Model == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO.IncomeFromOtherSource)" placeholder="" aria-label="" aria-describedby="" name="IncomeFromOtherSource">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-9 mb-3">
+                                                    <label class="form-label" for="username">Interest Earned from Savings Deposit</label>
+                                                </div>
+                                                <div class="col-md-3 mb-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                                        <input type="text" class="form-control mr-2" placeholder="" value="@(Model == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO.InterestEarnedFromSavingsDeposit)" aria-label="" aria-describedby="" name="InterestEarnedFromSavingsDeposit">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-9 mb-3">
+                                                    <label class="form-label" for="username">Interest Earned from Fixed Deposit</label>
+                                                </div>
+                                                <div class="col-md-3 mb-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                                        <input type="text" class="form-control mr-2" placeholder="" value="@(Model == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO.InterestEarnedFromFixedDeposit)" aria-label="" aria-describedby="" name="InterestEarnedFromFixedDeposit">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-9 mb-3">
+                                                    <label class="form-label" for="username">Interest Earned from National Savings Certificates</label>
+                                                </div>
+                                                <div class="col-md-3 mb-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                                        <input type="text" class="form-control mr-2" placeholder="" value="@(Model == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO == null ? "" : Model.ItDeclarationOtherSourceOfIncomeDTO.InterestEarnedFromNationalSavingsCertificates)" aria-label="" aria-describedby="" name="InterestEarnedFromNationalSavingsCertificates">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item mb-3">
+                                    <h2 class="accordion-header" id="headingTwo">
+                                        <button type="button"
+                                                class="accordion-button collapsed bg-label-secondary"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#accordionTwo"
+                                                aria-expanded="false"
+                                                aria-controls="accordionTwo"
+                                                style="border-radius: 0!important">
+                                            80C Investments
+                                        </button>
+                                    </h2>
+                                    <div id="accordionTwo"
+                                         class="accordion-collapse collapse pt-3"
+                                         aria-labelledby="headingTwo"
+                                         data-bs-parent="#accordionExample" name="Accordian80CInvestments">
+                                        <div class="accordion-body">
+                                            <div class="mb-3">Note: This section contains the list of investments including LIC schemes, mutual funds and PPF. The maximum limit for this section is ₹1,50,000.00</div>
+
+
+                                            <div name="80CInvestmentsFormCollection">
+                                                @{
+                                                    SimpliHR.Infrastructure.Models.ITDeclaration.ItDeclaration80CinvestmentDTO itDeclaration80CinvestmentDTO = new SimpliHR.Infrastructure.Models.ITDeclaration.ItDeclaration80CinvestmentDTO();
+
+                                                    if (Model != null)
+                                                    {
+                                                        if (Model.Investment80CmasterDTOs != null)
+                                                        {
+                                                            itDeclaration80CinvestmentDTO.Investment80CmasterDTOs = Model.Investment80CmasterDTOs;
+                                                        }
+
+                                                        if (Model.ItDeclaration80CinvestmentList != null)
+                                                        {
+                                                            if (Model.ItDeclaration80CinvestmentList.Count > 0)
+                                                            {
+                                                                foreach (var item in Model.ItDeclaration80CinvestmentList)
+                                                                {
+                                                                    item.Investment80CmasterDTOs = Model.Investment80CmasterDTOs;
+                                                                    <div class="row" name="80CInvestmentsForm1">
+                                                                        @Html.Partial("_ITDeclaration/_Investments80C.cshtml",item)
+                                                                    </div>
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="row" name="80CInvestmentsForm1">
+                                                                    @Html.Partial("_ITDeclaration/_Investments80C.cshtml",itDeclaration80CinvestmentDTO)
+                                                                </div>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="row" name="80CInvestmentsForm1">
+                                                                @Html.Partial("_ITDeclaration/_Investments80C.cshtml",itDeclaration80CinvestmentDTO)
+                                                            </div>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="row" name="80CInvestmentsForm1">
+                                                            @Html.Partial("_ITDeclaration/_Investments80C.cshtml",itDeclaration80CinvestmentDTO)
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                            <div class="col-md-9 mb-3"><span onclick="add80CInvestmentsForm()"><i class="fa-solid fa-circle-plus"></i> <a href="#">Add More Investment</a></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item mb-3">
+                                    <h2 class="accordion-header" id="headingThree">
+                                        <button type="button"
+                                                class="accordion-button collapsed bg-label-secondary"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#accordionThree"
+                                                aria-expanded="false"
+                                                aria-controls="accordionThree">
+                                            80D Exemptions
+                                        </button>
+                                    </h2>
+                                    <div id="accordionThree"
+                                         class="accordion-collapse collapse pt-3"
+                                         aria-labelledby="headingThree"
+                                         data-bs-parent="#accordionExample" name="Accordian80DInvestments">
+                                        <div class="accordion-body">
+                                            <div class="mb-3">Note: This section contains Mediclaim policies for yourself, your children, spouse and parents. The maximum limit for this section is ₹1,00,000.00</div>
+                                            <div name="80DInvestmentsFormCollection">
+                                                @{
+                                                    SimpliHR.Infrastructure.Models.ITDeclaration.ItDeclaration80DexemptionDTO itDeclaration80DexemptionDTO = new SimpliHR.Infrastructure.Models.ITDeclaration.ItDeclaration80DexemptionDTO();
+                                                    if (Model != null)
+                                                    {
+                                                        if (Model.exemptions80DDTOs != null)
+                                                        {
+                                                            itDeclaration80DexemptionDTO.exemptions80DDTOs = Model.exemptions80DDTOs;
+                                                        }
+                                                        if (Model.ItDeclaration80DexemptionList != null)
+                                                        {
+                                                            if (Model.ItDeclaration80DexemptionList.Count > 0)
+                                                            {
+                                                                foreach (var item in Model.ItDeclaration80DexemptionList)
+                                                                {
+                                                                    item.exemptions80DDTOs = Model.exemptions80DDTOs;
+                                                                    <div class="row" name="80DInvestmentsForm1">
+                                                                        @Html.Partial("_ITDeclaration/_Exemptions80D.cshtml",item)
+                                                                    </div>
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="row" name="80DInvestmentsForm1">
+                                                                    @Html.Partial("_ITDeclaration/_Exemptions80D.cshtml",itDeclaration80DexemptionDTO)
+                                                                </div>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="row" name="80DInvestmentsForm1">
+                                                                @Html.Partial("_ITDeclaration/_Exemptions80D.cshtml",itDeclaration80DexemptionDTO)
+                                                            </div>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="row" name="80DInvestmentsForm1">
+                                                            @Html.Partial("_ITDeclaration/_Exemptions80D.cshtml",itDeclaration80DexemptionDTO)
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                            <div class="col-md-9 mb-3"><span onclick="add80DInvestmentsForm()"><i class="fa-solid fa-circle-plus"></i> <a href="#">Add More Investment</a></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item mb-3">
+                                    <h2 class="accordion-header" id="headingFour">
+                                        <button type="button"
+                                                class="accordion-button collapsed bg-label-secondary"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#accordionFour"
+                                                aria-expanded="false"
+                                                aria-controls="accordionFour">
+                                            Other Investments & Exemptions
+                                        </button>
+                                    </h2>
+                                    <div id="accordionFour"
+                                         class="accordion-collapse collapse pt-3"
+                                         aria-labelledby="headingFour"
+                                         data-bs-parent="#accordionExample" name="AccordianOtherInvestments">
+                                        <div class="accordion-body">
+                                            <div class="mb-3">Note: Declare other investments & exemptions such as Voluntary NPS, Interest Paid on Education Loan and Medical Expenditures under this section</div>
+                                            <div name="OtherInvestmentsFormCollection">
+                                                @{
+                                                    SimpliHR.Infrastructure.Models.ITDeclaration.ItDeclarationOtherInvestmentExemptionDTO itDeclarationOtherInvestmentExemptionDTO = new SimpliHR.Infrastructure.Models.ITDeclaration.ItDeclarationOtherInvestmentExemptionDTO();
+                                                    if (Model != null)
+                                                    {
+                                                        if (Model.exemptions80DDTOs != null)
+                                                        {
+                                                            itDeclarationOtherInvestmentExemptionDTO.otherInvestmentExemptionDTOs = Model.otherInvestmentExemptionDTOs;
+                                                        }
+                                                        if (Model.ItDeclarationOtherInvestmentExemptionList != null)
+                                                        {
+                                                            if (Model.ItDeclarationOtherInvestmentExemptionList.Count > 0)
+                                                            {
+                                                                foreach (var item in Model.ItDeclarationOtherInvestmentExemptionList)
+                                                                {
+                                                                    item.otherInvestmentExemptionDTOs = Model.otherInvestmentExemptionDTOs;
+                                                                    <div class="row" name="OtherInvestmentsForm1">
+                                                                        @Html.Partial("_ITDeclaration/_OtherInvestmentsExemptions.cshtml",item)
+                                                                    </div>
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="row" name="OtherInvestmentsForm1">
+                                                                    @Html.Partial("_ITDeclaration/_OtherInvestmentsExemptions.cshtml",itDeclarationOtherInvestmentExemptionDTO)
+                                                                </div>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="row" name="OtherInvestmentsForm1">
+                                                                @Html.Partial("_ITDeclaration/_OtherInvestmentsExemptions.cshtml",itDeclarationOtherInvestmentExemptionDTO)
+                                                            </div>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="row" name="OtherInvestmentsForm1">
+                                                            @Html.Partial("_ITDeclaration/_OtherInvestmentsExemptions.cshtml",itDeclarationOtherInvestmentExemptionDTO)
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                            <div class="col-md-9 mb-3"><span onclick="addOtherInvestmentsForm()"><i class="fa-solid fa-circle-plus"></i> <a href="#">Add More Investment</a></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item mb-3">
+                                    <h2 class="accordion-header" id="headingFive">
+                                        <button type="button"
+                                                class="accordion-button collapsed bg-label-secondary"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#accordionFive"
+                                                aria-expanded="false"
+                                                aria-controls="accordionFive">
+                                            Previous Employment
+                                        </button>
+                                    </h2>
+                                    <div id="accordionFive"
+                                         class="accordion-collapse collapse pt-3"
+                                         aria-labelledby="headingfive"
+                                         data-bs-parent="#accordionExample">
+                                        <div class="accordion-body" name="PreviousEmployementDetailForm">
+                                            <div class="row">
+                                                <div class="col-md-9 mb-3">
+                                                    <input type="hidden" value="@(Model == null ? "" : Model.ItDeclarationPreviousEmployementDTO == null ? "" : Model.ItDeclarationPreviousEmployementDTO.ItDeclarationPreviousEmployementId)" name="ItDeclarationPreviousEmployementId" />
+                                                    <label class="form-label" for="username">Income After Exemptions</label>
+                                                </div>
+                                                <div class="col-md-3 mb-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                                        <input type="text" class="form-control mr-2" name="IncomeAfterExemptions" value="@(Model == null ? "" : Model.ItDeclarationPreviousEmployementDTO == null ? "" : Model.ItDeclarationPreviousEmployementDTO.IncomeAfterExemptions)" placeholder="" aria-label="" aria-describedby="">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-9 mb-3">
+                                                    <label class="form-label" for="username">Income Tax</label>
+                                                </div>
+                                                <div class="col-md-3 mb-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                                        <input type="text" class="form-control mr-2" placeholder="" value="@(Model == null ? "" : Model.ItDeclarationPreviousEmployementDTO == null ? "" : Model.ItDeclarationPreviousEmployementDTO.IncomeTax)" name="IncomeTax" aria-label="" aria-describedby="">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-9 mb-3">
+                                                    <label class="form-label" for="username">Professional Tax</label>
+                                                </div>
+                                                <div class="col-md-3 mb-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                                        <input type="text" class="form-control mr-2" placeholder="" value="@(Model == null ? "" : Model.ItDeclarationPreviousEmployementDTO == null ? "" : Model.ItDeclarationPreviousEmployementDTO.ProfessionalTax)" name="ProfessionalTax" aria-label="" aria-describedby="">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-9 mb-3">
+                                                    <label class="form-label" for="username">Employee Provident Fund</label>
+                                                </div>
+                                                <div class="col-md-3 mb-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                                        <input type="text" class="form-control mr-2" placeholder="" value="@(Model == null ? "" : Model.ItDeclarationPreviousEmployementDTO == null ? "" : Model.ItDeclarationPreviousEmployementDTO.EmployeeProvidentFund)" name="EmployeeProvidentFund" aria-label="" aria-describedby="">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-9 mb-3">
+                                                    <label class="form-label" for="username">Leave Encashment Exemptions</label>
+                                                </div>
+                                                <div class="col-md-3 mb-3">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                                        <input type="text" class="form-control mr-2" name="LeaveEncashmentExemptions" value="@(Model == null ? "" : Model.ItDeclarationPreviousEmployementDTO == null ? "" : Model.ItDeclarationPreviousEmployementDTO.LeaveEncashmentExemptions)" placeholder="" aria-label="" aria-describedby="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <input type="hidden" id="FY" value="@(Model==null ? "2024-2025" : Model.FY)" />
+                                <input type="hidden" id="Regime" value="@(Model==null ? "New" : Model.Regime)" />
+                                <button class="btn btn-primary me-2 mt-2" onclick="SaveITDeclarations()">Submit</button>
+                                <button class="btn btn-primary me-2 mt-2" onclick="javascript:window.location.href='/PayrollAccount/PayrollAccount/'">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+<!-- / Content -->
+@*<script src="~/customjs/commonfunction.js"></script>*@
+@*<script src="~/customjs/employeevalidation.js"></script>*@
+<script src="~/customjs/itdeclarations.js"></script>
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            resetValidationError();
+            $("#PayList").dataTable();
+            //$("#particulars").find("div[name='RentedPremisesDetailForm']").hide();
+            //$("#particulars").find("div[name='EmployeeRepayingHomeLoneDetailForm']").hide();
+            //$("#particulars").find("div[name='LetOutPropertyDetailForm']").hide();
+
+            $("#particulars").find("[name='IsStayingInRentedPremises']").change(function () {
+                if ($(this).is(":checked")) {
+                    $("#particulars").find("div[name='RentedPremisesDetailForm']").slideDown();
+                }
+                else {
+                    $("#particulars").find("div[name='RentedPremisesDetailForm']").slideUp();
+                }
+            });
+            $("#particulars").find("[name='IsEmployeeRepayingHomeLone']").change(function () {
+                if ($(this).is(":checked")) {
+                    $("#particulars").find("div[name='EmployeeRepayingHomeLoneDetailForm']").slideDown();
+                }
+                else {
+                    $("#particulars").find("div[name='EmployeeRepayingHomeLoneDetailForm']").slideUp();
+                }
+            });
+            $("#particulars").find("[name='IsLetOutProperty']").change(function () {
+                if ($(this).is(":checked")) {
+                    $("#particulars").find("div[name='LetOutPropertyDetailForm']").slideDown();
+                }
+                else {
+                    $("#particulars").find("div[name='LetOutPropertyDetailForm']").slideUp();
+                }
+            });
+        });
+
+
+
+    </script>
+    }
+

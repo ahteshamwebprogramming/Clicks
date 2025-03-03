@@ -1,0 +1,237 @@
+﻿@model SimpliHR.Infrastructure.Models.Attendance.AttendanceSettingDTO
+@{
+    ViewData["Title"] = "AttendanceSetting";
+}
+
+
+<link rel="stylesheet" href="../../assets/vendor/libs/tagify/tagify.css" />
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Attendance /</span> Attendance Setting</h4>
+    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+                            <th>Shift</th>
+                            <th>Code</th>
+                            <th>Location</th>
+                            <th>Legend Type</th>
+                            <th>Minimum time (HH:MM:SS)</th>
+                            <th>Maximum Time (HH:MM:SS)</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.AttendanceSettingList != null)
+                            @foreach (var item in Model.AttendanceSettingList)
+                            {
+                                <tr>
+
+                                    <td>@item.ShiftName</td>
+                                    <td>@item.ShiftCode</td>
+                                    <td>@((item.LocationId != null ? Model.LocationKeyValues.Where(x => x.WorkLocationId == item.LocationId).Select(r => r.Location).FirstOrDefault() : "All"))</td>
+                                  @*   <td>@Model.LocationKeyValues.Where(x=>x.WorkLocationId==item.LocationId).Select(r=>r.Location).FirstOrDefault()</td> *@
+                                    <td>@(item.LegendType == 1 ? "Present" : item.LegendType == 2 ? "Half Day" : item.LegendType == 3 ? "Absent" : "")</td>
+                                    <td>@item.MinimumTime</td>
+                                    <td>@item.MaximumTime</td>
+
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="/Attendance/GetAttendanceSettingId/@item.EncryptedId"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="/Attendance/DeleteAttendanceSetting/@item.EncryptedId" onclick="return confirm('Are you sure you would like to delete?');"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                   @*  <th>
+                                        <a class="btn btn-primary" href="/Attendance/GetAttendanceSettingId/@item.EncryptedId">Edit</a>
+                                        <a class="btn btn-primary" href="/Attendance/DeleteAttendanceSetting/@item.EncryptedId" onclick="return confirm('Are you sure you would like to delete?');"> Delete</a>
+                                    </th> *@
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div id="wizard-checkout" class="bs-stepper wizard-icons wizard-icons-example mt-2">
+            <div class="container selectMain">
+                <div class="card-body">
+                    <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/Attendance/AttendanceSetting'" style="float:right" />
+                    <div style="clear:both"></div>
+
+                    <div class="container selectMain">
+
+                        <form method="post" action="/Attendance/SaveAttendanceSetting">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="">Shift</label>
+                                    <select id="ShiftId" name="ShiftId" class="select2 form-select" required data-allow-clear="true">
+                                        <option value="0">Select</option>
+                                        @if (Model.ShiftMasterList != null)
+                                            foreach (var item in Model.ShiftMasterList)
+                                            {
+                                                if (item.ShiftId == Model.ShiftId)
+                                                {
+                                                    <option value="@item.ShiftId" selected> @item.ShiftName</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.ShiftId"> @item.ShiftName</option>
+                                                }
+
+                                            }
+                                    </select>
+                                </div>
+                               @* <div class="col-md-6">
+                                    <label class="form-label" for="">Shift Code</label>
+                                    <input type="text" maxlength="2" id="ShiftCode" name="ShiftCode" value="@Model.ShiftCode" class="form-control" required data-allow-clear="true" />
+                                </div>*@
+                                <div class="col-md-6">
+                                    <label class="form-label" for="">Work Location</label>
+                                    @Html.DropDownList("LocationId",new SelectList(Model.LocationKeyValues,"WorkLocationId", "Location"),"--All--",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible"})
+
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="">Legend Type</label>
+                                    <select id="LegendType" name="LegendType" class="select2 form-select" required data-allow-clear="true">
+                                        <option value="0">Select</option>
+                                        <option value="1">Present</option>
+                                        <option value="2">Half Day</option>
+                                        <option value="3">Absent</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="">Minimum (HH:MM:SS)</label>
+                                    <input type="time" id="MinimumTime" name="MinimumTime" class="form-control" required placeholder="Minimum" step="1" value="@Model.MinimumTime" baria-label="Minimum" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="">Maximum  (HH:MM:SS)</label>
+                                    <input type="time" id="MaximumTime" name="MaximumTime" class="form-control" required placeholder="Maximum" step="1" value="@Model.MaximumTime" baria-label="Maximum" />
+                                </div>
+                            </div>
+                            <div class="pt-4">
+                                <input type="hidden" id="LocationIDs" name="RosterEmployeeIDs" class="form-control" value="@Model.LocationIDs" />
+                                <input type="hidden" id="hdnLegendID" name="LegendType" class="form-control" value="@Model.LegendType" />
+                                <input type="hidden" id="hdnAttendanceSettingId" name="AttendanceSettingId" class="form-control" value="@Model.AttendanceSettingId" />
+                                <input type="hidden" id="hdnshiftcode" name="ShiftCode" class="form-control" />
+                                <input type="hidden" id="UnitId" name="UnitId" class="form-control" value="@Model.UnitId" />
+                                <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                                <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/Attendance/AttendanceSetting'">Cancel</button>
+                            </div>
+
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<script src="../../assets/vendor/libs/tagify/tagify.js"></script>
+<script src="../../assets/js/forms-tagify.js"></script>
+*@
+
+@section scripts {
+
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script src="../../customjs/Common.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+
+             if (@Model.AttendanceSettingId == 0) {
+           ClearInputs();
+        }
+            if ("@Model.DisplayMessage.ToLower()" != "_blank") {
+                if ("@Model.DisplayMessage.ToUpper()" == "ADDSUCCESS") {
+                    //jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                    $successalert("", "Transaction Successful!");
+                }
+                else if ("@Model.DisplayMessage.ToUpper()" == "EDITSUCCESS") {
+                        //jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                    $successalert("", "Transaction Successful!");
+                    }
+                else if ("@Model.DisplayMessage.ToUpper()" == "DELETESUCCESS") {
+                    $successalert("", "Transaction Successful!");
+                }
+                else if ("@Model.DisplayMessage.Trim()" != "") {
+                    $erroralert("", "@Model.DisplayMessage");
+                }
+
+
+                
+            }
+            
+            
+            //$.each($("#LocationIds").val().split(","), function (i, e) {
+            //    $("#LocationId option[value='" + e + "']").prop("selected", true);
+            //});
+        });
+
+        
+        function ClearInputs() {
+            $("#MinimumTime").val("");
+            $("#MaximumTime").val("");
+            $("#ShiftId").val("0");
+             $("#ShiftId").change();
+            $("#LegendType").val("0");
+            $("#LegendType").change();
+             
+
+        }
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+        if (@Model.AttendanceSettingId != 0) {
+            $("#List").hide();
+            $("#Add").show();
+        }
+
+        // $('#ShiftId').val(parseInt($("#hdnLegendID").val()));
+        $('#LegendType').val(parseInt($("#hdnLegendID").val()));
+
+
+                        //$("#LocationId").change(function () {
+                        //    var select = document.getElementById('LocationId');
+                        //    var selected = [...select.options]
+                        //        .filter(option => option.selected)
+                        //        .map(option => option.value);
+                        //    // alert(selected);
+                        //    jQuery("#LocationIds").val(selected);
+                        //});
+
+        function DeleteRecord(bandName, bandId) {
+            // event.preventDefault();
+            url = $(this).attr('href');
+            history.pushState({ key: url }, '', url);
+            // if (confirm("Sure want to delete band '" + bandName + "'?")) {
+
+            // }
+
+            Swal.fire({ title: 'Are you sure?', text: "This will get deleted permanently!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, delete it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    window.location.href = "/Band/DeleteBand/" + bandId;
+                }
+            });
+
+
+            return false;
+        }
+
+    </script>
+    }
+
+

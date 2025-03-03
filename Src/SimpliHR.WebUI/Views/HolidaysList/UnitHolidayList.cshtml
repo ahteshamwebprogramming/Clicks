@@ -1,0 +1,262 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.UnitHolidayListVM
+@{
+    ViewData["Title"] = "Holidays";
+    Model.DisplayMessage += "";
+    //Layout = null;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Compensation /</span> Holidays</h4>
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <form id="showAlert" class="row g-3" onsubmit="return false">
+                    <div class="modal-body">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center mb-4">
+                        </div>
+
+                        <div class="col-12 text-center" id="successDiv">
+                            <p id="errorPara" class="error" style="color:red"></p>
+                        </div>
+                        <div class="col-12 text-center" id="errorDiv">
+                            <p id="successPara" class="error" style="color:black"></p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 text-center">
+                        @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                        <button type="reset" id="btnClose"
+                                class="btn btn-label-secondary btn-reset mt-3"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                            Close
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Holidays From List" onclick="javascript:window.location.href='AssignUnitHolidays'" style="float:right;margin-right: 5px;" />
+           
+            <input type="button" class="btn btn-primary me-2" value="Add Record" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table table-bordered List" id="List">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Month</th>
+                            <th>Day</th>
+                            <th>Year</th>
+                            <th>Holiday Name</th>
+                            <th>Holiday Type</th>
+                            @*   <th>Status</th>*@
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.UnitHolidayList != null)
+                            @foreach (var item in Model.UnitHolidayList)
+                            {
+                                <tr>
+
+                                    <td>@(item.HolidayDate == null ? "" : ((DateTime)item.HolidayDate).ToString("dd-MMM-yyyy"))</td>
+                                    <td>@item.HolidayMonth</td>
+                                    <td>@item.HolidayDayName</td>
+                                    <td>@item.HolidayYear</td>
+                                    <td>@item.HolidayName</td>
+                                    <td>@item.HolidayType</td>
+                                    @*   <th>@(item.IsActive == true ? "Active" : "Inactive")</th>*@
+                                    <th>
+                                        <a class="btn btn-primary" href="/HolidaysList/GetUnitHolidaysListInfo/@item.EncryptedId">Edit</a>
+                                        <button class="btn btn-primary" onclick="DeleteRecord('@item.HolidayName','@item.EncryptedId')"> Delete</button>
+                                    </th>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/HolidaysList/UnitHolidaysList/'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/HolidaysList/SaveUnitHolidayList">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Holiday Date</label>
+                        <input type="text" id="flatpickr-date" required name="HolidayDate" value="@(Model.UnitHolidays.HolidayDate==null ? "" : ((DateTime)Model.UnitHolidays.HolidayDate).ToString("dd-MMM-yyyy"))" class="form-control flatpickr-date-cstm" placeholder="DD-MMM-yyyy">
+                        @*<span asp-validation-for="HolidayDate" class="text-danger"></span>*@
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Holiday Day</label>
+                        <input type="hidden" id="HolidayDay" value="@Model.UnitHolidays.HolidayDay" />
+                        <input type="text" id="HolidayDayName" name="HolidayDayName" value="@Model.UnitHolidays.HolidayDayName" class="form-control" placeholder="Holiday Day" readonly>
+                        @* <span asp-validation-for="HolidayDay" class="text-danger"></span>*@
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Holiday Month</label>
+                        <input type="number" required id="HolidayMonth" name="HolidayMonth" value="@Model.UnitHolidays.HolidayMonth" class="form-control" placeholder="Holiday Month" readonly>
+                        @* <span asp-validation-for="HolidayMonth" class="text-danger"></span>*@
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Holiday Year</label>
+                        <input type="number" required id="HolidayYear" name="HolidayYear" value="@Model.UnitHolidays.HolidayYear" class="form-control" placeholder="Holiday Year" readonly>
+                        @* <span asp-validation-for="HolidayYear" class="text-danger"></span>*@
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Holiday Name</label>
+                        <input type="text" required id="HolidayName" name="HolidayName" value="@Model.UnitHolidays.HolidayName" maxlength="100" class="form-control" placeholder="Holiday Name">
+                        @*<span asp-validation-for="HolidayName" class="text-danger"></span>*@
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Holiday Type</label>
+                        @Html.DropDownList("HolidayType",new SelectList(Model.HolidayTypes,"KeyName", "KeyValue",Model.UnitHolidays.HolidayType),"Holiday Type",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible" , @required="required"})
+                        @*<span asp-validation-for="HolidayType" class="text-danger"></span>*@
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" id="HolidayId" name="HolidayId" value="@Model.UnitHolidays.HolidayId">
+                    <input type="hidden" id="UnitHolidayId" name="UnitHolidayId" value="@Model.UnitHolidays.UnitHolidayId">
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/HolidaysList/UnitHolidaysList/'">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script type="text/javascript">
+
+
+
+
+        $(document).ready(function () {
+            $(".flatpickr-date-cstm").flatpickr({
+                //monthSelectorType: 'static',
+                dateFormat: "d-M-Y"
+            });
+            $(".List").dataTable();
+            if (@Model.UnitHolidays.UnitHolidayId != 0 || @Model.HttpStatusCode!= 200) {
+                $("#List").hide();
+                $("#Add").show();
+            }
+            else {
+                ClearInputs();
+            }
+            if ("@Model.DisplayMessage.ToLower()" != "_blank") {
+                $successalert("Holiday List", "@Model.DisplayMessage");
+            }
+
+            $("#flatpickr-date").change(function () {
+                let weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                let date = $(this).val();
+                let d = new Date(date);
+                let day = weekday[d.getDay()];
+
+                $("#HolidayDay").val(d.getDay());
+                $("#HolidayDayName").val(weekday[d.getDay()]);
+                $("#HolidayMonth").val(d.getMonth() + 1);
+                $("#HolidayYear").val(d.getFullYear());
+            });
+        });
+        function ClearInputs() {
+            $("#HolidayDate").val("");
+            $("#HolidayDayName").val("");
+            $("#HolidayMonth").val("");
+            $("#HolidayYear").val("");
+            $("#HolidayName").val("");
+
+        }
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+
+        function DeleteRecord(name, id) {
+            // event.preventDefault();
+            url = $(this).attr('href');
+            history.pushState({ key: url }, '', url);
+            if (confirm("Sure want to delete holiday '" + name + "'?")) {
+                window.location.href = "/HolidaysList/DeleteUnitHolidaysList/" + id;
+            }
+            return false;
+        }
+
+        function BlockedUI() {
+
+            BlockUI();
+            if (jQuery("#HolidayDate").val() == '') {
+                ShowServerMessage("Please select holiday date");
+                UnblockUI();
+                return false;
+            }
+            // if (jQuery("#HolidayDate").val() == '') {
+            //     ShowServerMessage("Please select holiday date");
+            //     UnblockUI();
+            //     return false;
+            // }
+            if (jQuery("#HolidayDayName").val() == '') {
+                ShowServerMessage("Please insert holiday name");
+                UnblockUI();
+                return false;
+            }
+            if (jQuery("#HolidayMonth").val() == '') {
+                ShowServerMessage("Please insert holiday month");
+                UnblockUI();
+                return false;
+            }
+            if (jQuery("#HolidayYear").val() == '') {
+                ShowServerMessage("Please insert holiday year");
+                UnblockUI();
+                return false;
+            }
+            if (jQuery("#HolidayName").val() == '') {
+                ShowServerMessage("Please insert holiday name");
+                UnblockUI();
+                return false;
+            }
+
+
+        }
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                // if (sMsg.toUpperCase() == "SUCCESS") {
+                // sMsg = "Earnnig component created/updated successfully";
+                jQuery("#successDiv").show();
+                jQuery("#successPara").html(sMsg);
+
+                // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                //  }
+                //else {
+                //    jQuery("#errorDiv").show();
+                //    jQuery("#errorPara").html(sMsg);
+                //}
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+    </script>
+    }

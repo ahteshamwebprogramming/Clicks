@@ -1,0 +1,557 @@
+﻿
+@{
+    ViewData["Title"] = "ProofSubmission";
+}
+
+   <div class="container-xxl flex-grow-1 container-p-y">
+              <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">User / View /</span> Account</h4>
+              <div class="row">
+               
+                <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+                  <div class="mb-3"><h5 class="card-title mb-sm-0 me-2">Mohd's IT Declaration</h5></div>
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="alert alert-secondary mb-3"><i class="fa-solid fa-circle-info"></i> Enter your planned investment declarations here and choose the desired regime in the following page.</div>
+                      <div class="table-responsive text-nowrap">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th width="50%">PARTICULARS</th>
+                              <th width="25%">DECLARED AMOUNT</th>
+                              <th width="25%">ACTUAL AMOUNT</th>
+                            </tr>
+                            <tr>
+                              <td colspan="3" class="border-0" style="padding: 0;">
+                                <table class="table table-bordered pb-2">
+                                  <tr class="bg-label-secondary">
+                                    <td width="90%">Is the employee staying in a rented house?</td>
+                                    <td width="10%">
+                                      <label class="switch">
+                                        <span class="switch-label">No</span>
+                                        <input type="checkbox" class="switch-input">
+                                        <span class="switch-toggle-slider">
+                                          <span class="switch-on"></span>
+                                          <span class="switch-off"></span>
+                                        </span>
+                                      </label>
+                                    </td>
+                                  </tr>
+                                  <!-- colapsable tr start-->
+                                  <tr>
+                                    <td colspan="2">
+                                      <div>
+                                        <div class="float-start"><h6>House Rent Details</h6></div>
+                                        <div class="float-end"><i class="fa-solid fa-xmark"></i></div>
+                                        <div class="clearfix"></div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                          <label class="form-label" for="username">Rental Period</label>
+                                          <input type="text" id="bs-rangepicker-basic" class="form-control" />
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="col-md-12 mb-3">
+                                                <label class="form-label" for="username">Amount /mo.</label>
+                                                <div class="input-group">
+                                                  <span class="input-group-text" id="basic-addon11">₹</span>
+                                                  <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                          <div class="col-md-12 mb-3">
+                                              <label class="form-label" for="username">Amount /mo.</label>
+                                              <div class="input-group">
+                                                <span class="input-group-text" id="basic-addon11">₹</span>
+                                                <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                              </div>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-6 mb-1">
+                                          <div class="mb-3">
+                                              <label class="form-label" for="username">Address</label>
+                                              <textarea class="form-control" id="" rows="2"></textarea>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-6 mb-1">
+                                          <div class="row">
+                                            <label class="form-label" for="username">Metro / Non Metro</label>
+                                            <div class="col-md-6 mb-3">
+                                              <select id="" name="" class="form-select" aria-label="">
+                                                <option selected>Metro</option>
+                                                <option value="">Non Metro</option>
+                                              </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3"><input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby=""></div>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-9 mb-3"><i class="fa-solid fa-circle-plus"></i> <a href="#" >Add a Let Out Property</a></div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <!-- colapsable tr Ends-->
+
+                                  <tr class=" border-bottom bg-label-secondary">
+                                    <td width="80%">Is the employee repaying home loan for a self occupied house property?</td>
+                                    <td width="10%">
+                                      <label class="switch">
+                                        <span class="switch-label">No</span>
+                                        <input type="checkbox" class="switch-input">
+                                        <span class="switch-toggle-slider">
+                                          <span class="switch-on"></span>
+                                          <span class="switch-off"></span>
+                                        </span>
+                                      </label>
+                                    </td>
+                                  </tr>
+                                  <!-- colapsable tr start-->
+                                  <tr class=" border-bottom">
+                                    <td colspan="2">
+                                      <div class="row">
+                                        <div class="col-md-9 mb-3">
+                                          <label class="form-label" for="username">Principal Paid on Home Loan</label>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                          <div class="input-group">
+                                            <span class="input-group-text" id="basic-addon11">₹</span>
+                                            <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                          </div>
+                                        </div>
+                                        <div class="col-md-9 mb-3">
+                                          <label class="form-label" for="username">Interest Paid on Home Loan</label>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                          <div class="input-group">
+                                            <span class="input-group-text" id="basic-addon11">₹</span>
+                                            <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                          </div>
+                                        </div>
+                                        <div class="col-md-9 mb-3">
+                                          <label class="form-label" for="username">Name of the Lender</label>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                          <div class="input-group">
+                                            <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                          </div>
+                                        </div>
+                                        <div class="col-md-9 mb-3">
+                                          <label class="form-label" for="username">Lender PAN</label>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                          <div class="input-group">
+                                            <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <!-- colapsable tr ends-->
+
+                                  <tr class=" border-bottom bg-label-secondary">
+                                    <td width="90%">Is the employee receiving rental income from let out property?</td>
+                                    <td width="10%">
+                                      <label class="switch">
+                                        <span class="switch-label">No</span>
+                                        <input type="checkbox" class="switch-input">
+                                        <span class="switch-toggle-slider">
+                                          <span class="switch-on"></span>
+                                          <span class="switch-off"></span>
+                                        </span>
+                                      </label>
+                                    </td>
+                                  </tr>
+                                  <!-- colapsable tr start-->
+                                  <tr class="border-bottom mb-3">
+                                    <td colspan="2">
+                                      <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                          <label class="form-label" for="username">Annual Rent Received</label>
+                                        </div>
+                                        <div class="col-md-3 mb-3 pt-2">
+                                            <div class="float-end">₹ 0.00</div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                          <div class="input-group">
+                                            <span class="input-group-text" id="basic-addon11">₹</span>
+                                            <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                          </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                          <label class="form-label" for="username">Municipal Taxes Paid</label>
+                                        </div>
+                                        <div class="col-md-3 mb-3 pt-2">
+                                            <div class="float-end">₹ 0.00</div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                          <div class="input-group">
+                                            <span class="input-group-text" id="basic-addon11">₹</span>
+                                            <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                          </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                          <label class="form-label" for="username">Net Annual Value</label>
+                                        </div>
+                                        <div class="col-md-3 mb-3 pt-2">
+                                            <div class="float-end">₹ 0.00</div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                          <div class="input-group">
+                                            <span class="input-group-text" id="basic-addon11">₹</span>
+                                            <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="" disabled>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                          <label class="form-label" for="username">Standard Deduction (30% of Net Annual Value)</label>
+                                        </div>
+                                        <div class="col-md-3 mb-3 pt-2">
+                                            <div class="float-end">₹ 0.00</div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                          <div class="input-group">
+                                            <span class="input-group-text" id="basic-addon11">₹</span>
+                                            <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="" disabled>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-9 mb-3">
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                            <label class="form-check-label" for="defaultCheck1"> Repaying Home Loan for This Property </label>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                          <label class="form-label" for="username">Net Income/Loss from House Property</label>
+                                        </div>
+                                        <div class="col-md-3 mb-3 pt-2">
+                                            <div class="float-end">₹ 0.00</div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                          <div class="input-group">
+                                            <span class="input-group-text" id="basic-addon11">₹</span>
+                                            <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="" disabled>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-9 mb-3"><i class="fa-solid fa-circle-plus"></i> <a href="#" >Add a Let Out Property</a></div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <!-- colapsable tr ends-->
+                                </table>
+                              </td>
+                            </tr>
+                          </thead>
+                        </table>
+                      </div>
+                      <div class="row">
+                        <div class="col-md mb-4 mb-md-0">
+                          <div class="accordion mt-3" id="accordionExample">
+                            <div class="accordion-item mb-3">
+                              <h2 class="accordion-header" id="headingOne">
+                                <button
+                                  type="button"
+                                  class="accordion-button collapsed bg-label-secondary"
+                                  data-bs-toggle="collapse"
+                                  data-bs-target="#accordionOne"
+                                  aria-expanded="true"
+                                  aria-controls="accordionOne"
+                                  style="border-radius: 0!important">
+                                  Other Sources of Income
+                                </button>
+                              </h2>
+        
+                              <div
+                                id="accordionOne"
+                                class="accordion-collapse collapse pt-3"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                  
+                                  <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                      <label class="form-label" for="username">Income from other sources</label>
+                                    </div>
+                                    <div class="col-md-3 mb-3 pt-2">
+                                        <div class="float-end">₹ 0.00</div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                      <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                        <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                      <label class="form-label" for="username">Interest Earned from Savings Deposit</label>
+                                    </div>
+                                    <div class="col-md-3 mb-3 pt-2">
+                                        <div class="float-end">₹ 0.00</div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                      <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                        <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                      <label class="form-label" for="username">Interest Earned from Fixed Deposit</label>
+                                    </div>
+                                    <div class="col-md-3 mb-3 pt-2">
+                                        <div class="float-end">₹ 0.00</div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                      <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                        <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                      <label class="form-label" for="username">Interest Earned from National Savings Certificates</label>
+                                    </div>
+                                    <div class="col-md-3 mb-3 pt-2">
+                                        <div class="float-end">₹ 0.00</div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                      <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                        <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="accordion-item mb-3">
+                              <h2 class="accordion-header" id="headingTwo">
+                                <button
+                                  type="button"
+                                  class="accordion-button collapsed bg-label-secondary"
+                                  data-bs-toggle="collapse"
+                                  data-bs-target="#accordionTwo"
+                                  aria-expanded="false"
+                                  aria-controls="accordionTwo"
+                                  style="border-radius: 0!important">
+                                  80C Investments
+                                </button>
+                              </h2>
+                              <div
+                                id="accordionTwo"
+                                class="accordion-collapse collapse pt-3"
+                                aria-labelledby="headingTwo"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                  <div class="mb-3">Note: This section contains the list of investments including LIC schemes, mutual funds and PPF. The maximum limit for this section is ₹1,50,000.00</div>
+                                  <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                      <select
+                                        id="modalEditUserStatus"
+                                        name="modalEditUserStatus"
+                                        class="form-select"
+                                        aria-label="Default select example">
+                                        <option selected>Status an Investment</option>
+                                        <option value="1">Active</option>
+                                        <option value="2">Inactive</option>
+                                        <option value="3">Suspended</option>
+                                      </select>
+                                    </div>
+                                    <div class="col-md-3 mb-3 pt-2">
+                                        <div class="float-end">₹ 0.00</div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                      <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                        <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-9 mb-3"><i class="fa-solid fa-circle-plus"></i> <a href="#" >Add a Let Out Property</a></div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="accordion-item mb-3">
+                              <h2 class="accordion-header" id="headingThree">
+                                <button
+                                  type="button"
+                                  class="accordion-button collapsed bg-label-secondary"
+                                  data-bs-toggle="collapse"
+                                  data-bs-target="#accordionThree"
+                                  aria-expanded="false"
+                                  aria-controls="accordionThree">
+                                  80D Exemptions
+                                </button>
+                              </h2>
+                              <div
+                                id="accordionThree"
+                                class="accordion-collapse collapse pt-3"
+                                aria-labelledby="headingThree"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                  <div class="mb-3">Note: This section contains Mediclaim policies for yourself, your children, spouse and parents. The maximum limit for this section is ₹1,00,000.00</div>
+                                  <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                      <select
+                                        id="modalEditUserStatus"
+                                        name="modalEditUserStatus"
+                                        class="form-select"
+                                        aria-label="Default select example">
+                                        <option selected>Status an Investment</option>
+                                        <option value="1">Active</option>
+                                        <option value="2">Inactive</option>
+                                        <option value="3">Suspended</option>
+                                      </select>
+                                    </div>
+                                    <div class="col-md-3 mb-3 pt-2">
+                                        <div class="float-end">₹ 0.00</div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                      <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                        <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-9 mb-3"><i class="fa-solid fa-circle-plus"></i> <a href="#" >Add a Let Out Property</a></div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="accordion-item mb-3">
+                              <h2 class="accordion-header" id="headingFour">
+                                <button
+                                  type="button"
+                                  class="accordion-button collapsed bg-label-secondary"
+                                  data-bs-toggle="collapse"
+                                  data-bs-target="#accordionFour"
+                                  aria-expanded="false"
+                                  aria-controls="accordionFour">
+                                  Other Investments & Exemptions
+                                </button>
+                              </h2>
+                              <div
+                                id="accordionFour"
+                                class="accordion-collapse collapse pt-3"
+                                aria-labelledby="headingFour"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                  <div class="mb-3">Note: Declare other investments & exemptions such as Voluntary NPS, Interest Paid on Education Loan and Medical Expenditures under this section</div>
+                                  <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                      <select
+                                        id="modalEditUserStatus"
+                                        name="modalEditUserStatus"
+                                        class="form-select"
+                                        aria-label="Default select example">
+                                        <option selected>Status an Investment</option>
+                                        <option value="1">Active</option>
+                                        <option value="2">Inactive</option>
+                                        <option value="3">Suspended</option>
+                                      </select>
+                                    </div>
+                                    <div class="col-md-3 mb-3 pt-2">
+                                        <div class="float-end">₹ 0.00</div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                      <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                        <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-9 mb-3"><i class="fa-solid fa-circle-plus"></i> <a href="#" >Add a Let Out Property</a></div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="accordion-item mb-3">
+                              <h2 class="accordion-header" id="headingFive">
+                                <button
+                                  type="button"
+                                  class="accordion-button collapsed bg-label-secondary"
+                                  data-bs-toggle="collapse"
+                                  data-bs-target="#accordionFive"
+                                  aria-expanded="false"
+                                  aria-controls="accordionFive">
+                                  Previous Employment
+                                </button>
+                              </h2>
+                              <div
+                                id="accordionFive"
+                                class="accordion-collapse collapse pt-3"
+                                aria-labelledby="headingfive"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                  <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                      <label class="form-label" for="username">Income After Exemptions</label>
+                                    </div>
+                                    <div class="col-md-3 mb-3 pt-2">
+                                        <div class="float-end">₹ 0.00</div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                      <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                        <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                      <label class="form-label" for="username">Income Tax</label>
+                                    </div>
+                                    <div class="col-md-3 mb-3 pt-2">
+                                        <div class="float-end">₹ 0.00</div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                      <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                        <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                      <label class="form-label" for="username">Professional Tax</label>
+                                    </div>
+                                    <div class="col-md-3 mb-3 pt-2">
+                                        <div class="float-end">₹ 0.00</div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                      <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                        <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                      <label class="form-label" for="username">Employee Provident Fund</label>
+                                    </div>
+                                    <div class="col-md-3 mb-3 pt-2">
+                                        <div class="float-end">₹ 0.00</div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                      <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                        <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                      <label class="form-label" for="username">Leave Encashment Exemptions</label>
+                                    </div>
+                                    <div class="col-md-3 mb-3 pt-2">
+                                        <div class="float-end">₹ 0.00</div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                      <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                        <input type="text" class="form-control mr-2" placeholder="" aria-label="" aria-describedby="">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="mb-3">Click Compute Tax, to calculate the Total Tax Liablility based on the above declaration. <a href="#">Compute Tax</a></div>
+                          </div>
+                          <div class="col-12">
+                            <button class="btn btn-primary me-2 mt-2">Submit</button>
+                                <button class="btn btn-primary me-2 mt-2" onclick="javascript:window.location.href='/PayrollAccount/PayrollAccount/'">Cancel</button>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+
+             
+            </div>

@@ -1,0 +1,102 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.BankMasterDTO
+@{
+    ViewData["Title"] = "Bank";
+    Model.DisplayMessage += "";
+    //Layout = null;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Masters /</span> Bank</h4>
+    <div class="card addShow" id="List">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table table-bordered List" id="List">
+                    <thead>
+                        <tr>                            
+                            <th>Bank</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.BankMasterList != null)
+                            @foreach (var item in Model.BankMasterList)
+                            {
+                                <tr>
+                                    <td>@item.BankName</td>                                    
+                                    <th>@(item.IsActive == true ? "Active" : "Inactive")</th>
+                                    <th>
+                                        <a class="btn btn-primary" href="/Bank/GetBankInfo/@item.BankId">Edit</a>
+                                        <button class="btn btn-primary" onclick="DeleteRecord('@item.BankName','@item.BankId')"> Delete</button>
+                                    </th>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="display:none">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="ListView()" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/Bank/SaveBank">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Bank</label>
+                        <input type="text" id="BankName" name="BankName" value="@Model.BankName" class="form-control" placeholder="Bank Code">
+                    </div>                    
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" id="BankId" name="BankId" value="@Model.BankId">
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+            if (@Model.BankId != 0) {
+                $("#List").hide();
+                $("#Add").show();
+            }
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                alert("@Model.DisplayMessage")
+            }
+
+        });
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+
+        function DeleteRecord(bankName, bankId) {
+            // event.preventDefault();
+            url = $(this).attr('href');
+            history.pushState({ key: url }, '', url);
+            if (confirm("Sure want to delete bank '" + bankName + "'?")) {
+                window.location.href = "/Bank/DeleteBank/" + bankId;
+            }
+            return false;
+        }
+    </script>
+    }

@@ -1,0 +1,70 @@
+﻿@model SimpliHR.Infrastructure.Models.Exit.ExitViewModel
+<div class="table-responsive text-nowrap">
+    <table class="table table-bordered List">
+        <thead>
+            <tr>
+                <th>Ticket No</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Department</th>
+                <th>Resignation Date</th>
+                <th>Last Working Date</th>
+                <th>Notice Period</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @{
+                if (Model != null)
+                {
+                    if (Model.ResignationList != null)
+                    {
+                        if (Model.ResignationList.Count > 0)
+                        {
+                            foreach (var item in Model.ResignationList)
+                            {
+                                <tr>
+                                    <td>@item.TicketId</td>
+                                    <td>@item.EmployeeCode</td>
+                                    <td>@item.EmployeeName</td>
+                                    <td>@item.JobTitle</td>
+                                    <td>@item.DepartmentName</td>
+                                    <td>@(item.ResignationDate == null ? "" : ((DateTime)item.ResignationDate).ToString("dd-MMM-yyyy"))</td>
+                                    <td>@(item.LastWorkingDate == null ? "" : ((DateTime)item.LastWorkingDate).ToString("dd-MMM-yyyy"))</td>
+                                    <td>@item.NoticePeriod Days</td>
+                                    <td>@item.ReasonForLeaving</td>
+                                    <td>
+                                        @{
+                                            if (item.CreationDateEmployee == null)
+                                            {
+                                                <span style="color:blue">-</span>
+                                            }
+                                            else if (item.ManagerApproval == 0)
+                                            {
+                                                <span style="color:blue">Pending</span>
+                                            }
+                                            else if (item.ManagerApproval == 1)
+                                            {
+                                                <span style="color:#4CAF50">Approved</span>
+                                            }
+                                            else if (item.ManagerApproval == -1)
+                                            {
+                                                <span style="color:#FF0000">Rejected</span>
+                                            }
+                                        }
+
+                                    </td>
+                                    <td><input type="button" class="btn btn-primary btn-sm" value="View" onclick="viewEmployeeResignDetails_Manager(@item.ResignationListId)" /></td>
+                                </tr>
+                            }
+                        }
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>

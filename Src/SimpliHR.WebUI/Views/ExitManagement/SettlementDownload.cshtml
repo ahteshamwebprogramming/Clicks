@@ -1,0 +1,365 @@
+﻿@model SimpliHR.Infrastructure.Models.Exit.ExitViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PaySlipDownload</title>
+</head>
+<body>
+
+    <div id=”htmlContent” class='html-content'>
+        <form class="form">
+            <table width="80%" align="center">
+                <tr>
+                    <td width="50%">
+                        @*  <img src="~/ClientLogo/kt-logo.png" style="width:200px;height:auto;" alt=""> *@
+                        <img src="@(Model.Base64ProfileImage==null ? "logo_1.jpg" : Model.Base64ProfileImage)" width="200px" height="äuto" alt="" />
+                    </td>
+                    <td style="text-align: center;">
+                        @if (Model.objSettlementDetails != null)
+                        {
+                            if (Model.objSettlementDetails.Count > 0)
+                            {
+                                foreach (var item in Model.objSettlementDetails)
+                                {
+                                    <div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1.375rem;padding-bottom: 20px;color: #566a7f;"><strong>@item.UnitName</strong></div>
+                                    <div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f">@item.Address, @item.Location.</div>
+                                    <div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f">@item.StateName.</div>
+                                }
+                            }
+                        }
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2">
+                        @if (Model.objSettlementDetails != null)
+                        {
+                            if (Model.objSettlementDetails.Count > 0)
+                            {
+
+                                foreach (var item in Model.objSettlementDetails)
+                                {
+                                    <table cellspacing="2" cellpadding="10" style="width: 100%;margin-bottom: 20px; background: #d9dee3;">
+
+                                        <tr>
+                                            <td colspan="4" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;background-color:lightgray; text-align:center;"><strong>Full & Final Settlement Statement</strong></td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Emp.Code</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.EmployeeCode</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Date Of Joining</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.DOJ</td>
+
+                                        </tr>
+                                        <tr>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Name</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.EmployeeName</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Date of Resignation</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.DOR</td>
+
+                                        </tr>
+                                        <tr>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Designation</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.Designation</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Last Working Day</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.LWD</td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Department</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.Department</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Notice Period Applicable (Days)</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.NoticePeriod</td>
+
+                                        </tr>
+                                        <tr>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Location</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.Location</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Notice Given (Days)</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.EmpNoticePeriod</td>
+
+                                        </tr>
+                                    </table> <br />
+
+                                    <table cellspacing="2" cellpadding="10" style="width: 100%;margin-bottom: 20px; background: #d9dee3;">
+
+                                        <tr>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Notice Shortfall (Days)</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.NoticeShortfall</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Notice Period</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">
+                                                @(
+                                                    item.NoticePeriodId == 1 ? "Waived Off" : item.NoticePeriodId == 2 ? "Recoverable" : item.NoticePeriodId == 3 ? "Payable" : "Select an option"
+                                                    )
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Earned Leaves Balance (Days)</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.ELBalance</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Leave Balance</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">
+                                                @(
+                                                    item.LeaveBalanceId == 1 ? "Waived Off" : item.LeaveBalanceId == 2 ? "Recoverable" : item.LeaveBalanceId == 3 ? "Payable" : "Select an option"
+                                                    )
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Total Service </strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.TotalServices</td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Gratuity Payable</strong></td>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">
+                                                @(
+                                                    item.GratuityId == 1 ? "Yes" : item.GratuityId == 2 ? "No" : "Select an option"
+                                                    )
+
+                                            </td>
+
+                                        </tr>
+
+                                    </table>
+                                }
+                            }
+                        }
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2">
+                        <table cellspacing="2" cellpadding="10" style="width: 100%;margin-bottom: 20px; background: #d9dee3;">
+                            <tr>
+                                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Payable to the Employee</strong></td>
+                                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff; text-align:right;"><strong>Amount(Rs.)</strong></td>
+                                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Deductible from the Employee</strong></td>
+                                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff; text-align:right;"><strong>Amount(Rs.)</strong></td>
+                            </tr>
+
+
+                            @if (Model.objPaySlipComponent != null)
+                            {
+                                if (Model.objPaySlipComponent.Count > 0)
+                                {
+                                    foreach (var item in Model.objPaySlipComponent)
+                                    {
+                                        if (@item.Component != "Grand Total")
+                                        {
+                                            if (@item.Component != "Net Pay")
+                                            {
+                                                if (@item.Component != "Other Payment")
+                                                {
+                                                    if (@item.DComponent != "Other Deduction")
+                                                    {
+
+                                                        string szTotal = string.Format("{0:#,#.00}", @item.Total);
+                                                        string szDTotal = string.Format("{0:#,#.00}", @item.DTotal);
+                                                        <tr>
+                                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.Component</td>
+
+                                                            @if (item.Component != "")
+                                                            {
+                                                                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff; text-align:right;">@(szTotal.Trim() == ".00" ? "0.00" : szTotal)</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff; text-align:right;">@(szTotal.Trim() == ".00" ? "" : szTotal)</td>
+                                                            }
+
+                                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.DComponent</td>
+
+                                                            @if (item.DComponent != "")
+                                                            {
+                                                                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff; text-align:right;">@(szDTotal.Trim() == ".00" ? "0.00" : szDTotal)</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff; text-align:right;">@(szDTotal.Trim() == ".00" ? "" : szDTotal)</td>
+                                                            }
+                                                        </tr>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            <tr>
+                                @if (Model.objPaySlipComponent.Count > 0)
+                                {
+                                    var gOther = Model.objPaySlipComponent.Where(x => x.Component.Equals("Other Payment")).FirstOrDefault();
+                                    var gOther1 = Model.objPaySlipComponent.Where(x => x.DComponent.Equals("Other Deduction")).FirstOrDefault();
+
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Other Payment/s</td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff; text-align:right"> @gOther.Total  </td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">Other Deduction/s</td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff; text-align:right">@gOther1.DTotal</td>
+                                }
+                            </tr>
+
+
+                            @if (Model.objPaySlipComponent.Count > 0)
+                            {
+
+                                var gTotal = Model.objPaySlipComponent.Where(x => x.Component.Equals("Grand Total")).FirstOrDefault();
+
+
+                                var szTotal = string.Format("{0:#,#.00}", @gTotal.Total);
+                                var szDTotal = string.Format("{0:#,#.00}", @gTotal.DTotal);
+                                <tr>
+
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Total Payable</strong></td>
+
+
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff; text-align:right;"><strong>@szTotal</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Total Recoverable</strong></td>
+
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff; text-align:right;"><strong>@szDTotal</strong></td>
+                                </tr>
+
+                                var gNetPay = Model.objPaySlipComponent.Where(x => x.Component.Equals("Net Pay")).FirstOrDefault();
+                                var szNetPay = string.Format("{0:#,#.00}", @gNetPay.Standard);
+                                <tr>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Net Payable / Recoverable </strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff; text-align:right;"><strong>@szNetPay</strong></td>
+                                    <td colspan="2" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>(@gNetPay.DComponent)</strong></td>
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                </tr>
+
+                @if (Model.objSettlementDetails != null)
+                {
+                    if (Model.objSettlementDetails.Count > 0)
+                    {
+
+                        foreach (var item in Model.objSettlementDetails)
+                        {
+                            <tr>
+                                <td colspan="2" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">
+                                    <strong>Remarks</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;">
+                                    @item.Remarks
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+
+                <tr>
+                    <td colspan="2">
+                        <div class="table-responsive text-nowrap mb-4">
+                            <table align="center" style="width: 100%;">
+                                <tr>
+                                    <td colspan="4" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;background-color:lightgray; text-align:center;"><strong>Employee Acknowledgement Receipt</strong></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">&nbsp;</td>
+                                </tr>
+                                @if (Model.objPaySlipComponent.Count > 0)
+                                {
+                                    var gNetPay = Model.objPaySlipComponent.Where(x => x.Component.Equals("Net Pay")).FirstOrDefault();
+                                    var szNetPay = string.Format("{0:#,#.00}", @gNetPay.Standard);
+                                    <tr>
+                                        <td colspan="4" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>I acknowledge the final settment amount of Rs. @szNetPay/- (@gNetPay.DComponent) as payabe to me </strong></td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td colspan="4">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">I further undertake and accept that no other due of whatsoever nature is pending from the company towards my final settlement.</td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="4">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>(Employee Name)</strong></td>
+                                    <td></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>(Signature)</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>(Date)</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="table-responsive text-nowrap mb-4">
+                            <table>
+                                <tr>
+                                    <td colspan="4" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;background-color:lightgray; text-align:center;"> This is a computer generated statement. Does not require any signatures.</td>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+
+        </form>
+    </div>
+
+
+
+
+
+</body>
+</html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+
+<script>
+
+
+
+
+    $(document).ready(function () {
+
+        CreatePDFfromHTML();
+    });
+
+    function CreatePDFfromHTML() {
+
+        var HTML_Width = $(".html-content").width();
+        var HTML_Height = $(".html-content").height();
+        var top_left_margin = 15;
+        var PDF_Width = HTML_Width + (top_left_margin * 2);
+        var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+        var canvas_image_width = HTML_Width;
+        var canvas_image_height = HTML_Height;
+
+        var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+        html2canvas($(".html-content")[0]).then(function (canvas) {
+            var imgData = canvas.toDataURL("image/jpeg", 1.0);
+            var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+            pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+            for (var i = 1; i <= totalPDFPages; i++) {
+                pdf.addPage(PDF_Width, PDF_Height);
+                pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
+            }
+            pdf.save("SettlementPaySlip.pdf");
+            // $(".html-content").hide();
+        });
+    }
+</script>

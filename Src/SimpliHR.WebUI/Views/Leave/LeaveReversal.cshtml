@@ -1,0 +1,254 @@
+﻿@model SimpliHR.Infrastructure.Models.Leave.EmployeeLeaveDetailsDTO
+@{
+    ViewData["Title"] = "LeaveReverse";
+}
+
+<style>
+
+
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Leave /</span> Reversal
+    </h4>
+    <div class="card addShow" id="List" >
+
+        <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+                <h2>SimpliHR2.0</h2>
+                <div class="modal-content p-3 p-md-5">
+                    <div class="modal-body">
+                        <button type="button" class="btn-close" name="btnPopupClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center mb-4">
+                        </div>
+                        <form id="showAlert" class="row g-3" onsubmit="return false">
+                            <div class="col-12 text-center" id="successDiv">
+                                <p id="errorPara" class="error" style="color:red"></p>
+                            </div>
+                            <div class="col-12 text-center" id="errorDiv">
+                                <p id="successPara" class="error" style="color:black"></p>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="popupBtnDiv" class="col-12 text-center">
+                        @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                        <button type="reset" name="btnPopupClose"
+                                class="btn btn-label-secondary btn-reset mt-3"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                            Close
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+          
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+                            <th>Select One</th>
+                            <th>Ticket No</th>
+                            <th>Employee Name</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Leave Type</th>
+                            <th>Status</th>
+                         
+                            <th>Created On</th>
+                           
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int iCtr = 1;
+                            var showReason = false;
+                            var ctrlId = string.Empty;
+                            if (Model.EmployeeRevarsalList.Count != 0)
+                            {
+                                foreach (var item in Model.EmployeeRevarsalList)
+                                {
+                                    showReason = false;
+                                    ctrlId = $"{item.EmployeeId}_{item.TicketId}";
+
+                                    <tr>
+                                        <td>
+                                            <input type="radio" id="LeaveId_@iCtr" name="LeaveId" value="@item.LeaveDetailsId" class="form-check-input">
+                                        </td>
+                                        <td>@item.TicketId </td>
+                                        <td>@item.EmployeeName </td>
+                                        <td>@item.StartDate.Value.ToString("dd-MMM-yy")</td>
+                                        <td>@item.EndDate.Value.ToString("dd-MMM-yy")</td>
+                                        <td>
+                                            <span data-bs-toggle="tooltip"
+                                                  data-bs-offset="0,4"
+                                                  data-bs-placement="top"
+                                                  data-bs-html="true"
+                                                  data-bs-custom-class="tooltip-secondary"
+                                                  title="<span>@item.LeaveType</span>">
+                                                @item.LeaveTypeCode
+                                            </span>                                      
+                                        
+                                        </td>
+                                        <td>@(item.LeaveStatus == 0 ? "Approved" : item.LeaveStatus == 1 ? "Pending" : "")</td>                                       
+                                        
+                                        <td>@item.CreatedOn.Value.ToString("dd-MMM-yy")</td>
+                                    
+                                        
+                                    </tr>
+
+                                    iCtr++;
+                                }
+                            }
+
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-12 text-center">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <div class="w-px-400">
+                            <label class="form-label required" for="">Remark</label>
+                            <textarea class="form-control" required id="txtRemarks" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 mt-4 text-center">
+                <button type="button" class="btn btn-primary me-sm-3 me-1" onclick=" return ReversalSelected();">Create Ticket</button>
+                <button type="reset" class="btn btn-label-secondary">Reset</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section scripts {
+
+    <script src="../../customjs/CommonFunction.js"></script>
+  @*  <script src="~/customjs/common.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                ShowServerMessage("@Model.DisplayMessage");
+            }
+
+        });
+
+        function ReversalSelected() {
+            
+          //  alert('Regularize')
+
+           // return;
+            var rowData = {};
+            var formData = {};
+            var isData = false;
+            var dataCollection = new Array();
+            var results = new Array();
+            //var formData = new FormData();
+            var iCtr = 0;
+            var sValidMsg = "";
+            // var isData = true;
+
+            if (@Model.EmployeeRevarsalList.Count> 0) {
+                for (iCtr = 1; iCtr <= @Model.EmployeeRevarsalList.Count; iCtr = iCtr + 1) {
+                    isChecked = jQuery("#LeaveId_" + iCtr).is(":checked")
+                 
+                    if (isChecked) {
+                      
+                        rowData.LeaveIds = rowData.LeaveIds != undefined ? rowData.LeaveIds + "," + jQuery("#LeaveId_" + iCtr).val() : jQuery("#LeaveId_" + iCtr).val();
+                        isData = true;
+                    }
+                }
+            }
+
+            if (isData) {
+                rowData.ActionRemarks = jQuery("#txtRemarks").val();
+                dataCollection.push(rowData);              
+            }
+            else            
+            ShowServerMessage("Please select leave to reversal")
+
+
+          //  alert(dataCollection.length);
+            if (dataCollection.length > 0) {
+
+                BlockUI();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/Leave/LeaveReversalProcessing",
+                    data: { userAction: rowData },
+                    success: function (data) {
+                      
+                        UnblockUI();
+                       
+                        ShowServerMessage(data);
+                        if (data.toUpperCase() == "SUCCESS") {
+                            jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                        }
+                        
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        alert("errror<br>" + result.responseText);
+                        UnblockUI();
+                    }
+                });
+
+            }
+
+        }
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                if (sMsg.toUpperCase() == "SUCCESS") {
+                    sMsg = "Ticket Created Successfully";
+                    jQuery("#successDiv").show();
+                    jQuery("#successPara").html(sMsg);
+
+                    // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                }
+                else {
+                    jQuery("#errorDiv").show();
+                    jQuery("#errorPara").html(sMsg);
+                }
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+
+        function RediretToView() {
+            window.location.href = '/Leave/LeaveReversal'
+        }
+
+
+
+
+    </script>
+    }
+
+

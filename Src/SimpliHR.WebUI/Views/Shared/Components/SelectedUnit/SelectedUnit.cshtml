@@ -1,0 +1,16 @@
+﻿@model SimpliHR.Infrastructure.Models.ClientManagement.UnitMasterDTO
+
+
+@{
+    if (Model != null)
+    {
+        if (Model.UnitName != null)
+        {
+            <a class="nav-link search-toggler" href="/ClientManagement/UnitDashboard">
+                @*@Model.UnitName ( @Model.Address,  @(Model.City != null ? Model.City.CityName : ""))*@
+                @Model.UnitName
+            </a>
+        }
+    }
+}
+

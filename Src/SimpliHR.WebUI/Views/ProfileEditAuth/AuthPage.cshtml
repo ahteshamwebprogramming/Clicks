@@ -1,0 +1,209 @@
+﻿@model SimpliHR.Infrastructure.Models.Exit.ExitViewModel
+
+<div class="container-xxl flex-grow-1 container-p-y">
+
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Profile Management /</span>Edit
+    </h4>
+
+    <div class="card">
+        <div class="card-body">
+            <div id="div_ViewAuthPageTable">
+            </div>
+            <div id="div_ViewExitClearanceAssetMappingPopup">
+            </div>
+            <input type="button" value="Save" id="SaveAuth" onclick="mapAuth()" class="btn btn-sm btn-primary" />
+        </div>
+    </div>
+
+</div>
+
+@section scripts {
+
+    <script src="~/customjs/commonfunction.js"></script>
+    <script>
+        let table;
+        $(document).ready(function () {
+            ViewAuthPageTable();
+        });
+
+
+        function SaveClearanceMapping() {
+            BlockUI();
+            var inputDTO = {
+                "ClearanceMappingId": $("#ClearanceMappingId").val(),
+                "PrimaryClearancePerson": $("#PrimaryClearancePerson").val(),
+                "SecondaryClearancePerson": $("#SecondaryClearancePerson").val(),
+                "DepartmentId": $("#DepartmentId").val(),
+                "DepartmentName": $("#DepartmentId option:selected").text(),
+                "SecondaryClearancePersonName": $("#SecondaryClearancePerson option:selected").text(),
+                "PrimaryClearancePersonName": $("#PrimaryClearancePerson option:selected").text(),
+            };
+            $.ajax({
+                type: "POST",
+                url: "/ExitManagement/SaveClearanceMapping",
+                contentType: 'application/json',
+                data: JSON.stringify(inputDTO),
+                success: function (data) {
+                    //$(currDiv).parent().parent().parent().remove();
+                    $successalert("Success!", "Saved succesfully.");
+                    resetForm();
+                    ViewExitClearanceMappingTable();
+                    UnblockUI();
+                },
+                error: function (error) {
+                    $erroralert("Error!", error.responseText + '!'); UnblockUI();
+                    UnblockUI();
+                }
+            });
+        }
+
+        function ViewAuthPageTable() {
+            //var resignationListDTO = {};
+            //resignationListDTO.ResignationListId = ResignationListId;
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/ProfileEditAuth/AuthPageTable',
+                //data: JSON.stringify(resignationListDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#div_ViewAuthPageTable').html(data);
+                    table = $("table").DataTable();
+                },
+                error: function (result) {
+                    alert(result.responseText);
+                }
+            });
+        }
+        function ViewExitClearanceAssetMappingPopup(ClearanceMappingId) {
+            var inputDTO = {};
+            inputDTO.ClearanceMappingId = ClearanceMappingId;
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/ExitManagement/ViewExitClearanceAssetMappingPopup',
+                data: JSON.stringify(inputDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#div_ViewExitClearanceAssetMappingPopup').html(data);
+                    $("#btnExitClearanceAssetMappingPopup").click();
+                    $("#ClearanceMappingId").val(ClearanceMappingId);
+                    assettable = $("#tblAssetMap").DataTable();
+                },
+                error: function (result) {
+                    alert(result.responseText);
+                }
+            });
+        }
+        function mapAuth() {
+
+            var ProfileEditAuthList = [];
+
+            //let x = assettable.$('input:checked');
+            let x = table.rows().data();
+
+
+            table.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                var data = this.node();
+                console.log($(data).find('input').prop('checked'));
+                let ProfileEditAuthDTO = {};
+                //ProfileEditAuthDTO.ProfileFieldName = x[0];
+                ProfileEditAuthDTO.ProfileFieldId = $(data).find("td[Profilefieldid]").attr("Profilefieldid");
+                ProfileEditAuthDTO.IsEditable = $(data).find('td[name="IsEditable"]').find('input').prop('checked');
+                ProfileEditAuthDTO.AttachmentRequired = $(data).find('td[name="AttachmentRequired"]').find('input').prop('checked');;
+                ProfileEditAuthList.push(ProfileEditAuthDTO);
+            });
+
+            //x.each(function (i, v) {
+            //    let ProfileEditAuthDTO = {};
+            //    ProfileEditAuthDTO.ProfileFieldName = x[0];
+            //    ProfileEditAuthDTO.ProfileFieldId = 1;
+            //    ProfileEditAuthDTO.IsEditable = true;
+            //    ProfileEditAuthDTO.AttachmentRequired = true;
+            //    ProfileEditAuthList.push(ProfileEditAuthDTO);
+            //});
+
+            var inputDTO = {};
+            inputDTO.ProfileEditAuthList = ProfileEditAuthList;
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                url: '/ProfileEditAuth/SaveProfileEditAuth',
+                data: JSON.stringify(inputDTO),
+                success: function (data) {
+                    $successalert("Success!", "Saved succesfully.");
+                    UnblockUI();
+                },
+                error: function (error) {
+                    $erroralert("Error!", error.responseText + '!'); 
+                    UnblockUI();
+                }
+            });
+
+        }
+
+        function EditClearanceMapping(ClearanceMappingId) {
+            BlockUI();
+            var inputDTO = {
+                "ClearanceMappingId": ClearanceMappingId
+            };
+            $.ajax({
+                type: "POST",
+                url: "/ExitManagement/GetClearanceMappingById",
+                contentType: 'application/json',
+                data: JSON.stringify(inputDTO),
+                success: function (data) {
+
+                    $("#DepartmentId").val(data.departmentId).change();
+                    $("#PrimaryClearancePerson").val(data.primaryClearancePerson).change();
+                    $("#SecondaryClearancePerson").val(data.secondaryClearancePerson).change();
+                    $("#ClearanceMappingId").val(data.clearanceMappingId).change();
+                    //$(currDiv).parent().parent().parent().remove();
+                    //$successalert("Success!", "Saved succesfully.");
+                    UnblockUI();
+                },
+                error: function (error) {
+                    $erroralert("Error!", error.responseText + '!'); UnblockUI();
+                    UnblockUI();
+                }
+            });
+        }
+        function DeleteClearanceMapping(ClearanceMappingId) {
+            Swal.fire({ title: 'Are you sure?', text: "This will get deleted permanently!", icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, delete it!', customClass: { confirmButton: 'btn btn-primary me-3', cancelButton: 'btn btn-label-secondary' }, buttonsStyling: false }).then(function (result) {
+                if (result.value) {
+                    BlockUI();
+                    var inputDTO = {
+                        "ClearanceMappingId": ClearanceMappingId
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "/ExitManagement/DeleteClearanceMapping",
+                        contentType: 'application/json',
+                        data: JSON.stringify(inputDTO),
+                        success: function (data) {
+                            $successalert("Success!", "Deleted succesfully.");
+                            ViewExitClearanceMappingTable();
+                            UnblockUI();
+                        },
+                        error: function (error) {
+                            $erroralert("Error!", error.responseText + '!'); UnblockUI();
+                            UnblockUI();
+                        }
+                    });
+                }
+            });
+        }
+        function resetForm() {
+            $("#DepartmentId").val("0").change();
+            $("#PrimaryClearancePerson").val("0").change();
+            $("#SecondaryClearancePerson").val("0").change();
+            $("#ClearanceMappingId").val("0");
+        }
+
+    </script>
+    }
+

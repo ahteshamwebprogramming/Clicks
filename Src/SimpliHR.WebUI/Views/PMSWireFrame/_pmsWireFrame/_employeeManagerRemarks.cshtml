@@ -1,0 +1,63 @@
+﻿@model SimpliHR.Infrastructure.Models.Performace.PerformanceSettingViewModel
+
+<div class="row">
+    @{
+        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.EmployeeClosingRemarks == true)
+        {
+            <div class="col-md-6">
+                <h5 class="mt-5">Closing Remarks - Employee</h5>
+                @{
+                    if (((Model.PerformanceEmployeeData != null && Model.PerformanceEmployeeData.Published == true) || (Model.ViewType != "Employee") || (Model.PerformanceEmployeeData != null && Model.PerformanceEmployeeData.FilledByEmployee == true)))
+                    {
+                        <textarea asp-for="PerformanceEmployeeData.ClosingRemarksEmployee" class="form-control not-authorised" readonly></textarea>
+                    }
+                    else
+                    {
+                        <textarea asp-for="PerformanceEmployeeData.ClosingRemarksEmployee" class="form-control"></textarea>
+                    }
+                }
+            </div>
+        }
+        if (Model != null && Model.PerformanceSetting != null && Model.PerformanceSetting.ManagerClosingRemarks == true)
+        {
+            <div class="col-md-6">
+                <h5 class="mt-5">Closing Remarks - Manager</h5>
+
+                @{
+                    if (Model.ViewType == "Employee")
+                    {
+                        if (Model.PerformanceEmployeeData != null && Model.PerformanceEmployeeData.Published == true)
+                        {
+                            <textarea class="form-control not-authorised" readonly asp-for="PerformanceEmployeeData.ClosingRemarksManager"></textarea>
+                        }
+                        else
+                        {
+                            <textarea class="form-control not-authorised" readonly></textarea>
+                        }
+                    }
+                    else if (Model.ViewType == "Manager")
+                    {
+                        if (Model.PerformanceEmployeeData != null && Model.PerformanceEmployeeData.FilledByManager != true && Model.PerformanceEmployeeData.FilledByEmployee == true)
+                        {
+                            <textarea class="form-control" asp-for="PerformanceEmployeeData.ClosingRemarksManager"></textarea>
+                        }
+                        else
+                        {
+                            <textarea class="form-control not-authorised" readonly asp-for="PerformanceEmployeeData.ClosingRemarksManager"></textarea>
+                        }
+                    }
+                    else if (Model.ViewType == "HOD")
+                    {
+                        <textarea class="form-control not-authorised" readonly asp-for="PerformanceEmployeeData.ClosingRemarksManager"></textarea>
+                    }
+                    else if (Model.ViewType == "ClientAdmin")
+                    {
+                        <textarea class="form-control not-authorised" readonly asp-for="PerformanceEmployeeData.ClosingRemarksManager"></textarea>
+                    }
+                }
+            </div>
+        }
+    }
+
+
+</div>

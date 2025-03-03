@@ -1,0 +1,339 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.PayrollFullnFinalSettingsDTO
+@{
+    ViewData["Title"] = "FNFSettings";
+}
+
+<style>
+
+
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll /</span> Settlement Master</h4>
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <form id="showAlert" class="row g-3" onsubmit="return false">
+                    <div class="modal-body">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center mb-4">
+                        </div>
+
+                        <div class="col-12 text-center" id="successDiv">
+                            <p id="errorPara" class="error" style="color:red"></p>
+                        </div>
+                        <div class="col-12 text-center" id="errorDiv">
+                            <p id="successPara" class="error" style="color:black"></p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 text-center">
+                        @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                        <button type="reset" id="btnClose"
+                                class="btn btn-label-secondary btn-reset mt-3"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                            Close
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- User Content -->
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <!-- User Pills -->
+
+            <div class="nav-align-top mb-4">
+
+
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="epfTab-info" role="tabpanel">
+
+                        <div style="clear:both"></div>
+                        <div class="info-container">
+
+                          @*   <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+                                <div class="card-body" style="display:none;">
+
+                                    <form method="post" asp-action="ExportLoanSanction" asp-controller="Loan">
+                                        <input type="hidden" name="LoanSanction" /> <br />
+                                        <input type="submit" id="btnSubmit" style="background-color: #2ea44f;border: 1px solid rgba(27, 31, 35, .15); color: #fff;box-shadow: rgba(27, 31, 35, .1) 0 1px 0; font-size: 14px; padding: 6px 16px;line-height: 20px;" value="Download" />
+                                    </form>
+                                    <div> <a class="btn btn-primary" style="float:right;  margin-left: 40px !important;" href="/Loan/LoanRepayment">Loan Repayment</a> </div>
+
+                                    <div>
+                                        <input type="button" class="btn btn-primary" value="Loan Sanction" onclick="AddView()" style="float:right;" />
+                                    </div>
+                                    <div style="clear:both"></div>
+                                    <div class="card-datatable table-responsive text-nowrap">
+                                        <table class="datatables-ajax table table-bordered List" id="List">
+                                            <thead>
+                                                <tr>
+                                                    <th>Start Month-Year</th>
+                                                    <th>Employee</th>
+                                                    <th>Sanction Amount</th>
+                                                    <th>Repayment Tenure</th>
+                                                    <th>Installment</th>
+                                                    <th>Closing Amount</th>
+                                                    <th>Stop Month-Year</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                              
+                            </div> *@
+
+                            <div class="card" id="Add" >
+
+                                <div class="card-body">
+
+                                @*     <input type="button" class="btn btn-primary addShow" value="List" onclick="ListView()" style="float:right" />
+                                    <div style="clear:both"></div> *@
+                                    <form id="ViewForm" method="post" action="/FullnFinal/SaveSettlementSettings">
+                                        <div class="row g-3">
+
+
+
+                                            <div class="col-md-6">
+                                                <label class="form-label required" for=""> Gratuity Applicability</label>
+                                                <select class="form-select" id="selGratuityApplicability" required name="GratuityApplicabilityId" aria-label="Default select example">
+                                                    <option value="0">Select an option</option>
+                                                    <option value="1">NA</option>
+                                                    <option value="2">4 year 6 months +</option>
+                                                    <option value="3">5 Year +</option>
+                                                 
+                                                </select>
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label required" for="">Compoff Applicability</label>
+                                                <select class="form-select" id="selCompoffApplicability" required name="CompoffApplicabilityId" aria-label="Default select example">
+                                                    <option value="0">Select an option</option>
+                                                    <option value="1">NA</option>
+                                                    <option value="2">On Basic</option>
+                                                    <option value="3">On Gross</option>
+                                                    <option value="4">On CTC</option>
+                                                </select>
+
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="form-label required" for="">Notice Period Recovery</label>
+                                                <select class="form-select" id="selNoticePeriodRecovery" required name="NoticePeriodRecoveryId" aria-label="Default select example">
+                                                    <option value="0">Select an option</option>
+                                                    <option value="1">NA</option>
+                                                    <option value="2">On Basic</option>
+                                                    <option value="3">On Gross</option>
+                                                    <option value="4">On CTC</option>
+                                                </select>
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label required" for="">Notice Period Payable</label>
+                                                <select class="form-select" id="selNoticePeriodPayable" required name="NoticePeriodPayableId" aria-label="Default select example">
+                                                    <option value="0">Select an option</option>
+                                                    <option value="1">NA</option>
+                                                    <option value="2">On Basic</option>
+                                                    <option value="3">On Gross</option>
+                                                    <option value="4">On CTC</option>
+                                                </select>
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label required" for="">Leave Recovery</label>
+                                                <select class="form-select" id="selLeaveRecovery" required name="LeaveRecoveryId" aria-label="Default select example">
+                                                    <option value="0">Select an option</option>
+                                                    <option value="1">NA</option>
+                                                    <option value="2">On Basic</option>
+                                                    <option value="3">On Gross</option>
+                                                    <option value="4">On CTC</option>
+                                                </select>
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label required" for="">Leave Payable</label>
+                                                <select class="form-select" id="selLeavePayable" required name="LeavePayableId" aria-label="Default select example">
+                                                    <option value="0">Select an option</option>
+                                                    <option value="1">NA</option>
+                                                    <option value="2">On Basic</option>
+                                                    <option value="3">On Gross</option>
+                                                    <option value="4">On CTC</option>
+
+                                                </select>
+
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="form-label required" for="">OT Applicability</label>
+                                                <select class="form-select" id="selOTApplicability" required name="OTApplicabilityId" aria-label="Default select example">
+                                                    <option value="0">Select an option</option>
+                                                    <option value="1">NA</option>
+                                                    <option value="2">On Basic</option>
+                                                    <option value="3">On Gross</option>
+                                                    <option value="4">On CTC</option>
+                                                </select>
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label required" for="">Leave Encashment</label>
+                                                <select class="form-select" id="selLeaveEncashment" required name="LeaveEncashmentId" aria-label="Default select example">
+                                                    <option value="0">Select an option</option>
+                                                    <option value="1">NA</option>
+                                                    <option value="2">On Basic</option>
+                                                    <option value="3">On Gross</option>
+                                                    <option value="4">On CTC</option>
+
+                                                </select>
+
+                                            </div>
+
+
+                                        </div>
+                                        <div class="pt-4">
+                                            <input type="hidden" id="hdnSettingId" name="SettingId" value="@Model.SettingId" />
+                                            @* <button type="button" class="btn btn-primary me-sm-3 me-1" onclick="getLocation();">View Attendance</button>*@
+                                            <button type="submit" class="btn btn-primary btn-sm me-sm-3 me-1">Submit</button>
+                                        </div>
+                                    </form>
+
+
+
+
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+                </div>
+            </div>
+           
+            <!--/ User Pills -->
+
+        </div>
+        <!--/ User Content -->
+    </div>
+
+
+</div>
+@section scripts {
+    <script src="~/customjs/commonfunction.js"></script>
+    <script src="~/customjs/employeevalidation.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // $(".List").dataTable();
+            if (@Model.SettingId != 0 ) {
+                $("#selLeaveEncashment").val(@Model.LeaveEncashmentId);
+                $("#selOTApplicability").val(@Model.OTApplicabilityId);
+                $("#selLeavePayable").val(@Model.LeavePayableId);
+                $("#selLeaveRecovery").val(@Model.LeaveRecoveryId);
+                $("#selNoticePeriodPayable").val(@Model.NoticePeriodPayableId);
+                $("#selNoticePeriodRecovery").val(@Model.NoticePeriodRecoveryId);
+                $("#selCompoffApplicability").val(@Model.CompoffApplicabilityId);
+                $("#selGratuityApplicability").val(@Model.GratuityApplicabilityId);
+                // $("#selGratuityApplicability > option").prop("selected", function () {
+                //     return $.trim(this.value) == "@Model.GratuityApplicabilityId";
+                // });
+               // alert("@Model.GratuityApplicabilityId");
+                $("#selGratuityApplicability").change();
+                $("#selCompoffApplicability").change();
+                $("#selNoticePeriodRecovery").change();
+                $("#selNoticePeriodPayable").change();
+                $("#selLeaveRecovery").change();
+                $("#selLeavePayable").change();
+                $("#selOTApplicability").change();
+                $("#selLeaveEncashment").change();
+            }
+            // jQuery(" #tableInfo").hide();
+           // BlockUI();
+            // $("#Add").show();
+            // $("#List").hide();
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                $successalert("Settings", "@Model.DisplayMessage");
+            }
+        });
+
+        // function ListView() {
+        //     $("#Add").hide();
+        //     $("#List").show();
+        // }
+        // function AddView() {
+        //     $("#Add").show();
+        //     $("#List").hide();
+
+        // }
+        // $("#selEmployee").on("change", function () {
+        //     $("#hdnEmployeeName").val($(this).find("option:selected").text());
+
+        //     alert($("#hdnEmployeeName").val());
+        // });
+
+    
+
+      
+
+
+        function getMonthName(monthNumber) {
+            const date = new Date();
+            date.setMonth(monthNumber - 1);
+
+            //  alert(date.toLocaleString('en-US', { month: 'short' }));
+            return date.toLocaleString('en-US', { month: 'short' });
+        }
+
+
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                // if (sMsg.toUpperCase() == "SUCCESS") {
+                // sMsg = "Earnnig component created/updated successfully";
+                jQuery("#successDiv").show();
+                jQuery("#successPara").html(sMsg);
+
+                // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                //  }
+                //else {
+                //    jQuery("#errorDiv").show();
+                //    jQuery("#errorPara").html(sMsg);
+                //}
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+
+
+
+
+
+
+    </script>
+}
+

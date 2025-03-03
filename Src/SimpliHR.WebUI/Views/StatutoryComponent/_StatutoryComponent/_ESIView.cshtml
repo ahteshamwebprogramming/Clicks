@@ -1,0 +1,94 @@
+﻿@model SimpliHR.Infrastructure.Models.StatutoryComponent.StatutoryComponentsEsiDTO
+
+
+
+@{
+
+    if (Model == null)
+    {
+        <div style="padding:7%;margin:auto;text-align:center">
+
+            <h6>Are you registered for ESI?</h6>
+            <p>Organisations having 10 or more employees must register for Employee State Insuarnce(ESI). This scheme provides cash allowances and medical benefits for employees whose monhtly salary is less then ₹21,000. </p>
+            <input type="button" class="btn btn-info btn-sm" value="Enable ESI" onclick="EditESIPartial()" />
+
+        </div>
+
+    }
+    else
+    {
+        <div class="info-container">
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <div class="content-header mb-3">
+                        <h5 class="mb-0">ESI  &nbsp;&nbsp;&nbsp;   <i class="fa fa-edit hvr-grow" onclick="EditESIPartial()"></i>  </h5>
+                    </div>
+                    <div class="table-responsive text-nowrap">
+                        <input type="hidden" id="StatutoryComponentsId" value="@(Model == null ? "0" : Model.StatutoryComponentsEsiid == null ? "0" : Model.StatutoryComponentsEsiid)" />
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td>ESI Number</td>
+                                    <td>@(Model == null ? "-" : Model.Esinumber == null ? "-" : Model.Esinumber)</td>
+                                </tr>
+                                <tr>
+                                    <td>Deduction Cycle</td>
+                                    <td>@(Model == null ? "-" : Model.DeductionCycle == null ? "-" : Model.DeductionCycle)</td>
+                                </tr>
+                                <tr>
+                                    <td>Employees' Contribution</td>
+                                    <td>@(Model == null ? "0" : Model.EmployeesContribution == null ? "0" : Model.EmployeesContribution)% of Gross Pay</td>
+                                </tr>
+                                <tr>
+                                    <td>Employer's Contribution</td>
+                                    <td>
+                                        @(Model == null ? "0" : Model.EmployersContribution == null ? "0" : Model.EmployersContribution)% of Gross Pay
+                                    </td>
+                                </tr>
+                                <tr>
+                                </tr>
+                                <tr>
+                                    <td>For CTC</td>
+                                    <td valign="top">@(Model == null ? "No" : Model.IsEmployersContibutionInCtc == false ? "No" : "Yes  (Include employer's contribution in the CTC)")</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="mb-3 note small">
+                    Note: Once you associate this deduction with an employee, you will only be able to edit the Name in Payslip. The change will be reflected in both new and existing employees.Note: ESI deductions will be made only if the employee’s monthly salary is less than or equal to ₹21,000. If the employee gets a salary revision which increases their monthly salary above ₹<span name="Esilimit">21000</span> they would have to continue making ESI contributions till the end of the contribution period in which the salary was revised (April-September or October-March).
+                </div>
+                <input type="hidden" name="StatutoryComponentsEsiid" id="StatutoryComponentsEsiid" value="@(Model==null ? 0 : Model.StatutoryComponentsEsiid==null ? 0 : Model.StatutoryComponentsEsiid)" />
+                <div class="col-12 d-flex justify-content-between">
+                    @{
+                        if (Model != null)
+                        {
+                            if (Model.IsActive != null)
+                            {
+                                if (Model.IsActive == true)
+                                {
+                                    <a href="javascript:void(0)" name="btnDisableESI" onclick="disbaleESI()" style="color:red"><i class="fa fa-trash"></i>  Disable ESI </a>
+                                }
+                                else
+                                {
+                                    <a style="color:green" href="javascript:void(0)" name="btnEnableESI" onclick="enableESI()"><i class="fa fa-check-circle"></i>  Enable ESI </a>
+                                }
+                            }
+                            else
+                            {
+                                <a style="color:green" href="javascript:void(0)" name="btnEnableESI" onclick="enableESI()"><i class="fa fa-check-circle"></i>  Enable ESI </a>
+                            }
+                        }
+                        else
+                        {
+                            <a style="color:green" href="javascript:void(0)" name="btnEnableESI" onclick="enableESI()"><i class="fa fa-check-circle"></i>  Enable ESI </a>
+                        }
+                    }
+                </div>
+
+            </div>
+        </div>
+    }
+}
+
+

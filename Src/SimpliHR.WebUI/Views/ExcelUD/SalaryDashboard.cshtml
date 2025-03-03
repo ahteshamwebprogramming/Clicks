@@ -1,0 +1,466 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.EmployeesSalaryDetailsDTO
+@{
+    ViewData["Title"] = "SalaryDashboard";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll/</span> Employees Salary Details</h4>
+    <div class="row">
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="card">
+                <div class="card-body">
+                    <div>
+                        <form id="ViewAttendanceForm" method="post" action="/ExcelUD/GetEmployeeSalaries">
+                    <div class="row g-3">
+                       
+                        <div class="col-md-6">
+                            <label class="form-label" for=""> Year</label>
+                            @*  <label class="form-control" id="lblyear" for="">2023</label>*@
+                                    <select class="form-select" id="selYear" name="Year" aria-label="Default select example" >
+                                <option value="0" selected>Select an option</option>
+                              
+                                        @if (Model.Years != null)
+                                        {
+                                            @foreach (var item in Model.Years)
+                                            {
+                                                if (item == Model.SalaryYear)
+                                                {
+                                                    <option value="@item" selected> @item</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item"> @item</option>
+                                                }
+
+                                            }
+                                        }
+                            </select>
+
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for=""> Month</label>
+                            <select class="form-select" id="selMonth" name="Month" aria-label="Default select example" required>
+                                <option value="0" selected>Select an option</option>
+                             
+                                        @if (Model.SalMonths != null)
+                                        {
+                                            @foreach (var item in Model.SalMonths)
+                                            {
+                                                if (item.ID == Model.SalaryMonth)
+                                                {
+                                                    <option value="@item.ID" selected> @item.Name</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.ID"> @item.Name</option>
+                                                }
+
+                                            }
+                                        }
+                            </select>
+
+                        </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label" for=""> Employees</label>
+                                    <select class="form-select" id="selEmployee" name="Employee" aria-label="Default select example" >
+                                        <option value="0" selected>--Select All--</option>
+
+                                        @if (Model.EmployeeMasterList != null)
+                                        {
+                                            @foreach (var item in Model.EmployeeMasterList)
+                                            {
+                                                if (item.EmployeeId == Model.Employee)
+                                                {
+                                                    <option value="@item.EmployeeId" selected> @item.EmployeeName</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.EmployeeId"> @item.EmployeeName</option>
+                                                }
+                                              
+
+                                            }
+                                        }
+                                    </select>
+
+                                </div>
+                       
+                    </div>
+                            <div class="pt-4">
+
+                                @* <button type="button" class="btn btn-primary me-sm-3 me-1" onclick="getLocation();">View Attendance</button>*@
+                                <button type="submit" class="btn btn-primary btn-sm me-sm-3 me-1" onclick="return ValidateInputs()">Show Details</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-datatable table-responsive text-nowrap" id="tableInfo">
+                        <table class="datatables-ajax List" id="List">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" class="form-check-input" onclick="CheckAll(this)"> All</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    @*<th>Designation</th>  *@
+                                    <th>Department</th>
+                                    <th>Standard</th>
+                                    <th>Actual</th>
+                                    @*  <th>Total Days</th>*@
+                                    <th>Working Days</th>
+                                    <th>Paid Days</th>
+                                    <th>Comment</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.EmpSalaryComponentsList != null)
+                                {
+                                    int iCtr = 1;
+                                    var showReason = false;
+                                    var ctrlId = string.Empty;
+                                   
+
+                                    foreach (var item in Model.EmpSalaryComponentsList)
+                                    {
+                                        string szActual = "0";
+                                        string szFixedSalary = string.Format("{0:#,#.00}", @item.FixedSalary);
+                                        if (@item.ActualSalary>0)
+                                        {
+                                             szActual = string.Format("{0:#,#.00}", @item.ActualSalary);
+                                        }
+                                       @*  else
+                                        {
+                                            szActual = 0;
+                                        } *@
+
+
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" id="EmpId_@iCtr" value="@item.EmployeeId" class="form-check-input">
+                                                <input type="hidden" id="EmpCode_@iCtr" value="@item.EmployeeCode">
+                                                <input type="hidden" id="WorkingDay_@iCtr" value="@item.WorkingDays">
+                                                <input type="hidden" id="totalDay_@iCtr" value="@item.DaysOfMonth">
+                                                <input type="hidden" id="FixedSalary_@iCtr" value="@item.FixedSalary">
+                                                <input type="hidden" id="ActualSalary_@iCtr" value="@item.ActualSalary">
+                                            </td>
+
+
+                                            <td>@item.EmployeeCode</td>
+                                            <td>@item.EmployeeName</td>
+                                            @*<td>@Model.EmployeeMastersKeyValues.JobTitleKeyValues.Where(x=>x.JobTitleId==item.JobTitleId).Select(r=>r.JobTitle).FirstOrDefault()</td>*@
+                                            <td>@Model.EmployeeMastersKeyValues.DepartmentKeyValues.Where(x=>x.DepartmentId==item.DepartmentId).Select(r=>r.DepartmentName).FirstOrDefault()</td>
+                                            <td style="text-align:right;" >@szFixedSalary</td>
+                                            <td style="text-align:right;">@szActual</td>
+                                            @* <td>31</td>*@
+                                            <td>@item.WorkingDays</td>
+                                            <td>
+                                                <input type="number" id="ActualDay_@iCtr" name="ActualDay" class="form-control" onKeyPress="if(this.value.length==2) return false;" value="@item.ActualworkingDays">
+                                            </td>
+                                            <td>
+                                                <textarea type="text" id="PayrollRemark_@iCtr" cols="15" rows="2" maxlength="200" value="@item.Comments">@item.Comments</textarea>
+                                            </td>
+                                        </tr>
+                                        iCtr++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                        <div class="col-12 d-flex justify-content-between">
+                            <button class="btn btn-primary" onclick="RegulerizePayroll()">
+                                <span class="align-middle d-sm-inline-block d-none me-sm-1">Submit</span>                               
+                            </button>
+                            <input type="hidden" class="dbcol" id="ProcessYear" name="ProcessYear" />
+                            <input type="hidden" class="dbcol" id="ProcessMonth" name="ProcessMonth" />
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+                            <h2>SimpliHR2.0</h2>
+                            <div class="modal-content p-3 p-md-5">
+                                <form id="showAlert" class="row g-3" onsubmit="return false">
+                                    <div class="modal-body">
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <div class="text-center mb-4">
+                                        </div>
+
+                                        <div class="col-12 text-center" id="successDiv">
+                                            <p id="errorPara" class="error" style="color:red"></p>
+                                        </div>
+                                        <div class="col-12 text-center" id="errorDiv">
+                                            <p id="successPara" class="error" style="color:black"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 text-center">
+                                        @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                                        <button type="reset" id="btnClose"
+                                                class="btn btn-label-secondary btn-reset mt-3"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close">
+                                            Close
+                                        </button>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+@section scripts {
+    @*    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script src="~/assets/js/yearpicker.js"></script>*@
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+
+            jQuery(" #tableInfo").hide();
+            //if ("@Model.DisplayMessage.Trim().ToUpper()" != "_BLANK") {
+            //    //  ShowServerMessage("@Model.DisplayMessage")
+            //    alert("@Model.DisplayMessage");
+            //}
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                $successalert("Salary Dashboard", "@Model.DisplayMessage");
+            }
+
+            if ("@Model.SalaryYear" != "") {
+                jQuery("#selYear").val("@Model.SalaryYear");
+                jQuery("#selMonth").val("@Model.SalaryMonth");
+                jQuery("#selEmployee").val("@Model.Employee");
+            }
+           
+            // jQuery("#selYear").val("@Model.SalaryYear");
+            // jQuery("#selMonth").val("@Model.SalaryMonth");
+            if(@Model.EmpSalaryComponentsList.Count>0)
+            {
+             
+                jQuery(" #tableInfo").show();
+            }
+        });
+
+       
+        function ValidateInputs() {
+            jQuery(" #tableInfo").show();
+           
+            year = jQuery("#selYear").val();
+            month = jQuery("#selMonth").val();
+                                
+            BlockUI();
+            if (year==0) {
+                $erroralert("Validation", "Please select the year");
+              //  alert("Please select the year");
+                jQuery(" #tableInfo").hide();
+              //  ShowServerMessage("Please select the year");
+                UnblockUI();
+                 return false;
+            }
+            if (month == 0) {
+                UnblockUI();
+                $erroralert("Validation", "Please select the month");
+              //  alert("Please select the month");
+                jQuery(" #tableInfo").hide();
+              //  ShowServerMessage("Please select the month");
+                return false;
+            }
+
+            
+        }
+
+        function DownloadTemplate() {
+
+
+
+            window.open("/ExcelUD/GetExcel", "_blank");
+
+
+        }
+
+        function BlockedUI() {
+
+            if ($('#formFile').get(0).files.length === 0) {
+                $erroralert("Validation", "Please select the template");
+               // ShowServerMessage("Please select the template");
+                return false;
+            }
+            else {
+                BlockUI();
+            }
+
+        }
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                // if (sMsg.toUpperCase() == "SUCCESS") {
+                // sMsg = "Earnnig component created/updated successfully";
+                jQuery("#successDiv").show();
+                jQuery("#successPara").html(sMsg);
+
+                // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                //  }
+                //else {
+                //    jQuery("#errorDiv").show();
+                //    jQuery("#errorPara").html(sMsg);
+                //}
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+
+
+        function CheckAll(regularizeAll) {
+            isAllChecked = regularizeAll.checked;
+            for (iCtr = 1; iCtr <= @Model.EmpSalaryComponentsList.Count; iCtr = iCtr + 1) {
+                //  alert(isAllChecked);
+                chkBox = jQuery("#EmpId_" + iCtr)
+                if (chkBox != undefined) {
+                    isChecked = chkBox.is(":checked")
+
+
+                    if (isAllChecked && !isChecked) {
+
+                        chkBox.attr('checked', true).change();
+                    }
+                    else if (!isAllChecked && isChecked) {
+                        // alert(isChecked);
+                        chkBox.attr('checked', false).change();
+                    }
+                }
+            }
+        }
+
+
+        function RegulerizePayroll() {
+
+            var rowData = {};
+            var formData = {};
+            var isData = false;
+            var dataCollection = new Array();
+            var results = new Array();
+            //var formData = new FormData();
+            var iCtr = 0;
+            var sValidMsg = "";
+            // var isData = true;
+          
+            if (jQuery("#selYear").val() == 0) {
+                $erroralert("Validation", "Please select the year");
+               
+                //  ShowServerMessage("Please select the year");
+               
+                return false;
+            }
+            if (jQuery("#selMonth").val() == 0) {
+
+                $erroralert("Validation", "Please select the month");
+              
+                //  ShowServerMessage("Please select the month");
+                return false;
+            }
+           
+
+            if (@Model.EmpSalaryComponentsList.Count> 0) {
+                for (iCtr = 1; iCtr <= @Model.EmpSalaryComponentsList.Count; iCtr = iCtr + 1) {
+                    isChecked = jQuery("#EmpId_" + iCtr).is(":checked")
+
+                    if (isChecked) {
+                        var workingdays = jQuery("#WorkingDay_" + iCtr).val();
+                        var totaldays = jQuery("#totalDay_" + iCtr).val();
+                        var sRemark = jQuery("#PayrollRemark_" + iCtr).val();
+                       // var totaldays = jQuery("#totalDay_" + iCtr).val();
+                        var FixedSalary = jQuery("#FixedSalary_" + iCtr).val();
+                        var PayOutSalary = jQuery("#ActualSalary_" + iCtr).val();
+
+                        if (jQuery("#ActualDay_" + iCtr).val() == "" ) {
+                            $erroralert("Validation", "PayOut Days cannot be left blank");
+                           // ShowServerMessage('PayOut Days cannot be left blank');
+                            isData = false;
+                            return isData;
+                        }
+                        if (jQuery("#ActualDay_" + iCtr).val() > totaldays) {
+                            $erroralert("Validation", "PayOut Days should not be more than" + totaldays + " Days");
+                           // ShowServerMessage('PayOut Days should not be more than ' + totaldays + ' Days');
+                            isData = false;
+                            return isData;
+                        }
+                        if (sRemark != "")
+                            sRemark = sRemark.replace(",", "{#~#}")
+                        else {
+                            if (workingdays != jQuery("#ActualDay_" + iCtr).val()) {
+                                $erroralert("Validation", 'Remarks are mandatory for employee code ' + jQuery("#EmpCode_" + iCtr).val());
+                              //  ShowServerMessage('Remarks are mandatory for employee code ' + jQuery("#EmpCode_" + iCtr).val());
+                                isData = false;
+                                return isData;
+                            }
+
+                        }
+
+                        rowData.ProcessYear = jQuery("#selYear").val();
+                        rowData.ProcessMonth = jQuery("#selMonth").val();
+                        rowData.EmployeeIds = rowData.EmployeeIds != undefined ? rowData.EmployeeIds + "," + jQuery("#EmpId_" + iCtr).val() : jQuery("#EmpId_" + iCtr).val();
+                        rowData.ActualDays = rowData.ActualDays != undefined ? rowData.ActualDays + "," + jQuery("#ActualDay_" + iCtr).val() : jQuery("#ActualDay_" + iCtr).val();
+                        rowData.PayrollRemarks = rowData.PayrollRemarks = rowData.PayrollRemarks != undefined ? rowData.PayrollRemarks + "," + sRemark : sRemark + "";
+                        rowData.NoOfDays = rowData.NoOfDays != undefined ? rowData.NoOfDays + "," + jQuery("#WorkingDay_" + iCtr).val() : jQuery("#WorkingDay_" + iCtr).val();
+                        rowData.FixedSalary = rowData.FixedSalary != undefined ? rowData.FixedSalary + "," + jQuery("#FixedSalary_" + iCtr).val() : jQuery("#FixedSalary_" + iCtr).val();
+                        rowData.PayOutSalary = rowData.PayOutSalary != undefined ? rowData.PayOutSalary + "," + jQuery("#ActualSalary_" + iCtr).val() : jQuery("#ActualSalary_" + iCtr).val();
+                        isData = true;
+                    }
+                }
+            }
+
+            if (isData) {
+
+                 dataCollection.push(rowData)
+            }
+            else
+                $erroralert("Validation", "Please select any one option at least to process");
+                //ShowServerMessage("Please select any one option at least to process");
+            // ShowServerMessage("Please select the option you want to update the working day")
+
+            if (dataCollection.length > 0) {
+
+                BlockUI();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/ExcelUD/EmpSalaryProcessing",
+                    data: { userAction: rowData },
+                    success: function (data) {
+                      //  alert(data)
+                        ShowServerMessage(data);
+                        UnblockUI();
+                        jQuery(" #tableInfo").hide();
+                        // var sMsg = data.displayMessage  //.Trim().Replace("< br > ", "\r\n")
+                       
+                        //if (data.toUpperCase() == "SUCCESS") {
+                        //    jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                        //}
+                      //  window.location.href = "/ExcelUD/SalaryDashboard"
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        $erroralert("Error!", "errror<br>" + result.responseText);
+                       // UnblockUI();
+                    }
+                });
+
+            }
+
+        }
+    </script>
+    }
+

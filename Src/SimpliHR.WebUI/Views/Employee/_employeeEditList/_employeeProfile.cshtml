@@ -1,0 +1,1352 @@
+﻿@model SimpliHR.Infrastructure.Models.ProfileEditAuth.EmployeeEditApprovalViewModel
+<div class="row">
+    <div class="col-md mb-4 mb-md-2">
+        
+        <div class="accordion mt-3" id="accordionWithIcon">
+            
+            <div class="modal fade" id="vwAttachment" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-xl modal-simple modal-pricing">
+                        <div class="modal-content p-3 p-md-5">
+                            <div class="modal-body">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                </button>
+                                <div>
+                                    <div class="row"><a id="downloadAttachment" download="">Click to Download the image</a></div>
+                                    <div class="row" style="width:90%;height:90%"><object id="uploadedObject" data="" type="application/pdf"></object></div>
+                                    <div class="row"><input id="uploadedImage" type="image" src="" /></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+           
+            @{
+                if (Model != null)
+                {
+                    if (Model.employeeEditInfos != null)
+                    {
+                        string?[] tabs = Model.employeeEditInfos.OrderBy(x => x.TabSequence).Select(x => x.ScreenTab).Distinct().ToArray();
+                        if (tabs != null)
+                        {
+                            foreach (var tabItem in tabs)
+                            {
+                                if (tabItem != null)
+                                {
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header d-flex align-items-center">
+                                            <button type="button"
+                                                    class="accordion-button collapsed"
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#accordionWithIcon-@tabItem.Replace(" ","")"
+                                                    aria-expanded="false">
+                                                @tabItem
+                                            </button>
+                                        </h2>
+                                        <div id="accordionWithIcon-@tabItem.Replace(" ","")" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                           
+                                                            <th>Field</th>
+                                                            <th>Current Value</th>
+                                                            <th>New Value</th>
+                                                            <th>View Attachment</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @{
+                                                            foreach (var item in Model.employeeEditInfos.Where(x => x.ScreenTab == tabItem))
+                                                            {
+                                                                if(item.FieldName.ToUpper()=="UPLOADIMAGE")
+                                                                {
+                                                                    <td>@item.DisplayText</td>
+                                                                <td><a href="javascript:void(0)" onclick="ViewAttachment('@item.OldProfileBase64String','@item.FieldName','@item.DocumentType','CurrentProfile')">Current Profile Image</a></td>
+                                                                    <td><a href="javascript:void(0)" onclick="ViewAttachment('@item.AttachmentBase64String','@item.FieldName','@item.DocumentType','NewProfile')">New Profile Image</a></td>
+                                                                    <td></td>
+                                                                <td width="20%" class="text-center" style="padding: 10px;">
+                                                                        @{
+                                                                            if (item.IsApproved == null || item.IsApproved == 0)
+                                                                            {
+                                                                            <input type="button" class="btn btn-warning btn-sm" value="Cancel" onclick="Cancel('@item.TicketId','@item.EmployeeValidationId',this)">
+                                                                            }
+                                                                            
+                                                                            else if (item.IsApproved == 1)
+                                                                            {
+                                                                            <span style="color:orange">Cancelled</span>
+                                                                            }
+                                                                            else if (item.IsApproved == 2)
+                                                                            {
+                                                                            <span style="color:green">Approved</span>
+                                                                            }
+                                                                            else if (item.IsApproved == 3)
+                                                                            {
+                                                                            <span style="color:red">Rejected</span>
+                                                                            }
+                                                                            else
+                                                                            {
+
+                                                                            }
+                                                                        }
+
+                                                                </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <tr>
+
+                                                                        <td>@item.DisplayText</td>
+                                                                        @{
+                                                                            if (item.FieldType == "Id")
+                                                                            {
+                                                                                <td>@item.OldValueText</td>
+                                                                                <td>@item.NewValueText</td>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <td>@item.OldValue</td>
+                                                                                <td>@item.ChangeValue</td>
+                                                                            }
+                                                                        }
+                                                                        <td>
+                                                                            @{
+                                                                                if (item.AttachmentBase64String != null)
+                                                                                {
+                                                                                    <a href="javascript:void(0)" onclick="ViewAttachment('@item.AttachmentBase64String','@item.FieldName','@item.DocumentType','')">Attachment</a>
+                                                                                }
+                                                                            }
+                                                                        </td>
+                                                                        <td width="20%" class="text-center" style="padding: 10px;">
+                                                                            @{
+                                                                                if (item.IsApproved == null || item.IsApproved == 0)
+                                                                                {
+                                                                                    <input type="button" class="btn btn-warning btn-sm" value="Cancel" onclick="Cancel('@item.TicketId',@item.EmployeeValidationId,this)">
+                                                                                }
+                                                                                //else if (item.IsApproved == 0)
+                                                                                //{
+                                                                                //    <input type="button" class="btn btn-warning btn-sm" value="Cancel" onclick="Cancel(@item.TicketId,@item.EmployeeValidationId,this)">
+                                                                                //}
+                                                                                else if (item.IsApproved == 1)
+                                                                                {
+                                                                                    <span style="color:orange">Cancelled</span>
+                                                                                }
+                                                                                else if (item.IsApproved == 2)
+                                                                                {
+                                                                                    <span style="color:green">Approved</span>
+                                                                                }
+                                                                                else if (item.IsApproved == 3)
+                                                                                {
+                                                                                    <span style="color:red">Rejected</span>
+                                                                                }
+                                                                                else
+                                                                                {
+
+                                                                                }
+                                                                            }
+
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                                
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                            }
+                        }
+                    }
+
+                    if (Model.employeeAddDeleteInfoViewModel != null)
+                    {
+                        if (Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList != null)
+                        {
+                            if (Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList.Count(x => (x.ActionType == null ? "" : x.ActionType.ToUpper()) == "DELETE") > 0)
+                            {
+                                string?[] tabs = Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList.Where(x => (x.ActionType == null ? "" : x.ActionType.ToUpper()) == "DELETE").Select(x => x.ReferenceTable).Distinct().ToArray();
+                                if (tabs != null)
+                                {
+                                    if (tabs.Count() > 0)
+                                    {
+                                        <h3>Delete Requests</h3>
+                                        foreach (var tabItem in tabs)
+                                        {
+                                            if (tabItem != null)
+                                            {
+                                                if (tabItem.ToUpper() == "EMPLOYEEFAMILYDETAIL")
+                                                {
+                                                    <div class="card accordion-item">
+                                                        <h2 class="accordion-header d-flex align-items-center">
+                                                            <button type="button"
+                                                                    class="accordion-button collapsed"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#accordionWithIconDelete-@tabItem.Replace(" ","")"
+                                                                    aria-expanded="false">
+                                                                Family Details
+                                                            </button>
+                                                        </h2>
+                                                        <div id="accordionWithIconDelete-@tabItem.Replace(" ","")" class="accordion-collapse collapse">
+                                                            <div class="accordion-body">
+                                                                <table class="table table-bordered">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th width="50"><input type="checkbox" ctrl="chk_parent_@(tabItem.Replace(" ",""))_delete" class="form-check-input" /></th>
+                                                                            <th>Member Name</th>
+                                                                            <th>Member DOB</th>
+                                                                            <th>Relationship with the member</th>
+                                                                            <th>View Attachment</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @{
+                                                                            foreach (var item in Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList.Where(x => (x.ActionType == null ? "" : x.ActionType.ToUpper()) == "DELETE" && (x.ReferenceTable == null ? "" : x.ReferenceTable.ToUpper()) == "EMPLOYEEFAMILYDETAIL"))
+                                                                            {
+                                                                                var rec = Model == null ? null : Model.employeeAddDeleteInfoViewModel == null ? null : Model.employeeAddDeleteInfoViewModel.employeeFamilyDetailList == null ? null : Model.employeeAddDeleteInfoViewModel.employeeFamilyDetailList.Where(x => x.EmployeeFamilyDetailId == item.ReferenceId) == null ? null : Model.employeeAddDeleteInfoViewModel.employeeFamilyDetailList.Where(x => x.EmployeeFamilyDetailId == item.ReferenceId).FirstOrDefault();
+                                                                                if (rec != null)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td class="text-center">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_delete" class="form-check-input" />
+                                                                                                }
+                                                                                                //else if (item.ActionStatus == 0)
+                                                                                                //{
+                                                                                                //    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_delete" class="form-check-input" />
+                                                        //}
+                                                                                            }
+
+                                                                                        </td>
+                                                                                        <td>@rec.MemberName</td>
+                                                                                        <td>@rec.MemberDob</td>
+                                                                                        <td>@rec.Relationship</td>
+                                                                                        <td>
+                                                                                        </td>
+                                                                                        <td width="20%" class="text-center" style="padding: 10px;">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="button" class="btn btn-warning btn-sm" value="Cancel" onclick="Cancel('@item.TicketId',@item.ActionId,this,'CancelAddDel')">
+                                                                                                }
+                                                                                                //else if (item.ActionStatus == 0)
+                                                                                                //{
+                                                                                                //    <input type="button" class="btn btn-primary btn-sm" value="Approve" onclick="Approve(@item.TicketId,@item.ActionId,this,'Delete')">
+                                                                                                //    <input type="button" class="btn btn-danger btn-sm" value="Reject" onclick="Reject(@item.TicketId,@item.ActionId,this,'Delete')" />
+                                                                                                //}
+                                                                                                else if (item.ActionStatus == 1)
+                                                                                                {
+                                                                                                    <span style="color:orange">Cancelled</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 2)
+                                                                                                {
+                                                                                                    <span style="color:green">Approved</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 3)
+                                                                                                {
+                                                                                                    <span style="color:red">Rejected</span>
+                                                                                                }
+                                                                                                else
+                                                                                                {
+
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else if (tabItem.ToUpper() == "EMPLOYEEACADEMICDETAIL")
+                                                {
+                                                    <div class="card accordion-item">
+                                                        <h2 class="accordion-header d-flex align-items-center">
+                                                            <button type="button"
+                                                                    class="accordion-button collapsed"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#accordionWithIconDelete-@tabItem.Replace(" ","")"
+                                                                    aria-expanded="false">
+                                                                Academic Details
+                                                            </button>
+                                                        </h2>
+                                                        <div id="accordionWithIconDelete-@tabItem.Replace(" ","")" class="accordion-collapse collapse">
+                                                            <div class="accordion-body">
+                                                                <table class="table table-bordered">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th width="50"><input type="checkbox" ctrl="chk_parent_@(tabItem.Replace(" ",""))_delete" class="form-check-input" /></th>
+                                                                            <th>Institue/University</th>
+                                                                            <th>Qualification</th>
+                                                                            <th>Year Of Passing</th>
+                                                                            <th>Percentage</th>
+                                                                            <th>View Attachment</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @{
+                                                                            foreach (var item in Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList.Where(x => (x.ActionType == null ? "" : x.ActionType.ToUpper()) == "DELETE" && (x.ReferenceTable == null ? "" : x.ReferenceTable.ToUpper()) == "EMPLOYEEACADEMICDETAIL"))
+                                                                            {
+                                                                                var rec = Model == null ? null : Model.employeeAddDeleteInfoViewModel == null ? null : Model.employeeAddDeleteInfoViewModel.employeeAcademicDetailList == null ? null : Model.employeeAddDeleteInfoViewModel.employeeAcademicDetailList.Where(x => x.AcademicDetailId == item.ReferenceId) == null ? null : Model.employeeAddDeleteInfoViewModel.employeeAcademicDetailList.Where(x => x.AcademicDetailId == item.ReferenceId).FirstOrDefault();
+                                                                                if (rec != null)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td class="text-center">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_delete" class="form-check-input" />
+                                                                                                }
+                                                                                                //else if (item.ActionStatus == 0)
+                                                                                                //{
+                                                                                                //    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_delete" class="form-check-input" />
+                                                        //}
+                                                                                            }
+
+                                                                                        </td>
+                                                                                        <td>@rec.InstituteName</td>
+                                                                                        <td>@rec.AcademicName</td>
+                                                                                        <td>@rec.PassingYear</td>
+                                                                                        <td>@rec.Percentage</td>
+                                                                                        <td>
+                                                                                        </td>
+                                                                                        <td width="20%" class="text-center" style="padding: 10px;">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="button" class="btn btn-warning btn-sm" value="Cancel" onclick="Cancel('@item.TicketId',@item.ActionId,this,'CancelAddDel')">
+                                                                                                }
+                                                                                                //else if (item.ActionStatus == 0)
+                                                                                                //{
+                                                                                                //    <input type="button" class="btn btn-primary btn-sm" value="Approve" onclick="Approve(@item.TicketId,@item.ActionId,this)">
+                                                                                                //    <input type="button" class="btn btn-danger btn-sm" value="Reject" onclick="Reject(@item.TicketId,@item.ActionId,this)" />
+                                                                                                //}
+                                                                                                else if (item.ActionStatus == 1)
+                                                                                                {
+                                                                                                    <span style="color:orange">Cancelled</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 2)
+                                                                                                {
+                                                                                                    <span style="color:green">Approved</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 3)
+                                                                                                {
+                                                                                                    <span style="color:red">Rejected</span>
+                                                                                                }
+                                                                                                else
+                                                                                                {
+
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else if (tabItem.ToUpper() == "EMPLOYEEEXPERIENCEDETAIL")
+                                                {
+                                                    <div class="card accordion-item">
+                                                        <h2 class="accordion-header d-flex align-items-center">
+                                                            <button type="button"
+                                                                    class="accordion-button collapsed"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#accordionWithIconDelete-@tabItem.Replace(" ","")"
+                                                                    aria-expanded="false">
+                                                                Experience Details
+                                                            </button>
+                                                        </h2>
+                                                        <div id="accordionWithIconDelete-@tabItem.Replace(" ","")" class="accordion-collapse collapse">
+                                                            <div class="accordion-body">
+                                                                <table class="table table-bordered">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th width="50"><input type="checkbox" ctrl="chk_parent_@(tabItem.Replace(" ",""))_delete" class="form-check-input" /></th>
+                                                                            <th>Company Name</th>
+                                                                            <th>Job Title</th>
+                                                                            <th>Joining Date</th>
+                                                                            <th>Last Working Date</th>
+                                                                            <th>View Attachment</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @{
+                                                                            foreach (var item in Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList.Where(x => (x.ActionType == null ? "" : x.ActionType.ToUpper()) == "DELETE" && (x.ReferenceTable == null ? "" : x.ReferenceTable.ToUpper()) == "EMPLOYEEEXPERIENCEDETAIL"))
+                                                                            {
+                                                                                var rec = Model == null ? null : Model.employeeAddDeleteInfoViewModel == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeExperienceDetailList == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeExperienceDetailList.Where(x => x.ExperienceDetailId == item.ReferenceId) == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeExperienceDetailList.Where(x => x.ExperienceDetailId == item.ReferenceId).FirstOrDefault();
+                                                                                if (rec != null)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td class="text-center">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_delete" class="form-check-input" />
+                                                                                                }
+                                                                                                //else if (item.ActionStatus == 0)
+                                                                                                //{
+                                                                                                //    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_delete" class="form-check-input" />
+                                                        //}
+                                                                                            }
+
+                                                                                        </td>
+                                                                                        <td>@rec.CompanyName</td>
+                                                                                        <td>@rec.JobTitle</td>
+                                                                                        <td>@rec.JoinDate</td>
+                                                                                        <td>@rec.LastWorkingDate</td>
+                                                                                        <td>
+                                                                                        </td>
+                                                                                        <td width="20%" class="text-center" style="padding: 10px;">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="button" class="btn btn-warning btn-sm" value="Cancel" onclick="Cancel('@item.TicketId',@item.ActionId,this,'CancelAddDel')">
+                                                                                                }
+                                                                                                //else if ()
+                                                                                                //{
+                                                                                                //    <input type="button" class="btn btn-primary btn-sm" value="Approve" onclick="Approve(@item.TicketId,@item.ActionId,this)">
+                                                                                                //    <input type="button" class="btn btn-danger btn-sm" value="Reject" onclick="Reject(@item.TicketId,@item.ActionId,this)" />
+                                                                                                //}
+                                                                                                else if (item.ActionStatus == 1)
+                                                                                                {
+                                                                                                    <span style="color:orange">Cancelled</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 2)
+                                                                                                {
+                                                                                                    <span style="color:green">Approved</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 3)
+                                                                                                {
+                                                                                                    <span style="color:red">Rejected</span>
+                                                                                                }
+                                                                                                else
+                                                                                                {
+
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else if (tabItem.ToUpper() == "EMPLOYEECERTIFICATIONDETAIL")
+                                                {
+                                                    <div class="card accordion-item">
+                                                        <h2 class="accordion-header d-flex align-items-center">
+                                                            <button type="button"
+                                                                    class="accordion-button collapsed"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#accordionWithIconDelete-@tabItem.Replace(" ","")"
+                                                                    aria-expanded="false">
+                                                                Certification Details
+                                                            </button>
+                                                        </h2>
+                                                        <div id="accordionWithIconDelete-@tabItem.Replace(" ","")" class="accordion-collapse collapse">
+                                                            <div class="accordion-body">
+                                                                <table class="table table-bordered">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th width="50"><input type="checkbox" ctrl="chk_parent_@(tabItem.Replace(" ",""))_delete" class="form-check-input" /></th>
+                                                                            <th>Certification Name</th>
+                                                                            <th>Year</th>
+                                                                            <th>Duration</th>
+                                                                            <th>View Attachment</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @{
+                                                                            foreach (var item in Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList.Where(x => (x.ActionType == null ? "" : x.ActionType.ToUpper()) == "DELETE" && (x.ReferenceTable == null ? "" : x.ReferenceTable.ToUpper()) == "EMPLOYEECERTIFICATIONDETAIL"))
+                                                                            {
+                                                                                var rec = Model == null ? null : Model.employeeAddDeleteInfoViewModel == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeCertificationDetailList == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeCertificationDetailList.Where(x => x.CertificationDetailId == item.ReferenceId) == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeCertificationDetailList.Where(x => x.CertificationDetailId == item.ReferenceId).FirstOrDefault();
+                                                                                if (rec != null)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td class="text-center">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_delete" class="form-check-input" />
+                                                                                                }
+                                                                                                //else if (item.ActionStatus == 0)
+                                                                                                //{
+                                                                                                //    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_delete" class="form-check-input" />
+                                                        //}
+                                                                                            }
+
+                                                                                        </td>
+                                                                                        <td>@rec.CertificationName</td>
+                                                                                        <td>@rec.YearOfCertification</td>
+                                                                                        <td>@rec.Duration</td>
+                                                                                        <td></td>
+                                                                                        <td width="20%" class="text-center" style="padding: 10px;">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="button" class="btn btn-warning btn-sm" value="Cancel" onclick="Cancel('@item.TicketId',@item.ActionId,this,'CancelAddDel')">
+                                                                                                }
+                                                                                                //else if ()
+                                                                                                //{
+                                                                                                //    <input type="button" class="btn btn-primary btn-sm" value="Approve" onclick="Approve(@item.TicketId,@item.ActionId,this)">
+                                                                                                //    <input type="button" class="btn btn-danger btn-sm" value="Reject" onclick="Reject(@item.TicketId,@item.ActionId,this)" />
+                                                                                                //}
+                                                                                                else if (item.ActionStatus == 1)
+                                                                                                {
+                                                                                                    <span style="color:orange">Cancelled</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 2)
+                                                                                                {
+                                                                                                    <span style="color:green">Approved</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 3)
+                                                                                                {
+                                                                                                    <span style="color:red">Rejected</span>
+                                                                                                }
+                                                                                                else
+                                                                                                {
+
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else if (tabItem.ToUpper() == "EMPLOYEEREFERENCEDETAIL")
+                                                {
+                                                    <div class="card accordion-item">
+                                                        <h2 class="accordion-header d-flex align-items-center">
+                                                            <button type="button"
+                                                                    class="accordion-button collapsed"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#accordionWithIconDelete-@tabItem.Replace(" ","")"
+                                                                    aria-expanded="false">
+                                                                Reference Details
+                                                            </button>
+                                                        </h2>
+                                                        <div id="accordionWithIconDelete-@tabItem.Replace(" ","")" class="accordion-collapse collapse">
+                                                            <div class="accordion-body">
+                                                                <table class="table table-bordered">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th width="50"><input type="checkbox" ctrl="chk_parent_@(tabItem.Replace(" ",""))_delete" class="form-check-input" /></th>
+                                                                            <th>Person Name</th>
+                                                                            <th>Present Company</th>
+                                                                            <th>Designation</th>
+                                                                            <th>Contact Number</th>
+                                                                            <th>Mobile Number</th>
+                                                                            <th>HOW DO YOU KNOW HIM/HER</th>
+                                                                            <th>View Attachment</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @{
+                                                                            foreach (var item in Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList.Where(x => (x.ActionType == null ? "" : x.ActionType.ToUpper()) == "DELETE" && (x.ReferenceTable == null ? "" : x.ReferenceTable.ToUpper()) == "EMPLOYEEREFERENCEDETAIL"))
+                                                                            {
+                                                                                var rec = Model == null ? null : Model.employeeAddDeleteInfoViewModel == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeReferenceDetailList == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeReferenceDetailList.Where(x => x.EmployeeReferenceId == item.ReferenceId) == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeReferenceDetailList.Where(x => x.EmployeeReferenceId == item.ReferenceId).FirstOrDefault();
+                                                                                if (rec != null)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td class="text-center">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_delete" class="form-check-input" />
+                                                                                                }
+                                                                                                //else if (item.ActionStatus == 0)
+                                                                                                //{
+                                                                                                //    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_delete" class="form-check-input" />
+                                                        //}
+                                                                                            }
+
+                                                                                        </td>
+                                                                                        <td>@rec.PersonName</td>
+                                                                                        <td>@rec.PresentCompany</td>
+                                                                                        <td>@rec.ReferenceDesignation</td>
+                                                                                        <td>@rec.ReferenceContactNo</td>
+                                                                                        <td>@rec.ReferenceMobileNo</td>
+                                                                                        <td>@rec.HowYouKnow</td>
+                                                                                        <td></td>
+                                                                                        <td width="20%" class="text-center" style="padding: 10px;">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="button" class="btn btn-warning btn-sm" value="Cancel" onclick="Cancel('@item.TicketId',@item.ActionId,this,'CancelAddDel')">
+                                                                                                }
+                                                                                                //else if ()
+                                                                                                //{
+                                                                                                //    <input type="button" class="btn btn-primary btn-sm" value="Approve" onclick="Approve(@item.TicketId,@item.ActionId,this)">
+                                                                                                //    <input type="button" class="btn btn-danger btn-sm" value="Reject" onclick="Reject(@item.TicketId,@item.ActionId,this)" />
+                                                                                                //}
+                                                                                                else if (item.ActionStatus == 1)
+                                                                                                {
+                                                                                                    <span style="color:orange">Cancelled</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 2)
+                                                                                                {
+                                                                                                    <span style="color:green">Approved</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 3)
+                                                                                                {
+                                                                                                    <span style="color:red">Rejected</span>
+                                                                                                }
+                                                                                                else
+                                                                                                {
+
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else if (tabItem.ToUpper() == "EMPLOYEELANGUAGEDETAIL")
+                                                {
+                                                    <div class="card accordion-item">
+                                                        <h2 class="accordion-header d-flex align-items-center">
+                                                            <button type="button"
+                                                                    class="accordion-button collapsed"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#accordionWithIconDelete-@tabItem.Replace(" ","")"
+                                                                    aria-expanded="false">
+                                                                Language Details
+                                                            </button>
+                                                        </h2>
+                                                        <div id="accordionWithIconDelete-@tabItem.Replace(" ","")" class="accordion-collapse collapse">
+                                                            <div class="accordion-body">
+                                                                <table class="table table-bordered">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th width="50"><input type="checkbox" ctrl="chk_parent_@(tabItem.Replace(" ",""))_delete" class="form-check-input" /></th>
+                                                                            <th>Language</th>
+                                                                            <th>Read</th>
+                                                                            <th>Write</th>
+                                                                            <th>Speak</th>
+                                                                            <th>View Attachment</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @{
+                                                                            foreach (var item in Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList.Where(x => (x.ActionType == null ? "" : x.ActionType.ToUpper()) == "DELETE" && (x.ReferenceTable == null ? "" : x.ReferenceTable.ToUpper()) == "EMPLOYEELANGUAGEDETAIL"))
+                                                                            {
+                                                                                var rec = Model == null ? null : Model.employeeAddDeleteInfoViewModel == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeLanguageDetailList == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeLanguageDetailList.Where(x => x.EmployeeLanguageDetailId == item.ReferenceId) == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeLanguageDetailList.Where(x => x.EmployeeLanguageDetailId == item.ReferenceId).FirstOrDefault();
+                                                                                if (rec != null)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td class="text-center">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_delete" class="form-check-input" />
+                                                                                                }
+                                                                                                //else if (item.ActionStatus == 0)
+                                                                                                //{
+                                                                                                //    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_delete" class="form-check-input" />
+                                                        //}
+                                                                                            }
+
+                                                                                        </td>
+                                                                                        <td> @rec.LanguageMaster.Language</td>
+                                                                                        <td>@rec.Read</td>
+                                                                                        <td>@rec.Write</td>
+                                                                                        <td>@rec.Speak</td>
+                                                                                        <td></td>
+                                                                                        <td width="20%" class="text-center" style="padding: 10px;">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="button" class="btn btn-warning btn-sm" value="Cancel" onclick="Cancel('@item.TicketId',@item.ActionId,this,'CancelAddDel')">
+                                                                                                }
+                                                                                                //else if (item.ActionStatus == 0)
+                                                                                                //{
+                                                                                                //    <input type="button" class="btn btn-primary btn-sm" value="Approve" onclick="Approve(@item.TicketId,@item.ActionId,this)">
+                                                                                                //    <input type="button" class="btn btn-danger btn-sm" value="Reject" onclick="Reject(@item.TicketId,@item.ActionId,this)" />
+                                                                                                //}
+                                                                                                else if (item.ActionStatus == 1)
+                                                                                                {
+                                                                                                    <span style="color:orange">Cancelled</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 2)
+                                                                                                {
+                                                                                                    <span style="color:green">Approved</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 3)
+                                                                                                {
+                                                                                                    <span style="color:red">Rejected</span>
+                                                                                                }
+                                                                                                else
+                                                                                                {
+
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            if (Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList.Count(x => (x.ActionType == null ? "" : x.ActionType.ToUpper()) == "ADD") > 0)
+                            {
+                                string?[] tabs = Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList.Where(x => (x.ActionType == null ? "" : x.ActionType.ToUpper()) == "ADD").Select(x => x.ReferenceTable).Distinct().ToArray();
+                                if (tabs != null)
+                                {
+                                    if (tabs.Count() > 0)
+                                    {
+                                        <h3>Add Requests</h3>
+                                        foreach (var tabItem in tabs)
+                                        {
+                                            if (tabItem != null)
+                                            {
+                                                if (tabItem.ToUpper() == "EMPLOYEEBANKDETAIL")
+                                                {
+                                                    <div class="card accordion-item">
+                                                        <h2 class="accordion-header d-flex align-items-center">
+                                                            <button type="button"
+                                                                    class="accordion-button collapsed"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#accordionWithIconDelete-@tabItem.Replace(" ","")"
+                                                                    aria-expanded="false">
+                                                                Bank Details
+                                                            </button>
+                                                        </h2>
+                                                        <div id="accordionWithIconDelete-@tabItem.Replace(" ","")" class="accordion-collapse collapse">
+                                                            <div class="accordion-body">
+                                                                <table class="table table-bordered">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th width="50"><input type="checkbox" ctrl="chk_parent_@(tabItem.Replace(" ",""))_delete" class="form-check-input" /></th>
+                                                                            <th>Bank Name</th>
+                                                                            <th>Account No</th>
+                                                                            <th>IFSC Code</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @{
+                                                                            foreach (var item in Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList.Where(x => (x.ActionType == null ? "" : x.ActionType.ToUpper()) == "ADD" && (x.ReferenceTable == null ? "" : x.ReferenceTable.ToUpper()) == "EMPLOYEEBANKDETAIL"))
+                                                                            {
+                                                                                var rec = Model == null ? null : Model.employeeAddDeleteInfoViewModel == null ? null : Model.employeeAddDeleteInfoViewModel.employeeBankDetailList == null ? null : Model.employeeAddDeleteInfoViewModel.employeeBankDetailList.Where(x => x.BankDetailId == item.ReferenceId) == null ? null : Model.employeeAddDeleteInfoViewModel.employeeBankDetailList.Where(x => x.BankDetailId == item.ReferenceId).FirstOrDefault();
+                                                                                if (rec != null)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td class="text-center">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_delete" class="form-check-input" />
+                                                                                                }
+                                                                                                //else if (item.ActionStatus == 0)
+                                                                                                //{
+                                                                                                //    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_delete" class="form-check-input" />
+                                                        //}
+                                                                                            }
+
+                                                                                        </td>
+                                                                                        <td>@rec.Bank.BankName</td>
+                                                                                        <td>@rec.AccountNo</td>
+                                                                                        <td>@rec.IFSCCode</td>
+                                                                                        <td>
+                                                                                        </td>
+                                                                                        <td width="20%" class="text-center" style="padding: 10px;">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="button" class="btn btn-warning btn-sm" value="Cancel" onclick="Cancel('@item.TicketId',@item.ActionId,this,'CancelAddDel')">
+                                                                                                }
+                                                                                                //else if (item.ActionStatus == 0)
+                                                                                                //{
+                                                                                                //    <input type="button" class="btn btn-primary btn-sm" value="Approve" onclick="Approve(@item.TicketId,@item.ActionId,this,'Delete')">
+                                                                                                //    <input type="button" class="btn btn-danger btn-sm" value="Reject" onclick="Reject(@item.TicketId,@item.ActionId,this,'Delete')" />
+                                                                                                //}
+                                                                                                else if (item.ActionStatus == 1)
+                                                                                                {
+                                                                                                    <span style="color:orange">Cancelled</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 2)
+                                                                                                {
+                                                                                                    <span style="color:green">Approved</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 3)
+                                                                                                {
+                                                                                                    <span style="color:red">Rejected</span>
+                                                                                                }
+                                                                                                else
+                                                                                                {
+
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else if (tabItem.ToUpper() == "EMPLOYEEFAMILYDETAIL")
+                                                {
+                                                    <div class="card accordion-item">
+                                                        <h2 class="accordion-header d-flex align-items-center">
+                                                            <button type="button"
+                                                                    class="accordion-button collapsed"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#accordionWithIconAdd-@tabItem.Replace(" ","")"
+                                                                    aria-expanded="false">
+                                                                Family Details
+                                                            </button>
+                                                        </h2>
+                                                        <div id="accordionWithIconAdd-@tabItem.Replace(" ","")" class="accordion-collapse collapse">
+                                                            <div class="accordion-body">
+                                                                <table class="table table-bordered">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th width="50"><input type="checkbox" ctrl="chk_parent_@(tabItem.Replace(" ",""))_add" class="form-check-input" /></th>
+                                                                            <th>Member Name</th>
+                                                                            <th>Member DOB</th>
+                                                                            <th>Relationship with the member</th>
+                                                                            <th>View Attachment</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @{
+                                                                            foreach (var item in Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList.Where(x => (x.ActionType == null ? "" : x.ActionType.ToUpper()) == "ADD" && (x.ReferenceTable == null ? "" : x.ReferenceTable.ToUpper()) == "EMPLOYEEFAMILYDETAIL"))
+                                                                            {
+                                                                                var rec = Model == null ? null : Model.employeeAddDeleteInfoViewModel == null ? null : Model.employeeAddDeleteInfoViewModel.employeeFamilyDetailList == null ? null : Model.employeeAddDeleteInfoViewModel.employeeFamilyDetailList.Where(x => x.EmployeeFamilyDetailId == item.ReferenceId) == null ? null : Model.employeeAddDeleteInfoViewModel.employeeFamilyDetailList.Where(x => x.EmployeeFamilyDetailId == item.ReferenceId).FirstOrDefault();
+                                                                                if (rec != null)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td class="text-center">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_add" class="form-check-input" />
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                        <td>@rec.MemberName</td>
+                                                                                        <td>@rec.MemberDob</td>
+                                                                                        <td>@rec.Relationship</td>
+                                                                                        <td>
+                                                                                        </td>
+                                                                                        <td width="20%" class="text-center" style="padding: 10px;">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="button" class="btn btn-warning btn-sm" value="Cancel" onclick="Cancel('@item.TicketId',@item.ActionId,this,'CancelAddDel')">
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 1)
+                                                                                                {
+                                                                                                    <span style="color:orange">Cancelled</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 2)
+                                                                                                {
+                                                                                                    <span style="color:green">Approved</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 3)
+                                                                                                {
+                                                                                                    <span style="color:red">Rejected</span>
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else if (tabItem.ToUpper() == "EMPLOYEEACADEMICDETAIL")
+                                                {
+                                                    <div class="card accordion-item">
+                                                        <h2 class="accordion-header d-flex align-items-center">
+                                                            <button type="button"
+                                                                    class="accordion-button collapsed"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#accordionWithIconAdd-@tabItem.Replace(" ","")"
+                                                                    aria-expanded="false">
+                                                                Academic Details
+                                                            </button>
+                                                        </h2>
+                                                        <div id="accordionWithIconAdd-@tabItem.Replace(" ","")" class="accordion-collapse collapse">
+                                                            <div class="accordion-body">
+                                                                <table class="table table-bordered">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th width="50"><input type="checkbox" ctrl="chk_parent_@(tabItem.Replace(" ",""))_add" class="form-check-input" /></th>
+                                                                            <th>Institue/University</th>
+                                                                            <th>Qualification</th>
+                                                                            <th>Year Of Passing</th>
+                                                                            <th>Percentage</th>
+                                                                            <th>View Attachment</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @{
+                                                                            foreach (var item in Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList.Where(x => (x.ActionType == null ? "" : x.ActionType.ToUpper()) == "ADD" && (x.ReferenceTable == null ? "" : x.ReferenceTable.ToUpper()) == "EMPLOYEEACADEMICDETAIL"))
+                                                                            {
+                                                                                var rec = Model == null ? null : Model.employeeAddDeleteInfoViewModel == null ? null : Model.employeeAddDeleteInfoViewModel.employeeAcademicDetailList == null ? null : Model.employeeAddDeleteInfoViewModel.employeeAcademicDetailList.Where(x => x.AcademicDetailId == item.ReferenceId) == null ? null : Model.employeeAddDeleteInfoViewModel.employeeAcademicDetailList.Where(x => x.AcademicDetailId == item.ReferenceId).FirstOrDefault();
+                                                                                if (rec != null)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td class="text-center">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_add" class="form-check-input" />
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                        <td>@rec.InstituteName</td>
+                                                                                        <td>@rec.AcademicName</td>
+                                                                                        <td>@rec.PassingYear</td>
+                                                                                        <td>@rec.Percentage</td>
+                                                                                        <td>
+                                                                                        </td>
+                                                                                        <td width="20%" class="text-center" style="padding: 10px;">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                     <input type="button" class="btn btn-warning btn-sm" value="Cancel" onclick="Cancel('@item.TicketId',@item.ActionId,this,'CancelAddDel')">
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 1)
+                                                                                                {
+                                                                                                    <span style="color:orange">Cancelled</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 2)
+                                                                                                {
+                                                                                                    <span style="color:green">Approved</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 3)
+                                                                                                {
+                                                                                                    <span style="color:red">Rejected</span>
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else if (tabItem.ToUpper() == "EMPLOYEEEXPERIENCEDETAIL")
+                                                {
+                                                    <div class="card accordion-item">
+                                                        <h2 class="accordion-header d-flex align-items-center">
+                                                            <button type="button"
+                                                                    class="accordion-button collapsed"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#accordionWithIconAdd-@tabItem.Replace(" ","")"
+                                                                    aria-expanded="false">
+                                                                Experience Details
+                                                            </button>
+                                                        </h2>
+                                                        <div id="accordionWithIconAdd-@tabItem.Replace(" ","")" class="accordion-collapse collapse">
+                                                            <div class="accordion-body">
+                                                                <table class="table table-bordered">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th width="50"><input type="checkbox" ctrl="chk_parent_@(tabItem.Replace(" ",""))_add" class="form-check-input" /></th>
+                                                                            <th>Company Name</th>
+                                                                            <th>Job Title</th>
+                                                                            <th>Joining Date</th>
+                                                                            <th>Last Working Date</th>
+                                                                            <th>View Attachment</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @{
+                                                                            foreach (var item in Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList.Where(x => (x.ActionType == null ? "" : x.ActionType.ToUpper()) == "ADD" && (x.ReferenceTable == null ? "" : x.ReferenceTable.ToUpper()) == "EMPLOYEEEXPERIENCEDETAIL"))
+                                                                            {
+                                                                                var rec = Model == null ? null : Model.employeeAddDeleteInfoViewModel == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeExperienceDetailList == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeExperienceDetailList.Where(x => x.ExperienceDetailId == item.ReferenceId) == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeExperienceDetailList.Where(x => x.ExperienceDetailId == item.ReferenceId).FirstOrDefault();
+                                                                                if (rec != null)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td class="text-center">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_add" class="form-check-input" />
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                        <td>@rec.CompanyName</td>
+                                                                                        <td>@rec.JobTitle</td>
+                                                                                        <td>@rec.JoinDate</td>
+                                                                                        <td>@rec.LastWorkingDate</td>
+                                                                                        <td>
+                                                                                        </td>
+                                                                                        <td width="20%" class="text-center" style="padding: 10px;">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="button" class="btn btn-warning btn-sm" value="Cancel" onclick="Cancel('@item.TicketId',@item.ActionId,this,'CancelAddDel')">
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 1)
+                                                                                                {
+                                                                                                    <span style="color:orange">Cancelled</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 2)
+                                                                                                {
+                                                                                                    <span style="color:green">Approved</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 3)
+                                                                                                {
+                                                                                                    <span style="color:red">Rejected</span>
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else if (tabItem.ToUpper() == "EMPLOYEECERTIFICATIONDETAIL")
+                                                {
+                                                    <div class="card accordion-item">
+                                                        <h2 class="accordion-header d-flex align-items-center">
+                                                            <button type="button"
+                                                                    class="accordion-button collapsed"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#accordionWithIconAdd-@tabItem.Replace(" ","")"
+                                                                    aria-expanded="false">
+                                                                Certification Details
+                                                            </button>
+                                                        </h2>
+                                                        <div id="accordionWithIconAdd-@tabItem.Replace(" ","")" class="accordion-collapse collapse">
+                                                            <div class="accordion-body">
+                                                                <table class="table table-bordered">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th width="50"><input type="checkbox" ctrl="chk_parent_@(tabItem.Replace(" ",""))_add" class="form-check-input" /></th>
+                                                                            <th>Certification Name</th>
+                                                                            <th>Year</th>
+                                                                            <th>Duration</th>
+                                                                            <th>View Attachment</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @{
+                                                                            foreach (var item in Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList.Where(x => (x.ActionType == null ? "" : x.ActionType.ToUpper()) == "ADD" && (x.ReferenceTable == null ? "" : x.ReferenceTable.ToUpper()) == "EMPLOYEECERTIFICATIONDETAIL"))
+                                                                            {
+                                                                                var rec = Model == null ? null : Model.employeeAddDeleteInfoViewModel == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeCertificationDetailList == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeCertificationDetailList.Where(x => x.CertificationDetailId == item.ReferenceId) == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeCertificationDetailList.Where(x => x.CertificationDetailId == item.ReferenceId).FirstOrDefault();
+                                                                                if (rec != null)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td class="text-center">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_add" class="form-check-input" />
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                        <td>@rec.CertificationName</td>
+                                                                                        <td>@rec.YearOfCertification</td>
+                                                                                        <td>@rec.Duration</td>
+                                                                                        <td></td>
+                                                                                        <td width="20%" class="text-center" style="padding: 10px;">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="button" class="btn btn-warning btn-sm" value="Cancel" onclick="Cancel('@item.TicketId',@item.ActionId,this,'CancelAddDel')">
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 1)
+                                                                                                {
+                                                                                                    <span style="color:orange">Cancelled</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 2)
+                                                                                                {
+                                                                                                    <span style="color:green">Approved</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 3)
+                                                                                                {
+                                                                                                    <span style="color:red">Rejected</span>
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else if (tabItem.ToUpper() == "EMPLOYEEREFERENCEDETAIL")
+                                                {
+                                                    <div class="card accordion-item">
+                                                        <h2 class="accordion-header d-flex align-items-center">
+                                                            <button type="button"
+                                                                    class="accordion-button collapsed"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#accordionWithIconAdd-@tabItem.Replace(" ","")"
+                                                                    aria-expanded="false">
+                                                                Reference Details
+                                                            </button>
+                                                        </h2>
+                                                        <div id="accordionWithIconAdd-@tabItem.Replace(" ","")" class="accordion-collapse collapse">
+                                                            <div class="accordion-body">
+                                                                <table class="table table-bordered">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th width="50"><input type="checkbox" ctrl="chk_parent_@(tabItem.Replace(" ",""))_add" class="form-check-input" /></th>
+                                                                            <th>Person Name</th>
+                                                                            <th>Present Company</th>
+                                                                            <th>Designation</th>
+                                                                            <th>Contact Number</th>
+                                                                            <th>Mobile Number</th>
+                                                                            <th>HOW DO YOU KNOW HIM/HER</th>
+                                                                            <th>View Attachment</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @{
+                                                                            foreach (var item in Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList.Where(x => (x.ActionType == null ? "" : x.ActionType.ToUpper()) == "ADD" && (x.ReferenceTable == null ? "" : x.ReferenceTable.ToUpper()) == "EMPLOYEEREFERENCEDETAIL"))
+                                                                            {
+                                                                                var rec = Model == null ? null : Model.employeeAddDeleteInfoViewModel == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeReferenceDetailList == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeReferenceDetailList.Where(x => x.EmployeeReferenceId == item.ReferenceId) == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeReferenceDetailList.Where(x => x.EmployeeReferenceId == item.ReferenceId).FirstOrDefault();
+                                                                                if (rec != null)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td class="text-center">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_add" class="form-check-input" />
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                        <td>@rec.PersonName</td>
+                                                                                        <td>@rec.PresentCompany</td>
+                                                                                        <td>@rec.ReferenceDesignation</td>
+                                                                                        <td>@rec.ReferenceContactNo</td>
+                                                                                        <td>@rec.ReferenceMobileNo</td>
+                                                                                        <td>@rec.HowYouKnow</td>
+                                                                                        <td></td>
+                                                                                        <td width="20%" class="text-center" style="padding: 10px;">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="button" class="btn btn-warning btn-sm" value="Cancel" onclick="Cancel('@item.TicketId',@item.ActionId,this,'CancelAddDel')">
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 1)
+                                                                                                {
+                                                                                                    <span style="color:orange">Cancelled</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 2)
+                                                                                                {
+                                                                                                    <span style="color:green">Approved</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 3)
+                                                                                                {
+                                                                                                    <span style="color:red">Rejected</span>
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else if (tabItem.ToUpper() == "EMPLOYEELANGUAGEDETAIL")
+                                                {
+                                                    <div class="card accordion-item">
+                                                        <h2 class="accordion-header d-flex align-items-center">
+                                                            <button type="button"
+                                                                    class="accordion-button collapsed"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#accordionWithIconAdd-@tabItem.Replace(" ","")"
+                                                                    aria-expanded="false">
+                                                                Language Details
+                                                            </button>
+                                                        </h2>
+                                                        <div id="accordionWithIconAdd-@tabItem.Replace(" ","")" class="accordion-collapse collapse">
+                                                            <div class="accordion-body">
+                                                                <table class="table table-bordered">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th width="50"><input type="checkbox" ctrl="chk_parent_@(tabItem.Replace(" ",""))_add" class="form-check-input" /></th>
+                                                                            <th>Language</th>
+                                                                            <th>Read</th>
+                                                                            <th>Write</th>
+                                                                            <th>Speak</th>
+                                                                            <th>View Attachment</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @{
+                                                                            foreach (var item in Model.employeeAddDeleteInfoViewModel.addDeleteTableActionList.Where(x => (x.ActionType == null ? "" : x.ActionType.ToUpper()) == "ADD" && (x.ReferenceTable == null ? "" : x.ReferenceTable.ToUpper()) == "EMPLOYEELANGUAGEDETAIL"))
+                                                                            {
+                                                                                var rec = Model == null ? null : Model.employeeAddDeleteInfoViewModel == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeLanguageDetailList == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeLanguageDetailList.Where(x => x.EmployeeLanguageDetailId == item.ReferenceId) == null ? null : Model.employeeAddDeleteInfoViewModel.EmployeeLanguageDetailList.Where(x => x.EmployeeLanguageDetailId == item.ReferenceId).FirstOrDefault();
+                                                                                if (rec != null)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td class="text-center">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="checkbox" ctrl="chk_child_@(tabItem.Replace(" ",""))_add" class="form-check-input" />
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                        <td> @rec.LanguageMaster.Language</td>
+                                                                                        <td>@rec.Read</td>
+                                                                                        <td>@rec.Write</td>
+                                                                                        <td>@rec.Speak</td>
+                                                                                        <td></td>
+                                                                                        <td width="20%" class="text-center" style="padding: 10px;">
+                                                                                            @{
+                                                                                                if (item.ActionStatus == null || item.ActionStatus == 0)
+                                                                                                {
+                                                                                                    <input type="button" class="btn btn-warning btn-sm" value="Cancel" onclick="Cancel('@item.TicketId',@item.ActionId,this,'CancelAddDel')">
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 1)
+                                                                                                {
+                                                                                                    <span style="color:orange">Cancelled</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 2)
+                                                                                                {
+                                                                                                    <span style="color:green">Approved</span>
+                                                                                                }
+                                                                                                else if (item.ActionStatus == 3)
+                                                                                                {
+                                                                                                    <span style="color:red">Rejected</span>
+                                                                                                }
+                                                                                            }
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,150 @@
+﻿@model SimpliHR.Webui.Modals.Account.Login
+@{
+    Layout = null;
+}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimpliHR</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="https://fonts.cdnfonts.com/css/corbert?styles=37648" rel="stylesheet">
+    <style>
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px #f6f6f6 inset !important;
+        }
+    </style>
+</head>
+<body onload="loadding()">
+    <section class="main-bg">
+        <div id="loader"></div>
+        <div class="container-fluid ">
+            <div class="row">
+                <div id="bgLeft" class="col-lg-12 left-bg animate-bottom noPad">
+                    <div id="bgRight" class="right-bg animate-bottom">
+                        <form id="loginBackground" class="login-form animate-bottom" method="post" action="/Account/ProcessAttendance">
+                            <div class="text-center" style="height: 163px;">
+                                <div id="logo" class="animate-top"><img src="../images/logo.jpg" width="230" height="auto" alt=""></div>
+                            </div>
+                            <div>
+                                <div id="wel-come" class="welcome text-center animate-top">Welcome Back</div>
+                            </div>
+                            <div>
+                                <div id="username_div" class="login-form-cont animate-top">
+                                    <div class="back-img-user">
+                                        <input asp-for="UserName" name="UserName" type="text" class="username" required placeholder="Username">
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div id="password_div" class="animate-top">
+                                    <div class="login-form-cont">
+                                        <div class="back-img-password">
+                                            <span class="pass">
+                                                <input asp-for="Password" name="Password" type="password" class="password" required placeholder="Password">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div id class="save-pass">
+                                            <table cellpadding="" 0 cellspacing="" 0 width="100%">
+                                                <tr>
+                                                    <td><input type="checkbox" name="" id="" style="display: inline-block;"> &nbsp;<span class="rem-pass">Remember Password</span></td>
+                                                    <td style="text-align: right;">Forgot Password</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="login" style="height: 45px;">
+                                <div class="login-btn animate-top">
+                                    <button type="submit">Login</button>
+                                    <button type="submit">Attendance</button>
+                                </div>
+                                @Html.ValidationSummary("" ,new{@class = "text-danger"})
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="~/customjs/employeevalidation.js"></script>
+    <script>
+        var loader;
+        var background;
+        var loginBg;
+        var logImg;
+        var welNote;
+        var user;
+        var pass;
+        var loginBtn
+        function ValidateAndSubmit(formId) {
+            if (!ValidForm(formId)) {
+                alert("This field is required");
+                return false;
+            }
+        }
+
+        function loadding() {
+            loader = setTimeout(bgLeft, 2000);
+        }
+        function bgLeft() {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("bgLeft").style.display = "block";
+
+            background = setTimeout(bgRight, 500);
+        }
+        function bgRight() {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("bgRight").style.display = "block";
+
+            loginBg = setTimeout(loginBackground, 500);
+        }
+        function loginBackground() {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("loginBackground").style.display = "block";
+
+            logImg = setTimeout(logo, 500);
+        }
+        function logo() {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("logo").style.display = "block";
+
+            logImg = setTimeout(welNote, 500);
+        }
+        function welNote() {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("wel-come").style.display = "block";
+
+            logImg = setTimeout(user, 500);
+        }
+        function user() {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("username_div").style.display = "block";
+
+            logImg = setTimeout(pass, 500);
+        }
+        function pass() {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("password_div").style.display = "block";
+
+            logImg = setTimeout(loginBtn, 500);
+        }
+        function loginBtn() {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("login").style.display = "block";
+        }
+
+
+    </script>
+</body>
+</html>

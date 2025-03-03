@@ -1,0 +1,283 @@
+﻿@{
+    //Layout = "~/Views/Shared/_LayoutTest.cshtml";
+}
+@model SimpliHR.Infrastructure.Models.Master.TemplateMasterDynamicDTO
+<link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+
+    .requiredError {
+        border-color: red;
+    }
+
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Masters /</span> Form Templates
+    </h4>
+    <div class="card" id="" style="">
+        <div class="card-header">
+            <input type="button" value="Go To List" id="" onclick="window.location.href='/TemplateMaster/TemplateList'" class="btn btn-sm btn-primary" style="float:right" />
+        </div>
+        <div class="card-body" style="padding:10px;">
+            <div id="formio">
+            </div>
+        </div>
+    </div>
+    <div class="card" id="" style="">
+        <div class="card-body">
+            <form id="FormDetails">
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label class="required">Form Name</label>
+                        <input type="text" class="form-control" name="FormName" id="FormName" required />
+                        <p class="perror" style="color:red;font-size:12px;display:none">This field is mandatory.</p>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="required">Form Type</label>
+                        <select class="form-control select" name="FormType" id="FormType" required>
+                            <option value="">-Select--</option>
+                            <option value="ExitInterview">Exit Interview</option>
+                        </select>
+                        <p class="perror" style="color:red;font-size:12px;display:none">This field is mandatory.</p>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <input type="button" class="btn btn-sm btn-primary" value="Save Template" id="SubmitForm" />
+                        <input type="hidden" id="TemplateMasterDynamicId" value="@(Model==null ? 0 : Model.TemplateMasterDynamicId)" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+@section scripts {
+
+    <script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+    <script>
+        // Use noConflict mode to free up the $ variable
+        var jq = jQuery.noConflict();
+    </script>
+
+    <script>
+
+
+        var form;
+        var formTemplateToSave;
+        var _templateId = null;
+        var _formId = null;
+
+
+        var _formIOComponents = {
+
+            "components": [{ "input": true, "label": "Submit", "key": "submit", "action": "submit", "type": "button" }]
+
+
+        }
+        var SubmitEdit = {
+            "type": "button",
+            "label": "Submit & Edit",
+            "key": "submitedit",
+            "size": "md",
+            "block": false,
+            "action": "submit",
+            "disableOnInvalid": true,
+            "theme": "primary",
+            "input": true,
+            "placeholder": "",
+            "prefix": "",
+            "customClass": "",
+            "suffix": "",
+            "multiple": false,
+            "defaultValue": null,
+            "protected": false,
+            "unique": false,
+            "persistent": false,
+            "hidden": false,
+            "clearOnHide": false,
+            "refreshOn": "",
+            "redrawOn": "",
+            "tableView": false,
+            "modalEdit": false,
+            "dataGridLabel": true,
+            "labelPosition": "top",
+            "description": "",
+            "errorLabel": "",
+            "tooltip": "",
+            "hideLabel": false,
+            "tabindex": "",
+            "disabled": false,
+            "autofocus": false,
+            "dbIndex": false,
+            "customDefaultValue": "",
+            "calculateValue": "",
+            "calculateServer": false,
+            "widget": {
+                "type": "input"
+            },
+            "attributes": {},
+            "validateOn": "change",
+            "validate": {
+                "required": false,
+                "custom": "",
+                "customPrivate": false,
+                "strictDateValidation": false,
+                "multiple": false,
+                "unique": false
+            },
+            "conditional": {
+                "show": null,
+                "when": null,
+                "eq": ""
+            },
+            "overlay": {
+                "style": "",
+                "left": "",
+                "top": "",
+                "width": "",
+                "height": ""
+            },
+            "allowCalculateOverride": false,
+            "encrypted": false,
+            "showCharCount": false,
+            "showWordCount": false,
+            "properties": {},
+            "allowMultipleMasks": false,
+            "addons": [],
+            "leftIcon": "",
+            "rightIcon": "",
+            "id": "save_edit"
+        }
+
+
+        jq(document).ready(function () {
+            removeError();
+
+            if (jq("#TemplateMasterDynamicId").val() == "0") {
+                Formio.builder(document.getElementById('formio'), _formIOComponents, {}).then((_form) => {
+                    form = _form;
+                    form.on('change', function (payload) {
+                        formTemplateToSave = JSON.stringify(form.schema, null, 4);
+                    });
+                    formTemplateToSave = JSON.stringify(form.schema, null, 4);
+                });
+            }
+            else {
+                //BlockUI();
+                var inputDTO = {
+                    "TemplateMasterDynamicId": jq("#TemplateMasterDynamicId").val()
+                };
+                jq.ajax({
+                    type: "POST",
+                    url: "/TemplateMaster/GetTemplateFormById",
+                    contentType: 'application/json',
+                    data: JSON.stringify(inputDTO),
+                    success: function (data) {
+                        jq("#FormName").val(data.formName);
+                        jq("#FormType").val(data.formType);
+
+
+                        var components = jq.parseJSON(data.component);
+                        formTemplateToSave = JSON.stringify(data.component, null, 4);
+
+                        Formio.builder(document.getElementById('formio'), components, {}).then((_form) => {
+                            form = _form;
+                            form.on('change', function (payload) {
+                                formTemplateToSave = JSON.stringify(form.schema, null, 4);
+                            });
+                            formTemplateToSave = JSON.stringify(form.schema, null, 4);
+                        });
+
+                        //UnblockUI();
+                    },
+                    error: function (error) {
+                        $erroralert("Error!", error.responseText + '!'); UnblockUI();
+                        //UnblockUI();
+                    }
+                });
+            }
+
+        });
+
+        jq("#SubmitForm").click(function () {
+            var inputDTO = {};
+            inputDTO.Component = formTemplateToSave;
+            inputDTO.FormName = jq("#FormName").val();
+            inputDTO.TemplateMasterDynamicId = jq("#TemplateMasterDynamicId").val();
+            inputDTO.FormType = jq("#FormType").val();
+            //objForm.CompanyId = null;
+
+            if (!Validate("FormDetails")) {
+                $erroralert("Validation Error!!", "Please fill all the mandatory fields");
+                return false;
+            }
+
+            jq.ajax({
+                type: "POST",
+                enctype: 'mutipart/form-data',
+                url: '/TemplateMaster/SaveTemplateFormComponent',
+                contentType: 'application/json',
+                data: JSON.stringify(inputDTO),
+                success: function (data) {
+                    $successalert("Success", "Saved Successfully");
+                    window.location.href = "/TemplateMaster/TemplateList"
+                },
+                error: function (xhr, status, error) {
+                    $erroralert("Error!!", xhr.responseText);
+
+                }
+            });
+        });
+
+        function Validate(formId) {
+            let res = true;
+            let ctrls = jq("#" + formId).find("[required]");
+            ctrls.each((i, v) => {
+                if (jq(v)[0].tagName.toLowerCase() == "input") {
+                    if (jq.trim(jq(v).val()) == "") {
+                        jq(v).addClass("requiredError");
+                        jq(v).parent().find(".perror").show();
+                        res = false;
+                    }
+                }
+                else if (jq(v)[0].tagName.toLowerCase() == "select") {
+                    if (jq(v).val() == "0" || jq(v).val() == "" || jq(v).val() == undefined) {
+                        jq(v).addClass("requiredError");
+                        jq(v).parent().find(".perror").show();
+                        res = false;
+                    }
+                }
+            });
+            return res;
+        }
+        function resetErrors(formId) {
+            let ctrls = jq("#" + formId).find("[required]");
+            ctrls.focus(function () {
+                let v = jq(this);
+                jq(v).removeClass("requiredError");
+                jq(v).parent().find(".perror").hide();
+            });
+        }
+        function removeError() {
+            jq('[required]').unbind();
+            jq('[required]').focus(function () {
+                if (jq(this).hasClass("requiredError")) {
+                    jq(this).removeClass("requiredError");
+                    jq(this).parent().find(".perror").hide();
+                }
+            });
+        }
+    </script>
+    }
+
+
+

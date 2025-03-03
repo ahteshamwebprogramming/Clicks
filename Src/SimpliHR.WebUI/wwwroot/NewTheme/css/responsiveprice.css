@@ -1,0 +1,58 @@
+@media (max-width:575.5px) {
+    .banner-price h1 {
+        font-size: 2.5rem;
+    }.table-head h2 {
+        font-size: 28px;
+    }
+    .price-first {
+        margin-top: 0px;
+    }
+    .second-main {
+        margin: 2rem 0rem;
+    }
+    .expert-one{
+        text-align: center;
+    }
+    .faq-form-right {
+        margin-top: 2rem;
+    }
+    .addon-head h2 {
+        
+        font-size: 29px;
+    }
+    .price-add-one .price-ul_1 li h2 {
+        font-size: 26px;
+    }
+    .price-add-one .price-ul_1 li h3 {
+
+        padding-bottom: 0rem; 
+    }
+    .price-ul_2 h2 {
+        font-size: 22px;
+    }
+    .expert-head h2 {
+        font-size: 28px;
+       
+    }
+    .expert-head p {
+        padding: 0px 12px;
+    }
+    .faq-section .faqs {
+        font-size: 28px; 
+    }
+    .banner-price {
+        padding-top: 5rem;
+        PADDING-BOTTOM: 5rem;
+    }
+    .price-ul_2 .p-d {
+        display: block;
+        padding-bottom: 1rem;
+    }
+    .price-add-one {
+        
+        margin-bottom: 2rem;
+    }
+    .price-addon-sm {
+        margin-top: 1rem;
+    }
+}

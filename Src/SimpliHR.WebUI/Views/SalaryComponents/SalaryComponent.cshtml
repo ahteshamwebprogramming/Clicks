@@ -1,0 +1,190 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.SalaryComponentMasterDTO
+@{
+    ViewData["Title"] = "Salary Components";
+    Model.DisplayMessage += "";
+    //Layout = null;
+}
+
+<style>
+
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Compensation /</span> Salary Components</h4>
+    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+
+                            <th> Component</th>
+                            <th>Component Type</th>
+                            <th>Is Fixed</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.SalaryComponentMasterList != null)
+                            @foreach (var item in Model.SalaryComponentMasterList)
+                            {
+                                <tr>
+
+                                    <td>@item.SalaryComponentTitle</td>
+                                    <td>@(item.SalaryComponentType.Trim() == "E" ? "Earnings" : item.SalaryComponentType.Trim() == "D" ? "Deduction" : item.SalaryComponentType.Trim() == "R" ? "Reimbursements" : "Select")</td>
+                                    @*<th>@(item.IsFixed == true ? "Yes" : "No")</th>*@
+                                    <td>@item.IsFixed</td>
+
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="/SalaryComponents/GetSalaryComponentInfo/@item.EncryptedId"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="#" onclick="DeleteRecord('@item.SalaryComponentTitle','@item.EncryptedId')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                   @*  <th>
+                                        <a class="btn btn-primary" href="/SalaryComponents/GetSalaryComponentInfo/@item.EncryptedId">Edit</a>
+                                        <button class="btn btn-primary" onclick="DeleteRecord('@item.SalaryComponentTitle','@item.EncryptedId')"> Delete</button>
+                                    </th> *@
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/SalaryComponents/SalaryComponent/'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/SalaryComponents/SaveSalaryComponent">
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name"> Component Title</label>
+                        <input type="text" id="SalaryComponentTitle" name="SalaryComponentTitle" required maxlength="50" value="@Model.SalaryComponentTitle" class="form-control" placeholder="Salary Component Title">
+                      
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name"> Component Type</label>
+                        <select id="selSalaryComponentType" name="SalaryComponentType" class="select2 form-select" required data-allow-clear="true">
+                            <option value="0">-- Select --</option>
+                            <option value="E">Earnings</option>
+                            <option value="D">Deduction</option>
+                            <option value="R">Reimbursements</option>
+                        </select>
+                    </div>
+                     <div class="col-md-6">
+                        <div class="col-sm-3">
+                            <label class="form-label required" style="width:300px;" for="multicol-last-name">Is Fixed Component?</label>
+                            <div class="form-check d-sm-inline-block">
+                                <input name="IsFixed"
+                                       class="form-check-input"
+                                       type="radio"
+                                       value="True"
+                                       id="IsFixedYes" checked />
+                                <label class="form-check-label" for="defaultRadio1">Yes</label>
+                            </div>
+                            <div class="form-check d-sm-inline-block">
+                                <input name="IsFixed"
+                                       class="form-check-input"
+                                       type="radio"
+                                       value="False"
+                                       id="IsFixedNo" />
+                                <label class="form-check-label" for="defaultRadio2"> No </label>
+                            </div>
+                        </div>
+                     @*   <input type="checkbox" class="form-check-input" @(Model.IsBasic == true ? Html.Raw("checked=\'checked\'") : "") /> <label class="form-label" for="">Is Basic</label>*@
+                        @*<input type="checkbox" class="form-check-input" @(Model.IsFixed == true ? Html.Raw("checked=\'checked\'") : "") /> <label class="form-label" for="">Is Fixed</label>*@
+                    
+                                </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Description</label>
+                        <textarea class="form-control" id="SalaryComponentDec" name="SalaryComponentDec" value="@Model.SalaryComponentDec" rows="2">@Model.SalaryComponentDec</textarea>
+@*                        <input type="text" id="SalaryComponentDec" name="SalaryComponentDec"  value="@Model.SalaryComponentDec" class="form-control" placeholder="Description">
+*@                        
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" id="SalaryComponentId" name="SalaryComponentId" value="@Model.SalaryComponentId">
+                    <input type="hidden" id="hdnSalaryComponentType" name="SalaryComponentType" value="@Model.SalaryComponentType">
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/SalaryComponents/SalaryComponent/'">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+            if (@Model.SalaryComponentId != 0 || @Model.HttpStatusCode!= 200) {
+                $("#List").hide();
+                $("#Add").show();
+               
+            }
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                $successalert("Salary Component", "@Model.DisplayMessage");
+            }
+          
+
+            if ("@Model.IsFixed" == "True") {
+                $("#IsFixedYes").prop('checked', true);
+            }
+            else if ("@Model.IsFixed" == "False") {
+                $("#IsFixedNo").prop('checked', true);
+            }
+            else {
+                $("#IsFixedYes").prop('checked', true);
+            }
+               
+               
+          
+
+        });
+
+        function EmptyInputs() {
+            $("#SalaryComponentTitle").val("");           
+            $("#SalaryComponentDec").val("");           
+            // $("#StateId").val("0");
+            $("#selSalaryComponentType").prop('selectedIndex', 0);
+            // $('select option[value="0"]').attr("selected", true);
+        }
+
+      //  alert($('#hdnSalaryComponentType').val());
+        $('#selSalaryComponentType').val($('#hdnSalaryComponentType').val().trim());
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+            EmptyInputs();
+
+        }
+
+        function DeleteRecord(name, id) {
+            // event.preventDefault();
+            url = $(this).attr('href');
+            history.pushState({ key: url }, '', url);
+            if (confirm("Sure want to delete resource '" + name + "'?")) {
+                window.location.href = "/SalaryComponents/DeleteSalaryComponent/" + id;
+            }
+            return false;
+        }
+    </script>
+    }

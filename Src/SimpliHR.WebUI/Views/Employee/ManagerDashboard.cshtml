@@ -1,0 +1,2046 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeDashboardVM
+<style>
+
+    .nav-pills .nav-link {
+        background: #ebeef0;
+        padding-left: 55px !important;
+        padding-right: 55px !important;
+        font-weight: bold;
+    }
+
+        .nav-pills .nav-link.active {
+            background: rgb(173,118,193);
+            background: linear-gradient(90deg, rgba(173,118,193,1) 35%, rgba(87,88,222,1) 100%);
+        }
+
+    .pl-0 {
+        padding-left: 0;
+    }
+
+    .list-group.list-group-news {
+        position: relative;
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+        .list-group.list-group-news .list-group-item {
+            border: none;
+            padding: 0.43rem 1.25rem;
+        }
+
+            .list-group.list-group-news .list-group-item:before {
+                position: absolute;
+                display: block;
+                content: "";
+                width: 7px;
+                height: 7px;
+                left: 0;
+                top: 20%;
+                border-radius: 100%;
+            }
+
+        .list-group.list-group-news .list-group-news-primary:before {
+            background-color: #696cff;
+        }
+
+    .com-announ {
+        background: #f5f5f9;
+        padding: 0.40rem 0.65rem;
+    }
+
+        .com-announ i {
+            font-size: 11px !important;
+            font-weight: 600;
+        }
+
+    .avail-leave {
+        margin-top: 30px;
+    }
+
+        .avail-leave button {
+            font-size: 10px;
+        }
+
+    .smaller-font {
+        font-size: 10px;
+        line-height: 14.5px;
+    }
+
+    .chkInOutTxt {
+        font-size: 10px;
+        line-height: 14px;
+    }
+
+    .chkInOutTm {
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .chkInOutTm1 {
+        font-size: 35px;
+        line-height: 30px;
+        font-weight: 600;
+        margin-top: 25px;
+    }
+
+    .pl-0 {
+        padding-left: 0;
+    }
+
+
+    /* ------------------------------------------------------ */
+
+
+    .dashboard-user-icon {
+        border-radius: 50%;
+        background: #f5f5f9;
+    }
+
+    .info-container i {
+        width: 16px;
+        padding-right: 20px;
+    }
+
+    .tab-content {
+        min-height: 405px;
+    }
+
+    .popover {
+        max-width: 500px !important;
+        font-size: 12px;
+    }
+
+    .rate i {
+        width: 25px;
+        text-align: center;
+    }
+
+    .rounded-box {
+        background: #f9f9f9;
+        border-radius: 15px;
+        border: 1px solid #e3e3e3;
+        padding: 20px;
+    }
+
+    .internal-rounded-box {
+        background: #fff;
+        border-radius: 15px;
+        border: 1px solid #e3e3e3;
+        padding: 20px;
+    }
+
+    .bx-chevron-right:before {
+        display: none
+    }
+
+    #unit-container {
+        color: white;
+        background: #f6f6f6 url("../../assets/img/bg4.png");
+        width: 100%;
+        height: 79vh;
+        display: flex;
+        padding: 5% 0
+    }
+
+    .logo-container {
+        padding: 17px 25px;
+        background: #fff;
+        border-radius: 20px;
+        display: inline-block;
+    }
+
+    .light-blue-bg {
+        background: #EAEBF9;
+        padding: 2% 2%;
+    }
+
+    .serch {
+        background: #fff;
+        border-radius: 20px 0 0 20px;
+        display: inline-block;
+        width: 57%;
+        padding: 14px 20px;
+    }
+
+    .serch-icon {
+        display: inline-block;
+    }
+
+    .serch input {
+        display: inline-block;
+        width: 90%;
+        border: none;
+    }
+
+        .serch input:focus {
+            outline: none;
+        }
+
+    .user-details {
+        background: url(../../assets/img/blue-bg.png) no-repeat;
+        padding: 5px 20px;
+        border-radius: 0 1rem 1rem 0;
+    }
+
+    .mail-icon, .notification-icon {
+        display: inline-block;
+        padding: 5px 15px;
+    }
+
+    .user-icon {
+        display: inline-block;
+    }
+
+        .user-icon img {
+            border-radius: 35px;
+        }
+
+    .user-name-cont {
+        display: inline-block;
+        padding: 5px 15px;
+        font-size: 14px;
+        color: #fff;
+        line-height: 14px;
+        position: relative;
+        width: 145px;
+    }
+
+    .user-name {
+        position: absolute;
+        top: -7px;
+    }
+
+        .user-name span {
+            font-size: 12px;
+            line-height: 9px;
+        }
+
+    .unit {
+        background: #fff;
+        border-radius: 60px;
+        width: 300px;
+        margin: 0 auto;
+        webkit-box-shadow: 0px 0px 27px 0px rgba(99,79,168,0.18);
+        moz-box-shadow: 0px 0px 27px 0px rgba(99,79,168,0.18);
+        box-shadow: 0px 0px 27px 0px rgba(99,79,168,0.18);
+        text-align: center;
+        padding: 60px;
+        color: #333;
+        font-size: 20px;
+        line-height: 25px;
+    }
+
+    .container {
+        max-width: 1012px !important;
+    }
+
+    .nav-item::marker {
+        display: none;
+    }
+
+    .layout-navbar-fixed .layout-wrapper:not(.layout-horizontal) .layout-page:before {
+        display: none;
+    }
+
+    .user-bg {
+        background: url(../../assets/img/user-bg.png) no-repeat;
+        background-size: cover;
+    }
+
+    .pink-bg {
+        background: #EEDDD5;
+    }
+
+    .pink-bg-cont {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+
+
+    .table th {
+        text-transform: capitalize;
+    }
+
+    .table td {
+        font-size: 0.75rem;
+    }
+
+    .profile-pic {
+        margin: 0 2.5rem;
+    }
+
+</style>
+<link href="~/customcss/dashboard.css" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="row">
+                <div class="col-md-6 col-lg-6 mb-4">
+                    <div class="card user-bg">
+                        <div class="card-body">
+                            <div class="row text-white">
+                                <div class="col-md-12 text-end"><img src="@(Model.EmployeeMaster.Base64ProfileImage==null ? "logo_1.jpg" : Model.EmployeeMaster.Base64ProfileImage)" class="dashboard-user-icon" width="125" height="125" alt=""></div>
+                                <div class="col-md-12 pt-4"><h4 class="text-white">Welcome <br>@Model.EmployeeMaster.EmployeeName</h4></div>
+                                <div class="col-md-12 pb-4">Nice to see you again and hope that you are having a great day.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-6 mb-4">
+                    <div class="card attendance-record-widget">
+                        <div class="card-body">
+                            <div class="row">
+                                <small class="col-7 col-md-7 col-lg-7">
+                                    <span class="fw-bold">Attendance</span> @Model.CurrentDate
+                                </small>
+                                <small class="col-5 col-md-5 col-lg-5 text-end fw-bold">
+                                    <a href="/EmployeeAttendanceUI/ViewAttendance" class="text-decoration-underline">Attendance record </a>
+                                </small>
+                            </div>
+                            <div class="row pt-4">
+                                <div class="col-4 col-md-4 col-lg-4">
+                                    <small><h2 class="d-inline-block mb-0">@Model.AttendanceHistory.PresentDays</h2> days</small>
+                                    <small><strong>Presence</strong></small>
+                                </div>
+                                <div class="col-4 col-md-4 col-lg-4">
+                                    <small><h2 class="d-inline-block mb-0">@Model.AttendanceHistory.AbsentDays</h2> days</small>
+                                    <small><strong>Absent</strong></small>
+                                </div>
+                                <div class="col-4 col-md-4 col-lg-4">
+                                    <small><h2 class="d-inline-block mb-0">@Model.AttendanceHistory.WeeklyOff</h2> days</small>
+                                    <small><strong>Weekly offs/ holiday</strong></small>
+                                </div>
+                            </div>
+                            <div class="row pt-2">
+                                <div class="col-md-12">
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" style="width: 70%; height: 10px;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            @*  @if (Model.EmployeeLeaveSummary != null)
+                            {
+                            if (Model.EmployeeLeaveSummary.Count > 0)
+                            { *@
+                            <div class="row pt-3">
+                                <div class="col-6 col-md-6 col-lg-6">
+                                    <div><h2 class="d-inline-block mb-0">@Model.TotalLeaveBalance</h2></div>
+                                    <small><strong>available leaves</strong></small>
+                                </div>
+                                <div class="col-6 col-md-6 col-lg-6" style="text-align: right;">
+                                    <div><h2 class="d-inline-block mb-0">@Model.TotalAvailed</h2></div>
+                                    <small><strong>leaves availed</strong></small>
+                                </div>
+                            </div>
+                            @*   }
+                            else
+                            {
+                            <div class="row pt-3">
+                            <div class="col-6 col-md-6 col-lg-6">
+                            <div><h2 class="d-inline-block mb-0">0</h2></div>
+                            <small><strong>available leaves</strong></small>
+                            </div>
+                            <div class="col-6 col-md-6 col-lg-6" style="text-align: right;">
+                            <div><h2 class="d-inline-block mb-0">0</h2></div>
+                            <small><strong>leaves availed</strong></small>
+                            </div>
+                            </div>
+                            }
+                            } *@
+                            <div class="row pt-3">
+                                <div class="col-md-12 text-center">
+                                    <button class="btn btn-primary rounded-pill" onclick="javascript:window.location.href='/Leave/LeaveApp'">Apply for leaves</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @* Project Tracker *@
+                <div id="div_ProjectTrackerPartialView">
+                </div>
+
+
+
+            </div>
+        </div>
+
+        <div class="col-md-12 col-lg-4 mb-4">
+            <div class="mb-4">
+                <div id="face-detect-frame1" class="card checkin-checkout-widget">
+                    <div class="card-body">
+                        <div class="float-start">
+                            <div><small><span class="fw-bold">Check in  </span> <span id="checkInDate" name="checkInDate">mon yr</span></small></div>
+                            <div>
+                                <small>
+                                    <i class="fa-solid fa-location-dot"></i>&nbsp;
+                                    <span name="locationToolTip" data-bs-toggle="tooltip"
+                                          data-bs-offset="0,4"
+                                          data-bs-placement="top"
+                                          data-bs-html="true"
+                                          data-bs-custom-class="tooltip-secondary"></span>
+                                </small>
+                            </div>
+
+                        </div>
+
+                        <div class="clearfix"></div>
+                        <div class="text-center pt-4 pb-4 mt-3 mb-3"><img src="../../assets/img/face-capture-icon.png" alt=""></div>
+                        <div class="text-center"><button id="btnClick" class="btn btn-success rounded-pill check-in-btn"><small class="float-start me-5 text-start"><i class='bx bxs-time-five text-white'></i> <span id="clockInTime" name="clockInTime"> 9:30am</span></small><small class="float-end">Check in</small></button></div>
+                    </div>
+                </div>
+                <div id="face-detect-frame2" class="text-white position-relative" style="display:none;">
+                    <script type="text/javascript" src="~/WebCam/webcam.js"></script>
+                    <div class="card-body">
+                        <div class="float-start position-relative text-dark" style="z-index:1111">
+                            <div class="float-start">
+                                <div><small><span class="fw-bold">Check in  </span>   <span id="checkInDate1" name="checkInDate">mon yr</span></small></div>
+                                <div style="margin-top:-5px">
+                                    <small>
+                                        <i class="fa-solid fa-location-dot"></i>&nbsp;
+                                        <span name="locationToolTip" data-bs-toggle="tooltip"
+                                              data-bs-offset="0,4"
+                                              data-bs-placement="top"
+                                              data-bs-html="true"
+                                              data-bs-custom-class="tooltip-secondary"></span>  @*<span id="checkInLocation1" name="checkInLocation">
+                                        Location
+                                        </span>*@
+                                    </small>
+
+                                </div>
+
+                            </div>
+                            <div><small></small></div>
+
+                        </div>
+
+                        <div class="clearfix"></div>
+                        <div class="text-center pt-5 pb-5 mt-3 mb-2" style="height: 205px;">&nbsp;</div>
+                        <div class="text-center position-absolute" style="top:15px;left:0" id="my_camera" name="my_camera"></div>
+                        <form>
+                            <input type="hidden" class="dbcol" id="InOutTime" name="InOutTime" />
+                            <input type="hidden" class="dbcol" id="CheckInMessage" name="CheckInMessage" />
+                            <input type="image" id="capturedPhoto" name="capturedPhoto" style="display:none" />
+                            @* <input type=button  value="Mark Attendance" onClick="MarkFaceAttendance()">*@
+                            @*<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>*@
+                            <div class="text-center position-relative" style="z-index:1111">
+                                <input type="button" id="btnClickCapture" class="btn btn-success rounded-pill" value="Capture">
+                                <input type="button" id="btnFrame2Close" class="btn btn-success rounded-pill" value="Close" onclick="GoToScreen('face-detect-frame2','face-detect-frame1')">
+                            </div>
+
+                        </form>
+                        @* <div class="text-center"><button id="btnClickCapture" class="btn btn-success rounded-pill"><small>Capture</small></button></div>*@
+                    </div>
+                </div>
+                <div id="face-detect-frame3" style="display:none;">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="float-start pb-2">
+                                <div><small><span class="fw-bold">Check in  </span> <span id="checkInDate2" name="checkInDate">mon yr</span></small></div>
+                                <div>
+                                    <small>
+                                        <i class="fa-solid fa-location-dot"></i>&nbsp;
+                                        <span name="locationToolTip" data-bs-toggle="tooltip"
+                                              data-bs-offset="0,4"
+                                              data-bs-placement="top"
+                                              data-bs-html="true"
+                                              data-bs-custom-class="tooltip-secondary"
+                                              title=""></span> @*<span id="checkInLocation2" name="checkInLocation">
+                                        Location
+                                        </span>*@
+
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="float-end status">
+                                <div><small><a href="#" onclick="ShowHideFaceAttendanceDetails('face-detect-frame6','face-detect-frame3')" class="text-black text-decoration-underline">Clocked <span name="stayHours">08:05</span></a></small></div>
+                                <div><small>Status <span name="status" style="color:#42a775">Present</span></small></div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="row pt-3">
+                                <div class="col-6 col-md-6 col-lg-6">
+                                    <div class="badge bg-label-secondary rounded-circle me-2 float-start p-2" style="background-color:#42a775!important"><i class="fa-solid fa-arrow-right-to-bracket text-white"></i></div>
+                                    <div class="float-first pt-1">
+                                        <h5 class="fw-bold"><span id="inTime" name="inTime"> 9:30am</span><br><small style="font-size: 12px;">Check in</small></h5>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-6 col-lg-6">
+                                    <div class="badge bg-label-secondary rounded-circle me-2 float-start p-2" style="background-color: #e08129!important;"><i class="fa-solid fa-arrow-right-from-bracket text-white"></i></i></div>
+                                    <div class="float-first fw-bold pt-1">
+                                        <h5 class="fw-bold"><span id="outTime" name="outTime">Not yet</span><br><small style="font-size: 12px;">Check out</small></h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center"><small class="fw-bold"><span id="earlyLateMsg"> You can come <span name="earlyDelayTime">-</span> today </span></small></div>
+                            <div class="pt-3">
+                                <textarea id="basic-default-message" class="form-control fw-bold face-detect-textarea" placeholder="Add chanking note"></textarea>
+                            </div>
+                            <div class="text-center pt-3"><button id="btnClickCaptureOut" class="btn btn-success rounded-pill check-out-btn"><small class="float-start me-5 text-start"><i class='bx bxs-time-five text-white'></i><span name="clockOutTime"></span></small><small class="float-end">Check out</small></button></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="face-detect-frame4" class="text-white position-relative" style="display:none;">
+                    <div class="card-body">
+                        <div class="float-start position-relative text-dark" style="z-index:1111">
+                            <div><small class="me-3"><span class="fw-bold">Check in  </span> <span id="checkInDate3" name="checkInDate">mon yr</span></small></div>
+                            <div style="margin-top:-5px">
+                                <i class="fa-solid fa-location-dot"></i>&nbsp;
+                                <span name="locationToolTip" data-bs-toggle="tooltip"
+                                      data-bs-offset="0,4"
+                                      data-bs-placement="top"
+                                      data-bs-html="true"
+                                      data-bs-custom-class="tooltip-secondary"
+                                      title=""></span> @*<span id="checkInLocation3" name="checkInLocation">
+                                Location
+                                </span>*@
+
+                            </div>
+                            <div><small></small></div>
+
+                        </div>
+                        @* <div class="float-end">
+                        <div><small><a href="#" class="text-black text-decoration-underline">Stay hours 08:05 hours</a></small></div>
+                        <div><small>Status <span style="color:#42a775">Present</span></small></div>
+                        </div>*@
+                        <div class="clearfix"></div>
+                        <div class="text-center pt-5 pb-5 mt-3 mb-2" style="height: 205px;">&nbsp;</div>
+                        <div class="text-center position-absolute" style="top:15px;left:0" id="my_cameraOut" name="my_camera"></div>
+
+                        <form>
+                            @* <input type="hidden" class="dbcol" id="InOutTime" name="InOutTime" />*@
+                            @* <input type=button  value="Mark Attendance" onClick="MarkFaceAttendance()">*@
+                            @*<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>*@
+                            <input type="hidden" class="dbcol" id="CheckOutMessage" name="CheckOutMessage" />
+                            <div class="text-center position-relative" style="z-index:1111">
+                                <input type="button" id="btnClickCapture1" class="btn btn-success rounded-pill" value="Capture">
+                                <input type="button" id="btnClickCapture" class="btn btn-success rounded-pill" value="Close" onclick="GoToScreen('face-detect-frame4','face-detect-frame3')">
+                            </div>
+                        </form>
+                        @*<div class="text-center"><button id="btnClickCapture1" class="btn btn-success rounded-pill"><small>Capture</small></button></div>*@
+                    </div>
+                </div>
+                <div id="face-detect-frame5" style="display:none;">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="float-start pb-2">
+                                <div><small><span class="fw-bold">Check in  </span> <span id="checkInDate4" name="checkInDate">mon yr</span></small></div>
+                                <div>
+                                    <small>
+                                        <i class="fa-solid fa-location-dot"></i>&nbsp;
+                                        <span name="locationToolTip" data-bs-toggle="tooltip"
+                                              data-bs-offset="0,4"
+                                              data-bs-placement="top"
+                                              data-bs-html="true"
+                                              data-bs-custom-class="tooltip-secondary"
+                                              title=""></span> @*<span id="checkInLocation4" name="checkInLocation">
+                                        Location
+                                        </span>*@
+
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="float-end status">
+                                <div><small><a href="#" onclick="ShowHideFaceAttendanceDetails('face-detect-frame6','face-detect-frame5')" class="text-black text-decoration-underline">Clocked <span name="stayHours">08:05</span></a></small></div>
+                                <div><small>Status <span name="status" style="color:#42a775">Present</span></small></div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="row pt-3">
+                                <div class="col-6 col-md-6 col-lg-6">
+                                    <div class="badge bg-label-secondary rounded-circle me-2 float-start p-2" style="background-color:#42a775!important"><i class="fa-solid fa-arrow-right-to-bracket text-white"></i></div>
+                                    <div class="float-first pt-1">
+                                        <h5 class="fw-bold"><span name="inTime">9:30 am</span><br><small style="font-size: 12px;">Check in</small></h5>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-6 col-lg-6">
+                                    <div class="badge bg-label-secondary rounded-circle me-2 float-start p-2" style="background-color: #42a775!important;"><i class="fa-solid fa-arrow-right-from-bracket text-white"></i></i></div>
+                                    <div class="float-first fw-bold pt-1">
+                                        <h5 class="fw-bold"><span name="outTime">6:30 pm</span><br><small style="font-size: 12px;">Check out</small></h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center pt-2 pb-2"><img src="../../assets/img/face-capture-icon.png" width="85" height="auto" alt=""></div>
+                            <div class="text-center pt-3"><button id="btnClickCaptureIn" class="btn btn-success rounded-pill check-out-btn"><small class="float-start me-5 text-start"><i class='bx bxs-time-five text-white'></i><span name="clockOutTime">6:30pm</span></small><small class="float-end">Check In</small></button></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="face-detect-frame6" style="display:none;">
+                    <div class="card" style="height:330px">
+                        <div class="card-body">
+                            <div class="float-start pb-2">
+                                <div><small><span class="fw-bold">Check in  </span>  <span id="checkInDate4" name="checkInDate">mon yr</span></small></div>
+                                <div>
+                                    <small>
+                                        <i class="fa-solid fa-location-dot"></i>&nbsp;
+                                        <span name="locationToolTip" data-bs-toggle="tooltip"
+                                              data-bs-offset="0,4"
+                                              data-bs-placement="top"
+                                              data-bs-html="true"
+                                              data-bs-custom-class="tooltip-secondary"></span>
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="float-end status">
+                                <div><small><a onclick="ShowHideFaceAttendanceDetails('','face-detect-frame6')" class="text-black text-decoration-underline">Clocked <span name="stayHours">08:05</span></a></small></div>
+                                <div><small>Status <span name="status" style="color:#42a775">Absent</span></small></div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="pt-3">
+                                <div id="#timesheet" class="float-end mb-2 badge bg-label-secondary rounded-circle"><i class="fa-solid fa-xmark" style="cursor:pointer" onclick="ShowHideFaceAttendanceDetails('','face-detect-frame6')"></i></div>
+                                <div class="clearfix"></div>
+                                <div id="vertical-example" style="height:175px;">
+                                    <table border="0" width="100%" id="listFaceAttendance">
+                                        <thead>
+                                            <tr>
+                                                <th class="fw-bold pt-2 pb-2"><small>Check in time</small></th>
+                                                <th class="fw-bold pt-2 pb-2"><small>Check out time</small></th>
+                                                <th class="fw-bold pt-2 pb-2"><small>Clocked hours</small></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div id="div_TodayMeetings"></div>
+                @*  <div class="card upcoming-meetings-widget">
+                <div class="card-body row g-4">
+                <div class="pe-md-4">
+
+                <div class="card-title d-flex align-items-start justify-content-between mb-3">
+                <small class="col-7 col-md-7 col-lg-7"><h5 class="text-dark fw-bold">Upcoming meetings</h5></small>
+                <small><a href="https://calendar.google.com/calendar/u/0/r" target="_blank" class="fw-bold">My calendar</a></small>
+                </div>
+
+                <div class="card bg-label-secondary">
+                <div class="card-body" style="padding:20px 15px;">
+                <div class="row">
+                <div class="col-lg-8">
+                <small>8 PM to 9 PM</small><br>
+                <small>Client Meeting</small>
+                </div>
+                <div class="col-lg-4 mt-3"><a href="https://calendar.google.com/calendar/u/0/r" target="_blank" class="btn btn-primary rounded-pill">Join</a></div>
+
+                </div>
+
+                </div>
+                </div>
+
+
+
+
+                </div>
+                </div>
+                </div> *@
+            </div>
+        </div>
+        <div id="div_ApprovalCentre">
+        </div>
+        <div class="col-lg-8 mb-4">
+            <div class="card mb-4 learning-development-widget">
+                <div class="card-body row">
+                    <div class="col-md-12">
+                        <div class="card-title d-flex align-items-start justify-content-between mb-0">
+                            <small class="col-6 col-md-6 col-lg-6"><h5 class="text-dark fw-bold mb-0">Learning & development</h5></small>
+                            <small class="col-6 col-md-6 col-lg-6 text-end fw-bold">
+                                <a href="#" class="text-decoration-underline">All courses</a>
+                            </small>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 col-lg-4 mt-4">
+                                <div><img src="../../assets/img/ux-ui.png" width="100%" height="auto" alt=""></div>
+                                <div class="mt-2">
+                                    <div class="d-inline-block me-2 fw-bolder mb-2"><small>In progress</small></div>
+                                    <div class="d-inline-block" style="width: 55%;margin-top: -5px;">
+                                        <div class="progress" style="height: 3px">
+                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <small style="line-height: 15px;">User Experience Design Fundamentals</small>
+                            </div>
+                            <div class="col-md-4 col-lg-4 mt-4">
+                                <div><img src="../../assets/img/design.png" width="100%" height="auto" alt=""></div>
+                                <div class="mt-2">
+                                    <div class="d-inline-block me-2 fw-bolder mb-2"><small>06 Jun 2024</small></div>
+                                </div>
+                                <small style="line-height: 15px;">Design Thinking: The Ultimate Guide</small>
+                            </div>
+                            <div class="col-md-4 col-lg-4 mt-4">
+                                <div><img src="../../assets/img/mobilt-ux.png" width="100%" height="auto" alt=""></div>
+                                <div class="mt-2">
+                                    <div class="d-inline-block me-2 fw-bolder mb-2"><small>19 Sep 2024</small></div>
+                                </div>
+                                <small style="line-height: 15px;">Mobile UX Design: The Beginner's Guide</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card announcement-widget">
+                @*<div class="card-body row g-4">*@
+                <div class="card-body" style="padding-bottom:0px">
+                    <div class="card-title d-flex align-items-start justify-content-between mb-4">
+                        <div class="col-8 col-md-8 col-lg-8">
+                            <small class="fw-bold"><h5 class="text-dark fw-bold d-inline-block">Company announcements</h5></small>
+                            <select id="" class=" form-select-sm border-0 smallSelect" onchange="AnnouncementTypeChangeEvent(this)">
+                                <option value="0">Select Option</option>
+                                @{
+                                    if (Model != null && Model.AnnouncementTypes != null)
+                                    {
+                                        foreach (var item in Model.AnnouncementTypes)
+                                        {
+                                            <option value="@item.AnnouncementTypeId">@item.AnnouncementType</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <small class="col-4 col-md-4 col-lg-4 text-end fw-bold">
+                            <a href="/EmployeeAccouncement/EmployeeAnnouncementList" class="text-decoration-underline me-3">View all</a>
+                        </small>
+                    </div>
+                    <div id="div_AnnouncementPartialView">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card pink-bg mb-4 takeabreak-widget">
+                <div class="card-body pt-5 pb-4 mt-5">
+                    <div class="pink-bg-cont mb-3 pt-3"><img src="../../assets/img/illustrations/take-break.png" alt=""></div>
+                    <div class="pink-bg-cont"><button class="btn btn-outline-primary rounded-pill border-0 text-dark fw-bold mt-2 p-3 px-5" style="background: #fff;">Take a Break</button></div>
+                    <div class="pink-bg-cont text-center"><div class="mt-4 mb-4 fw-bold">Unwind. Recharge.<br> Enjoy your personal time.</div></div>
+                </div>
+            </div>
+            @*<div class="card quickaccess-widget">
+            <div class="card-body" style="padding: 23px 25px">
+            <h5 class="col-6 col-md-6 mt-2 fw-bold text-dark">Quick access</h5>
+            @if (Model.QuickAccessDetail.QuickAccessUnitLists != null)
+            {
+            if (Model.QuickAccessDetail.QuickAccessUnitLists.Count > 0)
+            {
+
+            foreach (var item in Model.QuickAccessDetail.QuickAccessUnitLists)
+            {
+            <a href="@item.QuickAccessLink" target="_blank" class="app-brand-link quickAccessIcon">
+            <div class="d-inline-block me-2"> <img src="../../assets/img/@item.QuickAccessLogo" width="56"  height="56"  title="@item.QuickAccessName"/> </div>
+            </a>
+            }
+            }
+            }
+            </div>
+
+            </div>*@
+            <div class="card quickaccess-widget">
+                <div id="div_quickaccessView">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card celebration-corner-widget">
+                <div class="card-body">
+                    <div class="photo-view">
+                        <div class="card-title d-flex align-items-start justify-content-between mb-4">
+                            <small class="col-6 col-md-6 col-lg-6"><h5 class="text-dark fw-bold">Celebrations Corner</h5></small>
+                            <small class="fw-bold">
+                                <a class="text-dark fw-bold me-1 list-view cursor-pointer"><img src="../../assets/img/list-icon.png" width="21" height="20" alt=""></a> <a href="/Employee/CelebrationCornorView" class="text-decoration-underline">View all</a>
+                            </small>
+                        </div>
+                        <div class="row">
+                            <div class="align-items-center mb-4">
+                                <div class="badge bg-label-secondary p-2 rounded-circle me-4 float-start" style="font-size: 20px;"><img src="../../assets/img/cake.png" alt=""></div>
+                                <div class="ms-2 ms-sm-0 me-2">
+                                    <div class="fw-bold mb-3 pt-2"><small>Birthday</small></div>
+                                    <div class="row justify-content-center profile-pic">
+
+                                        @if (Model.EmployeeBirthDays != null)
+                                        {
+                                            if (Model.EmployeeBirthDays.Count > 0)
+                                            {
+                                                if (Model.EmployeeBirthDays[0].IsCurrent == 1)
+                                                {
+                                                    foreach (var item in Model.EmployeeBirthDays.Where(x => x.IsCurrent > 0).Take(6))
+                                                    {
+                                                        <div class="float-start text-center col-4 col-md-2 mb-2">
+                                                            <div><img src="@(item.Base64ProfileImage == null ? "logo_1.jpg" : item.Base64ProfileImage)" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="@item.EmployeeName"></div>
+
+                                                        </div>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    foreach (var item in Model.EmployeeBirthDays.Where(x => x.IsCurrent <= 0).Take(6))
+                                                    {
+                                                        <div class="float-start text-center col-4 col-md-2 mb-2">
+                                                            <div><img src="@(item.Base64ProfileImage == null ? "logo_1.jpg" : item.Base64ProfileImage)" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="@item.EmployeeName"></div>
+
+                                                        </div>
+                                                    }
+
+                                                }
+                                            }
+                                        }
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="align-items-center mb-4">
+                                <div class="badge bg-label-secondary p-2 rounded-circle me-4 float-start" style="font-size: 20px;"><img src="../../assets/img/party.png" alt=""></div>
+                                <div class="ms-2 ms-sm-0 me-2">
+                                    <div class="fw-bold mb-3 pt-2"><small>Work Annivesaries</small></div>
+
+                                    <div class="row justify-content-center profile-pic">
+
+                                        @if (Model.EmployeeAnnivesary != null)
+                                        {
+                                            if (Model.EmployeeAnnivesary.Count > 0)
+                                            {
+                                                if (Model.EmployeeAnnivesary[0].IsCurrent == 1)
+                                                {
+                                                    foreach (var item in Model.EmployeeAnnivesary.Where(x => x.IsCurrent > 0).Take(6))
+                                                    {
+                                                        <div class="float-start text-center col-4 col-md-2 mb-2">
+                                                            <div><img src="@(item.Base64ProfileImage == null ? "logo_1.jpg" : item.Base64ProfileImage)" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="@item.EmployeeName"></div>
+
+                                                        </div>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    foreach (var item in Model.EmployeeAnnivesary.Where(x => x.IsCurrent <= 0).Take(6))
+                                                    {
+                                                        <div class="float-start text-center col-4 col-md-2 mb-2">
+                                                            <div><img src="@(item.Base64ProfileImage == null ? "logo_1.jpg" : item.Base64ProfileImage)" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="@item.EmployeeName"></div>
+
+                                                        </div>
+                                                    }
+
+                                                }
+                                            }
+                                        }
+
+
+                                    </div>
+                                    @*   <div class="row justify-content-center profile-pic">
+                                    <div class="float-start text-center col-4 col-md-2 mb-2">
+                                    <div><img src="../../assets/img/avatars/1.png" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="Prashant Mahale"></div>
+
+                                    </div>
+                                    <div class="float-start text-center col-4 col-md-2 mb-2">
+                                    <div><img src="../../assets/img/avatars/1.png" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="Prashant Mahale"></div>
+
+                                    </div>
+                                    <div class="float-start text-center col-4 col-md-2 mb-2">
+                                    <div><img src="../../assets/img/avatars/1.png" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="Prashant Mahale"></div>
+
+                                    </div>
+                                    <div class="float-start text-center col-4 col-md-2 mb-2">
+                                    <div><img src="../../assets/img/avatars/1.png" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="Prashant Mahale"></div>
+
+                                    </div>
+                                    <div class="float-start text-center col-4 col-md-2 mb-2">
+                                    <div><img src="../../assets/img/avatars/1.png" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="Prashant Mahale"></div>
+
+                                    </div>
+                                    <div class="float-start text-center col-4 col-md-2 mb-2">
+                                    <div><img src="../../assets/img/avatars/1.png" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="Prashant Mahale"></div>
+
+                                    </div>
+                                    </div> *@
+                                </div>
+                            </div>
+
+                            <div class="align-items-center mb-4">
+                                <div class="badge bg-label-secondary p-2 rounded-circle me-4 float-start" style="font-size: 20px;"><img src="../../assets/img/woman.png" alt=""></div>
+                                <div class="ms-2 ms-sm-0 me-2">
+                                    <div class="fw-bold mb-3 pt-2"><small>Welcome our new team members</small></div>
+
+                                    <div class="row justify-content-center profile-pic">
+
+                                        @if (Model.EmployeeOnBoardings != null)
+                                        {
+                                            if (Model.EmployeeOnBoardings.Count > 0)
+                                            {
+                                                if (Model.EmployeeOnBoardings[0].IsCurrent == 1)
+                                                {
+                                                    foreach (var item in Model.EmployeeOnBoardings.Where(x => x.IsCurrent > 0).Take(6))
+                                                    {
+                                                        <div class="float-start text-center col-4 col-md-2 mb-2">
+                                                            <div><img src="@(item.Base64ProfileImage == null ? "logo_1.jpg" : item.Base64ProfileImage)" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="@item.EmployeeName"></div>
+
+                                                        </div>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    foreach (var item in Model.EmployeeOnBoardings.Where(x => x.IsCurrent <= 0).Take(6))
+                                                    {
+                                                        <div class="float-start text-center col-4 col-md-2 mb-2">
+                                                            <div><img src="@(item.Base64ProfileImage == null ? "logo_1.jpg" : item.Base64ProfileImage)" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="@item.EmployeeName"></div>
+
+                                                        </div>
+                                                    }
+
+                                                }
+                                            }
+                                        }
+
+
+                                    </div>
+                                    @*  <div class="row justify-content-center profile-pic">
+                                    <div class="float-start text-center col-4 col-md-2 mb-2">
+                                    <div><img src="../../assets/img/avatars/1.png" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="Prashant Mahale"></div>
+
+                                    </div>
+                                    <div class="float-start text-center col-4 col-md-2 mb-2">
+                                    <div><img src="../../assets/img/avatars/1.png" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="Prashant Mahale"></div>
+
+                                    </div>
+                                    <div class="float-start text-center col-4 col-md-2 mb-2">
+                                    <div><img src="../../assets/img/avatars/1.png" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="Prashant Mahale"></div>
+
+                                    </div>
+                                    <div class="float-start text-center col-4 col-md-2 mb-2">
+                                    <div><img src="../../assets/img/avatars/1.png" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="Prashant Mahale"></div>
+
+                                    </div>
+                                    <div class="float-start text-center col-4 col-md-2 mb-2">
+                                    <div><img src="../../assets/img/avatars/1.png" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="Prashant Mahale"></div>
+
+                                    </div>
+                                    <div class="float-start text-center col-4 col-md-2 mb-2">
+                                    <div><img src="../../assets/img/avatars/1.png" width="48" height="48" class="rounded-circle cursor-pointer" onclick="" alt="" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="Prashant Mahale"></div>
+
+                                    </div>
+                                    </div> *@
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="text-view" style="display: none;">
+                        <div class="card-title d-flex align-items-start justify-content-between mb-4">
+                            <small class="col-6 col-md-6 col-lg-6"><h5 class="text-dark fw-bold">Celebrations Corner</h5></small>
+                            <small class="fw-bold">
+                                <a class="text-dark fw-bold me-1 user-view cursor-pointer"><img src="../../assets/img/user-icon.png" width="20" height="20" alt=""></a> <a href="/Employee/CelebrationCornorView" class="text-decoration-underline">View all</a>
+                            </small>
+                        </div>
+                        <div class="row">
+                            <div class="align-items-center mb-4">
+                                <div class="badge bg-label-secondary p-2 rounded-circle me-4 float-start" style="font-size: 20px;"><img src="../../assets/img/cake.png" alt=""></div>
+                                <div class="ms-2 ms-sm-0 me-2">
+                                    <div class="fw-bold mb-2 pt-2"><small>Birthday</small></div>
+                                    <div class="row justify-content-center profile-pic">
+                                        <div class="pt-2">
+                                            @if (Model.EmployeeBirthDays != null)
+                                            {
+                                                if (Model.EmployeeBirthDays.Count > 0)
+                                                {
+                                                    if (Model.EmployeeBirthDays[0].IsCurrent == 1)
+                                                    {
+
+                                                        foreach (var item in Model.EmployeeBirthDays.Where(x => x.IsCurrent > 0))
+                                                        {
+                                                            <a href="#" class="text-dark">@item.EmployeeName,</a>
+                                                            ;
+
+                                                        }
+
+                                                    }
+                                                    else
+                                                    {
+                                                        foreach (var item in Model.EmployeeBirthDays.Where(x => x.IsCurrent <= 0))
+                                                        {
+                                                            <a href="#" class="text-dark">@item.EmployeeName,</a>
+
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="align-items-center mb-4">
+                                <div class="badge bg-label-secondary p-2 rounded-circle me-4 float-start" style="font-size: 20px;"><img src="../../assets/img/party.png" alt=""></div>
+                                <div class="ms-2 ms-sm-0 me-2">
+                                    <div class="fw-bold mb-2 pt-2"><small>Work Annivesaries</small></div>
+
+                                    <div class="row justify-content-center profile-pic">
+                                        <div class="pt-2">
+                                            @if (Model.EmployeeAnnivesary != null)
+                                            {
+                                                if (Model.EmployeeAnnivesary.Count > 0)
+                                                {
+                                                    if (Model.EmployeeAnnivesary[0].IsCurrent == 1)
+                                                    {
+
+                                                        foreach (var item in Model.EmployeeAnnivesary.Where(x => x.IsCurrent > 0))
+                                                        {
+                                                            <a href="#" class="text-dark">@item.EmployeeName,</a>
+                                                            ;
+
+                                                        }
+
+                                                    }
+                                                    else
+                                                    {
+                                                        foreach (var item in Model.EmployeeAnnivesary.Where(x => x.IsCurrent <= 0))
+                                                        {
+                                                            <a href="#" class="text-dark">@item.EmployeeName,</a>
+
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        </div>
+
+                                    </div>
+                                    @* <div class="row justify-content-center profile-pic">
+                                    <div class="pt-2">
+                                    <a href="#" class="text-dark">Prashant Mahale</a>, <a href="#" class="text-dark">Mohd. Asif</a>, <a href="#" class="text-dark">Mohd. Ahtesham</a>, <a href="#" class="text-dark">Pradeep Jyual</a>,  <a href="#" class="text-dark">Mrigaj Garodiya</a>,
+                                    </div>
+                                    </div> *@
+                                </div>
+                            </div>
+
+                            <div class="align-items-center mb-4">
+                                <div class="badge bg-label-secondary p-2 rounded-circle me-4 float-start" style="font-size: 20px;"><img src="../../assets/img/woman.png" alt=""></div>
+                                <div class="ms-2 ms-sm-0 me-2">
+                                    <div class="fw-bold mb-2 pt-2"><small>Welcome our new team members</small></div>
+                                    <div class="row justify-content-center profile-pic">
+                                        <div class="pt-2">
+                                            @if (Model.EmployeeOnBoardings != null)
+                                            {
+                                                if (Model.EmployeeOnBoardings.Count > 0)
+                                                {
+                                                    if (Model.EmployeeOnBoardings[0].IsCurrent == 1)
+                                                    {
+
+                                                        foreach (var item in Model.EmployeeOnBoardings.Where(x => x.IsCurrent > 0))
+                                                        {
+                                                            <a href="#" class="text-dark">@item.EmployeeName,</a>
+                                                            ;
+
+                                                        }
+
+                                                    }
+                                                    else
+                                                    {
+                                                        foreach (var item in Model.EmployeeOnBoardings.Where(x => x.IsCurrent <= 0))
+                                                        {
+                                                            <a href="#" class="text-dark">@item.EmployeeName,</a>
+
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        </div>
+
+                                    </div>
+                                    @* <div class="row justify-content-center profile-pic">
+                                    <div class="pt-2">
+                                    <a href="#" class="text-dark">Prashant Mahale</a>, <a href="#" class="text-dark">Mohd. Asif</a>, <a href="#" class="text-dark">Mohd. Ahtesham</a>, <a href="#" class="text-dark">Pradeep Jyual</a>,  <a href="#" class="text-dark">Mrigaj Garodiya</a>,
+                                    </div>
+                                    </div> *@
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    @* <div class="card-title d-flex align-items-start justify-content-between mb-2">
+                    <small class="col-6 col-md-6 col-lg-6"><h5 class="text-dark fw-bold">Celebration Corner</h5></small>
+                    <small class="col-6 col-md-6 col-lg-6 text-end fw-bold">
+                    <a href="/Employee/CelebrationCornorView" class="text-decoration-underline me-3">View all</a>
+                    </small>
+                    </div>
+                    <div class="row">
+                    <div class="align-items-center mb-2">
+                    <div class="badge bg-label-secondary p-2 rounded-circle me-4 float-start" style="font-size: 20px;"><img src="../../assets/img/cake.png" alt=""></div>
+                    <div class="ms-2 ms-sm-0 me-2">
+                    @if (Model.EmployeeBirthDays != null)
+                    {
+                    if (Model.EmployeeBirthDays.Count > 0)
+                    {
+                    if (Model.EmployeeBirthDays[0].IsCurrent == 1)
+                    {
+                    <div class="fw-bold mb-2 pt-2"><small>Happy Birthday</small></div>
+
+                    }
+                    else
+                    {
+                    <div class="fw-bold mb-2 pt-2"><small>Upcoming Birthday</small></div>
+                    }
+                    }
+                    else
+                    {
+                    <div class="fw-bold mb-2 pt-2"><small>Happy Birthday</small></div>
+                    }
+                    }
+                    <div class="row" style="margin: 0 2.5rem;">
+                    @if (Model.EmployeeBirthDays != null)
+                    {
+                    if (Model.EmployeeBirthDays.Count > 0)
+                    {
+                    if (Model.EmployeeBirthDays[0].IsCurrent == 1)
+                    {
+                    foreach (var item in Model.EmployeeBirthDays.Where(x => x.IsCurrent > 0).Take(4))
+                    {
+
+                    <div class="float-start text-center col-6 col-md-3 mb-2" data-toggle="tooltip" title="@(item.DOB == null ? "" : ((DateTime)item.DOB).ToString("dd-MMM-yyyy"))">
+                    <div><img src="@(item.Base64ProfileImage == null ? "logo_1.jpg" : item.Base64ProfileImage)" width="48" height="48" class="rounded-circle" alt=""></div>
+                    <div class="pt-2" style="line-height: 10px;">
+                    <small class="text-dark smaller-font"><strong>@item.EmployeeName</strong></small><br>
+                    <small class="text-muted smaller-font">@item.JobTitle</small>
+                    </div>
+                    </div>
+                    }
+                    }
+                    else
+                    {
+                    foreach (var item in Model.EmployeeBirthDays.Where(x => x.IsCurrent <= 0).Take(4))
+                    {
+
+                    <div class="float-start text-center col-6 col-md-3 mb-2" data-toggle="tooltip" title="@(item.DOB == null ? "" : ((DateTime)item.DOB).ToString("dd-MMM-yyyy"))">
+                    <div><img src="@(item.Base64ProfileImage == null ? "logo_1.jpg" : item.Base64ProfileImage)" width="48" height="48" class="rounded-circle" alt=""></div>
+                    <div class="pt-2" style="line-height: 10px;">
+                    <small class="text-dark smaller-font"><strong>@item.EmployeeName</strong></small><br>
+                    <small class="text-muted smaller-font">@item.JobTitle</small>
+                    </div>
+                    </div>
+                    }
+                    }
+                    }
+                    }
+
+
+                    </div>
+                    </div>
+                    </div>
+
+                    <div class="align-items-center mb-2">
+                    <div class="badge bg-label-secondary p-2 rounded-circle me-4 float-start" style="font-size: 20px;"><img src="../../assets/img/party.png" alt=""></div>
+                    <div class="ms-2 ms-sm-0 me-2">
+                    @if (Model.EmployeeAnnivesary != null)
+                    {
+                    if (Model.EmployeeAnnivesary.Count > 0)
+                    {
+                    if (Model.EmployeeAnnivesary[0].IsCurrent == 1)
+                    {
+                    <div class="fw-bold mb-2 pt-2"><small>Work Annivesaries</small></div>
+
+                    }
+                    else
+                    {
+                    <div class="fw-bold mb-2 pt-2"><small>Upcoming Annivesaries</small></div>
+                    }
+                    }
+                    else
+                    {
+                    <div class="fw-bold mb-2 pt-2"><small>Work Annivesaries</small></div>
+                    }
+                    }
+
+                    <div class="row" style="margin: 0 2.5rem;">
+                    @if (Model.EmployeeAnnivesary != null)
+                    {
+                    if (Model.EmployeeAnnivesary.Count > 0)
+                    {
+                    if (Model.EmployeeAnnivesary[0].IsCurrent == 1)
+                    {
+                    foreach (var item in Model.EmployeeAnnivesary.Where(x => x.IsCurrent > 0).Take(4))
+                    {
+
+                    <div class="float-start text-center col-6 col-md-3 mb-2" data-toggle="tooltip" title="@(item.Anniversary == null ? "" : item.Anniversary + " Year's Anniversary")">
+                    <div><img src="@(item.Base64ProfileImage == null ? "logo_1.jpg" : item.Base64ProfileImage)" width="48" height="48" class="rounded-circle" alt=""></div>
+                    <div class="pt-2" style="line-height: 10px;">
+                    <small class="text-dark smaller-font"><strong>@item.EmployeeName</strong></small><br>
+                    <small class="text-muted smaller-font">@item.JobTitle</small>
+                    </div>
+                    </div>
+                    }
+                    }
+                    else
+                    {
+                    foreach (var item in Model.EmployeeAnnivesary.Where(x => x.IsCurrent <= 0).Take(4))
+                    {
+
+                    <div class="float-start text-center col-6 col-md-3 mb-2" data-toggle="tooltip" title="@(item.Anniversary == null ? "" : item.Anniversary + " Year's Anniversary")">
+                    <div><img src="@(item.Base64ProfileImage == null ? "logo_1.jpg" : item.Base64ProfileImage)" width="48" height="48" class="rounded-circle" alt=""></div>
+                    <div class="pt-2" style="line-height: 10px;">
+                    <small class="text-dark smaller-font"><strong>@item.EmployeeName</strong></small><br>
+                    <small class="text-muted smaller-font">@item.JobTitle</small>
+                    </div>
+                    </div>
+                    }
+                    }
+                    }
+                    }
+
+
+                    </div>
+                    </div>
+                    </div>
+
+                    <div class="align-items-center mb-2">
+                    <div class="badge bg-label-secondary p-2 rounded-circle me-4 float-start" style="font-size: 20px;"><img src="../../assets/img/woman.png" alt=""></div>
+                    <div class="ms-2 ms-sm-0 me-2">
+                    @if (Model.EmployeeOnBoardings != null)
+                    {
+                    if (Model.EmployeeOnBoardings.Count > 0)
+                    {
+                    if (Model.EmployeeOnBoardings[0].IsCurrent == 1)
+                    {
+                    <div class="fw-bold mb-2 pt-2"><small>Welcome our new team members</small></div>
+
+                    }
+                    else
+                    {
+                    <div class="fw-bold mb-2 pt-2"><small>Upcoming our new team members</small></div>
+                    }
+                    }
+                    else
+                    {
+                    <div class="fw-bold mb-2 pt-2"><small>Welcome our new team members</small></div>
+                    }
+                    }
+
+                    <div class="row" style="margin: 0 2.5rem;">
+                    @if (Model.EmployeeOnBoardings != null)
+                    {
+                    if (Model.EmployeeOnBoardings.Count > 0)
+                    {
+                    if (Model.EmployeeOnBoardings[0].IsCurrent == 1)
+                    {
+                    foreach (var item in Model.EmployeeOnBoardings.Where(x => x.IsCurrent > 0).Take(4))
+                    {
+
+                    <div class="float-start text-center col-6 col-md-3 mb-2" data-toggle="tooltip" title="@(item.DOJ == null ? "" : ((DateTime)item.DOJ).ToString("dd-MMM-yyyy"))">
+                    <div><img src="@(item.Base64ProfileImage == null ? "logo_1.jpg" : item.Base64ProfileImage)" width="48" height="48" class="rounded-circle" alt=""></div>
+                    <div class="pt-2" style="line-height: 10px;">
+                    <small class="text-dark smaller-font"><strong>@item.EmployeeName</strong></small><br>
+                    <small class="text-muted smaller-font">@item.JobTitle</small>
+                    </div>
+                    </div>
+                    }
+                    }
+                    else
+                    {
+                    foreach (var item in Model.EmployeeOnBoardings.Where(x => x.IsCurrent <= 0).Take(4))
+                    {
+
+                    <div class="float-start text-center col-6 col-md-3 mb-2" data-toggle="tooltip" title="@(item.DOJ == null ? "" : ((DateTime)item.DOJ).ToString("dd-MMM-yyyy"))">
+                    <div><img src="@(item.Base64ProfileImage == null ? "logo_1.jpg" : item.Base64ProfileImage)" width="48" height="48" class="rounded-circle" alt=""></div>
+                    <div class="pt-2" style="line-height: 10px;">
+                    <small class="text-dark smaller-font"><strong>@item.EmployeeName</strong></small><br>
+                    <small class="text-muted smaller-font">@item.JobTitle</small>
+                    </div>
+                    </div>
+                    }
+                    }
+                    }
+                    }
+
+
+                    </div>
+                    </div>
+                    </div>
+
+
+                    </div> *@
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card news-widget">
+                <div class="card-body">
+                    <div class="card-title d-flex align-items-start justify-content-between mb-4">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <small class="fw-bold"><h5 class="text-dark fw-bold d-inline-block">Latest news</h5></small>
+                            <select id="smallSelect" name="NewsTag" class=" form-select-sm border-0 smallSelect" onchange="NewsTagChangeEvent(this)">
+                                <option value="0">Select Option</option>
+                                @{
+                                    if (Model != null && Model.NewsCategoryTags != null)
+                                    {
+                                        foreach (var item in Model.NewsCategoryTags)
+                                        {
+                                            <option value="@item.NewsCategoryTagId">@item.NewsCategoryTag</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <small class="col-6 col-md-6 col-lg-6 text-end fw-bold">
+                            <a href="/EmployeeNews/EmployeeNewsList" class="text-decoration-underline me-3">View all</a>
+                        </small>
+                    </div>
+                    <div id="div_NewsPartialView">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- / Footer -->
+
+    <div class="content-backdrop fade"></div>
+</div>
+
+<input type="hidden" id="page" value="md" />
+<script src="~/customjs/employeevalidation.js"></script>
+<script src="~/customjs/CommonFunction.js"></script>
+@*<script src="~/customjs/Faceattendance.js></script>*@
+
+<script src="https://js.api.here.com/v3/3.1/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://js.api.here.com/v3/3.1/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+<script src="../../assets/js/extended-ui-perfect-scrollbar.js"></script>
+<script src="~/customjs/employee/commondashboard.js"></script>
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            setInterval(GetCurrentTime, 1000);
+            $("select").select2();
+
+            setTimeout(function () {
+                setInterval(function () {
+                    // alert('60 secs has passed');
+                    RefreshMeetings();
+                }, 60000);
+
+            }, 10000);
+
+            NewsPartialView(0);
+            AnnouncementPartialView(0);
+            ApprovalCentreView(0);
+            TodayMeetings();
+            QuickAccess();
+            ProjectTrackerPartialView();
+
+            var fullDate = new Date();  // 2009-11-10
+            var mm = fullDate.toLocaleString('default', { month: 'short' });
+            var dd = ((fullDate.getDate().toString().length) == 1) ? '0' + (fullDate.getDate()) : (fullDate.getDate());
+
+            jQuery('[name="checkInDate"]').text(mm + " " + dd);
+            UpdateGPSLocation();
+
+        });
+
+        function NewsTagChangeEvent(currObj) {
+            let id = $(currObj).val();
+            NewsPartialView(id);
+        }
+        function AnnouncementTypeChangeEvent(currObj) {
+            let id = $(currObj).val();
+            AnnouncementPartialView(id);
+        }
+
+
+        
+
+        function NewsPartialView(NewsCategoryTagId) {
+            let inputDTO = {};
+            inputDTO.NewsCategoryTagId = NewsCategoryTagId;
+            inputDTO.Source = "md";
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/Employee/NewsForDashboard',
+                data: JSON.stringify(inputDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#div_NewsPartialView').html(data);
+                    UnblockUI();
+                },
+                error: function (result) {
+                    alert(result.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+        function AnnouncementPartialView(AnnouncementTypeId) {
+            let inputDTO = {};
+            inputDTO.AnnouncementTypeId = AnnouncementTypeId;
+            inputDTO.Source = "md";
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/Employee/AnnouncementsForDashboard',
+                data: JSON.stringify(inputDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#div_AnnouncementPartialView').html(data);
+                    UnblockUI();
+                },
+                error: function (result) {
+                    alert(result.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+        function ApprovalCentreView(CompOffId) {
+            let inputDTO = {};
+            inputDTO.CompOffId = CompOffId;
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/Employee/ApprovalCentres',
+                data: JSON.stringify(inputDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#div_ApprovalCentre').html(data);
+                    UnblockUI();
+                },
+                error: function (result) {
+                    alert(result.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+        function TodayMeetings() {
+
+
+            let inputDTO = {};
+            inputDTO.Summary = "";
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                //  url: '/Employee/TodayMeetingEvents',
+                url: '/Employee/RefreshTokens',
+                data: JSON.stringify(inputDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+
+                    $('#div_TodayMeetings').html(data);
+                    UnblockUI();
+                },
+                error: function (result) {
+                    alert(result.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+        function RefreshMeetings() {
+
+            let inputDTO = {};
+            inputDTO.Summary = "";
+            // BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/Employee/RefreshTokens',
+                data: JSON.stringify(inputDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#div_TodayMeetings').html(data);
+                    // UnblockUI();
+                },
+                error: function (result) {
+                    alert(result.responseText);
+                    //UnblockUI();
+                }
+            });
+        }
+
+        function RevokeMeetings() {
+
+            let inputDTO = {};
+            inputDTO.Summary = "";
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/Employee/RevokeTokens',
+                data: JSON.stringify(inputDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#div_TodayMeetings').html(data);
+                    UnblockUI();
+                },
+                error: function (result) {
+                    alert(result.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+        function QuickAccess() {
+
+            let inputDTO = {};
+            inputDTO.QuickAccessId = "";
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/Employee/QuickAccess',
+                data: JSON.stringify(inputDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#div_quickaccessView').html(data);
+                    UnblockUI();
+                },
+                error: function (result) {
+                    alert(result.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+        function RegulerizeLeave(actionType, leaveId) {
+
+            //  alert(actionType);
+            //alert(leaveId);
+            var rowData = {};
+            rowData.LeaveIds = leaveId;
+            rowData.ActionRemarks = "";
+            rowData.ActionType = actionType;
+            if (confirm('Are you sure??')) {
+
+                BlockUI();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/Leave/LeaveRegularizeProcessing",
+                    data: { userAction: rowData },
+                    success: function (data) {
+                        $successalert("", "Transaction Successful!");
+                        ApprovalCentreView(0);
+                        UnblockUI();
+                        // var sMsg = data.displayMessage  //.Trim().Replace("< br > ", "\r\n")
+
+                        // if (data.toUpperCase() == "SUCCESS") {
+                        //     $successalert("Regularize Leave", data);
+                        // }
+                        // window.location.href = "/EmployeeAttendanceUI/RegularizeAttendance"
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        $erroralert("Error!", "errror<br>" + result.responseText);
+                        UnblockUI();
+                    }
+                });
+
+            }
+        }
+
+
+        function RegulerizeSelected(actionType, manualPunchId) {
+            //alert('Regularize')
+            var rowData = {};
+            rowData.ManualPunchIds = manualPunchId;
+            rowData.ActionRemarks = "";
+            rowData.ActionType = actionType;
+
+
+            if (confirm('Are you sure??')) {
+
+                BlockUI();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/EmployeeAttendanceUI/RegularizeAttendance",
+                    data: { userAction: rowData },
+                    success: function (data) {
+                        $successalert("", "Transaction Successful!");
+                        ApprovalCentreView(0);
+                        UnblockUI();
+
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        $erroralert("Error!", "errror<br>" + result.responseText);
+                        UnblockUI();
+                    }
+                });
+
+            }
+
+        }
+
+        function RegulerizeCompOff(actionType, compOffId) {
+
+            //  alert(actionType);
+            //alert(leaveId);
+            var rowData = {};
+            rowData.CompOffIds = compOffId;
+            rowData.ActionRemarks = actionType;
+            rowData.ActionType = actionType;
+            if (confirm('Are you sure??')) {
+
+                BlockUI();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/Leave/CompOffRegularizeProcessing",
+                    data: { userAction: rowData },
+                    success: function (data) {
+                        $successalert("", "Transaction Successful!");
+                        ApprovalCentreView(0);
+                        UnblockUI();
+                        // var sMsg = data.displayMessage  //.Trim().Replace("< br > ", "\r\n")
+
+                        // if (data.toUpperCase() == "SUCCESS") {
+                        //     $successalert("Regularize Leave", data);
+                        // }
+                        // window.location.href = "/EmployeeAttendanceUI/RegularizeAttendance"
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        $erroralert("Error!", "errror<br>" + result.responseText);
+                        UnblockUI();
+                    }
+                });
+
+            }
+        }
+
+        $('#btnClick').on('click', function () {
+            //UpdateGPSLocation();
+            cameraPrevScreen = "face-detect-frame1"
+            if ($('#face-detect-frame1').css('display') != 'none') {
+                $('#face-detect-frame2').show().siblings('div#face-detect-frame1').hide();
+                OpenCameraScreen('InTime');
+            }
+        });
+
+        $('#btnClickCapture').on('click', function () {
+            MarkFaceAttendance("InTime");
+            //CheckLiveness();
+        });
+
+        $('#btnClickCaptureOut').on('click', function () {
+            //UpdateGPSLocation();
+            if ($('#face-detect-frame3').css('display') != 'none') {
+                $('#face-detect-frame4').show().siblings('div#face-detect-frame3').hide();
+            }
+            OpenCameraScreen('OutTime');
+        });
+
+        $('#btnClickCaptureIn').on('click', function () {
+            cameraPrevScreen = "face-detect-frame5"
+
+            if ($('#face-detect-frame5').css('display') != 'none') {
+                $('#face-detect-frame2').show().siblings('div#face-detect-frame5').hide();
+            }
+            OpenCameraScreen('InTime');
+        });
+
+        $('#btnClickCapture1').on('click', function () {
+            MarkFaceAttendance("OutTime");
+        });
+
+        var x;
+        GetUserLoginDetails('InTime', "");
+        //StartAttendance();
+        //  getLocation();
+        // UpdateGPSLocation();
+
+        //function StartAttendance() {
+        //    //var startTime = sessionStorage.getItem("InTime");
+        //    //if (IsBlank(startTime))
+        //    //Get the starttime from session or from DB server
+        //    //jQuery("#stopAttendance").removeClass("disabled");
+
+        //    //('InTime', "");
+        //    //else
+        //    //    StartAttendanceTicker(startTime);
+        //}
+
+        function PopulateFaceAttendanceTable(data, tableID) {
+            var tableCols = ['sClockInTime', 'sClockOutTime', 'stayDuration'];
+            var tableCtrl = jQuery("#" + tableID)
+            var tBody = jQuery('<tbody>')
+            jQuery("#" + tableID + " tbody tr").remove();
+
+            data.forEach(function (row) {
+                var tr = jQuery('<tr>');
+                tableCols.forEach(function (attr) {
+                    tr.append('<td class="pt-2 pb-2 border-top small text-center">' + (IsBlank(row[attr]) == true ? "" : row[attr]) + '</td>');
+                });
+                tableCtrl.append(tr);
+            });
+        }
+
+        var previousScreen = "";
+        function ShowHideFaceAttendanceDetails(showScreen, hideScreen) {
+            if (hideScreen == 'face-detect-frame6')
+                jQuery('#' + previousScreen).show().siblings('div#' + hideScreen).hide();
+            else
+                jQuery('#' + showScreen).show().siblings('div#' + hideScreen).hide();
+            previousScreen = hideScreen;
+        }
+        var cameraPrevScreen = ''
+        function GoToScreen(fromScreen, ToScreen) {
+            if (cameraPrevScreen != '') {
+                jQuery('#' + cameraPrevScreen).show().siblings('div#' + ToScreen).hide();
+                jQuery('div#' + fromScreen).hide()
+                //.siblings('div#' + fromScreen).hide();
+                jQuery('#' + cameraPrevScreen).show();
+            }
+            else
+                jQuery('#' + ToScreen).show().siblings('div#' + fromScreen).hide();
+            window.location.href = "dashboard";
+            //cameraPrevScreen = '';
+        }
+
+        function GetUserLoginDetails(InOutTime, hideScreen) {
+            // BlockUI();
+            var showScreen = "";
+            jQuery.ajax({
+                type: "GET",
+                url: "/EmployeeAttendanceUI/GetAttendaceTime/" + InOutTime,
+                success: function (data) {
+                    //alert(data)
+                    //   UnblockUI();
+                    var sMsg = data.displayMessage  //.Trim().Replace("<br>", "\r\n")
+                    if (sMsg.toUpperCase() == "SUCCESS") {
+                        if (data.isAutoClockedOut) {
+                            showScreen = "face-detect-frame1"
+                            hideScreen = "face-detect-frame3"
+                        }
+                        else if (!(data.faceAttendanceStayHours == null || data.faceAttendanceStayHours == '00:00')) {
+                            jQuery('[name="stayHours"]').html(data.sFaceAttendanceStayHours);
+                            if (!(data.status == null || data.status == '')) {
+                                if (data.status.toUpperCase() == "ABSENT") {
+                                    jQuery('[name="status"]').attr('style', 'color:#ff0000');
+                                    jQuery('[name="status"]').text("Absent");
+                                }
+                                else if (data.status.toUpperCase() == "PRESENT") {
+                                    jQuery('[name="status"]').attr('style', '"color:#42a775"');
+                                    jQuery('[name="status"]').text("PRESENT");
+                                }
+                            }
+                            else if (data.status == null || data.status == '') {
+                                jQuery('[name="status"]').attr('style', 'color:#ff0000');
+                                jQuery('[name="status"]').text("Absent");
+                            }
+
+
+                            if (data.lastFaceLogin == '0001-01-01T00:00:00' || data.lastFaceLogin == null || data.lastFaceLogin == '') {
+                                jQuery('[name="outTime"]').text(data.sOutTime);
+                                jQuery('[name="inTime"]').text(data.sInTime);
+
+
+                                //setInterval(jQuery("#clockOutTime").text(GetCurrentTime), 1000);
+                                showScreen = "face-detect-frame5"
+                            }
+                            else {
+                                jQuery('[name="outTime"]').text("Not yet");
+                                if ((data.sFaceAttendanceStayHours == null || data.faceAttendanceStayHours == '00:00'))
+                                    jQuery('[name="stayHours"]').html(data.sFaceAttendanceStayHours);
+                                else
+                                    jQuery('[name="stayHours"]').html(data.sFaceAttendanceStayHours);
+                                jQuery('[name="inTime"]').text(data.sInTime);
+                                showScreen = "face-detect-frame3";
+                            }
+                            hideScreen = "face-detect-frame1"
+                        }
+                        else if (!(data.status == null || data.status == '')) {
+                            jQuery('[name="status"]').text(data.status);
+                            jQuery('[name="inTime"]').text(data.sInTime);
+                            jQuery('[name="stayHours"]').text(data.sFaceAttendanceStayHours);
+                            showScreen = "face-detect-frame3"
+                            hideScreen = "face-detect-frame1"
+                        }
+                        else {
+                            jQuery('[name="stayHours"]').text(" hour");
+                            jQuery('[name="status"]').text("");
+                            showScreen = "face-detect-frame1"
+                        }
+                        if (!(data.lastFaceLogin == '0001-01-01T00:00:00' || data.earlyDelayTime == null || data.earlyDelayTime == '')) {
+                            jQuery('[name="earlyDelayTime"]').text(data.sEarlyDelayTime);
+                        }
+                        jQuery('#' + showScreen).show().siblings('div#' + hideScreen).hide();;
+
+                        if (data.faceRecognitionAttendanceList.length > 0) {
+                            // jQuery('#listFaceAttendance').attr('style', 'display:block');
+                            // jQuery('#listFaceAttendance').hide();
+                            //if (data.epochInOutTime != 0)
+
+                            //StartAttendanceTicker(data.epochInOutTime);
+                        }
+                        //else
+
+
+                        PopulateFaceAttendanceTable(data.faceRecognitionAttendanceList, "listFaceAttendance");
+
+                    }
+                    else
+                        $erroralert("Face Recognition", sMsg);
+                },
+                error: function (result) {
+                    var x = 1;
+                    alert("errror <br>" + result.responseText);
+                    //      UnblockUI();
+                }
+            });
+        }
+
+
+        function OpenCameraScreen(action) {
+            //jQuery("#InOutTime").val(inOutTime);
+            // jQuery("#openCameraScreen").modal('show');
+            Webcam.set({
+                width: 385,
+                height: 340,
+                dest_width: 1000,
+                dest_height: 600,
+                image_format: 'jpeg',
+                jpeg_quality: 90
+            });
+            if (action.toUpperCase() == "INTIME")
+                Webcam.attach('#my_camera');
+            else (action.toUpperCase() == "OUTTIME")
+            Webcam.attach('#my_cameraOut');
+        }
+
+        //function OpenCameraScreen(action) {
+        //    //jQuery("#InOutTime").val(inOutTime);
+        //    // jQuery("#openCameraScreen").modal('show');
+        //    Webcam.set({
+        //        width: 385,
+        //        height: 340,
+        //        image_format: 'jpeg',
+        //        jpeg_quality: 90
+        //    });
+        //    if (action.toUpperCase() == "INTIME")
+        //        Webcam.attach('#my_camera');
+        //    else (action.toUpperCase() == "OUTTIME")
+        //    Webcam.attach('#my_cameraOut');
+        //}
+
+        function MarkFaceAttendance(action) {
+            // take snapshot and get image data
+            Webcam.snap(function (data_uri) {
+                // var startTime = new Date().getTime();
+                jQuery("#InOutTime").val(action);
+                Webcam.upload(data_uri,
+                    '/EmployeeAttendanceUI/MarkFaceAttendance',
+                    function (code, data) {
+                        var ahVM = jQuery.parseJSON(data);
+                        //alert('Photo Matched : ' + text);
+                        //Webcam.reset();
+
+                        //Webcam.init();
+                        if (ahVM.displayMessage.toUpperCase() == "SUCCESS") {
+                            // GPS location function
+                            //
+                            // Webcam.CloseCamera();
+                            //if (ahVM.faceRecognitionAttendanceList.length > 0) {
+                            //    jQuery('#ListFaceAttendance').attr('style', 'display:block');
+                            //}
+                            //PopulateFaceAttendanceTable(ahVM.faceRecognitionAttendanceList, "ListFaceAttendance");
+                            if (action.toUpperCase() == 'OUTTIME') {
+                                //jQuery("#ShowMarkAttendance").attr("style", "display:inline");
+                                //jQuery("#ShowStopAttendance").attr("style", "display:none");
+                                //clearInterval(x);
+                                // jQuery('[name="outTime"]').text(GetCurrentTime());
+
+                                Webcam.reset();
+                                Webcam.init();
+
+                                //jQuery("#openCameraScreen").modal('hide');
+                                //jQuery("#UserImage").val('');
+                                GetUserLoginDetails('InTime', "face-detect-frame4");
+                                if ($('#face-detect-frame4').css('display') != 'none') {
+                                    $('#face-detect-frame5').show().siblings('div#face-detect-frame4').hide();
+                                }
+                                SaveUserLocation('ClockOut');
+                                return;
+                            }
+                            else {
+                                //jQuery("#ShowMarkAttendance").attr("style", "display:none");
+                                //jQuery("#ShowStopAttendance").attr("style", "display:inline");
+                                Webcam.reset();
+                                Webcam.init();
+
+                                if ($('#face-detect-frame2').css('display') != 'none') {
+                                    //jQuery('[name="inTime"]').text(GetCurrentTime());
+                                    //jQuery("#clockOutTime").text(GetCurrentTime)
+                                    GetUserLoginDetails('InTime', "face-detect-frame2");
+                                    //setInterval(jQuery('[name="checkInLocation"]').text(GetCurrentTime), 1000);
+                                    $('#face-detect-frame3').show().siblings('div#face-detect-frame2').hide();
+                                }
+                                SaveUserLocation('ClockIn');
+                            }
+
+
+                            sessionStorage.setItem(jQuery("#InOutTime").val(), ahVM.epochInOutTime);
+                            //StartAttendanceTicker(ahVM.epochInOutTime);
+                            //Webcam.reset();
+                            jQuery("#UserImage").val('');
+                            //// jQuery("#openCameraScreen").modal('hide');
+                        }
+                        else {
+                            $erroralert(ahVM.displayMessage);
+                            //Webcam.reset();
+                            jQuery("#UserImage").val('');
+                            jQuery("#openCameraScreen").modal('hide');
+                            document.getElementById("showAttendance").innerHTML = ahVM.displayMessage;
+                        }
+                    });
+                // display results in page
+                //document.getElementById('results').innerHTML =
+                //    '<br><h2>Here is your image:</h2>' +
+                //    '<img id="UserImage" name="UserImage" src="' + data_uri + '" />';
+            });
+        }
+
+        function StartAttendanceTicker(startTime) {
+            x = setInterval(function () {
+                var counterValue = StartCounter(startTime);
+                //sessionStorage.setItem(jQuery("#InOutTime").val(), ePOCHInOutTime);
+                if (counterValue == "EXPIRED") {
+                    jQuery("#ShowMarkAttendance").attr("style", "display:none");
+                    jQuery("#ShowStopAttendance").attr("style", "display:inline");
+                    clearInterval(x);
+                    document.getElementById("showAttendance").innerHTML = "Refresh";
+                }
+                else {
+                    if (jQuery('#ShowStopAttendance').css('display') !== 'inline') {
+                        jQuery("#ShowMarkAttendance").attr("style", "display:none");
+                        jQuery("#ShowStopAttendance").attr("style", "display:inline");
+                    }
+
+                    document.getElementById("showAttendance").innerHTML = counterValue;
+                }
+            }, 1000);
+        }
+
+        var attendanceHistoryVM = {};
+        function UpdateGPSLocation() {
+
+            // alert("Checking User Location");
+
+            var platform = new H.service.Platform({
+                "apikey": "yYUYzOQ8cV8mAWGq6rKtUHsPyRPLbSZafVpuHQ1ex7U"
+            });
+            var geocoder = platform.getSearchService();
+            //alert("Checking User Location : " + geocoder);
+            if (navigator.geolocation) {
+                //alert("Inside navigator.geolocation : " + navigator.geolocation);
+                navigator.geolocation.getCurrentPosition(position => {
+                    geocoder.reverseGeocode(
+                        {
+                            //alert("Inside position.coords.latitude + "," + position.coords.longitude : " + position.coords.latitude);
+                            at: position.coords.latitude + "," + position.coords.longitude
+                        }, data => {
+                            // $("#lblGeoLocation").text(data.items[0].address.label);
+                            // $("#hdnCurrentLocation").val($("#lblGeoLocation").text());
+                            //   alert("location is:\n" + data.items[0].address.label);
+                            //jQuery('[name="checkInLocation"]').text(data.items[0].address.label);
+
+                            if (data.items[0].address.label.length > 0) {
+                                // attendanceHistoryVM.HostName = jQuery("#EmployeeId").val();
+                                // attendanceHistoryVM.IPAddress = jQuery("#StartDate").val();
+                                attendanceHistoryVM.GPSLocation = data.items[0].address.label;
+                                //jQuery("#checkInLocation").Val(attendanceHistoryVM.GPSLocation);
+                                // alert(attendanceHistoryVM.GPSLocation);
+                                var address = attendanceHistoryVM.GPSLocation.length > 20 ? attendanceHistoryVM.GPSLocation.substring(0, 20) + "...." : attendanceHistoryVM.GPSLocation;
+                                jQuery('[name="locationToolTip"]').prop("title", attendanceHistoryVM.GPSLocation);
+                                jQuery('[name="locationToolTip"]').html(address);
+                                attendanceHistoryVM.longitude = position.coords.longitude;
+                                attendanceHistoryVM.latitude = position.coords.latitude;
+                                //  BlockUI();
+                            }
+
+                        }, error => {
+                            console.error(error);
+                        }
+                    );
+                });
+            } else {
+                console.error("Geolocation is not supported by this browser!");
+            }
+        }
+
+        function SaveUserLocation(ClockInOut) {
+            attendanceHistoryVM.AttendanceType = ClockInOut
+            jQuery.ajax({
+                type: "POST",
+                url: "/EmployeeAttendanceUI/SaveGPSLocation",
+
+                data: { inputData: attendanceHistoryVM },
+                success: function (data) {
+                    var x = 0;
+                    //alert(data)
+                    //  UnblockUI();
+                    // var sMsg = data.displayMessage  //.Trim().Replace("<br>", "\r\n")
+                    // $successalert("Mark Attendance", sMsg);
+                    // if (sMsg.toUpperCase() == "SUCCESS") {
+                    //     jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                    // }
+                    window.location.href = "dashboard";
+                },
+                error: function (result) {
+                    var x = 1;
+                    $erroralert("Error!", "errror<br>" + result.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+        function GetCurrentTime() {
+            // Create a newDate() object and extract the hours of the current time on the visitor's
+            //console.log("Inside GetCurrentTime");
+            var hours = new Date().getHours();
+            var sHours = (hours < 10 ? "0" : "") + hours;
+            // Add a leading zero to the hours value
+            var minutes = new Date().getMinutes();
+            var sMin = (minutes < 10 ? "0" : "") + minutes;
+            var seconds = new Date().getSeconds();
+            var sSec = (seconds < 10 ? "0" : "") + seconds;
+            var currentTime = sHours + ":" + sMin //+ ":" + seconds
+            //jQuery("#clockTime").text(currentTime);
+            //console.log("Exiting GetCurrentTime")
+            jQuery('[name="clockInTime"]').text(currentTime);
+            jQuery('[name="clockOutTime"]').text(currentTime);
+            return currentTime
+            //jQuery("#clockTime").html();
+        }
+
+        $('.list-view').on('click', function () {
+            if ($('.photo-view').css('display') != 'none') {
+                $('.text-view').show().siblings('div.photo-view').hide();
+            }
+        });
+        $('.user-view').on('click', function () {
+            if ($('.text-view').css('display') != 'none') {
+                $('.photo-view').show().siblings('div.text-view').hide();
+            }
+        });
+    </script>
+}

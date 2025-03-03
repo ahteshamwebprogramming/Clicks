@@ -1,0 +1,55 @@
+﻿@model SimpliHR.Infrastructure.Models.ITDeclaration.ItDeclarationLentOutPropertyDetailDTO
+
+<div>
+    <div class="float-start"><h6>Let Out Property Details</h6></div>
+    <div class="float-end"><i class="fa-solid fa-xmark" onclick="removeLetOutPropertyDetailDiv(this,@(Model==null ? 0 : Model.ItDeclarationLentOutPropertyDetailsId))"></i></div>
+    <div class="clearfix"></div>
+    <input type="hidden" value="@(Model==null ? 0 : Model.ItDeclarationLentOutPropertyDetailsId)" name="ItDeclarationLentOutPropertyDetailsId" />
+</div>
+<div class="row">
+    <div class="col-md-9 mb-3">
+        <label class="form-label" for="username">Annual Rent Received</label>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="input-group">
+            <span class="input-group-text" id="basic-addon11">₹</span>
+            <input type="text" class="form-control mr-2" name="AnnualRentReceived" value="@(Model==null ? ""  : Model.AnnualRentReceived)" placeholder="" aria-label="" aria-describedby="">
+        </div>
+    </div>
+    <div class="col-md-9 mb-3">
+        <label class="form-label" for="username">Taxes Paid</label>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="input-group">
+            <span class="input-group-text" id="basic-addon11">₹</span>
+            <input type="text" class="form-control mr-2" name="TaxesPaid" placeholder="" value="@(Model==null ? ""  : Model.TaxesPaid)" aria-label="" aria-describedby="">
+        </div>
+    </div>
+    <div class="col-md-9 mb-3">
+        <label class="form-label" for="username">Net Annual Value</label>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="input-group">
+            <span class="input-group-text" id="basic-addon11">₹</span>
+            <input type="text" class="form-control mr-2" name="NetAnnualValue" placeholder="" aria-label="" value="@(Model==null ? ""  : Model.NetAnnualValue)" aria-describedby="" disabled>
+        </div>
+    </div>
+    <div class="col-md-9 mb-3">
+        <label class="form-label" for="username">Standard Deduction ( 30% of Net Annual Value)</label>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="input-group">
+            <span class="input-group-text" id="basic-addon11">₹</span>
+            <input type="text" class="form-control mr-2" name="StandardDeduction" placeholder="" value="@(Model==null ? ""  : Model.StandardDeduction)" aria-label="" aria-describedby="" disabled>
+        </div>
+    </div>
+    <div class="col-md-9 mb-3">
+        <label class="form-label" for="username">Net Income/Loss from Property</label>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="input-group">
+            <span class="input-group-text" id="basic-addon11">₹</span>
+            <input type="text" class="form-control mr-2" name="NetIncomeLoss" placeholder="" aria-label="" value="@(Model==null ? ""  : Model.NetIncomeLoss)" aria-describedby="" disabled>
+        </div>
+    </div>
+</div>

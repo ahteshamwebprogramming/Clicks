@@ -1,0 +1,369 @@
+﻿@{
+    Layout = null;
+}
+@using System.Data
+@model DataSet
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/plain; charset=UTF-8" />
+    <title>PayRegisterDownload</title>
+</head>
+<body>
+    <div style="margin: auto; text-align:center;">
+        <form method="post" asp-action="ExportPayRegister" asp-controller="PayrollSalary">
+            <input type="hidden" name="PayRegister" /> <br />
+            <input type="submit" id="btnSubmit" style="background-color: #2ea44f;border: 1px solid rgba(27, 31, 35, .15); color: #fff;box-shadow: rgba(27, 31, 35, .1) 0 1px 0; font-size: 14px; padding: 6px 16px;line-height: 20px;" value="Download" />
+        </form>
+        <div id="dvData">
+
+
+            <table cellspacing="2" align="left" cellpadding="10" style="width: 250%; ">
+                <tr align="left">
+
+
+                    @*  <td width="50%"><img src="kt-logo.png" alt=""></td> *@
+                    <td colspan="5">
+                        @if (Model.Tables[2].Rows.Count > 0)
+                        {
+                            <div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1.375rem;padding-bottom: 20px;color: #566a7f;"><strong>@Model.Tables[2].Rows[0]["UnitName"].ToString()</strong></div>
+                        }
+                    </td>
+                </tr>
+                <tr align="left">
+                    @if (Model.Tables[3].Rows.Count > 0)
+                    {
+                        <td colspan="5"><div style="padding: 20px 0;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f">Salary Register for the month of  @Model.Tables[3].Rows[0]["Month"].ToString(), @Model.Tables[3].Rows[0]["Year"].ToString()</div></td>
+                    }
+                </tr>
+            </table>
+            <table cellspacing="2" border="1" cellpadding="10" style="width: 250%;">
+
+                <tr>
+                    @if (Model.Tables[0].Rows.Count > 0)
+                    {
+                        int? tRows = (int)Model.Tables[0].Rows[0]["CCount"] + 1;
+
+                        <td colspan="9"></td>
+                        <td colspan=@tRows style="text-align: center;"><div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f">Standard Earnings (Per Month)</div></td>
+                        <td colspan=@tRows style="text-align: center;"><div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f">Earnings During The Month</div></td>
+                        <td colspan=@tRows style="text-align: center;"><div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f">Arrears</div></td>
+                        <td colspan="7" style="text-align: center;"><div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f">Deductions During the Month</div></td>
+                        <td colspan="6"></td>
+                    }
+                </tr>
+                <tr>
+                    @foreach (DataColumn col in Model.Tables[0].Columns)
+                    {
+                        if (@col.ColumnName.Trim() != "CCount")
+                        {
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@col.ColumnName.Trim()</strong></td>
+
+                        }
+
+
+
+                    }
+                </tr>
+
+                @foreach (DataRow row in Model.Tables[0].Rows)
+                {
+                    <tr>
+                        @foreach (DataColumn col in Model.Tables[0].Columns)
+                        {
+
+                            if (!string.IsNullOrEmpty(Convert.ToString(@row[col.ColumnName])))
+                            {
+                                if (@col.ColumnName.Trim() != "CCount" || @col.ColumnName.Trim() != "ProcessMonth" || @col.ColumnName.Trim() != "ProcessYear")
+                                {
+                                    string? isDecimal;
+                                    if (@col.ColumnName.ToUpper() == "ID" || @col.ColumnName.ToUpper() == "EMPID" || @col.ColumnName.ToUpper() == "DOJ" || @col.ColumnName.ToUpper() == "LWD")
+                                    {
+                                        isDecimal = Convert.ToString(@row[col.ColumnName]);
+                                    }
+                                    else
+                                    {
+                                        isDecimal = string.Format("{0:#,#.00}", @row[col.ColumnName]);
+                                    }
+
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@(isDecimal.Trim() == ".00" ? "0" : isDecimal)</td>
+                                }
+                            }
+                        }
+                    </tr>
+                }
+
+
+                @foreach (DataRow row in Model.Tables[1].Rows)
+                {
+                    string? SC1, SC2, SC3, SC4, SC5, SC6, SC7, SC8, GrossSalary;
+                    string? EC1, EC2, EC3, EC4, EC5, EC6, EC7, EC8, TotalEarnings;
+                    string? AC1, AC2, AC3, AC4, AC5, AC6, AC7, AC8, TotalArrears;
+                    string? Tax, EPF, ArrearsPF, Advance, ProfTax, ESI, TotalDeductions, NetPay;
+                    <tr>
+                        <td></td>
+                        <td colspan="2" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Grand Totals</strong></td>
+                        <td colspan="6"></td>
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["SC1"])))
+                        {
+                            SC1 = string.Format("{0:#,#.00}", @row["SC1"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong> @(SC1.Trim() == ".00" ? "0" : SC1)</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["SC2"])))
+                        {
+                            SC2 = string.Format("{0:#,#.00}", @row["SC2"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong> @(SC2.Trim() == ".00" ? "0" : SC2)</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["SC3"])))
+                        {
+                            SC3 = string.Format("{0:#,#.00}", @row["SC3"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@(SC3.Trim() == ".00" ? "0" : SC3)</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["SC4"])))
+                        {
+                            SC4 = string.Format("{0:#,#.00}", @row["SC4"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@(SC4.Trim() == ".00" ? "0" : SC4)</strong></td>
+                        }
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["SC5"])))
+                        {
+                            SC5 = string.Format("{0:#,#.00}", @row["SC5"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@(SC5.Trim() == ".00" ? "0" : SC5)</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["SC6"])))
+                        {
+                            SC6 = string.Format("{0:#,#.00}", @row["SC6"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@(SC6.Trim() == ".00" ? "0" : SC6)</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["SC7"])))
+                        {
+                            SC7 = string.Format("{0:#,#.00}", @row["SC7"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@(SC7.Trim() == ".00" ? "0" : SC7)</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["SC8"])))
+                        {
+                            SC8 = string.Format("{0:#,#.00}", @row["SC8"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@(SC8.Trim() == ".00" ? "0" : SC8)</strong></td>
+                        }
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["Gross Salary"])))
+                        {
+                            GrossSalary = string.Format("{0:#,#.00}", @row["Gross Salary"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@GrossSalary</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["EC1"])))
+                        {
+                            EC1 = string.Format("{0:#,#.00}", @row["EC1"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@EC1</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["EC2"])))
+                        {
+                            EC2 = string.Format("{0:#,#.00}", @row["EC2"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@EC2</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["EC3"])))
+                        {
+                            EC3 = string.Format("{0:#,#.00}", @row["EC3"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@EC3</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["EC4"])))
+                        {
+                            EC4 = string.Format("{0:#,#.00}", @row["EC4"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@EC4</strong></td>
+                        }
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["EC5"])))
+                        {
+                            EC5 = string.Format("{0:#,#.00}", @row["EC5"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@EC5</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["EC6"])))
+                        {
+                            EC6 = string.Format("{0:#,#.00}", @row["EC6"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@EC6</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["EC7"])))
+                        {
+                            EC7 = string.Format("{0:#,#.00}", @row["EC7"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@EC7</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["EC8"])))
+                        {
+                            EC8 = string.Format("{0:#,#.00}", @row["EC8"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@EC8</strong></td>
+                        }
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["Total Earnings"])))
+                        {
+                            TotalEarnings = string.Format("{0:#,#.00}", @row["Total Earnings"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@TotalEarnings</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["AC1"])))
+                        {
+                            AC1 = string.Format("{0:#,#.00}", @row["AC1"]);
+                            <td> @AC1</td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["AC2"])))
+                        {
+                            AC2 = string.Format("{0:#,#.00}", @row["AC2"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@AC2</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["AC3"])))
+                        {
+                            AC3 = string.Format("{0:#,#.00}", @row["AC3"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@AC3</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["AC4"])))
+                        {
+                            AC4 = string.Format("{0:#,#.00}", @row["AC4"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@AC4</strong></td>
+                        }
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["AC5"])))
+                        {
+                            AC5 = string.Format("{0:#,#.00}", @row["AC5"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@AC5</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["AC6"])))
+                        {
+                            AC6 = string.Format("{0:#,#.00}", @row["AC6"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@AC6</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["AC7"])))
+                        {
+                            AC7 = string.Format("{0:#,#.00}", @row["AC7"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@AC7</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["AC8"])))
+                        {
+                            AC8 = string.Format("{0:#,#.00}", @row["AC8"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@AC8</strong></td>
+                        }
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["Total Arrears"])))
+                        {
+                            TotalArrears = string.Format("{0:#,#.00}", @row["Total Arrears"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@TotalArrears</strong></td>
+                        }
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["Tax"])))
+                        {
+                            Tax = string.Format("{0:#,#.00}", @row["Tax"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@Tax</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["EPF"])))
+                        {
+                            EPF = string.Format("{0:#,#.00}", @row["EPF"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@EPF</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["Arrears PF"])))
+                        {
+                            ArrearsPF = string.Format("{0:#,#.00}", @row["Arrears PF"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@ArrearsPF</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["Advance"])))
+                        {
+                            Advance = string.Format("{0:#,#.00}", @row["Advance"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@Advance</strong></td>
+                        }
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["Prof Tax"])))
+                        {
+                            ProfTax = string.Format("{0:#,#.00}", @row["Prof Tax"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@ProfTax</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["ESI"])))
+                        {
+                            ESI = string.Format("{0:#,#.00}", @row["ESI"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@ESI</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["Total Deductions"])))
+                        {
+                            TotalDeductions = string.Format("{0:#,#.00}", @row["Total Deductions"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@TotalDeductions</strong></td>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Convert.ToString(@row["NetPay"])))
+                        {
+                            NetPay = string.Format("{0:#,#.00}", @row["NetPay"]);
+                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>@NetPay</strong></td>
+                        }
+                        <td colspan="4"></td>
+                    </tr>
+                }
+
+
+            </table>
+
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("input[name='PayRegister']").val($("#dvData").html());
+
+        });
+
+        function getMonthName(monthNumber) {
+            const date = new Date();
+            date.setMonth(monthNumber - 1);
+
+            // Using the browser's default locale.
+            return date.toLocaleString([], { month: 'long' });
+        }
+    </script>
+
+
+
+</body>
+</html>
+@* <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+<script>
+    $(document).ready(function () {
+
+
+        // let table = document.getElementsByTagName("body");
+        //     console.log(table);
+        //     debugger;
+        //     TableToExcel.convert(table[0], {
+        //         name: `PayRegister.xlsx`,
+        //         sheet: {
+        //         name: 'PayRegister'
+        //         }
+
+        //     });
+        // setTimeout(closeMe, 1000);
+        // function closeMe() {
+        //     window.close();
+        // }
+
+        // $("#btnExport").click(function (e) {
+        //     window.open('data:application/vnd.ms-excel,' + $('#dvData').html());
+        //     e.preventDefault();
+        // });
+    });
+
+
+</script> *@

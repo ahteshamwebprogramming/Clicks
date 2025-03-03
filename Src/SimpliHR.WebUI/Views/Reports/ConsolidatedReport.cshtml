@@ -1,0 +1,191 @@
+﻿@{
+    ViewData["Title"] = "ConsolidatedReport";
+}
+
+@using System.Data
+@model DataSet
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Reports /</span> Employee Consolidated Report</h4>
+    <div class="row">
+        <!-- User Content -->
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <!-- User Pills -->
+            <div class="nav-align-top mb-4">
+                <div class="tab-content">
+
+                    <div class="info-container">
+                        <div class="card-body">
+
+                            <form method="post" asp-action="ExportConsolidatedReport" asp-controller="Reports">
+                                <input type="hidden" name="DataSheet" /> <br />
+                                <input type="submit" id="btnSubmit" style="background-color: #696cff;color: #fff; font-size: 14px; padding: 6px 16px;line-height: 20px; border-radius:5px;border:0;" value="Download" />
+                            </form>
+                            <div class="card-datatable table-responsive text-nowrap">
+                                <table class="datatables-ajax table List" id="List">
+                                    <thead>
+                                        <tr>
+                                            <th>Employee Code </th>
+                                            <th>Employee Name </th>
+                                            <th>DOB </th>
+                                            <th>Gender </th>
+                                            <th>PAN Number </th>
+                                            <th>Passport Number </th>
+                                            <th>Mobile Number </th>
+                                            <th>EmailID </th>
+                                            <th>Blood Group </th>
+                                            <th>Marital Status </th>
+                                            <th>Father Name </th>
+                                            <th>Spouse Name </th>
+                                            <th>Present Address </th>
+                                            <th>Permanent Address </th>
+                                            <th>Employee Status </th>
+                                            <th>Employee Type </th>
+                                            <th>DOJ </th>
+                                            <th>DOC </th>
+                                            <th>Offical Email </th>
+                                            <th>PF Number </th>
+                                            <th>ESI Number </th>
+                                            <th>Designation </th>
+                                            <th>Department </th>
+                                            <th>Role </th>
+                                            <th>Manager </th>
+                                            <th>Location </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.Tables[0].Rows.Count > 0)
+                                        {
+
+                                            foreach (DataRow row in Model.Tables[0].Rows)
+                                            {
+
+                                                <tr>
+                                                    <td>@row["EmployeeCode"]</td>
+                                                    <td>@row["EmployeeName"]</td>
+                                                    <td>@row["DOB"]</td>
+                                                    <td>@row["Gender"]</td>
+                                                    <td>@row["Pan"]</td>
+                                                    <td>@row["PassportNumber"]</td>
+                                                    <td>@row["MobileNo"]</td>
+                                                    <td>@row["EmailId"]</td>
+                                                    <td>@row["BloodGroup"]</td>
+                                                    <td>@row["MaritalStatus"]</td>
+                                                    <td>@row["FatherName"]</td>
+                                                    <td>@row["SpouseName"]</td>
+                                                    <td>@row["PresentAddress"]</td>
+                                                    <td>@row["PermanentAddress"]</td>
+                                                    <td>@row["EmployeeStatus"]</td>
+                                                    <td>@row["EmployeeType"]</td>
+                                                    <td>@row["DOJ"]</td>
+                                                    <td>@row["DOC"]</td>
+                                                    <td>@row["OfficalEmail"]</td>
+                                                    <td>@row["PFNumber"]</td>
+                                                    <td>@row["ESINumber"]</td>
+                                                    <td>@row["Designation"]</td>
+                                                    <td>@row["Department"]</td>
+                                                    <td>@row["Role"]</td>
+                                                    <td>@row["MANAGER"]</td>
+                                                    <td>@row["LOCATION"]</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="DvDataGrid" style="align-content:center;display:none;">
+                            <br />
+                            <table cellspacing="2" cellpadding="10" align="center" border="1" style="width: 200%;">
+                                <tr>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Employee Code</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Employee Name</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>DOB</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Gender</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>PAN Number</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Passport Number</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Mobile Number</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>EmailID</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Blood Group</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Marital Status</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Father Name</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Spouse Name</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Present Address</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Permanent Address</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Employee Status</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Employee Type</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>DOJ</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>DOC</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Offical Email</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>PF Number</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>ESI Number</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Designation</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Department</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Role</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Manager</strong></td>
+                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;"><strong>Location</strong></td>
+                                </tr>
+                                @if (Model.Tables[0].Rows.Count > 0)
+                                {
+
+                                    foreach (DataRow row in Model.Tables[0].Rows)
+                                    {
+
+                                        <tr>
+                                            <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["EmployeeCode"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["EmployeeName"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["DOB"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["Gender"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["Pan"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["PassportNumber"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["MobileNo"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["EmailId"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["BloodGroup"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["MaritalStatus"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["FatherName"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["SpouseName"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["PresentAddress"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["PermanentAddress"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["EmployeeStatus"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["EmployeeType"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["DOJ"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["DOC"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["OfficalEmail"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["PFNumber"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["ESINumber"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["Designation"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["Department"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["Role"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["MANAGER"]</td>
+                                            <td align="left" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@row["LOCATION"]</td>
+                                        </tr>
+
+                                    }
+                                }
+
+
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+
+    <script type="text/javascript">
+
+        jQuery(document).ready(function () {
+            $(".List").dataTable();
+            $("input[name='DataSheet']").val($("#DvDataGrid").html());
+        });
+
+
+
+    </script>
+}
+

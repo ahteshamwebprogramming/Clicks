@@ -1,0 +1,171 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.PayrollComponentViewModel
+@{
+    ViewData["Title"] = "Earning Components";   
+}
+
+
+<!-- Content -->
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Salary Components /</span> New Earning
+    </h4>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="earnings" role="tabpanel">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive text-nowrap">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>NAME</th>
+                                    <th>EARNING TYPE</th>
+                                    <th>CALCULATION TYPE</th>
+                                    <th>CONSIDER FOR EPF</th>
+                                    <th>CONSIDER FOR ESI</th>
+                                    <th>STATUS</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            @if (Model.PayrollEarningComponentList.Count > 0)
+                            {
+                                <tbody>
+                                    @{
+                                        foreach (var item in @Model.PayrollEarningComponentList)
+                                        {
+                                            <tr>
+                                                <td><a href="/PayrollSalary/EarningComponent/@item.EarningId">@item.SalaryComponentTitle</a></td>
+                                                <td>@item.SalaryComponentTitle</td>
+                                                <td>
+                                                    @(item.CalculationType.ToLower() == "percentage" ? $"{@item.Percentage} of CTC" : $"Flat {@item.Percentage}")
+                                                </td>
+                                                <td>@item.IsEpfConsidration</td>
+                                                <td>@item.IsEsiConsidrable</td>
+                                                <td class="text-success">@item.IsActive</td>
+                                                <td></td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*  <div class="tab-pane fade" id="deductions" role="tabpanel">
+        <div class="card">
+        <div class="card-body">
+        <div class="table-responsive text-nowrap">
+        <table class="table table-bordered">
+        <thead>
+        <tr>
+        <th>NAME</th>
+        <th>DEDUCTION TYPE</th>
+        <th>DEDUCTION FREQUENCY</th>
+        <th>STATUS</th>
+        <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+        <td colspan="5">
+        Pre-Tax Deductions <i class="fa-solid fa-circle-info" data-bs-toggle="tooltip"
+        data-bs-offset="0,4"
+        data-bs-placement="top"
+        data-bs-html="true"
+        title="<span class='small'>A pre-tax deduction is money Taken out of an employee's pay before income tax calculated. This helps reduce the taxable income</span>"></i>
+        </td>
+        </tr>
+        <tr>
+        <td><a href="">Voluntary Provident Fund</a></td>
+        <td>Voluntary Provident Fund</td>
+        <td>Recurring</td>
+        <td class="text-success">Active</td>
+        <td></td>
+        </tr>
+        <tr>
+        <td colspan="5">
+        Post-Tax Deductions <i class="fa-solid fa-circle-info" data-bs-toggle="tooltip"
+        data-bs-offset="0,4"
+        data-bs-placement="top"
+        data-bs-html="true"
+        title="<span class='small'>A pre-tax deduction is money Taken out of an employee's pay after income tax calculated and withheld. This has no effecton  the taxable income</span>"></i>
+        </td>
+        </tr>
+        <tr>
+        <td><a href="">Notice Pay Deduction</a></td>
+        <td>Notice Pay Deduction</td>
+        <td>One Time</td>
+        <td class="text-success">Active</td>
+        <td></td>
+        </tr>
+        <tr>
+        <td><a href="">Withheld Salary</a></td>
+        <td>Withheld Salary</td>
+        <td>One Time</td>
+        <td class="text-success">Active</td>
+        <td></td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
+        </div>
+        </div>
+        </div>
+        <div class="tab-pane fade" id="reimbursements" role="tabpanel">
+        <div class="card">
+        <div class="card-body">
+        <div class="table-responsive text-nowrap">
+        <table class="table table-bordered">
+        <thead>
+        <tr>
+        <th>NAME</th>
+        <th>DEDUCTION TYPE</th>
+        <th>DEDUCTION FREQUENCY</th>
+        <th>STATUS</th>
+        <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+        <td><a href="">Fuel Reimbursement</a></td>
+        <td>Fuel Reimbursement</td>
+        <td>0 per month</td>
+        <td class="text-muted">Inactive</td>
+        <td></td>
+        </tr>
+        <tr>
+        <td><a href="">Driver Reimbursement</a></td>
+        <td>Driver Reimbursement</td>
+        <td>0 per month</td>
+        <td class="text-muted">Inactive</td>
+        <td></td>
+        </tr>
+        <tr>
+        <td><a href="">Withheld Salary</a></td>
+        <td>Withheld Salary</td>
+        <td>0 per month</td>
+        <td class="text-muted">Inactive</td>
+        <td></td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
+        </div>
+        </div>
+        </div>*@
+    </div>
+
+
+
+</div>
+<!-- / Content -->
+<script src="~/customjs/commonfunction.js"></script>
+<script src="~/customjs/employeevalidation.js"></script>
+<script type="text/javascript">
+  jQuery(document).ready(function () {
+            $(".List").dataTable();
+    }
+</script>

@@ -1,0 +1,379 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeMasterDTO
+
+@{
+
+}
+<style>
+    .info-container i {
+        width: 16px;
+        padding-right: 20px;
+    }
+
+    .tab-content {
+        min-height: 405px;
+    }
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">User / View /</span> Account</h4>
+
+    <!-- User Sidebar -->
+    <div id="div_ViewProfile">
+    </div>
+
+    <div id="div_EditProfile">
+        @Html.Partial("_profile/_profileEdit")
+    </div>
+
+
+    <!--/ User Content -->
+    <!-- Modal -->
+    <!-- Edit User Modal -->
+
+    <input type="button" data-bs-target="#editpopup" data-bs-toggle="modal" id="btneditpopup" style="display:none" />
+
+    <div class="modal fade" id="editUser" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-simple modal-edit-user">
+            <div class="modal-content p-3 p-md-5">
+                <div class="modal-body">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-4">
+                        <h3>Edit User Information</h3>
+                        <p>Updating user details will receive a privacy audit.</p>
+                    </div>
+                    <form id="editUserForm" class="row g-3" onsubmit="return false">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="modalEditUserFirstName">First Name</label>
+                            <input type="text"
+                                   id="modalEditUserFirstName"
+                                   name="modalEditUserFirstName"
+                                   class="form-control"
+                                   placeholder="John" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="modalEditUserLastName">Last Name</label>
+                            <input type="text"
+                                   id="modalEditUserLastName"
+                                   name="modalEditUserLastName"
+                                   class="form-control"
+                                   placeholder="Doe" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="modalEditUserName">Username</label>
+                            <input type="text"
+                                   id="modalEditUserName"
+                                   name="modalEditUserName"
+                                   class="form-control"
+                                   placeholder="john.doe.007" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="modalEditUserEmail">Email</label>
+                            <input type="text"
+                                   id="modalEditUserEmail"
+                                   name="modalEditUserEmail"
+                                   class="form-control"
+                                   placeholder="example@domain.com" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="modalEditUserStatus">Status</label>
+                            <select id="modalEditUserStatus"
+                                    name="modalEditUserStatus"
+                                    class="form-select"
+                                    aria-label="Default select example">
+                                <option selected>Status</option>
+                                <option value="1">Active</option>
+                                <option value="2">Inactive</option>
+                                <option value="3">Suspended</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="modalEditTaxID">Tax ID</label>
+                            <input type="text"
+                                   id="modalEditTaxID"
+                                   name="modalEditTaxID"
+                                   class="form-control modal-edit-tax-id"
+                                   placeholder="123 456 7890" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="modalEditUserPhone">Phone Number</label>
+                            <div class="input-group input-group-merge">
+                                <span class="input-group-text">+1</span>
+                                <input type="text"
+                                       id="modalEditUserPhone"
+                                       name="modalEditUserPhone"
+                                       class="form-control phone-number-mask"
+                                       placeholder="202 555 0111" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="modalEditUserLanguage">Language</label>
+                            <select id="modalEditUserLanguage"
+                                    name="modalEditUserLanguage"
+                                    class="select2 form-select"
+                                    multiple>
+                                <option value="">Select</option>
+                                <option value="english" selected>English</option>
+                                <option value="spanish">Spanish</option>
+                                <option value="french">French</option>
+                                <option value="german">German</option>
+                                <option value="dutch">Dutch</option>
+                                <option value="hebrew">Hebrew</option>
+                                <option value="sanskrit">Sanskrit</option>
+                                <option value="hindi">Hindi</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="modalEditUserCountry">Country</label>
+                            <select id="modalEditUserCountry"
+                                    name="modalEditUserCountry"
+                                    class="select2 form-select"
+                                    data-allow-clear="true">
+                                <option value="">Select</option>
+                                <option value="Australia">Australia</option>
+                                <option value="Bangladesh">Bangladesh</option>
+                                <option value="Belarus">Belarus</option>
+                                <option value="Brazil">Brazil</option>
+                                <option value="Canada">Canada</option>
+                                <option value="China">China</option>
+                                <option value="France">France</option>
+                                <option value="Germany">Germany</option>
+                                <option value="India">India</option>
+                                <option value="Indonesia">Indonesia</option>
+                                <option value="Israel">Israel</option>
+                                <option value="Italy">Italy</option>
+                                <option value="Japan">Japan</option>
+                                <option value="Korea">Korea, Republic of</option>
+                                <option value="Mexico">Mexico</option>
+                                <option value="Philippines">Philippines</option>
+                                <option value="Russia">Russian Federation</option>
+                                <option value="South Africa">South Africa</option>
+                                <option value="Thailand">Thailand</option>
+                                <option value="Turkey">Turkey</option>
+                                <option value="Ukraine">Ukraine</option>
+                                <option value="United Arab Emirates">United Arab Emirates</option>
+                                <option value="United Kingdom">United Kingdom</option>
+                                <option value="United States">United States</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="switch">
+                                <input type="checkbox" class="switch-input" />
+                                <span class="switch-toggle-slider">
+                                    <span class="switch-on"></span>
+                                    <span class="switch-off"></span>
+                                </span>
+                                <span class="switch-label">Use as a billing address?</span>
+                            </label>
+                        </div>
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                            <button type="reset"
+                                    class="btn btn-label-secondary"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ Edit User Modal -->
+    <!-- Add New Credit Card Modal -->
+    <div class="modal fade" id="upgradePlanModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-simple modal-upgrade-plan">
+            <div class="modal-content p-3 p-md-5">
+                <div class="modal-body">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-4">
+                        <h3>Upgrade Plan</h3>
+                        <p>Choose the best plan for user.</p>
+                    </div>
+                    <form id="upgradePlanForm" class="row g-3" onsubmit="return false">
+                        <div class="col-sm-9">
+                            <label class="form-label" for="choosePlan">Choose Plan</label>
+                            <select id="choosePlan" name="choosePlan" class="form-select" aria-label="Choose Plan">
+                                <option selected>Choose Plan</option>
+                                <option value="standard">Standard - $99/month</option>
+                                <option value="exclusive">Exclusive - $249/month</option>
+                                <option value="Enterprise">Enterprise - $499/month</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary">Upgrade</button>
+                        </div>
+                    </form>
+                </div>
+                <hr class="mx-md-n5 mx-n3" />
+                <div class="modal-body">
+                    <h6 class="mb-0">User current plan is standard plan</h6>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        <div class="d-flex justify-content-center me-2 mt-3">
+                            <sup class="h5 pricing-currency pt-1 mt-3 mb-0 me-1 text-primary">$</sup>
+                            <h1 class="display-3 mb-0 text-primary">99</h1>
+                            <sub class="h5 pricing-duration mt-auto mb-2">/month</sub>
+                        </div>
+                        <button class="btn btn-label-danger cancel-subscription mt-3">Cancel Subscription</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ Add New Credit Card Modal -->
+</div>
+<input type="hidden" asp-for="EnycEmployeeId" />
+@section scripts {
+    <script>
+
+
+        let EditEmployeeDataList = [];
+        let files = [];
+        $(document).ready(function () {
+            View();
+
+        });
+
+
+        function editUser(currCtrl) {
+            $("#btneditpopup").click();
+
+            let oldValue = currCtrl.parent().find("span").attr("oldvalue");
+            let dbName = currCtrl.parent().find("span").attr("dbname");
+            let labelName = currCtrl.parent().find("span").attr("labelname");
+            let attachmentrequired = currCtrl.parent().find("span").attr("attachmentrequired");
+            $("#editUserForm").find("[name='OldLabel']").text("Old " + labelName);
+            $("#editUserForm").find("[name='NewLabel']").text("New " + labelName);
+            $("#editUserForm").find("[name='OldValue']").val(oldValue);
+            $("#editUserForm").find("[name='ChangeType']").val(dbName);
+
+            if (attachmentrequired == true) {
+                $("#editUserForm").find("[name='divAttachment']").show();
+            }
+        }
+        function renameFile(originalFile, newName) {
+            return new File([originalFile], newName, {
+                type: originalFile.type,
+                lastModified: originalFile.lastModified,
+            });
+        }
+
+        function SubmitTemp() {
+
+            let changeType = $("#editUserForm").find("[name='ChangeType']").val();
+            let newValue = $("#editUserForm").find("[name='NewValue']").val();
+            let oldValue = $("#editUserForm").find("[name='OldValue']").val();
+
+            let index = EditEmployeeDataList.findIndex(x => x.ChangeType == changeType);
+
+            if (index == -1) {
+                let EditEmployeeDataDTO = {};
+                EditEmployeeDataDTO.ChangeType = changeType;
+                EditEmployeeDataDTO.ChangeValue = newValue;
+                EditEmployeeDataDTO.OldValue = oldValue;
+                EditEmployeeDataList.push(EditEmployeeDataDTO);
+            }
+            else {
+                EditEmployeeDataList[index].ChangeType = changeType;
+                EditEmployeeDataList[index].ChangeValue = newValue;
+                EditEmployeeDataList[index].OldValue = oldValue;
+            }
+            let file = $("#editUserForm").find("[name='attachment']")[0].files[0];
+            if (file != undefined) {
+                file = renameFile(file, changeType);
+                index = files.findIndex(x => x.ChangeType == changeType);
+                if (index == -1) {
+                    files.push(file);
+                }
+                else {
+                    files[index] = file;
+                }
+            }
+            $("#reseteditpopup").click();
+        }
+
+
+        function SendForApproval() {
+            var formData = new FormData();
+            formData.append("inputDTO", JSON.stringify(EditEmployeeDataList));
+
+            for (var i = 0; i < files.length; i++) {
+                formData.append('files', files[i]);
+            }
+
+            //files.forEach((v, i) => {
+
+            //});
+
+
+            //formData.append("files", $("#attachment1")[0].files[0]);
+            //formData.append("files", $("#attachment1")[0].files[0]);
+
+
+            BlockUI();
+
+            jQuery.ajax({
+                type: "POST",
+                url: "/Account/SaveProfileDetailsByEmployee",
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+
+                success: function (data) {
+                    UnblockUI();
+                    $successalert("Success!", "Request sent to the HR.");
+                },
+                error: function (result) {
+                    $erroralert("Error!", result.responseText + '!'); UnblockUI();
+                    UnblockUI();
+                }
+            });
+        }
+
+
+        function editShow() {
+
+            window.location.href = "/Employee/EditEmployee?eEmployeeId=" + $("#EnycEmployeeId").val();
+
+            return;
+
+            $(".edit-class").show();
+            $(".edit").hide();
+            $(".approval").show();
+            $(".cancel").show();
+        }
+        function cancel() {
+            $(".edit-class").hide();
+            $(".edit").show();
+            $(".approval").hide();
+            $(".cancel").hide();
+        }
+
+        function View() {
+            //var resignationListDTO = {};
+            //resignationListDTO.ResignationListId = ResignationListId;
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/Account/ProfileView',
+                //data: JSON.stringify(resignationListDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    $('#div_ViewProfile').html(data);
+                    $(".edit-class").click(function () {
+                        let currCtrl = $(this);
+                        editUser(currCtrl);
+                    })
+                    UnblockUI();
+                },
+                error: function (result) {
+                    alert(result.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+    </script>
+}

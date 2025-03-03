@@ -1,0 +1,341 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeDashboardVM
+
+<style>
+    .nav-pills .nav-link {
+        background: #ebeef0;
+        padding-left: 37.5px;
+        padding-right: 37.5px;
+    }
+</style>
+<link href="~/customcss/dashboard.css" rel="stylesheet" />
+@{
+    <div class="col-lg-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <h5 class="col-6 col-md-6 mt-2 fw-bold text-dark mb-5">Approval centre</h5>
+                    <div class="col-xl-12">
+                        <div class="nav-align-top">
+                            <ul class="nav nav-pills mb-2 small" role="tablist">
+                                <li class="nav-item me-3 mb-2">
+                                    <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-leaves" aria-controls="navs-pills-leaves" aria-selected="true"><span class="me-2 fw-bold" style="font-size: 20px;">@Model.EmployeeLeaveDetail.EmployeeAppliedList.Count</span> Leaves</button>
+                                </li>
+                             
+                                <li class="nav-item me-3 mb-2">
+                                    <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-attendance" aria-controls="navs-pills-attendance" aria-selected="false"><span class="me-2 fw-bold" style="font-size: 20px;">@Model.manualPunchVM.ManualPunchesAttendanceVMList.Count</span> Attendance</button>
+                                </li>
+                                <li class="nav-item me-3 mb-2">
+                                    <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-compoff" aria-controls="navs-pills-compoff" aria-selected="false"><span class="me-2 fw-bold" style="font-size: 20px;">@Model.EmployeeCompOffList.Count</span> Comp-offs</button>
+                                </li>
+                                @* <li class="nav-item me-3 mb-2">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-comp-offs" aria-controls="navs-pills-comp-offs" aria-selected="false"><span class="me-2 fw-bold" style="font-size: 20px;">04</span> Comp-offs</button>
+                            </li> *@
+                                @* <li class="nav-item me-3 mb-2">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-expenses-claims" aria-controls="navs-pills-expenses-claims" aria-selected="false"><span class="me-2 fw-bold" style="font-size: 20px;">06</span> Attendance</button>
+                            </li>
+                            <li class="nav-item me-3 mb-2">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-time-sheet" aria-controls="navs-pills-time-sheet" aria-selected="false"><span class="me-2 fw-bold" style="font-size: 20px;">06</span> Attendance</button>
+                            </li> *@
+                            </ul>
+                            <div class="tab-content p-0 mt-2" style="min-height: auto;box-shadow: none;">
+                                <div class="tab-pane fade show active" id="navs-pills-leaves" role="tabpanel">
+                                    <div class="table-responsive text-nowrap">
+                                        <table class="table border-top table-bordered" style="border-radius:20px!important">
+                                            <thead class="table-light">
+                                                <tr class="bg-label-secondary">
+                                                    <th style="padding:15px 10px!important">Employee Code</th>
+                                                    <th style="padding:15px 10px!important">Employee details</th>                                                 
+                                                    <th style="padding:15px 10px!important">Leave type</th>
+                                                    <th style="padding:15px 10px!important">Start date</th>
+                                                    <th style="padding:15px 10px!important">End date</th>
+                                                    <th style="padding:15px 10px!important">Number of days</th>
+                                                    <th style="padding:15px 10px!important">Action</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.EmployeeLeaveDetail.EmployeeAppliedList.Count != 0)
+                                                {
+                                                    foreach (var item in Model.EmployeeLeaveDetail.EmployeeAppliedList)
+                                                    {
+                                                        if (@item.EmployeeId > 0)
+                                                        {
+                                                            <tr>
+                                                                <td>@item.EmployeeCode</td>
+                                                                <td>@item.EmployeeName</td>                                                           
+                                                                <td>@item.LeaveType</td>
+                                                                <td>@item.StartDate.Value.ToString("dd-MMM-yy")</td>
+                                                                <td>@item.EndDate.Value.ToString("dd-MMM-yy")</td>
+                                                                <td>@item.NoOfLeave</td>
+                                                                <td><button type="button" class="btn btn-sm btn-label-success rounded-pill" onclick="RegulerizeLeave('A',@item.LeaveDetailsId)">Approve</button> <button type="button" class="btn btn-sm btn-label-danger rounded-pill" onclick="RegulerizeLeave('R',@item.LeaveDetailsId)">Reject</button></td>
+
+                                                            </tr>
+                                                        }
+                                                    }
+                                                }
+                                                @*  <tr>
+                                            <td>SHR002</td>
+                                            <td>Saurabh Saxena <br>HR, Manager</td>
+                                            <td>Noida</td>
+                                            <td>Earned leaves</td>
+                                            <td>12-04-24</td>
+                                            <td>16-04-24</td>
+                                            <td>4</td>
+                                            <td><button type="button" class="btn btn-sm btn-label-success rounded-pill">Approve</button> <button type="button" class="btn btn-sm btn-label-danger rounded-pill">Reject</button></td>
+
+                                            </tr>
+                                            <tr>
+                                            <td>SHR002</td>
+                                            <td>Saurabh Saxena <br>HR, Manager</td>
+                                            <td>Noida</td>
+                                            <td>Earned leaves</td>
+                                            <td>12-04-24</td>
+                                            <td>16-04-24</td>
+                                            <td>4</td>
+                                            <td><button type="button" class="btn btn-sm btn-label-success rounded-pill">Approve</button> <button type="button" class="btn btn-sm btn-label-danger rounded-pill">Reject</button></td>
+
+                                            </tr> *@
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="navs-pills-compoff" role="tabpanel">
+                                    <div class="table-responsive text-nowrap">
+                                        <table class="table border-top">
+                                            <thead class="table-light">
+                                                <tr class="bg-label-secondary">
+                                                    <th>Ticket Id</th>
+                                                    <th>Employee Code</th>
+                                                    <th>Employee Name</th>                                                 
+                                                    <th>CompOff type</th>
+                                                    <th>Date</th>
+                                                    <th>Remarks</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.EmployeeCompOffList.Count != 0)
+                                                {
+                                                    foreach (var item in Model.EmployeeCompOffList)
+                                                    {
+                                                        <tr>
+                                                            <td>@item.TicketId</td>
+                                                            <td>@item.EmployeeCode</td>
+                                                            <td>@item.EmployeeName</td>                                                          
+                                                            <td>@(item.CompOffType.Trim() == "W" ? "Weekly Off" : item.CompOffType.Trim() == "H" ? "Holidays" : "")</td>
+                                                            <td>@item.CompOffDate.Value.ToString("dd-MMM-yy")</td>
+                                                            <td>@item.Remarks</td>
+                                                            <td><button type="button" class="btn btn-sm btn-label-success rounded-pill" onclick="RegulerizeCompOff('A',@item.CompOffId)">Approve</button> <button type="button" class="btn btn-sm btn-label-danger rounded-pill" onclick="RegulerizeCompOff('R',@item.CompOffId)">Reject</button></td>
+
+                                                        </tr>
+                                                    }
+                                                }
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+
+                                <div class="tab-pane fade" id="navs-pills-attendance" role="tabpanel">
+                                    <div class="table-responsive text-nowrap">
+                                        <table class="table border-top">
+                                            <thead class="table-light">
+                                                <tr class="bg-label-secondary">
+                                                    <th>Employee Code</th>
+                                                    <th>Employee details</th>
+                                                    @*  <th>Location</th> *@
+                                                    <th>Duty Date</th>
+                                                    <th>Day</th>
+                                                    <th>In Time</th>
+                                                    <th>Out time</th>
+                                                    <th>Action</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.manualPunchVM.ManualPunchesAttendanceVMList.Count != 0)
+                                                {
+                                                    var inTime = "00:00:00";
+                                                    var outTime = "00:00:00";
+                                                    foreach (var item in Model.manualPunchVM.ManualPunchesAttendanceVMList)
+                                                    {
+                                                        inTime = @item.ManualPunchInTime == null ? "00:00:00" : item.ManualPunchInTime.Value.ToString();
+                                                        outTime = @item.ManualPunchOutTime == null ? "00:00:00" : item.ManualPunchOutTime.Value.ToString();
+                                                        <tr>
+                                                            <td>@item.EmployeeCode</td>
+                                                            <td>@item.EmployeeName</td>
+                                                            @*  <td>@item.Location</td> *@
+                                                            <td>@item.manualPunchDate.Value.ToString("dd-MMM-yy")</td>
+                                                            <td>@item.manualPunchDate.Value.ToString("ddd")</td>
+                                                            <td>@inTime</td>
+                                                            <td>@outTime</td>
+                                                            <td><button type="button" class="btn btn-sm btn-label-success rounded-pill" onclick="RegulerizeSelected('A',@item.ManualPunchId)">Approve</button> <button type="button" class="btn btn-sm btn-label-danger rounded-pill" onclick="RegulerizeSelected('R',@item.ManualPunchId)">Reject</button></td>
+
+                                                        </tr>
+                                                    }
+                                                }
+                                                @*  <tr>
+                                            <td>SHR002</td>
+                                            <td>Saurabh Saxena <br>HR, Manager</td>
+                                            <td>Noida</td>
+                                            <td>Earned leaves</td>
+                                            <td>12-04-24</td>
+                                            <td>16-04-24</td>
+                                            <td>4</td>
+                                            <td><button type="button" class="btn btn-sm btn-label-success rounded-pill">Approve</button> <button type="button" class="btn btn-sm btn-label-danger rounded-pill">Reject</button></td>
+
+                                            </tr>
+                                            <tr>
+                                            <td>SHR002</td>
+                                            <td>Saurabh Saxena <br>HR, Manager</td>
+                                            <td>Noida</td>
+                                            <td>Earned leaves</td>
+                                            <td>12-04-24</td>
+                                            <td>16-04-24</td>
+                                            <td>4</td>
+                                            <td><button type="button" class="btn btn-sm btn-label-success rounded-pill">Approve</button> <button type="button" class="btn btn-sm btn-label-danger rounded-pill">Reject</button></td>
+
+                                            </tr> *@
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="navs-pills-resignation" role="tabpanel">
+                                    <div class="table-responsive text-nowrap">
+                                        <table class="table border-top">
+                                            <thead class="table-light">
+                                                <tr class="bg-label-secondary">
+                                                    <th>Employee Code</th>
+                                                    <th>Employee details</th>
+                                                    <th>Location</th>
+                                                    <th>Leave type</th>
+                                                    <th>Start date</th>
+                                                    <th>End date</th>
+                                                    <th>Number of days</th>
+                                                    <th>Approval</th>
+                                                    <th>Remarks</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>SHR002</td>
+                                                    <td>Saurabh Saxena <br>HR, Manager</td>
+                                                    <td>Noida</td>
+                                                    <td>Earned leaves</td>
+                                                    <td>12-04-24</td>
+                                                    <td>16-04-24</td>
+                                                    <td>4</td>
+                                                    <td><button type="button" class="btn btn-sm btn-label-success rounded-pill">Approve</button> <button type="button" class="btn btn-sm btn-label-danger rounded-pill">Reject</button></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>SHR002</td>
+                                                    <td>Saurabh Saxena <br>HR, Manager</td>
+                                                    <td>Noida</td>
+                                                    <td>Earned leaves</td>
+                                                    <td>12-04-24</td>
+                                                    <td>16-04-24</td>
+                                                    <td>4</td>
+                                                    <td><button type="button" class="btn btn-sm btn-label-success rounded-pill">Approve</button> <button type="button" class="btn btn-sm btn-label-danger rounded-pill">Reject</button></td>
+                                                    <td></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="navs-pills-expenses-claims" role="tabpanel">
+                                    <div class="table-responsive text-nowrap">
+                                        <table class="table border-top">
+                                            <thead class="table-light">
+                                                <tr class="bg-label-secondary">
+                                                    <th>Employee Code</th>
+                                                    <th>Employee details</th>
+                                                    <th>Location</th>
+                                                    <th>Leave type</th>
+                                                    <th>Start date</th>
+                                                    <th>End date</th>
+                                                    <th>Number of days</th>
+                                                    <th>Approval</th>
+                                                    <th>Remarks</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>SHR002</td>
+                                                    <td>Saurabh Saxena <br>HR, Manager</td>
+                                                    <td>Noida</td>
+                                                    <td>Earned leaves</td>
+                                                    <td>12-04-24</td>
+                                                    <td>16-04-24</td>
+                                                    <td>4</td>
+                                                    <td><button type="button" class="btn btn-sm btn-label-success rounded-pill">Approve</button> <button type="button" class="btn btn-sm btn-label-danger rounded-pill">Reject</button></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>SHR002</td>
+                                                    <td>Saurabh Saxena <br>HR, Manager</td>
+                                                    <td>Noida</td>
+                                                    <td>Earned leaves</td>
+                                                    <td>12-04-24</td>
+                                                    <td>16-04-24</td>
+                                                    <td>4</td>
+                                                    <td><button type="button" class="btn btn-sm btn-label-success rounded-pill">Approve</button> <button type="button" class="btn btn-sm btn-label-danger rounded-pill">Reject</button></td>
+                                                    <td></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="navs-pills-time-sheet" role="tabpanel">
+                                    <div class="table-responsive text-nowrap">
+                                        <table class="table border-top">
+                                            <thead class="table-light">
+                                                <tr class="bg-label-secondary">
+                                                    <th>Employee Code</th>
+                                                    <th>Employee details</th>
+                                                    <th>Location</th>
+                                                    <th>Leave type</th>
+                                                    <th>Start date</th>
+                                                    <th>End date</th>
+                                                    <th>Number of days</th>
+                                                    <th>Approval</th>
+                                                    <th>Remarks</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>SHR002</td>
+                                                    <td>Saurabh Saxena <br>HR, Manager</td>
+                                                    <td>Noida</td>
+                                                    <td>Earned leaves</td>
+                                                    <td>12-04-24</td>
+                                                    <td>16-04-24</td>
+                                                    <td>4</td>
+                                                    <td><button type="button" class="btn btn-sm btn-label-success rounded-pill">Approve</button> <button type="button" class="btn btn-sm btn-label-danger rounded-pill">Reject</button></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>SHR002</td>
+                                                    <td>Saurabh Saxena <br>HR, Manager</td>
+                                                    <td>Noida</td>
+                                                    <td>Earned leaves</td>
+                                                    <td>12-04-24</td>
+                                                    <td>16-04-24</td>
+                                                    <td>4</td>
+                                                    <td><button type="button" class="btn btn-sm btn-label-success rounded-pill">Approve</button> <button type="button" class="btn btn-sm btn-label-danger rounded-pill">Reject</button></td>
+                                                    <td></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

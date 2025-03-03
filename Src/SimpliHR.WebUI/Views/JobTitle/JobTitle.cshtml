@@ -1,0 +1,206 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.JobTitleMasterDTO
+@{
+    ViewData["Title"] = "Job Title";
+    //Layout = null;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y ">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Company Structure /</span> Designation</h4>
+
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <form id="showAlert" class="row g-3" onsubmit="return false">
+                    <div class="modal-body">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="text-center mb-4">
+                        </div>
+
+                        <div class="col-12 text-center" id="successDiv">
+                            <p id="errorPara" class="error" style="color:red"></p>
+                        </div>
+                        <div class="col-12 text-center" id="errorDiv">
+                            <p id="successPara" class="error" style="color:black"></p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 text-center">
+                        @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                        <button type="reset" id="btnClose"
+                                class="btn btn-label-secondary btn-reset mt-3"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                            Close
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            @*<input type="button" class="btn btn-primary mb-3" value="Add Record" onclick="AddView()" style="float:right;" />*@
+            <button type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="tooltip"
+                    data-bs-offset="0,4"
+                    data-bs-placement="right"
+                    data-bs-html="true"
+                    style="float:right;"
+                    onclick="AddView()"
+                    title="Add all existing employee job titles or designations. For example: Manager, Developer, Analyst.">
+                @*title="<i class='bx bx-trending-up bx-xs' ></i> <span>Add all existing departments within your company structure. For example: Marketing, Sales, HR.</span>">*@
+                Add Designation
+            </button>
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+
+                            <th>Job Title</th>
+                            @*  <th>Status</th>*@
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.JobTitleMasterList != null)
+                            @foreach (var item in Model.JobTitleMasterList)
+                            {
+                                <tr>
+
+                                    <td>@item.JobTitle</td>
+                                    @*  <td>@(item.IsActive == true ? "Active" : "Inactive")</td>*@
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="#" onclick="EditRecord('Job Title','/JobTitle/GetJobTitleInfo','@item.EncryptedJobTitleId','@item.IsActive')"><i class="bx bx-edit-alt me-1"></i> </a>
+                                        <a class="dropdown-item d-inline" href="#" onclick="DeleteRecord('Job Title','@item.JobTitle','/JobTitle/DeleteJobTitle','@item.EncryptedJobTitleId','@item.IsActive')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="List" onclick="javascript:window.location.href='/JobTitle/JobTitle/'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/JobTitle/SaveJobTitle">
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Designation</label>
+                        <input type="text" id="JobTitle" name="JobTitle" value="@Model.JobTitle" class="form-control" placeholder="Job Title">
+                        @*  <span asp-validation-for="JobTitle" class="text-danger"></span> *@
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" id="JobTitleId" name="JobTitleId" value="@Model.JobTitleId">
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1" onclick="return BlockedUI();">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/JobTitle/JobTitle/'">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Modal to add new record -->
+    @*  <div class="offcanvas offcanvas-end" id="add-new-record">
+    <div class="offcanvas-header border-bottom">
+    <h5 class="offcanvas-title" id="exampleModalLabel">New JobTitle</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body flex-grow-1">
+    <form class="add-new-record pt-0 row g-2" id="form-add-new-country">
+    <input type="text" asp-for="CountryName" name="CountryName" class="CountryName" />
+    <button type="submit">Submit</button>
+    <div class="col-sm-12">
+    <label class="form-label" for="basicFullname">Country</label>
+    <div class="input-group input-group-merge">
+    <span id="basicFullname2" class="input-group-text"><i class="bx bx-flag"></i></span>
+    <input type="text" id="basicFullname" class="form-control CountryName" name="basicFullname" required placeholder="India" aria-label="John Doe" aria-describedby="basicFullname2" />
+    </div>
+    </div>
+
+    <div class="col-sm-12">
+    <button type="submit" class="btn btn-primary data-submit me-sm-3 me-1">Submit</button>
+    <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
+    </div>
+    </form>
+    </div>
+    </div> *@
+    <!--/ DataTable with Buttons -->
+</div>
+
+
+@section scripts {
+
+    @*    <script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            // Init("@Model.JobTitleId", "@Model.DisplayMessage", "@Model.HttpStatusCode");
+            $(".List").dataTable();
+            if (@Model.JobTitleId != 0 || @Model.HttpStatusCode!= 200) {
+                $("#List").hide();
+                $("#Add").show();
+            }
+            else {
+                ClearInputs();
+            }
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                if ("@Model.HttpStatusCode" == 200) {
+                    $successalert("", "@Model.DisplayMessage");
+                }
+                else {
+                    $erroralert("Transaction Failed!", "@Model.DisplayMessage");
+                }
+            }
+
+        });
+
+        function ClearInputs() {
+            $("#JobTitle").val("");
+
+        }
+        function BlockedUI() {
+
+            BlockUI();
+            if (jQuery("#JobTitle").val() == '') {
+                $erroralert("Validation", "Please insert Job Title");
+                // ShowServerMessage("Please insert Job Title");
+                UnblockUI();
+                return false;
+            }
+
+        }
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                // if (sMsg.toUpperCase() == "SUCCESS") {
+                // sMsg = "Earnnig component created/updated successfully";
+                jQuery("#successDiv").show();
+                jQuery("#successPara").html(sMsg);
+
+                // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                //  }
+                //else {
+                //    jQuery("#errorDiv").show();
+                //    jQuery("#errorPara").html(sMsg);
+                //}
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+    </script>
+
+
+}

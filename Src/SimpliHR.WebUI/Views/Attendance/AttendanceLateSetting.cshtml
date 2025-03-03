@@ -1,0 +1,180 @@
+﻿@model SimpliHR.Infrastructure.Models.Attendance.AttendanceLateSettingDTO
+@{
+    ViewData["Title"] = "AttendanceLateSetting";
+}
+
+<link rel="stylesheet" href="../../assets/vendor/libs/tagify/tagify.css" />
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Attendance /</span> Attendance Late Setting</h4>
+    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+                            <th>Late time (HH:MM)</th>                            
+                            <th>No Of Late</th>
+                            <th>Applied On</th>
+                            <th>Show Post Limit</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.AttendanceLateSettingList != null)
+                            @foreach (var item in Model.AttendanceLateSettingList)
+                            {
+                                <tr>
+                                    <td>@item.LateDuration</td>
+                                    <td>@item.NoOfLate</td>                                  
+                                    <td>@(item.AppliedOn == "InPunch" ? "In Punch" : item.AppliedOn == "OutPunch" ? "Out Punch" : item.AppliedOn == "Both" ? "Both" : "")</td>
+                                    <td>@(item.ShowPostLimit == "QuaterDay" ? "Quater Day" : item.ShowPostLimit == "HalfDay" ? "Half Day" : item.ShowPostLimit == "None" ? "None" : "")</td>
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="/Attendance/GetAttendanceLateSettingId/@item.EncryptedId"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="/Attendance/DeleteAttendanceLateSetting/@item.EncryptedId" onclick="return confirm('Are you sure you would like to delete?');"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                    
+                                   @*  <th>
+                                        <a class="btn btn-primary" href="/Attendance/GetAttendanceLateSettingId/@item.EncryptedId">Edit</a>
+                                        <a class="btn btn-primary" href="/Attendance/DeleteAttendanceSetting/@item.EncryptedId" onclick="return confirm('Are you sure you would like to delete?');"> Delete</a>
+                                    </th> *@
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div id="wizard-checkout" class="bs-stepper wizard-icons wizard-icons-example mt-2">
+            <div class="container selectMain">
+                <div class="card-body">
+                    <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/Attendance/AttendanceLateSetting'" style="float:right" />
+                    <div style="clear:both"></div>
+
+                    <div class="container selectMain">
+
+                        <form method="post" action="/Attendance/SaveAttendanceLateSetting">
+                            <div class="row g-3">
+                              
+                                <div class="col-md-6">
+                                    <label class="form-label" for="">Late Duration (HH:MM)</label>
+                                    <input type="time" name="LateDuration" class="form-control" required placeholder="Minimum"  value="@Model.LateDuration" baria-label="Minimum" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label" for="">Applied On</label>
+                                    <select id="AppliedOn" name="AppliedOn" class="select2 form-select" required data-allow-clear="true">
+                                        <option value="0">-- Select --</option>
+                                        <option value="InPunch">In Punch</option>
+                                        <option value="OutPunch">Out Punch</option>
+                                        <option value="Both">Both</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label" for="">Show Post Limit</label>
+                                    <select id="ShowPostLimit" name="ShowPostLimit" class="select2 form-select" required data-allow-clear="true">
+                                        <option value="0">-- Select --</option>
+                                        <option value="QuaterDay">Quater Day</option>
+                                        <option value="HalfDay">Half Day</option>
+                                        <option value="None">None</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="">No Of Late</label>
+                                    <input type="number" name="NoOfLate" class="form-control" onKeyPress="if(this.value.length==2) return false;" required placeholder="No Of Late" value="@Model.NoOfLate" />
+                                </div>
+                            </div>
+                            <div class="pt-4">
+                                <input type="hidden" id="hdnLateMasterId" name="LateMasterId" class="form-control" value="@Model.LateMasterId" />
+                                <input type="hidden" id="hdnShowPostLimit"  class="form-control" value="@Model.ShowPostLimit" />
+                                <input type="hidden" id="hdnAppliedOn" class="form-control" value="@Model.AppliedOn" />
+                                 <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                                <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/Attendance/AttendanceLateSetting'">Cancel</button>
+                            </div>
+
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts {
+
+    <script src="../../customjs/CommonFunction.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+            if (@Model.LateMasterId != 0 || @Model.HttpStatusCode!= 200) {
+                $("#List").hide();
+                $("#Add").show();
+            }
+            else {
+                ClearInputs();
+            }
+            if ("@Model.DisplayMessage.ToLower()" != "_blank") {
+                if ("@Model.DisplayMessage.ToUpper()" == "ADDSUCCESS") {
+                    //jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                    $successalert("", "Transaction Successful!");
+                }
+                else if ("@Model.DisplayMessage.ToUpper()" == "EDITSUCCESS") {
+                    //jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                    $successalert("", "Transaction Successful!");
+                }
+                else if ("@Model.DisplayMessage.ToUpper()" == "DELETESUCCESS") {
+                    $successalert("", "Transaction Successful!");
+                }
+                else if ("@Model.DisplayMessage.Trim()" != "") {
+                    $successalert("", "@Model.DisplayMessage");
+                }
+            }
+        });
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+        if (@Model.LateMasterId != 0) {
+            $("#List").hide();
+            $("#Add").show();
+        }
+        else {
+            ClearInputs();
+        }
+
+
+        $('#AppliedOn').val($('#hdnAppliedOn').val());
+
+        $('#ShowPostLimit').val($('#hdnShowPostLimit').val());
+
+        function ClearInputs() {
+            $("#LateDuration").val("");
+            $("#NoOfLate").val("");
+            $("#AppliedOn").val("0");
+            $("#ShowPostLimit").val("0");
+            $("#AppliedOn").change();
+            $("#ShowPostLimit").change();
+          
+
+        }
+      
+
+    </script>
+    }
+

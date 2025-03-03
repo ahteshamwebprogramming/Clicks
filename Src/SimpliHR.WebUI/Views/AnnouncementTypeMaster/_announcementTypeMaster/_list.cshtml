@@ -1,0 +1,32 @@
+﻿@model SimpliHR.Infrastructure.Models.Master.AnnouncementTypeViewModel
+<div class="row" style="margin-top:25px;">
+    <div class="col-md-12">
+        <div class="table-responsive text-nowrap">
+            <table class="datatables-ajax table List">
+                <thead>
+                    <tr>
+                        <th>Announcement Type</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        if (Model != null && Model.AnnouncementTypeMasterList != null)
+                        {
+                            foreach (var item in Model.AnnouncementTypeMasterList)
+                            {
+                                <tr>
+                                    <td>@item.AnnouncementType</td>
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="#" onclick="AddPartialView('@item.encAnnouncementTypeId')"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="#" onclick="deleteRecord('@item.encAnnouncementTypeId')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

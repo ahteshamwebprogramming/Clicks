@@ -1,0 +1,80 @@
+﻿@model SimpliHR.Infrastructure.Models.Common.SchedularMessageDTO
+@{
+    ViewData["Title"] = "SchedulersEvent";
+}
+
+<style>
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+</style>
+
+<link rel="stylesheet" href="../../assets/vendor/libs/tagify/tagify.css" />
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Company Structure /</span> Schedulers</h4>
+   
+  
+
+
+    <div class="card">
+        <div id="wizard-checkout" class="bs-stepper wizard-icons wizard-icons-example mt-2">
+            <div class="container selectMain">
+                <div class="card-body">
+                  @*   <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/AttendanceRosterUI/Roster'" style="float:right" />
+                    <div style="clear:both"></div> *@
+                    <!--<h5 class="card-header">Roster Details</h5>-->
+                    <form id="AttendanceRosterForm" method="post" action="/Masters/GetSchedulers">
+                        @*   <div class="row g-3" id="errorDiv"><p id="errorPara" class="error" style="color:red"></p></div>*@
+                        <div class="row g-3">
+                          
+                            <div class="col-md-6">
+                                <label class="form-label required" for="">Select Module </label>
+                                <select  name="eventId" id="eventId" class="select2 form-select" tabindex="-1">
+                                <option value="0">--Select--</option>
+                                 <option value="1">Leave</option>
+                                 <option value="2">Attendance</option>
+                                
+                                </select>
+                            </div>
+                           
+                           
+                            
+                        </div>
+
+                        <div class="pt-4">
+                           
+                           
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script src="../../customjs/CommonFunction.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+          
+         //   alert("@Model.DisplayMessage");
+
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                $successalert("", "Transaction Successful!");
+                }
+               
+              
+        });
+
+    </script>
+}
+

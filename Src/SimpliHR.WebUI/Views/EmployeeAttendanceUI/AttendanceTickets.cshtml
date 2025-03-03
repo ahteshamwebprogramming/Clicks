@@ -1,0 +1,96 @@
+﻿
+@{
+    ViewData["Title"] = "AttendanceTickets";
+    Layout = "~/Views/Shared/_LayoutVertical.cshtml";
+}
+
+
+<!-- / Navbar -->
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Attendance /</span> Tickets</h4>
+        <div class="row">
+            <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+                <div class="nav-align-top mb-4">
+                 @*    <ul class="nav nav-pills mb-3" role="tablist">
+                        <li class="nav-item">
+                            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#NeedAction" aria-controls="Apply" aria-selected="true">
+                                Need Action
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#Completed" aria-controls="View" aria-selected="false">
+                                Completed
+                            </button>
+                        </li>
+                    </ul> *@
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active"  role="tabpanel">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="table-responsive text-nowrap mb-4">
+                                            <table class="table table-bordered List">
+                                                <thead>
+                                                    <tr>
+                                                        <th><strong>Ticket Id</strong></th>
+                                                        <th><strong>Employee</strong></th>
+                                                        <th><strong>Department</strong></th>
+                                                        <th><strong>View</strong></th>
+                                                    </tr>
+                                                </thead>
+                                               @*  <tbody>
+                                                    @{
+                                                        if (Model != null && Model.EmployeeEditTicketListActionNeeded != null)
+                                                        {
+                                                            foreach (var item in Model.EmployeeEditTicketListActionNeeded)
+                                                            {
+                                                                <tr>
+                                                                    <td>@item.TicketId</td>
+                                                                    <td>@item.EmployeeName</td>
+                                                                    <td>@item.Department</td>
+                                                                    <td>
+                                                                        <input type="button" class="btn btn-primary" value="View" onclick="window.location.href='/Employee/EmployeeEditList?tenc=@item.encTicketId&&tsc=@item.encSourceScreen'" />
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        }
+
+                                                    }
+                                                </tbody> *@
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                     
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Modal -->
+    </div>
+    <!-- / Content -->
+</div>
+<!-- Content wrapper -->
+@section scripts {
+
+    @*    <script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            jQuery(".List").dataTable();
+        });
+
+
+
+    </script>
+
+
+}
+

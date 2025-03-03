@@ -1,0 +1,35 @@
+﻿@model SimpliHR.Infrastructure.Models.Master.PerformanceTrainingNeedsMasterDTO
+
+
+<div class="card addShow" id="" style="">
+    <div class="card-body">
+        <input type="button" class="btn btn-primary btn-sm" value="Go To PMS List" onclick="javascript:window.location.href='/Performance/ListPMSSetting'" style="float:right;margin-left: 5px;" />
+        <input type="button" class="btn btn-primary btn-sm" value="List" onclick="ListPartialView()" style="float:right;" />
+        <div style="clear:both"></div>
+        <div class="card-datatable table-responsive text-nowrap">
+
+
+            <form>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Training Name</label>
+                        <input type="text" class="form-control" asp-for="Training" />
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-md-6">
+                        <input type="hidden" asp-for="TrainingNeedsMasterId" />
+                        <input type="button" value="Save" class="btn btn-primary btn-sm" onclick="Save()" />
+                    </div>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+

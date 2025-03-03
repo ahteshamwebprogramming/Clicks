@@ -1,0 +1,218 @@
+﻿@model List<SimpliHR.Infrastructure.Models.Employee.AppMessageDTO>
+<input type="hidden" id="Header_NotificationId" />
+<input type="hidden" id="NotificationCountInPartial" value="@(Model==null ? 0 : Model.Count)" />
+<ul class="list-group list-group-flush">
+    @{
+        if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                <li class="list-group-item list-group-item-action dropdown-notifications-item" onclick="notificationClicked('@item.encMessageId','@item.RedirectLink')">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="avatar">
+                                <span class="avatar-initial rounded-circle bg-label-danger">EX</span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">@item.MessageSubject</h6>
+                            <p class="mb-0" style="font-size:12px;white-space:nowrap">@(item.MessageText)</p>
+
+                            @{
+                                if (item != null && item.CreatedOn != null)
+                                {
+                                    DateTime publishDateTime = item.CreatedOn ?? default(DateTime);
+
+                                    DateTime utcNow = DateTime.UtcNow;
+                                    TimeZoneInfo indianTimeZone = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
+                                    DateTime indianTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, indianTimeZone);
+                                    var timeDiff = (indianTime - publishDateTime);
+                                    if (timeDiff != null)
+                                    {
+                                        if (timeDiff.Days >= 1)
+                                        {
+                                            if (timeDiff.Days > 1)
+                                            {
+                                                <small class="text-muted">@(timeDiff.Days) days ago</small>
+                                            }
+                                            else
+                                            {
+                                                <small class="text-muted">@(timeDiff.Days) day ago</small>
+                                            }
+                                        }
+                                        else if (timeDiff.Hours >= 1)
+                                        {
+                                            if (timeDiff.Hours > 1)
+                                            {
+                                                <small class="text-muted">@(timeDiff.Hours) hours ago</small>
+                                            }
+                                            else
+                                            {
+                                                <small class="text-muted">@(timeDiff.Hours) hour ago</small>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (timeDiff.Minutes > 1)
+                                            {
+                                                <small class="text-muted">@(timeDiff.Minutes) minutes ago</small>
+                                            }
+                                            else
+                                            {
+                                                <small class="text-muted">@(timeDiff.Minutes) minute ago</small>
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                        </div>
+                        <div class="flex-shrink-0 dropdown-notifications-actions">
+                            <a href="javascript:void(0)" class="dropdown-notifications-read">
+                                <span class="badge badge-dot"></span>
+                            </a>
+                        </div>
+                    </div>
+                </li>
+            }
+        }
+    }
+
+
+    @*  <li class="list-group-item list-group-item-action dropdown-notifications-item">
+    <div class="d-flex">
+    <div class="flex-shrink-0 me-3">
+    <div class="avatar">
+    <img src="../../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+    </div>
+    </div>
+    <div class="flex-grow-1">
+    <h6 class="mb-1">Congratulation Lettie 🎉</h6>
+    <p class="mb-0">Won the monthly best seller gold badge</p>
+    <small class="text-muted">1h ago</small>
+    </div>
+    <div class="flex-shrink-0 dropdown-notifications-actions">
+    <a href="javascript:void(0)" class="dropdown-notifications-read">
+    <span class="badge badge-dot"></span>
+    </a>
+    <a href="javascript:void(0)" class="dropdown-notifications-archive">
+    <span class="bx bx-x"></span>
+    </a>
+    </div>
+    </div>
+    </li>
+    <li class="list-group-item list-group-item-action dropdown-notifications-item">
+    <div class="d-flex">
+    <div class="flex-shrink-0 me-3">
+    <div class="avatar">
+    <span class="avatar-initial rounded-circle bg-label-danger">CF</span>
+    </div>
+    </div>
+    <div class="flex-grow-1">
+    <h6 class="mb-1">Charles Franklin</h6>
+    <p class="mb-0">Accepted your connection</p>
+    <small class="text-muted">12hr ago</small>
+    </div>
+    <div class="flex-shrink-0 dropdown-notifications-actions">
+    <a href="javascript:void(0)" class="dropdown-notifications-read">
+    <span class="badge badge-dot"></span>
+    </a>
+    <a href="javascript:void(0)" class="dropdown-notifications-archive">
+    <span class="bx bx-x"></span>
+    </a>
+    </div>
+    </div>
+    </li>
+    <li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
+    <div class="d-flex">
+    <div class="flex-shrink-0 me-3">
+    <div class="avatar">
+    <img src="../../assets/img/avatars/2.png" alt class="w-px-40 h-auto rounded-circle" />
+    </div>
+    </div>
+    <div class="flex-grow-1">
+    <h6 class="mb-1">New Message ✉️</h6>
+    <p class="mb-0">You have new message from Natalie</p>
+    <small class="text-muted">1h ago</small>
+    </div>
+    <div class="flex-shrink-0 dropdown-notifications-actions">
+    <a href="javascript:void(0)" class="dropdown-notifications-read">
+    <span class="badge badge-dot"></span>
+    </a>
+    <a href="javascript:void(0)" class="dropdown-notifications-archive">
+    <span class="bx bx-x"></span>
+    </a>
+    </div>
+    </div>
+    </li>
+    <li class="list-group-item list-group-item-action dropdown-notifications-item">
+    <div class="d-flex">
+    <div class="flex-shrink-0 me-3">
+    <div class="avatar">
+    <span class="avatar-initial rounded-circle bg-label-success">
+    <i class="bx bx-cart"></i>
+    </span>
+    </div>
+    </div>
+    <div class="flex-grow-1">
+    <h6 class="mb-1">Whoo! You have new order 🛒</h6>
+    <p class="mb-0">ACME Inc. made new order $1,154</p>
+    <small class="text-muted">1 day ago</small>
+    </div>
+    <div class="flex-shrink-0 dropdown-notifications-actions">
+    <a href="javascript:void(0)" class="dropdown-notifications-read">
+    <span class="badge badge-dot"></span>
+    </a>
+    <a href="javascript:void(0)" class="dropdown-notifications-archive">
+    <span class="bx bx-x"></span>
+    </a>
+    </div>
+    </div>
+    </li>
+    <li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
+    <div class="d-flex">
+    <div class="flex-shrink-0 me-3">
+    <div class="avatar">
+    <img src="../../assets/img/avatars/9.png" alt class="w-px-40 h-auto rounded-circle" />
+    </div>
+    </div>
+    <div class="flex-grow-1">
+    <h6 class="mb-1">Application has been approved 🚀</h6>
+    <p class="mb-0">Your ABC project application has been approved.</p>
+    <small class="text-muted">2 days ago</small>
+    </div>
+    <div class="flex-shrink-0 dropdown-notifications-actions">
+    <a href="javascript:void(0)" class="dropdown-notifications-read">
+    <span class="badge badge-dot"></span>
+    </a>
+    <a href="javascript:void(0)" class="dropdown-notifications-archive">
+    <span class="bx bx-x"></span>
+    </a>
+    </div>
+    </div>
+    </li>
+    <li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
+    <div class="d-flex">
+    <div class="flex-shrink-0 me-3">
+    <div class="avatar">
+    <span class="avatar-initial rounded-circle bg-label-success">
+    <i class="bx bx-pie-chart-alt"></i>
+    </span>
+    </div>
+    </div>
+    <div class="flex-grow-1">
+    <h6 class="mb-1">Monthly report is generated</h6>
+    <p class="mb-0">July monthly financial report is generated</p>
+    <small class="text-muted">3 days ago</small>
+    </div>
+    <div class="flex-shrink-0 dropdown-notifications-actions">
+    <a href="javascript:void(0)" class="dropdown-notifications-read">
+    <span class="badge badge-dot"></span>
+    </a>
+    <a href="javascript:void(0)" class="dropdown-notifications-archive">
+    <span class="bx bx-x"></span>
+    </a>
+    </div>
+    </div>
+    </li> *@
+</ul>

@@ -1,0 +1,483 @@
+@model SimpliHR.Infrastructure.Models.Attendance.AttendanceHistoryViewModel
+@{
+    ViewData["Title"] = "Employee Attendance";
+    //if (@Model.AttendanceHistoryList != null)
+    //{
+    //    int totalRows = 0;
+    //    totalRows = Model.AttendanceHistoryList.Count;
+    //}
+    DateTime today = DateTime.Today;
+    DateTime monthStart = new DateTime(today.Year, today.Month, 1);
+    DateTime monthEnd = monthStart.AddMonths(1).AddDays(-1);
+    double totalDays = 0;
+    if (Model.StartDate != null)
+        if (Model.StartDate.Value.ToString().Length != 0 && Model.EndDate.Value.ToString().Length != 0)
+        {
+            totalDays = (Model.StartDate.Value - Model.EndDate.Value).TotalDays;
+        }
+}
+
+<style>
+    .tableFixHead {
+        overflow-y: auto; /* make the table scrollable if height is more than 200 px  */
+        height: 230px; /* gives an initial height of 200px to the table */
+    }
+
+        .tableFixHead thead {
+            position: sticky;
+            top: -1px
+        }
+
+            .tableFixHead thead th {
+                position: sticky; /* make the table heads sticky */
+                top: 0px; /* table head will be placed from the top of the table and sticks to it */
+                border-top: 1px solid #ccc;
+                border-bottom: 1px solid #ccc;
+            }
+
+    table {
+        border-collapse: collapse; /* make the table borders collapse to each other */
+        width: 100%;
+    }
+
+    th,
+    td {
+        padding: 8px 16px;
+        border: 1px solid #ccc;
+    }
+
+    th {
+        background: #ebeef0;
+    }
+</style>
+<!-- Layout wrapper -->
+
+            <!--Location Content -->
+
+            <div class="container-xxl flex-grow-1 container-p-y">
+                <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Attendance /</span> Manage Shift</h4>
+
+                <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+                       @* <h2>SimpliHR2.0</h2>*@
+                        <div class="modal-content p-3 p-md-5">
+                            <div class="modal-body">
+                                <button type="button" class="btn-close" name="btnPopupClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <div class="text-center mb-4">
+                                </div>
+                                <form id="showAlert" class="row g-3" onsubmit="return false">
+                                    <div class="col-12 text-center" id="successDiv">
+                                        <p id="errorPara" class="error" style="color:red"></p>
+                                    </div>
+                                    <div class="col-12 text-center" id="errorDiv">
+                                        <p id="successPara" class="error" style="color:black"></p>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div id="popupBtnDiv" class="col-12 text-center">
+                                @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                                <button type="reset" name="btnPopupClose"
+                                        class="btn btn-label-secondary btn-reset mt-3"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                    Close
+                                </button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div id="wizard-checkout" class="bs-stepper wizard-icons wizard-icons-example mt-2">
+                    <div class="container selectMain">
+                        <div class="card mb-4">
+                        @*    <h5 class="card-header">Manage Shift</h5>*@
+                            <form class="card-body" id="ShiftForm" method="post" action="/EmployeeAttendanceUI/GetShiftList">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="formtabs-birthdate">From Date</label>
+                                        <input type="text"
+                                               id="StartDate"
+                                               name="StartDate"
+                                               madatory
+                                               value="@(Model.StartDate == null ? monthStart.ToString("dd-MMM-yyyy") : ((DateTime)Model.StartDate).ToString("dd-MMM-yyyy"))"
+                                               class="form-control flatpickr-date1"
+                                               placeholder="YYYY-MM-DD" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="formtabs-birthdate">To Date</label>
+                                        <input type="text"
+                                               id="EndDate"
+                                               name="EndDate"
+                                               madatory
+                                               value="@(Model.EndDate == null ? monthEnd.ToString("dd-MMM-yyyy") : ((DateTime)Model.EndDate).ToString("dd-MMM-yyyy"))"
+                                               class="form-control flatpickr-date1"
+                                               placeholder="YYYY-MM-DD" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="defaultInput" class="form-label">Department</label>
+                            @Html.DropDownList("DepartmentId",new SelectList(Model.DepartmentMasterKeyValue,"DepartmentId", "DepartmentName"),"All",htmlAttributes: new { @class="select2 form-select select2-hidden-accessible",@name="DepartmentId",@placeholder="Select Department", @multiple="multiple", @onchange = "GetEmployeeOfDepartments()"})
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="defaultInput" class="form-label">Employee Name</label>
+                                        <select id="EmployeeId" name="EmployeeId" class="select2 form-select select2-hidden-accessible" data-allow-clear="true" data-select2-id="multicol-country" tabindex="-1" aria-hidden="true">                                           
+                                        </select>
+
+                                    </div>
+                                   @* <div class="col-md-6">
+                                        <label for="defaultInput" class="form-label">Employee Name</label>
+                                        @Html.DropDownList("EmployeeIds",new SelectList(Model.EmployeeMasterKeyValue,"EmployeeId", "EmployeeName"),"Select Employee",htmlAttributes: new { @class="select2 form-select select2-hidden-accessible",name="EmployeeIds", @multiple="multiple"})
+
+                                    </div>*@
+                                    <div class="col-md-12">
+                                        <label class="form-label" for="formtabs-birthdate">Select Option</label>
+                                        <div class="col mt-2">
+                                            @{
+                                                @foreach (var day in Model.WeekDays)
+                                                {
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input"
+                                                               type="radio"
+                                                               value="@day.Value"
+                                                               id="@day.Key"
+                                                               name="DaySelected"
+                                                        @((Model.DaySelected == "" ? @day.Value : Model.DaySelected) == @day.Value ? Html.Raw("checked=\'checked\'") : "") />
+                                                        <label class="form-check-label" for="collapsible-address-type-home">@day.Value</label>
+                                                    </div>
+                                                }
+                                            }
+
+                                        </div>
+                                    </div>
+                                    <div class="pt-4">
+                                        <button type="submit" class="btn btn-primary me-sm-3 me-1" onclick="return ValidateForm()">Search</button>
+                                        <button type="reset" class="btn btn-label-secondary">Reset</button>
+                                        <input type="hidden" name="UnitId" id="UnitId" value="@Model.UnitId" />
+                                        <input type="hidden" name="EmployeeIds" id="EmployeeIds" value="@Model.EmployeeIds" />
+                                        <input type="hidden" id="DepartmentIds" name="DepartmentIds" class="form-control" value="@Model.DepartmentIds" />
+                                    </div>
+                                    @if (Model.AttendanceList.Count > 0)
+                                    {
+                                        <div class="table-responsive text-nowrap tableFixHead">
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">Sr. No.</th>
+                                                        <th class="text-center"><input name="collapsible-address-type" class="form-check-input select-all select-col0" type="checkbox" value="All" id="All" onclick="SelectAll(this)" /> <label class="form-check-label" for="collapsible-address-type-office">Select All</label></th>
+                                                        @{
+                                                            int iCol = 0;
+                                                            string id = "";
+                                                            var DutyDates = new List<DateTime>();
+                                                            if (Model.DaySelected == "All")
+                                                            {
+                                                                for (var dt = Model.StartDate; dt <= Model.EndDate; dt = dt.Value.AddDays(1))
+                                                                {
+                                                                    DutyDates.Add(dt.Value);
+                                                                }
+                                                            }
+                                                            else
+                                                                DutyDates = Model.AttendanceList.Select(x => x.DutyDate).Distinct().ToList();
+
+                                                            var EmployeeIDs = Model.AttendanceList.Select(x => x.EmployeeId).Distinct();
+                                                            //DateTime startDate = Model.StartDate.Value;
+                                                            //DateTime startDate;
+                                                            foreach (DateTime startDate in DutyDates.OrderBy(r => r.Date))
+                                                            {
+                                                                iCol = iCol + 1;
+                                                                string sDate = startDate.ToString("ddMMYY");
+
+                                                                <th class="text-center"><input name="@id" class="form-check-input select-all select-col-@iCol" type="checkbox" value='@startDate.ToString("dd-MMM-yyyy")' onclick="SelectRowCol(this,'select-col',@iCol)" /><label class="form-check-label" for="collapsible-address-type-office">@startDate.ToString(" dd-MMM-yyyy")</label></th>
+                                                                //startDate = startDate.AddDays(1);
+                                                            }
+                                                        }
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @{
+                                                        int iRow = 0;
+                                                        foreach (var employeeId in EmployeeIDs)
+                                                        {
+                                                            iCol = 0;
+                                                            var empName = "";
+                                                            iRow = iRow + 1;
+                                                            //startDate = Model.StartDate.Value;
+                                                            var empData = Model.AttendanceHistoryList.Where(x => x.EmployeeId == employeeId);
+                                                            if (empData != null)
+                                                                empName = Model.EmployeeMasterKeyValue.Where(x => x.EmployeeId == employeeId).Select(r => r.EmployeeName).FirstOrDefault().ToString();
+                                                                //empName = empData.Select(r => r.EmployeeName).FirstOrDefault().ToString();
+
+                                                            <tr>
+                                                                <td class="text-center">@iRow</td>
+                                                                <td><input name="collapsible-address-type" class="form-check-input select-all select-row-@iRow" type="checkbox" value="@employeeId" id="@employeeId" onclick="SelectRowCol(this,'select-row',@iRow)" /> <label class="form-check-label text-pr" for="collapsible-address-type-office">@empName</label></td>
+
+                                                                @foreach (DateTime startDate in DutyDates.OrderBy(r => r.Date))
+                                                                {
+                                                                    iCol = iCol + 1;
+                                                                    var sShiftSchd = "";
+                                                                    var ShiftIDAttended = empData.Where(r => r.DutyDate == startDate).Select(r => r.ShiftIDAttended).FirstOrDefault();
+                                                                    var InTime = empData.Where(r => r.DutyDate == startDate).Select(r => r.InTime).FirstOrDefault();
+                                                                   // InTime = InTime != null ? InTime : "00:00:00";
+
+                                                                    var OutTime = empData.Where(r => r.DutyDate == startDate).Select(r => r.OutTime).FirstOrDefault();
+                                                                   // OutTime = OutTime != null ? OutTime : "00:00:00";
+                                                                    var ShiftData = empData.Where(r => r.DutyDate == startDate).Select(r => r.ShiftIDScheduled).FirstOrDefault();
+                                                                    if (ShiftData != null)
+                                                                        sShiftSchd = ShiftData.ToString();
+                                                                    else
+                                                                        sShiftSchd = "-";
+                                                                    var dispDate = $"{startDate.ToString("dd-MMM-yyyy")} ({startDate.ToString("ddd")})";
+                                                                    <td>
+                                                                        <div class="text-center"><lable class="badge bg-label-primary me-1">@dispDate</lable></div>
+                                                                        <div class="text-center"><input name="collapsible-address-type" class="form-check-input select-all select-row-@iRow select-col-@iCol R_@iRow-C_@iCol" type="checkbox" value="@startDate.ToString(" dd-MMM-yyyy");@employeeId" id="id-@iRow@iCol" /> @sShiftSchd </div>
+                                                                    </td>
+                                                                    <input type="hidden" id="ShiftIDAttended" value="@ShiftIDAttended">
+                                                                    <input type="hidden" id="InTime" value="@InTime">
+                                                                    <input type="hidden" id="OutTime" value="@OutTime">
+                                                                }
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                        <div class="pt-4">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    @Html.DropDownList("ShiftIDScheduled",new SelectList(Model.ShiftMasterKeyValue,"ShiftCode", "ShiftName"),"Select Shift",htmlAttributes: new { @class="select2 form-select select2-hidden-accessible"})
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <button type="button" class="btn btn-primary me-sm-3 me-1" onclick="return SaveEmployeeShift()">Assign</button>
+                                                    <button type="reset" class="btn btn-label-secondary">Remove</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- / Content -->
+           
+<!-- / Layout wrapper -->
+<!-- Core JS -->
+<!-- build:js assets/vendor/js/core.js -->
+@*<script src="../../assets/vendor/libs/tagify/tagify.js"></script>
+<script src="../../assets/js/forms-tagify.js"></script>
+<script src="~/customjs/common.js"></script>*@
+<script src="~/customjs/commonfunction.js"></script>
+
+@section scripts {
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            //jQuery(".List").dataTable();
+            //jQuery("#showAlert").modal('hide');
+            jQuery(".flatpickr-date1").flatpickr({
+               // monthSelectorType: 'static',
+                dateFormat: "d-M-Y"
+            });
+            $.each($("#DepartmentIds").val().split(","), function (i, e) {
+                    $("#DepartmentId option[value='" + e + "']").prop("selected", true).change();
+                    GetEmployeeOfDepartments();
+                });
+            $.each($("#EmployeeIds").val().split(","), function (i, e) {
+                $("#EmployeeId option[value='" + e + "']").prop("selected", true);
+            });
+            jQuery("#showAlert").modal('hide');
+        });
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                if (sMsg.toUpperCase() == "SUCCESS") {
+                    sMsg = "Shift chages completed successfully";
+                    // jQuery("#successDiv").show();
+                    // jQuery("#successPara").html(sMsg);
+                    $successalert("Manage Shift", sMsg);
+                   
+                }
+                else {
+                    // jQuery("#errorDiv").show();
+                    // jQuery("#errorPara").html(sMsg);
+                    $erroralert("Populate City", sMsg);
+                }
+
+               // jQuery("#showAlert").modal('show');
+                //ResetForm();
+            }
+        }
+        function ValidateForm() {
+            startDate = jQuery("#StartDate").val();
+            endDate = jQuery("#EndDate").val();
+            if (endDate == "" && startDate != "")
+                endDate = startDate;
+            if (startDate == "")
+                $erroralert("Validation", "Start date is required.");               ;
+            var dateDiff = dateDiffrenece(startDate, endDate, "DD-MMM-YYYY", "day")
+            if (dateDiff < 0) {
+                $erroralert("Validation", "Start Date cannot be greater then End Date");
+               // ShowServerMessage("Start Date cannot be greater then End Date");
+                //jQuery("#errorDiv").show();
+                //jQuery("#errorPara").html("Start Date cannot be greater then End Date");
+                return false;
+            }
+            jQuery(" #tableInfo").hide()
+        }
+
+        jQuery("#DepartmentId").change(function () {
+            var select = document.getElementById('DepartmentId');
+            var selected = [...select.options]
+                .filter(option => option.selected)
+                .map(option => option.value);
+            // alert(selected);
+
+            jQuery("#DepartmentIds").val(selected);
+        });
+
+        jQuery("#EmployeeId").change(function () {
+            var select = document.getElementById('EmployeeId');
+            var selected = [...select.options]
+                .filter(option => option.selected)
+                .map(option => option.value);
+            // alert(selected);
+
+            jQuery("#EmployeeIds").val(selected);
+        });
+
+        function SaveEmployeeShift()
+        {
+            var shiftData = {};
+            var attendanceHistoryVM = {};
+            var isData = false;
+            var sMsg="";
+            var attendanceCollection = new Array();
+            if (jQuery("#ShiftIDScheduled").val()!="")
+                sMsg="Select Shift to schedule"
+            cols = jQuery('.select-row-1').length;
+            rows = jQuery('.select-col-1').length;
+            if (rows > 0 && cols>0)
+            {
+                for (iRow = 1; iRow <= rows-1; iRow++) {
+                    for (iCol = 1; iCol <= cols-1; iCol++) {
+                        ctrl = jQuery("#id-" + iRow + iCol)
+                        var isChecked = ctrl.is(":checked");
+                        
+                        if (isChecked)
+                        {
+                            console.log('Rows: ' + rows + 'cols: ' + cols+ ' Irow : ' + iRow + " iCol: " + iCol)
+                            shiftData={}
+                            var cellText=ctrl.val();
+                            arrShiftInfo = cellText.split(';');
+                            
+                            if(arrShiftInfo.length>0)
+                            {
+                                console.log(arrShiftInfo.length)
+                                shiftData.DutyDate = arrShiftInfo[0]
+                                shiftData.EmployeeId = arrShiftInfo[1]
+                                shiftData.ShiftIDScheduled = jQuery("#ShiftIDScheduled").val();
+                                shiftData.ShiftIDAttended = jQuery("#ShiftIDAttended").val();
+                                //shiftData.InTime = jQuery("#InTime").val();
+                                //shiftData.OutTime = jQuery("#OutTime").val();
+                                attendanceCollection.push(shiftData);
+                                console.log(attendanceCollection.length)
+                                isData=true;
+                            }
+                               
+                        }
+                            
+                    }
+                }
+            }
+
+            if (!isData) {
+                sMsg = (sMsg != "" ? sMsg + "<br>" : sMsg = "") + "Select date/dates to schedule Shift"
+                return sMsg
+            }
+            attendanceHistoryVM.AttendanceHistoryList = attendanceCollection;
+            //attendanceHistoryVM.AttendanceList = attendanceCollection;
+            attendanceHistoryVM.UnitId = jQuery("#UnitId").val()
+            BlockUI();
+            jQuery.ajax({
+                type: "POST",
+                url: "/EmployeeAttendanceUI/ManageShift",
+                data: { inputData: attendanceHistoryVM },
+                success: function (data) {
+                    //alert(data)
+                    UnblockUI();
+                    var sMsg = data.displayMessage  //.Trim().Replace("<br>", "\r\n")
+                   // ShowServerMessage(sMsg);
+                    $successalert("Manage Shift", sMsg);
+                    if (sMsg.toUpperCase() == "SUCCESS") {
+                        jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                    }
+                },
+                error: function (result) {
+                    var x = 1;
+                    $erroralert("Error!", "errror<br>" + result.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+
+        function RediretToView() {
+            //window.location.href = '/EmployeeAttendanceUI/ViewAttendance'
+            $('#ShiftForm').submit();
+
+        }
+
+        function GetEmployeeOfDepartments()
+        {
+            var unitId = jQuery("#UnitId").val();
+            var departmentId = jQuery("#DepartmentIds").val();
+          
+            jQuery("#EmployeeId").html("")
+
+            if (departmentId != "") {
+               var formParam = unitId + "&" + departmentId + "&true";
+                BlockUI();
+                jQuery.ajax({
+                    type: "GET",
+                    url: '/EmployeeAttendanceUI/EmployeeKeyValue/' + formParam,
+                    //data: formParam,
+                    success: function (response) {
+                        UnblockUI();
+                        PopulateDropDown('EmployeeId', response, '@Model.EmployeeId', 'employeeId', 'employeeName','All Employees')
+                    },
+                    failure: function (response) {
+                        UnblockUI();
+                        $erroralert("Error!", "errror<br>" + response.responseText);
+                    },
+                    error: function (response) {
+                        $erroralert("Error!", "errror<br>" + response.responseText);
+                    }
+                });
+            }
+        }
+
+        function SelectAll(selectAllCtrl) {
+            if (selectAllCtrl.checked)
+                jQuery(".select-all").attr("checked", true);
+            else
+                jQuery(".select-all").attr("checked", false);
+        }
+
+        function SelectRowCol(selectParent, sClass, iCtr) {
+            var cls = '.' + sClass + '-' + iCtr
+            if (selectParent.checked)
+                jQuery(cls).attr("checked", true);
+            else
+                jQuery(cls).attr("checked", false);
+        }
+
+        function AddClass(ctrl, classname) {
+            ctrl.addClass = classname;
+        }
+
+    </script>
+    }

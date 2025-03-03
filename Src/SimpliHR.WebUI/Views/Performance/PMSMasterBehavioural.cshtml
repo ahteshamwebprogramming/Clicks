@@ -1,0 +1,81 @@
+﻿@model SimpliHR.Infrastructure.Models.Performace.PerformanceSettingDTO
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Performance /</span> Upload Behavioral Skills
+    </h4>
+    <input type="button" class="btn btn-primary btn-sm" value="View Behavioral" style="float:right;margin-bottom:5px;margin-right:5px;" onclick="window.location.href='/Performance/ViewPMSMasterBehavioural?ePerformanceSettingId=@SimpliHR.Infrastructure.Helper.CommonHelper.EncryptURLHTML(Model.PerformanceSettingId.ToString())'" />
+    <input type="button" class="btn btn-primary btn-sm" value="Go To Master" style="float:right;margin-bottom:5px;margin-right:5px;" onclick="window.location.href='/Performance/PMSMastersPage?ePerformanceSettingId=@SimpliHR.Infrastructure.Helper.CommonHelper.EncryptURLHTML(Model.PerformanceSettingId.ToString())'" />
+    <div class="clearfix"></div>
+    <div class="card" id="">
+        <div class="card-body">
+            <form>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <input type="file" class="form-control" id="importFile" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="button" class="btn btn-primary" value="Upload" onclick="UploadFile()" />
+                    </div>
+                </div>
+            </form>
+
+            <div class="row" style="margin-top:30px">
+                <div class="col=md-12">
+                    <h5 class="text-muted" style="display: contents;">Example of KRA File to upload</h5>
+                    <p class="help-text text-muted" style="color:red !important">Make sure these headers match or download the template to avoid any error <a href="javascript:void(0)" onclick="window.open('/Performance/DownloadTemplateBehavioral','_blank')" style=" color:blue !important;text-decoration:underline">Download Template</a> </p>
+                </div>
+                <div class="col-md-12">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Employee Code</th>
+                                <th>Attribute</th>
+                                <th>WeightAge(%)</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<input type="hidden" id="PerformanceSettingId" value="@Model.PerformanceSettingId" />
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+        });
+        function UploadFile() {
+            BlockUI();
+            var files = $("#importFile").get(0).files;
+            if (files.length == 0) {
+                $erroralert("Error", "Please choose csv file to upload or download a template for reference");
+                UnblockUI();
+                return false;
+            }
+            var formData = new FormData();
+            formData.append('importFile', files[0]);
+            formData.append('PerformanceSettingId', $("#PerformanceSettingId").val());
+
+            $.ajax({
+                url: '/Performance/UploadBehavioral',
+                data: formData,
+                type: 'POST',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $successalert("", "Transaction Successful!");
+                    UnblockUI();
+                },
+                error: function (err) {
+                    //$.alert(err.statusText);
+                    //window.location.href = "/ManageVendors/Index";
+                    $erroralert("Error", err.responseText);
+                    UnblockUI();
+                }
+            });
+        }
+    </script>
+    }

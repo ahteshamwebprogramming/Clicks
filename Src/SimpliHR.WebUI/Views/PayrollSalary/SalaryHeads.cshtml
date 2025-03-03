@@ -1,0 +1,228 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.PayrollComponentViewModel
+@{
+    ViewData["Title"] = "Salary Components";
+}
+
+
+<!-- Content -->
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll /</span> Salary Component Settings</h4>
+
+    <div class="row">
+        <!-- User Content -->
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1 mb-4">
+            <div class="card-header d-flex justify-content-sm-between align-items-sm-center flex-column flex-sm-row">
+                <h5 class="card-title mb-sm-0 me-2"></h5>
+                <div class="action-btns">
+                    <div class="btn-group">
+                        <button class="btn btn-primary dropdown-toggle"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false" style="text-align:right;">
+                            Component Settings
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/PayrollSalary/EarningComponents">Earning</a></li>
+                            <li><a class="dropdown-item" href="/PayrollSalary/DeductionComponents">Deductions</a></li>
+                            <li><a class="dropdown-item" href="/PayrollSalary/ReimbursementComponent">Reimbursements</a></li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <!-- User Pills -->
+
+            <div class="nav-align-top mb-4">
+
+                <ul class="nav nav-pills mb-3" role="tablist">
+                    <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#earnings" aria-controls="earnings" aria-selected="true">
+                            Earnings
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#deductions" aria-controls="deductions" aria-selected="false">
+                            Deductions
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#reimbursements" aria-controls="reimbursements" aria-selected="false">
+                            Reimbursements
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="earnings" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive text-nowrap">
+                                    <table class="datatables-ajax table List" id="tblearning">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                              
+                                                <th>Consider In Payslip</th>
+                                                <th>Is Taxable</th>
+                                                <th>Is Active</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        @if (Model.PayrollEarningComponentList.Count > 0)
+                                        {
+                                            <tbody>
+                                                @{
+                                                    foreach (var item in @Model.PayrollEarningComponentList)
+                                                    {
+                                                        <tr>
+                                                            <td><a href="/PayrollSalary/EarningComponents/@item.EncryptedId">@item.SalaryComponentTitle</a></td>
+                                                                                                                      
+                                                            <td>@item.IsVisibleInPaySlip</td>
+                                                            <td>@item.IsTaxableIncome</td>
+                                                            <td class="text-success">@item.IsActive</td>
+                                                            <td>
+                                                                <a class="dropdown-item d-inline" href="#" onclick="javascript:window.location.href='/PayrollSalary/EarningComponents/@item.EncryptedId'"><i class="bx bx-edit-alt me-1"></i></a>
+                                                               
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        }
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="deductions" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive text-nowrap">
+                                    <table class="datatables-ajax table table-bordered List" id="tbldeductions">
+                                        <thead>
+                                            <tr>
+                                                <th>Component</th>                                               
+                                                <th>Consider In Payslip</th>
+                                                <th>Is Taxable</th>
+                                                <th>Is Active</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        @if (Model.PayrollDeductionComponentList.Count > 0)
+                                        {
+                                            <tbody>
+                                                @{
+                                                    foreach (var item in @Model.PayrollDeductionComponentList)
+                                                    {
+                                                        <tr>
+                                                            <td><a href="/PayrollSalary/DeductionComponents/@item.EncryptedId">@item.SalaryComponentTitle</a></td>
+                                                           
+                                                            <td>@item.IsVisibleInPaySlip</td>
+                                                            <td>@item.IsTaxableIncome</td>
+                                                            <td class="text-success">@item.IsActive</td>
+                                                            <td>
+                                                                <button class="btn btn-primary" onclick="javascript:window.location.href='/PayrollSalary/DeductionComponents/@item.EncryptedId'"> Edit</button>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        }
+
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="reimbursements" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive text-nowrap">
+                                    <table class="datatables-ajax table table-bordered List2" id="tblreimbursements">
+                                        <thead>
+                                            <tr>
+                                                <th>Component</th>
+                                                <th>Name in Payslip</th>
+                                                @*  <th>Flexible Plan</th>*@
+                                                <th>Amount</th>
+                                                <th>STATUS</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        @if (Model.PayrollReimbursementComponentList.Count > 0)
+                                        {
+                                            <tbody>
+                                                @{
+                                                    foreach (var item in @Model.PayrollReimbursementComponentList)
+                                                    {
+                                                        <tr>
+                                                            <td><a href="/PayrollSalary/ReimbursementComponent/@item.EncryptedId">@item.SalaryComponentTitle</a></td>
+                                                            <td>@item.NameInPaySlip</td>
+
+                                                            <td>
+                                                                @item.AmountValue
+                                                            </td>
+
+                                                            <td class="text-success">@item.IsActive</td>
+                                                            <td>
+                                                                <button class="btn btn-primary" onclick="javascript:window.location.href='/PayrollSalary/ReimbursementComponent/@item.EncryptedId"> Edit</button>
+
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        }
+                                        @*<tbody>
+                                        <tr>
+                                        <td><a href="">Fuel Reimbursement</a></td>
+                                        <td>Fuel Reimbursement</td>
+                                        <td>0 per month</td>
+                                        <td class="text-muted">Inactive</td>
+                                        <td></td>
+                                        </tr>
+                                        <tr>
+                                        <td><a href="">Driver Reimbursement</a></td>
+                                        <td>Driver Reimbursement</td>
+                                        <td>0 per month</td>
+                                        <td class="text-muted">Inactive</td>
+                                        <td></td>
+                                        </tr>
+                                        <tr>
+                                        <td><a href="">Withheld Salary</a></td>
+                                        <td>Withheld Salary</td>
+                                        <td>0 per month</td>
+                                        <td class="text-muted">Inactive</td>
+                                        <td></td>
+                                        </tr>
+                                        </tbody>*@
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--/ User Pills -->
+
+        </div>
+        <!--/ User Content -->
+    </div>
+
+
+</div>
+@section scripts {
+<!-- / Content -->
+<script src="~/customjs/commonfunction.js"></script>
+<script src="~/customjs/employeevalidation.js"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+          
+        $(".List").dataTable();
+      
+        });
+</script>
+}

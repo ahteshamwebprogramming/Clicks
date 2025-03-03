@@ -1,0 +1,219 @@
+
+@model SimpliHR.Infrastructure.Models.Payroll.PayrollComponentViewModel
+@{
+    ViewData["Title"] = "Salary Components";
+    //Model.DisplayMessage += "";
+    //Layout = null;
+}
+
+<div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Salary Components /</span> Reimbursement Component
+        </h4>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <!-- Current Plan -->
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-1">
+                                <div class="mb-3">
+                                    <label class="form-label" for="username">Reimbursement Name</label>
+                                   @* @Html.DropDownList("SalaryComponentId",new SelectList(Model.SalaryComponentKeyValues,"SalaryComponentId","SalaryComponentTitle"),"Select Components",htmlAttributes: new { @class="select2 form-select select2-hidden-accessible dbcol", @name="SalaryComponentId", @required="required"})*@
+
+
+                                    <select class="form-select" id="SalaryComponentId" required name="SalaryComponentId" onchange="javascript:GetComponentName()" data-allow-clear="true" data-select2-id="multicol-country" aria-hidden="true">
+                                        <option selected>Select an option</option>
+
+                                        @if (Model.SalaryComponentKeyValues != null)
+                                            foreach (var item in Model.SalaryComponentKeyValues)
+                                            {
+                                                if (Model.PayrollReimbursementComponent.SalaryComponentId > 0)
+                                                {
+                                                    if (item.SalaryComponentId == Model.PayrollReimbursementComponent.SalaryComponentId)
+                                                    {
+
+                                                        <option value="@item.SalaryComponentId" selected> @item.SalaryComponentTitle</option>
+                                                    }
+                                                }
+                                                else
+                                                {
+
+                                                    <option value="@item.SalaryComponentId"> @item.SalaryComponentTitle</option>
+                                                }
+
+                                               @* if (item.SalaryComponentId == Model.PayrollReimbursementComponent.SalaryComponentId)
+                                                {
+                                                    <option value="@item.SalaryComponentId" selected> @item.SalaryComponentTitle</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.SalaryComponentId"> @item.SalaryComponentTitle</option>
+                                                }*@
+
+                                            }
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="username">Name in Payslip <span class="text-danger">*</span></label>
+                                    <input type="text" id="NameInPaySlip" name="NameInPaySlip" value="@Model.PayrollReimbursementComponent.NameInPaySlip" class="form-control dbcol"
+                                           placeholder="nameinpayslip" />
+                                </div>
+                                @*<div class="mb-3">
+                                    <div class="col-12 form-check">
+                                        <input class="form-check-input dbcol" type="checkbox" id="IsFlexibleBenifitPlan" name="IsFlexibleBenifitPlan" @(Model.PayrollReimbursementComponent.IsFlexibleBenifitPlan == true ? Html.Raw("checked=\'checked\'") : "")>
+                                        Include this as a Flexible Benefit Plan component<br><small>FBP allows your employees to personalise their salary structure by choosing how much they want to receive under each FBP component.</small>
+                                    </div>
+                                </div>*@
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label" for="username">Enter Amount<span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon11">₹</span>
+                                        <input type="text" id="AmountValue" name="AmountValue" class="form-control dbcol" value="@Model.PayrollReimbursementComponent.AmountValue" placeholder="Amount"> &nbsp; &nbsp; <span class="pt-2">Per Month</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="col-12 form-check">
+                                        <input class="form-check-input dbcol" type="checkbox" id="IsActive" name="IsActive" @(Model.PayrollReimbursementComponent.IsActive == true ? Html.Raw("checked=\'checked\'") : "") />
+                                        Is Active
+                                    </div>
+                                </div>
+                               @* <div class="mb-3 note small">
+                                    Note: Once you associate this component with an employee, you will only be able to edit the Name in Payslip and Amount. The changes you make to Amount will apply only to new employees.
+                                </div>*@
+                            </div>
+                            <div class="col-12">
+                                <button class="btn btn-primary me-2 mt-2" onclick="SaveComponents()">
+                                    Save
+                                </button>
+                                <button class="btn btn-primary me-2 mt-2" onclick="javascript:window.location.href='/PayrollSalary/SalaryComponents/'">
+                                    Cancel
+                                </button>
+                                <input type="hidden" class="dbcol" id="UnitId" name="UnitId" value="@Model.PayrollReimbursementComponent.UnitId" />
+                                <input type="hidden" class="dbcol" id="ReimbursementId" name="ReimbursementId" value="@Model.PayrollReimbursementComponent.ReimbursementId" />
+                            </div>
+                            <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+                                    <h2>SimpliHR2.0</h2>
+                                    <div class="modal-content p-3 p-md-5">
+                                        <div class="modal-body">
+                                            <button type="button" class="btn-close" name="btnPopupClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <div class="text-center mb-4">
+                                            </div>
+                                            <form id="showAlert" class="row g-3" onsubmit="return false">
+                                                <div class="col-12 text-center" id="errorDiv">
+                                                    <p id="errorPara" class="error" style="color:red"></p>
+                                                </div>
+                                                <div class="col-12 text-center" id="successDiv">
+                                                    <p id="successPara" class="error" style="color:black"></p>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <div id="popupBtnDiv" class="col-12 text-center">
+                                            @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                                            <button type="reset" name="btnPopupClose"
+                                                    class="btn btn-label-secondary btn-reset mt-3"
+                                                    data-bs-dismiss="modal"
+                                                    aria-label="Close">
+                                                Close
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal -->
+                    <!-- /Modal -->
+                    <!-- /Current Plan -->
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <!-- / Content -->
+
+
+</div>
+<!-- Content wrapper -->
+@section scripts{
+
+    <script src="~/customjs/commonfunction.js"></script>
+    <script src="~/customjs/employeevalidation.js"></script>
+    <script type="text/javascript">
+        //jQuery(document).ready(function () {
+        //    $(".List").dataTable();
+        //}
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                if (sMsg.toUpperCase() == "SUCCESS") {
+                    sMsg = "Reimbursment saved successfully";
+                    jQuery("#successDiv").show();
+                    jQuery("#successPara").html(sMsg);
+
+                    // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                }
+                else {
+                    jQuery("#errorDiv").show();
+                    jQuery("#errorPara").html(sMsg);
+                }
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+
+        function GetComponentName() {
+
+            $("#NameInPaySlip").val($("#SalaryComponentId option:selected").text());
+
+        }
+        function SaveComponents() {
+            var rowData = {};
+            var payrollComponentVM = {};
+            var isData = false;
+            var dataCollection = new Array();
+            payrollComponentVM.PayrollReimbursementComponent = GetFormControls();
+            payrollComponentVM.PayrollReimbursementComponent.SalaryComponentId = jQuery("#SalaryComponentId").val()
+            var url = "/PayrollSalary/SaveReimbursementComponent"
+            BlockUI();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: { payrollComponentVM: payrollComponentVM },
+                //cache: false,
+                //contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                success: function (data) {
+                    if (data.toUpperCase() == "SUCCESS") {
+                        window.location.href = "/PayrollSalary/SalaryComponents"
+                    }
+                    else {
+                        ShowServerMessage(data);
+                    }
+                   // window.location.href = "/PayrollSalary/SalaryComponents"
+                    UnblockUI();
+                },
+                error: function (result) {
+                    UnblockUI();
+                    var x = 1;
+                    jQuery("#FormName").val("");
+                }
+            });
+
+        }
+
+    </script>
+}
+
+  

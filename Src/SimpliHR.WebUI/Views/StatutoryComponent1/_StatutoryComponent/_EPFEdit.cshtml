@@ -1,0 +1,127 @@
+﻿
+
+<div class="info-container">
+    <div class="row g-3">
+        <div class="col-sm-8">
+            <div class="content-header mb-3">
+                <h5 class="mb-0">Employees' Provident Fund &nbsp;&nbsp;&nbsp;   <i class="fa fa-save hvr-grow" onclick="ViewEPFPartial()"></i>   </h5>
+            </div>
+            <div class="table-responsive text-nowrap">
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <td>EPF Number</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Deduction Cycle</td>
+                            <td>
+                                <select class="form-control" style="width:50%">
+                                    <option>--Select--</option>
+                                    <option>Montly</option>
+                                    <option>Quaterly</option>
+                                    <option>Annually</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Employee Contribution Rate</td>
+                            <td>
+                                <input type="text" class="form-control" style="width:50px;    display: inline-block;" />&nbsp;% of Actual PF Wage
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Employer Contribution Rate</td>
+                            <td>
+                                <input type="text" class="form-control" style="width:50px;    display: inline-block;" />&nbsp;% of Actual PF Wage <a href="#" data-bs-toggle="popover"
+                                                                                                                                                     data-bs-offset="0,14"
+                                                                                                                                                     data-bs-placement="right"
+                                                                                                                                                     data-bs-html="true"
+                                                                                                                                                     data-bs-content="<table><tr class='border-bottom'><td class='pb-2'>SUB COMPONENTS</td><td class='pb-2'>EMPLOYER'S CONTRIBUTION</td></tr><tr><td  class='pt-2' style='padding-right:25px'>Employees' Provident Fund (EPF)</td><td class='pt-2'>3.67% of PF Wage</td></tr><tr><td  class='pt-2' style='padding-right:25px'>Employees' Pension Scheme</td><td class='pt-2'>8.33% of PF Wage</td></tr></table>"
+                                                                                                                                                     title="CONTRIBUTION RATE">(View Splitup)</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top">CTC Inclusions</td>
+                            <td class="rate">
+                                <div class="pb-2"> <input type="checkbox" />  <span>Employer's contribution is included in the CTC.</span></div>
+                                <div class="pb-2"><input type="checkbox" /> <span>Employer's EDLI contribution is not included in the CTC.</span></div>
+                                <div class="pb-2"><input type="checkbox" /> <span>Admin charges is not included in the CTC.</span></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Allow Employee level Override</td>
+                            <td><input type="checkbox" /></td>
+                        </tr>
+                        <tr>
+                            <td>Pro-rate Restricted PF Wage</td>
+                            <td><input type="checkbox" /></td>
+                        </tr>
+                        <tr>
+                            <td>Consider applicable salary<br> components based on LOP</td>
+                            <td valign="top"><input type="checkbox" /> (when PF wage is less than ₹15,000)</td>
+                        </tr>
+                        <tr>
+                            <td>Eligible for ABRY Scheme</td>
+                            <td><input type="checkbox" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="rounded-box">
+                <div class="content-header mb-3">
+                    <h5 class="mb-0">Sample EPF Calculation</h5>
+                </div>
+                <div class="mb-3">Let's assume the PF wage is ₹ 20,000. The breakup of contribution will be:</div>
+                <div class="internal-rounded-box">
+                    <div>
+                        <table class="Table table-borderless" width="100%">
+                            <tr>
+                                <td class="pb-2" colspan="2">Employee's Contribution</td>
+                            </tr>
+                            <tr class="border-bottom">
+                                <td class="pb-2">EPF (12% of 20000)</td>
+                                <td class="text-center">₹ 2400</td>
+                            </tr>
+                            <tr>
+                                <td class="pb-2 pt-2" colspan="2">Employer's Contribution</td>
+                            </tr>
+                            <tr>
+                                <td class="pb-2"><span>EPS (8.33% of 20000 <br>(Max of ₹ 15,000))</span></td>
+                                <td valign="top" class="text-center">₹ 1250</td>
+                            </tr>
+                            <tr class="border-bottom">
+                                <td class="pb-2">EPF (12% of 20000 - EPS)</td>
+                                <td class="text-center">₹ 1150</td>
+                            </tr>
+                            <tr class="border-bottom">
+                                <td class="pb-2 pt-2"><strong>Total</strong></td>
+                                <td class="text-center">₹ 2400</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <i class="fa-regular fa-lightbulb"></i> <span>Do you want to preview EPF calculation for multiple cases, based on the preferences you have configured ?</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 d-flex justify-content-between">
+            @*<button class="btn btn-label-secondary btn-prev" disabled>
+            <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+            <span class="align-middle d-sm-inline-block d-none">Previous</span>
+            </button>
+            <button class="btn btn-primary btn-next">
+            <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+            <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+            </button>*@
+
+
+            <a href="javascript:void(0)" name="btnDisableEPF" onclick="disbaleEPF()" style="color:red"><i class="fa fa-trash"></i>  Disable EPF </a>
+            <a style="display:none;color:green" href="javascript:void(0)" name="btnEnableEPF" onclick="enableEPF()"><i class="fa fa-check-circle"></i>  Enable EPF </a>
+
+        </div>
+    </div>
+</div>

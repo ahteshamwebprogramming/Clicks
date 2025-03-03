@@ -1,0 +1,362 @@
+﻿@model SimpliHR.Infrastructure.Models.ProjectTracker.ProjectViewModel
+
+<style>
+    .avatar-group .avatar {
+        margin-left: -0.8rem;
+    }
+
+    .avatar-xl {
+        width: 4.5rem;
+        height: 4.5rem;
+    }
+
+    .avatar-lg {
+        width: 4rem;
+        height: 4rem;
+    }
+
+    .avatar-md {
+        width: 3rem;
+        height: 3rem;
+    }
+
+
+    .multi-line-ellipsis {
+        min-height: 70px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3; /* Number of lines to show */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* width: 200px; /* Adjust the width as needed */ */
+    }
+</style>
+
+<div class="row g-4">
+
+    @{
+        if (Model != null && Model.ProjectWithChildList != null)
+        {
+            foreach (var item in Model.ProjectWithChildList)
+            {
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex align-items-start">
+                                <div class="d-flex align-items-start">
+                                    <div class="avatar me-3" style="display:none">
+                                        <img style="display:none" src="../../assets/img/icons/brands/social-label.png"
+                                             alt="Avatar"
+                                             class="rounded-circle" />
+                                    </div>
+                                    <div class="me-2">
+                                        <h5 class="mb-1"><a href="javascript:void(0);" onclick="ViewProjectDetails('@item.encProjectID');" class="h5 stretched-link">@item.ProjectName</a></h5>
+                                        <div class="client-info d-flex align-items-center">
+                                            <h6 class="mb-0 me-1">Category:</h6>
+                                            <span>@item.ProjectCategoryName</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ms-auto">
+                                    <div class="dropdown zindex-2">
+                                        <button type="button"
+                                                class="btn dropdown-toggle hide-arrow p-0"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            @{
+                                                if (item.IsInitiator == 1)
+                                                {
+                                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="edit('@item.encProjectID');">Edit Project</a></li>
+                                                }
+                                            }
+
+                                            @{
+                                                if (item.ProjectApprovalNeeded == true)
+                                                {
+                                                    if (item.IsApproved == 1)
+                                                    {
+                                                        <li><a class="dropdown-item" href="javascript:void(0);" onclick="ViewProjectDetails('@item.encProjectID');">View details</a></li>
+                                                    }
+                                                    else
+                                                    {
+                                                        if (item.IsApprover == 1 && item.IsApproved != -1)
+                                                        {
+                                                            <li><a class="dropdown-item" href="javascript:void(0);" onclick="ViewProjectDetails('@item.encProjectID');">View details</a></li>
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="ViewProjectDetails('@item.encProjectID');">View details</a></li>
+                                                }
+                                            }
+                                            @*<li><a class="dropdown-item" href="javascript:void(0);">Add to favorites</a></li>*@
+                                            @{
+                                                if (item.IsInitiator == 1)
+                                                {
+                                                    if (!(item.ProjectApprovalNeeded == true && item.IsApproved == 1))
+                                                    {
+                                                        <li>
+                                                            <hr class="dropdown-divider" />
+                                                        </li>
+                                                        <li><a class="dropdown-item text-danger" href="javascript:void(0);" onclick="deleteRecord('@item.encProjectID')">Delete Project</a></li>
+                                                    }
+                                                }
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex align-items-center flex-wrap">
+                                <div class="bg-lighter p-2 rounded me-auto mb-3">
+                                    <h6 class="mb-1 priority">@item.Priority</h6>
+                                    <span class="priority">Project Priority</span>
+                                </div>
+                                <div class="text-end mb-3">
+                                    <h6 class="mb-1 projectdates">Start Date: <span class="text-body fw-normal">@(item.StartDate.ToString("dd-MMM-yyyy"))</span></h6>
+                                    <h6 class="mb-1 projectdates">Deadline: <span class="text-body fw-normal">@(item.EndDate.ToString("dd-MMM-yyyy"))</span></h6>
+                                </div>
+                            </div>
+                            <p class="mb-0 multi-line-ellipsis">@item.Description</p>
+                        </div>
+                        <div class="card-body border-top">
+                            <div class="d-flex align-items-center mb-3">
+                                <h6 class="mb-1">Status: @item.Status</h6>
+                                @{
+                                    if (item.StatusID < 6)
+                                    {
+                                        DateTime targetDate = item.EndDate;
+                                        DateTime currentDate = DateTime.Now;
+                                        TimeSpan difference = targetDate - currentDate;
+                                        int daysLeft = (int)difference.TotalDays;
+                                        if (daysLeft > 6)
+                                        {
+                                            <span class="badge bg-label-success ms-auto">@daysLeft Days left</span>
+                                        }
+                                        else if (daysLeft > 0 && daysLeft <= 6)
+                                        {
+                                            <span class="badge bg-label-warning ms-auto">@daysLeft Days left</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-label-danger ms-auto">@daysLeft Days left</span>
+                                        }
+                                    }
+                                }
+
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <small>
+                                    @if (item.TotalMilestones == 0)
+                                    {
+                                        <span>Progress based on time left</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Milestones: @item.CompletedMilestones/@item.TotalMilestones</span>
+                                    }
+                                </small>
+                                @{
+                                    decimal completePercent;
+                                    if (item.TotalMilestones == 0)
+                                    {
+                                        // Calculate progress based on time elapsed
+                                        DateTime startDate = item.StartDate;
+                                        DateTime endDate = item.EndDate;
+                                        DateTime currentDate = DateTime.Now;
+
+                                        // Calculate total project duration and time elapsed
+                                        TimeSpan totalDuration = endDate - startDate;
+                                        TimeSpan timeElapsed = currentDate - startDate;
+
+
+                                        completePercent = (decimal)(timeElapsed.TotalDays / totalDuration.TotalDays) * 100;
+                                        //Cap at 100%
+                                        completePercent = completePercent > 100 ? 100 : completePercent;
+                                    }
+                                    else
+                                    {
+                                        completePercent = (item.CompletedMilestones == null ? 0 : (decimal)item.CompletedMilestones) * 100;
+                                        completePercent = (item.TotalMilestones != null && item.TotalMilestones != 0) ? (completePercent == 0 ? 0 : completePercent / (item.TotalMilestones == null ? 0 : (decimal)item.TotalMilestones)) : 0;
+                                    }
+
+                                    completePercent = Math.Round(completePercent);
+                                }
+
+                                <small>@completePercent% Completed</small>
+                            </div>
+                            <div class="progress mb-3" style="height: 8px">
+                                <div class="progress-bar"
+                                     role="progressbar"
+                                     style="width: @completePercent%"
+                                     aria-valuenow="@completePercent"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100"></div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <ul class="list-unstyled d-flex align-items-center avatar-group mb-0 zindex-2">
+
+                                        @{
+                                            if (Model != null && Model.ProjectWithChildList != null && Model.ProjectMembersWithChild != null)
+                                            {
+                                                var members = Model.ProjectMembersWithChild.Where(x => x.ProjectID == item.ProjectID);
+                                                if (members != null && members.Any())
+                                                {
+                                                    int membersToShow = 4;
+                                                    int membersShown = 0;
+                                                    var approver = members.Where(x => x.RoleType == "Approver");
+                                                    var collaborator = members.Where(x => x.RoleType == "Collaborator");
+                                                    if (approver != null && approver.Any())
+                                                    {
+                                                        foreach (var itemMember in approver)
+                                                        {
+                                                            if (membersShown < membersToShow)
+                                                            {
+                                                                <li data-bs-toggle="tooltip"
+                                                                    data-popup="tooltip-custom"
+                                                                    data-bs-placement="top"
+                                                                    title="@itemMember.EmployeeName (Approver)"
+                                                                    class="avatar avatar-sm pull-up">
+                                                                    <img class="rounded-circle" src="@(String.IsNullOrEmpty(itemMember.UserProfileImagePath)?"../../assets/img/avatars/12.png" : itemMember.UserProfileImagePath)" alt="Avatar" />
+                                                                </li>
+                                                                membersShown += 1;
+                                                            }
+                                                        }
+                                                    }
+                                                    if (collaborator != null && collaborator.Any())
+                                                    {
+                                                        foreach (var itemMember in collaborator)
+                                                        {
+                                                            if (membersShown < membersToShow)
+                                                            {
+                                                                <li data-bs-toggle="tooltip"
+                                                                    data-popup="tooltip-custom"
+                                                                    data-bs-placement="top"
+                                                                    title="@itemMember.EmployeeName (Collaborator)"
+                                                                    class="avatar avatar-sm pull-up">
+                                                                    <img class="rounded-circle" src="@(String.IsNullOrEmpty(itemMember.UserProfileImagePath)?"../../assets/img/avatars/12.png" : itemMember.UserProfileImagePath)" alt="Avatar" />
+                                                                </li>
+                                                                membersShown += 1;
+                                                            }
+                                                        }
+                                                    }
+                                                    int membersLeft = members.Count() - membersToShow;
+                                                    if (membersLeft > 0)
+                                                    {
+                                                        <li><small class="">@membersLeft More</small></li>
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    </ul>
+                                </div>
+                                <div class="ms-auto">
+                                    @*<a href="javascript:void(0);" class="text-body"><i class="bx bx-chat"></i> 15</a>*@
+                                    @{
+                                        if (item.ApprovalNeeded == true)
+                                        {
+                                            if (item.IsApproved == 0)
+                                            {
+                                                <span style="color:red">Project Approval Pending</span>
+                                            }
+                                            else if (item.MilestoneApprovalNeeded == true)
+                                            {
+                                                <span style="color:red">Milestone Approval Pending</span>
+                                            }
+                                            else if (item.StatusChangeRequest == true)
+                                            {
+                                                <span style="color:red">Status Approval Pending</span>
+                                            }
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        }
+    }
+
+
+
+</div>
+
+
+
+<div class="col-lg-12">
+    <div class="demo-inline-spacing" style="margin:auto">
+        <!-- Basic Pagination -->
+        @{
+            if (Model != null && Model.PageDetails != null)
+            {
+                int PageIndex = Model.PageDetails.PageNumber ?? default(int);
+                int TotalPages = Model.PageDetails.TotalPages ?? default(int);
+                <nav aria-label="Page navigation" class="d-flex justify-content-center mt-4">
+                    <ul class="pagination">
+                        <li class="page-item first">
+                            <a class="page-link" href="javascript:void(0)" onclick="ProjectListPartialView(1)">
+                                <i class="fa-solid fa-angles-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item prev">
+                            <a class="page-link" href="javascript:void(0)" onclick="ProjectListPartialView(@(PageIndex > 1 ? PageIndex - 1 : 1))">
+                                <i class="fa-solid fa-angle-left"></i>
+                            </a>
+                        </li>
+
+                        @if (PageIndex > 3)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="javascript:void(0)" onclick="ProjectListPartialView(1)">1</a>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        }
+
+                        @for (var i = Math.Max(1, PageIndex - 1); i <= Math.Min(PageIndex + 1, TotalPages); i++)
+                        {
+                            <li class="page-item @(i == PageIndex ? "active" : "")">
+                                <a class="page-link" href="javascript:void(0)" onclick="ProjectListPartialView(@i)">@i</a>
+                            </li>
+                        }
+
+                        @if (PageIndex < TotalPages - 2)
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="javascript:void(0)" onclick="ProjectListPartialView(@TotalPages)">@TotalPages</a>
+                            </li>
+                        }
+
+                        <li class="page-item next">
+                            <a class="page-link" href="javascript:void(0)" onclick="ProjectListPartialView(@(PageIndex < TotalPages ?  PageIndex + 1 : TotalPages))">
+                                <i class="fa-solid fa-angle-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item last">
+                            <a class="page-link" href="javascript:void(0)" onclick="ProjectListPartialView(@TotalPages)">
+                                <i class="fa-solid fa-angles-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+            }
+        }
+
+
+        <!--/ Basic Pagination -->
+    </div>
+</div>

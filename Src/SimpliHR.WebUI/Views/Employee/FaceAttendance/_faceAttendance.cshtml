@@ -1,0 +1,620 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeDashboardVM
+
+
+
+    
+                <div id="face-detect-frame1" class="card checkin-checkout-widget">
+                    <div class="card-body">
+                        <div class="float-start">
+                            <div><small><span class="fw-bold">Check in  </span> <span id="checkInDate" name="checkInDate">mon yr</span></small></div>
+                            <div>
+                                <small>
+                                    <i class="fa-solid fa-location-dot"></i>&nbsp; 
+                                    <span name="locationToolTip" data-bs-toggle="tooltip"
+                                    data-bs-offset="0,4"
+                                    data-bs-placement="top"
+                                    data-bs-html="true"
+                                    data-bs-custom-class="tooltip-secondary"></span>
+                                </small>
+                            </div>
+
+                        </div>
+
+                        <div class="clearfix"></div>
+                        <div class="text-center pt-4 pb-4 mt-3 mb-3"><img src="../../assets/img/face-capture-icon.png" alt=""></div>
+                        <div class="text-center"><button id="btnClick" class="btn btn-success rounded-pill check-in-btn"><small class="float-start me-5 text-start"><i class='bx bxs-time-five text-white'></i> <span id="clockInTime" name="clockInTime"> 9:30am</span></small><small class="float-end">Check in</small></button></div>
+                    </div>
+                </div>
+                <div id="face-detect-frame2" class="text-white position-relative" style="display:none;">
+                    <script type="text/javascript" src="~/WebCam/webcam.js"></script>
+                    <div class="card-body">
+                        <div class="float-start position-relative text-dark" style="z-index:1111">
+                            <div class="float-start">
+                                <div><small><span class="fw-bold">Check in  </span>   <span id="checkInDate1" name="checkInDate">mon yr</span></small></div>
+                                <div style="margin-top:-5px"><small><i class="fa-solid fa-location-dot"></i>&nbsp;
+                                            <span name="locationToolTip" data-bs-toggle="tooltip"
+                                                  data-bs-offset="0,4"
+                                                  data-bs-placement="top"
+                                                  data-bs-html="true"
+                                              data-bs-custom-class="tooltip-secondary"></span>  
+                                    </small>
+                                  
+                                </div>
+
+                            </div>
+                            <div><small></small></div>
+
+                        </div>
+
+                        <div class="clearfix"></div>
+                        <div class="text-center pt-5 pb-5 mt-3 mb-2" style="height: 205px;">&nbsp;</div>
+                        <div class="text-center position-absolute" style="top:15px;left:0" id="my_camera" name="my_camera"></div>
+                        <form>
+                            <input type="hidden" class="dbcol" id="InOutTime" name="InOutTime" />
+                            <input type="hidden" class="dbcol" id="CheckInMessage" name="CheckInMessage" />
+                         
+                            <div class="text-center position-relative" style="z-index:1111">
+                                <input type="button" id="btnClickCapture" class="btn btn-success rounded-pill" value="Capture">
+                                <input type="button" id="btnFrame2Close" class="btn btn-success rounded-pill" value="Close" onclick="GoToScreen('face-detect-frame2','face-detect-frame1')">
+                            </div>
+
+                        </form>
+                      
+                    </div>
+                </div>
+                <div id="face-detect-frame3" style="display:none;">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="float-start pb-2">
+                                <div><small><span class="fw-bold">Check in  </span> <span id="checkInDate2" name="checkInDate">mon yr</span></small></div>
+                                <div>
+                                    <small>
+                                        <i class="fa-solid fa-location-dot"></i> &nbsp;
+                                            <span name="locationToolTip" data-bs-toggle="tooltip"
+                                                  data-bs-offset="0,4"
+                                                  data-bs-placement="top"
+                                                  data-bs-html="true"
+                                                  data-bs-custom-class="tooltip-secondary"
+                                              title=""></span> 
+                                        
+                                    </small></div>
+                            </div>
+                            <div class="float-end status">
+                                <div><small><a href="#" onclick="ShowHideFaceAttendanceDetails('face-detect-frame6','face-detect-frame3')" class="text-black text-decoration-underline">Clock <span name="stayHours">08:05</span></a></small></div>
+                                <div><small>Status <span name="status" style="color:#42a775">Present</span></small></div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="row pt-3">
+                                <div class="col-lg-6" style="padding:0 1rem 0 2.5rem !important;">
+                                    <div class="badge bg-label-secondary rounded-circle me-2 float-start p-2" style="background-color:#42a775!important"><i class="fa-solid fa-arrow-right-to-bracket text-white"></i></div>
+                                    <div class="float-first pt-1">
+                                        <h5 class="fw-bold"><span id="inTime" name="inTime"> 9:30am</span><br><small style="font-size: 12px;">Check in</small></h5>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6" style="padding:0 2rem 0 1.5rem!important;">
+                                    <div class="badge bg-label-secondary rounded-circle me-2 float-start p-2" style="background-color: #e08129!important;"><i class="fa-solid fa-arrow-right-from-bracket text-white"></i></i></div>
+                                    <div class="float-first fw-bold pt-1">
+                                        <h5 class="fw-bold"><span id="outTime" name="outTime">Not yet</span><br><small style="font-size: 12px;">Check out</small></h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center"><small class="fw-bold"><span id="earlyLateMsg"> You can come <span name="earlyDelayTime">-</span> today </span></small></div>
+                            <div class="pt-3">
+                                <textarea id="basic-default-message" class="form-control fw-bold face-detect-textarea" placeholder="Add chanking note"></textarea>
+                            </div>
+                            <div class="text-center pt-3"><button id="btnClickCaptureOut" class="btn btn-success rounded-pill check-out-btn"><small class="float-start me-5 text-start"><i class='bx bxs-time-five text-white'></i><span name="clockOutTime"></span></small><small class="float-end">Check out</small></button></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="face-detect-frame4" class="text-white position-relative" style="display:none;">
+                    <div class="card-body">
+                        <div class="float-start position-relative text-dark" style="z-index:1111">
+                            <div><small class="me-3"><span class="fw-bold">Check in  </span> <span id="checkInDate3" name="checkInDate">mon yr</span></small></div>
+                            <div style="margin-top:-5px">
+                                <i class="fa-solid fa-location-dot"></i> &nbsp;
+                                    <span name="locationToolTip" data-bs-toggle="tooltip"
+                                          data-bs-offset="0,4"
+                                          data-bs-placement="top"
+                                          data-bs-html="true"
+                                          data-bs-custom-class="tooltip-secondary"
+                                      title=""></span> 
+                               
+                            </div>
+                            <div><small></small></div>
+
+                        </div>
+                        
+                        <div class="clearfix"></div>
+                        <div class="text-center pt-5 pb-5 mt-3 mb-2" style="height: 205px;">&nbsp;</div>
+                        <div class="text-center position-absolute" style="top:15px;left:0" id="my_cameraOut" name="my_camera"></div>
+
+                        <form>
+                          
+                            <input type="hidden" class="dbcol" id="CheckOutMessage" name="CheckOutMessage" />
+                            <div class="text-center position-relative" style="z-index:1111">
+                                <input type="button" id="btnClickCapture1" class="btn btn-success rounded-pill" value="Capture">
+                                <input type="button" id="btnClickCapture" class="btn btn-success rounded-pill" value="Close" onclick="GoToScreen('face-detect-frame4','face-detect-frame3')">
+                            </div>
+                        </form>
+                      
+                    </div>
+                </div>
+                <div id="face-detect-frame5" style="display:none;">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="float-start pb-2">
+                                <div><small><span class="fw-bold">Check in  </span> <span id="checkInDate4" name="checkInDate">mon yr</span></small></div>
+                                <div><small><i class="fa-solid fa-location-dot"></i> &nbsp;
+                                            <span name="locationToolTip" data-bs-toggle="tooltip"
+                                                  data-bs-offset="0,4"
+                                                  data-bs-placement="top"
+                                                  data-bs-html="true"
+                                                  data-bs-custom-class="tooltip-secondary"
+                                              title=""></span> 
+                                       
+                                    </small></div>
+                            </div>
+                            <div class="float-end status">
+                                <div><small><a href="#" onclick="ShowHideFaceAttendanceDetails('face-detect-frame6','face-detect-frame5')" class="text-black text-decoration-underline">Clock <span name="stayHours">08:05</span></a></small></div>
+                                <div><small>Status <span name="status" style="color:#42a775">Present</span></small></div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="row pt-3">
+                                <div class="col-lg-6" style="padding:0 1rem 0 2.5rem !important;">
+                                    <div class="badge bg-label-secondary rounded-circle me-2 float-start p-2" style="background-color:#42a775!important"><i class="fa-solid fa-arrow-right-to-bracket text-white"></i></div>
+                                    <div class="float-first pt-1">
+                                        <h5 class="fw-bold"><span name="inTime">9:30 am</span><br><small style="font-size: 12px;">Check in</small></h5>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6" style="padding:0 2rem 0 1.5rem!important;">
+                                    <div class="badge bg-label-secondary rounded-circle me-2 float-start p-2" style="background-color: #42a775!important;"><i class="fa-solid fa-arrow-right-from-bracket text-white"></i></i></div>
+                                    <div class="float-first fw-bold pt-1">
+                                        <h5 class="fw-bold"><span name="outTime">6:30 pm</span><br><small style="font-size: 12px;">Check out</small></h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center pt-2 pb-2"><img src="../../assets/img/face-capture-icon.png" width="85" height="auto" alt=""></div>
+                            <div class="text-center pt-3"><button id="btnClickCaptureIn" class="btn btn-success rounded-pill check-out-btn"><small class="float-start me-5 text-start"><i class='bx bxs-time-five text-white'></i><span name="clockOutTime">6:30pm</span></small><small class="float-end">Check In</small></button></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="face-detect-frame6" style="display:none;">
+                    <div class="card" style="height:330px">
+                        <div class="card-body">
+                            <div class="float-start pb-2">
+                                <div><small><span class="fw-bold">Check in  </span>  <span id="checkInDate4" name="checkInDate">mon yr</span></small></div>
+                                <div>
+                                    <small>
+                                        <i class="fa-solid fa-location-dot"></i><span name="locationToolTip" data-bs-toggle="tooltip"
+                                        data-bs-offset="0,4"
+                                        data-bs-placement="top"
+                                        data-bs-html="true"
+                                        data-bs-custom-class="tooltip-secondary"></span>
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="float-end status">
+                                <div><small><a onclick="ShowHideFaceAttendanceDetails('','face-detect-frame6')" class="text-black text-decoration-underline">Clock <span name="stayHours">08:05</span></a></small></div>
+                                <div><small>Status <span name="status" style="color:#42a775">Absent</span></small></div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="pt-3">
+                                <div id="#timesheet" class="text-end"><i class="fa-solid fa-xmark" onclick="ShowHideFaceAttendanceDetails('','face-detect-frame6')"></i></div>
+                                <table border="0" width="100%" id="listFaceAttendance" class="overflow-y-scroll">
+                                    <thead>
+                                        <tr>
+                                            <th class="fw-bold"><small>Check in time</small></th>
+                                            <th class="fw-bold"><small>Check out time</small></th>
+                                            <th class="fw-bold"><small>Clock hours</small></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+<script src="https://js.api.here.com/v3/3.1/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://js.api.here.com/v3/3.1/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+      
+        setInterval(GetCurrentTime, 1000);
+        jQuery('[name="checkInDate"]').text(mm + " " + dd);
+        UpdateGPSLocation();
+    });
+   
+
+    $('#btnClick').on('click', function () {
+        //UpdateGPSLocation();
+       
+        cameraPrevScreen = "face-detect-frame1"
+        if ($('#face-detect-frame1').css('display') != 'none') {
+            $('#face-detect-frame2').show().siblings('div#face-detect-frame1').hide();
+            OpenCameraScreen('InTime');
+        }
+    });
+
+    $('#btnClickCapture').on('click', function () {
+        MarkFaceAttendance("InTime");
+        //if ($('#face-detect-frame2').css('display') != 'none') {
+        //    $('#face-detect-frame3').show().siblings('div#face-detect-frame2').hide();
+        //}
+    });
+
+    $('#btnClickCaptureOut').on('click', function () {
+        alert('Check Out');
+        //UpdateGPSLocation();
+        if ($('#face-detect-frame3').css('display') != 'none') {
+            $('#face-detect-frame4').show().siblings('div#face-detect-frame3').hide();
+        }
+        OpenCameraScreen('OutTime');
+    });
+
+    $('#btnClickCaptureIn').on('click', function () {
+        cameraPrevScreen = "face-detect-frame5"
+
+        if ($('#face-detect-frame5').css('display') != 'none') {
+            $('#face-detect-frame2').show().siblings('div#face-detect-frame5').hide();
+        }
+        OpenCameraScreen('InTime');
+    });
+
+
+    $('#btnClickCapture1').on('click', function () {
+        MarkFaceAttendance("OutTime");
+
+    });
+
+    var x;
+    StartAttendance();
+    //  getLocation();
+    // UpdateGPSLocation();
+
+    function StartAttendance() {
+        //var startTime = sessionStorage.getItem("InTime");
+        //if (IsBlank(startTime))
+        //Get the starttime from session or from DB server
+        //jQuery("#stopAttendance").removeClass("disabled");
+        GetUserLoginDetails('InTime', "");
+        //else
+        //    StartAttendanceTicker(startTime);
+    }
+
+    function PopulateFaceAttendanceTable(data, tableID) {
+        var tableCols = ['sClockInTime', 'sClockOutTime', 'stayDuration'];
+        var tableCtrl = jQuery("#" + tableID)
+        var tBody = jQuery('<tbody>')
+        jQuery("#" + tableID + " tbody tr").remove();
+
+        data.forEach(function (row) {
+            var tr = jQuery('<tr>');
+            tableCols.forEach(function (attr) {
+                tr.append('<td class="pt-2 pb-2 border-bottom">' + (IsBlank(row[attr]) == true ? "" : row[attr]) + '</td>');
+            });
+            tableCtrl.append(tr);
+        });
+    }
+
+    var previousScreen = "";
+    function ShowHideFaceAttendanceDetails(showScreen, hideScreen) {
+        if (hideScreen == 'face-detect-frame6')
+            jQuery('#' + previousScreen).show().siblings('div#' + hideScreen).hide();
+        else
+            jQuery('#' + showScreen).show().siblings('div#' + hideScreen).hide();
+        previousScreen = hideScreen;
+    }
+    var cameraPrevScreen = ''
+    function GoToScreen(fromScreen, ToScreen) {
+        if (cameraPrevScreen != '') {
+            jQuery('#' + cameraPrevScreen).show().siblings('div#' + ToScreen).hide();
+            jQuery('div#' + fromScreen).hide()
+            //.siblings('div#' + fromScreen).hide();
+            jQuery('#' + cameraPrevScreen).show();
+        }
+        else
+            jQuery('#' + ToScreen).show().siblings('div#' + fromScreen).hide();
+        //cameraPrevScreen = '';
+        alert('FaceAttendance');
+        FaceAttendance();
+    }
+
+    function GetUserLoginDetails(InOutTime, hideScreen) {
+        // BlockUI();
+        var showScreen = "";
+        jQuery.ajax({
+            type: "GET",
+            url: "/EmployeeAttendanceUI/GetAttendaceTime/" + InOutTime,
+            success: function (data) {
+                //alert(data)
+                //   UnblockUI();
+                var sMsg = data.displayMessage  //.Trim().Replace("<br>", "\r\n")
+                if (sMsg.toUpperCase() == "SUCCESS") {
+                    if (!(data.faceAttendanceStayHours == null || data.faceAttendanceStayHours == '00:00')) {
+                        jQuery('[name="stayHours"]').html(data.sFaceAttendanceStayHours);
+                        if (!(data.status == null || data.status == '')) {
+                            if (data.status.toUpperCase() == "ABSENT") {
+                                jQuery('[name="status"]').attr('style', 'color:#ff0000');
+                                jQuery('[name="status"]').text("Absent");
+                            }
+                        }
+                        else if (data.status == null || data.status == '')
+                            jQuery('[name="status"]').text("Absent");
+
+                        if (data.lastFaceLogin == '0001-01-01T00:00:00' || data.lastFaceLogin == null || data.lastFaceLogin == '') {
+                            jQuery('[name="outTime"]').text(data.sOutTime);
+                            jQuery('[name="inTime"]').text(data.sInTime);
+
+
+                            //setInterval(jQuery("#clockOutTime").text(GetCurrentTime), 1000);
+                            showScreen = "face-detect-frame5"
+                        }
+                        else {
+                            jQuery('[name="outTime"]').text("Not yet");
+                            if ((data.sFaceAttendanceStayHours == null || data.faceAttendanceStayHours == '00:00'))
+                                jQuery('[name="stayHours"]').html(data.sFaceAttendanceStayHours);
+                            else
+                                jQuery('[name="stayHours"]').html(data.sFaceAttendanceStayHours);
+                            jQuery('[name="inTime"]').text(data.sInTime);
+                            showScreen = "face-detect-frame3";
+                        }
+                        hideScreen = "face-detect-frame1"
+                    }
+                    else if (!(data.status == null || data.status == '')) {
+                        jQuery('[name="status"]').text(data.status);
+                        showScreen = "face-detect-frame3"
+                    }
+                    else {
+                        jQuery('[name="stayHours"]').text(" hour");
+                        jQuery('[name="status"]').text("");
+                        showScreen = "face-detect-frame1"
+                    }
+                    if (!(data.lastFaceLogin == '0001-01-01T00:00:00' || data.earlyDelayTime == null || data.earlyDelayTime == '')) {
+                        jQuery('[name="earlyDelayTime"]').text(data.sEarlyDelayTime);
+                    }
+                    jQuery('#' + showScreen).show().siblings('div#' + hideScreen).hide();;
+
+                    if (data.faceRecognitionAttendanceList.length > 0) {
+                        // jQuery('#listFaceAttendance').attr('style', 'display:block');
+                        // jQuery('#listFaceAttendance').hide();
+                        //if (data.epochInOutTime != 0)
+
+                        //StartAttendanceTicker(data.epochInOutTime);
+                    }
+                    //else
+
+
+                    PopulateFaceAttendanceTable(data.faceRecognitionAttendanceList, "listFaceAttendance");
+
+                }
+                else
+                    $erroralert("Face Recognition", sMsg);
+            },
+            error: function (result) {
+                var x = 1;
+                alert("errror <br>" + result.responseText);
+                //      UnblockUI();
+            }
+        });
+    }
+
+
+    function OpenCameraScreen(action) {
+
+    
+        //jQuery("#InOutTime").val(inOutTime);
+        // jQuery("#openCameraScreen").modal('show');
+        Webcam.set({
+            width: 385,
+            height: 340,
+            image_format: 'jpeg',
+            jpeg_quality: 90
+        });
+        if (action.toUpperCase() == "INTIME")
+            Webcam.attach('#my_camera');
+        else (action.toUpperCase() == "OUTTIME")
+        Webcam.attach('#my_cameraOut');
+    }
+
+    function MarkFaceAttendance(action) {
+        // take snapshot and get image data
+        Webcam.snap(function (data_uri) {
+            // var startTime = new Date().getTime();
+            jQuery("#InOutTime").val(action);
+            Webcam.upload(data_uri,
+                '/EmployeeAttendanceUI/MarkFaceAttendance',
+                function (code, data) {
+                    var ahVM = jQuery.parseJSON(data);
+                    //alert('Photo Matched : ' + text);
+                    //Webcam.reset();
+
+                    //Webcam.init();
+                    if (ahVM.displayMessage.toUpperCase() == "SUCCESS") {
+                        // GPS location function
+                        //
+                        // Webcam.CloseCamera();
+                        //if (ahVM.faceRecognitionAttendanceList.length > 0) {
+                        //    jQuery('#ListFaceAttendance').attr('style', 'display:block');
+                        //}
+                        //PopulateFaceAttendanceTable(ahVM.faceRecognitionAttendanceList, "ListFaceAttendance");
+                        if (action.toUpperCase() == 'OUTTIME') {
+                            //jQuery("#ShowMarkAttendance").attr("style", "display:inline");
+                            //jQuery("#ShowStopAttendance").attr("style", "display:none");
+                            //clearInterval(x);
+                            // jQuery('[name="outTime"]').text(GetCurrentTime());
+
+                            Webcam.reset();
+                            Webcam.init();
+
+                            //jQuery("#openCameraScreen").modal('hide');
+                            //jQuery("#UserImage").val('');
+                            GetUserLoginDetails('InTime', "face-detect-frame4");
+                            if ($('#face-detect-frame4').css('display') != 'none') {
+                                $('#face-detect-frame5').show().siblings('div#face-detect-frame4').hide();
+                            }
+                            SaveUserLocation('ClockOut');
+                            return;
+                        }
+                        else {
+                            //jQuery("#ShowMarkAttendance").attr("style", "display:none");
+                            //jQuery("#ShowStopAttendance").attr("style", "display:inline");
+                            Webcam.reset();
+                            Webcam.init();
+
+                            if ($('#face-detect-frame2').css('display') != 'none') {
+                                //jQuery('[name="inTime"]').text(GetCurrentTime());
+                                //jQuery("#clockOutTime").text(GetCurrentTime)
+                                GetUserLoginDetails('InTime', "face-detect-frame2");
+                                //setInterval(jQuery('[name="checkInLocation"]').text(GetCurrentTime), 1000);
+                                $('#face-detect-frame3').show().siblings('div#face-detect-frame2').hide();
+                            }
+                            SaveUserLocation('ClockIn');
+                            FaceAttendance();
+                        }
+
+
+                        sessionStorage.setItem(jQuery("#InOutTime").val(), ahVM.epochInOutTime);
+                        //StartAttendanceTicker(ahVM.epochInOutTime);
+                        //Webcam.reset();
+                        jQuery("#UserImage").val('');
+                        //// jQuery("#openCameraScreen").modal('hide');
+                    }
+                    else {
+                        $erroralert(ahVM.displayMessage);
+                        //Webcam.reset();
+                        jQuery("#UserImage").val('');
+                        jQuery("#openCameraScreen").modal('hide');
+                        document.getElementById("showAttendance").innerHTML = ahVM.displayMessage;
+                    }
+                });
+            // display results in page
+            //document.getElementById('results').innerHTML =
+            //    '<br><h2>Here is your image:</h2>' +
+            //    '<img id="UserImage" name="UserImage" src="' + data_uri + '" />';
+        });
+    }
+
+    function StartAttendanceTicker(startTime) {
+        x = setInterval(function () {
+            var counterValue = StartCounter(startTime);
+            //sessionStorage.setItem(jQuery("#InOutTime").val(), ePOCHInOutTime);
+            if (counterValue == "EXPIRED") {
+                jQuery("#ShowMarkAttendance").attr("style", "display:none");
+                jQuery("#ShowStopAttendance").attr("style", "display:inline");
+                clearInterval(x);
+                document.getElementById("showAttendance").innerHTML = "Refresh";
+            }
+            else {
+                if (jQuery('#ShowStopAttendance').css('display') !== 'inline') {
+                    jQuery("#ShowMarkAttendance").attr("style", "display:none");
+                    jQuery("#ShowStopAttendance").attr("style", "display:inline");
+                }
+
+                document.getElementById("showAttendance").innerHTML = counterValue;
+            }
+        }, 1000);
+    }
+
+    var attendanceHistoryVM = {};
+    function UpdateGPSLocation() {
+
+        // alert("Checking User Location");
+
+        var platform = new H.service.Platform({
+            "apikey": "yYUYzOQ8cV8mAWGq6rKtUHsPyRPLbSZafVpuHQ1ex7U"
+        });
+        var geocoder = platform.getSearchService();
+        //alert("Checking User Location : " + geocoder);
+        if (navigator.geolocation) {
+            //alert("Inside navigator.geolocation : " + navigator.geolocation);
+            navigator.geolocation.getCurrentPosition(position => {
+                geocoder.reverseGeocode(
+                    {
+                        //alert("Inside position.coords.latitude + "," + position.coords.longitude : " + position.coords.latitude);
+                        at: position.coords.latitude + "," + position.coords.longitude
+                    }, data => {
+                        // $("#lblGeoLocation").text(data.items[0].address.label);
+                        // $("#hdnCurrentLocation").val($("#lblGeoLocation").text());
+                        //   alert("location is:\n" + data.items[0].address.label);
+                        //jQuery('[name="checkInLocation"]').text(data.items[0].address.label);
+
+                        if (data.items[0].address.label.length > 0) {
+                            // attendanceHistoryVM.HostName = jQuery("#EmployeeId").val();
+                            // attendanceHistoryVM.IPAddress = jQuery("#StartDate").val();
+                            attendanceHistoryVM.GPSLocation = data.items[0].address.label;
+                            //jQuery("#checkInLocation").Val(attendanceHistoryVM.GPSLocation);
+                            // alert(attendanceHistoryVM.GPSLocation);
+                            var address = attendanceHistoryVM.GPSLocation.length > 30 ? attendanceHistoryVM.GPSLocation.substring(0, 30) + "...." : attendanceHistoryVM.GPSLocation;
+                            jQuery('[name="locationToolTip"]').prop("title", attendanceHistoryVM.GPSLocation);
+                            jQuery('[name="locationToolTip"]').html(address);
+                            attendanceHistoryVM.longitude = position.coords.longitude;
+                            attendanceHistoryVM.latitude = position.coords.latitude;
+                            //  BlockUI();
+                        }
+
+                    }, error => {
+                        console.error(error);
+                    }
+                );
+            });
+        } else {
+            console.error("Geolocation is not supported by this browser!");
+        }
+    }
+
+    function SaveUserLocation(ClockInOut) {
+        attendanceHistoryVM.AttendanceType = ClockInOut
+        jQuery.ajax({
+            type: "POST",
+            url: "/EmployeeAttendanceUI/SaveGPSLocation",
+
+            data: { inputData: attendanceHistoryVM },
+            success: function (data) {
+                var x = 0;
+                //alert(data)
+                //  UnblockUI();
+                // var sMsg = data.displayMessage  //.Trim().Replace("<br>", "\r\n")
+                // $successalert("Mark Attendance", sMsg);
+                // if (sMsg.toUpperCase() == "SUCCESS") {
+                //     jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                // }
+            },
+            error: function (result) {
+                var x = 1;
+                $erroralert("Error!", "errror<br>" + result.responseText);
+                UnblockUI();
+            }
+        });
+    }
+
+    function GetCurrentTime() {
+        // Create a newDate() object and extract the hours of the current time on the visitor's
+        //console.log("Inside GetCurrentTime");
+        var hours = new Date().getHours();
+        var sHours = (hours < 10 ? "0" : "") + hours;
+        // Add a leading zero to the hours value
+        var minutes = new Date().getMinutes();
+        var sMin = (minutes < 10 ? "0" : "") + minutes;
+        var seconds = new Date().getSeconds();
+        var sSec = (seconds < 10 ? "0" : "") + seconds;
+        var currentTime = sHours + ":" + sMin //+ ":" + seconds
+        //jQuery("#clockTime").text(currentTime);
+        //console.log("Exiting GetCurrentTime")
+        jQuery('[name="clockInTime"]').text(currentTime);
+        jQuery('[name="clockOutTime"]').text(currentTime);
+        return currentTime
+        //jQuery("#clockTime").html();
+    }
+
+</script>
+

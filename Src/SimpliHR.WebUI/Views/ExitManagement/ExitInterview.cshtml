@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewData["Title"] = "ExitInterview";
+}
+
+
+<style>
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+</style>
+@*Page CSS*@
+<div class="container-xxl flex-grow-1 container-p-y">
+
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Exit Management /</span> Interview
+    </h4>
+
+    <div class="card">
+       
+        <div class="card-body">
+            @*<input type="button" class="btn btn-primary addShow" value="View" onclick="javascript:window.location.href='#'" style="float:right" />
+            <div style="clear:both"></div>*@
+            <form method="post" >
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Employee Name</label>
+                          <input type ="text"  class="form-control" placeholder="Employee Name">
+                       @* <select class="form-select" id="LeaveTypeId" required name="LeaveTypeId" onchange="javascript:PopulateLeaveBalance(this.value)" data-allow-clear="true" data-select2-id="multicol-country" aria-hidden="true">
+                            <option selected>Select an option</option>                           
+                        </select>*@
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Interviewer</label>
+                        <select class="form-select" id="LeaveTypeId" required name="LeaveTypeId" onchange="javascript:PopulateLeaveBalance(this.value)" data-allow-clear="true" data-select2-id="multicol-country" aria-hidden="true">
+                            <option selected>Select an option</option>
+
+                        </select>
+                    </div>
+                    
+                   
+                    <div class="col-md-12">
+                        <label class="form-label" for="multicol-last-name">Feedback</label>
+                        <textarea class="form-control" required id="txtRemarks" rows="2"></textarea>
+                    </div>
+
+                </div>
+                <div class="pt-4">
+
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    @* <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/Leave/LeaveApply/'">Cancel</button>*@
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+

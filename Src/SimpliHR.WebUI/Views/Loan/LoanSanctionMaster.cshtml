@@ -1,0 +1,421 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.LoanMasterDTO
+@{
+    ViewData["Title"] = "LoanSanctionMaster";
+}
+
+<style>
+
+
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payroll /</span> Loan Sanction</h4>
+    <div class="row">
+        <!-- User Content -->
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <!-- User Pills -->
+
+            <div class="nav-align-top mb-4">
+             
+
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="epfTab-info" role="tabpanel">
+                       
+                        <div style="clear:both"></div>
+                        <div class="info-container">
+                            
+                            <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+                                <div class="card-body">
+
+                                    <form method="post" asp-action="ExportLoanSanction" asp-controller="Loan">
+                                        <input type="hidden" name="LoanSanction" /> <br />
+                                        <input type="submit" id="btnSubmit" style="background-color: #696cff;color: #fff; font-size: 14px; padding: 6px 16px;line-height: 20px; border-radius:5px;border:0" value="Download" />
+                                    </form>
+                                    <div> <a class="btn btn-primary" style="float:right;  margin-left: 40px !important;" href="/Loan/LoanRepayment">Loan Repayment</a> </div>
+                                   
+                                    <div>
+                                        <input type="button" class="btn btn-primary" value="Loan Sanction" onclick="AddView()" style="float:right;" />
+                                    </div>
+                                    <div style="clear:both"></div>
+                                    <div class="card-datatable table-responsive text-nowrap" >
+                                        <table class="datatables-ajax table List" id="List">
+                                            <thead>
+                                                <tr>
+                                                    <th>Start Month-Year</th>
+                                                    <th>Employee</th>
+                                                    <th>Sanction Amount</th>
+                                                    <th>Repayment Tenure</th>
+                                                    <th>Installment</th>
+                                                    <th>Closing Amount</th>
+                                                    <th>Stop Month-Year</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GetSanctionLoan != null)
+                                                    @foreach (var item in Model.GetSanctionLoan)
+                                                    {
+                                                        <tr>
+                                                            <td>@item.Month-@item.RepaymentStartYear </td>
+                                                            <td>@item.Employee</td>
+                                                            <td>@item.SanctionAmount</td>
+                                                            <td>@item.RepaymentTenure</td>
+                                                            <td>@item.MonthlyInstallment</td>
+                                                            <td>@item.ClosingBalance</td>
+                                                            <td>@item.StopMonth-@item.RepaymentStopYear </td>
+                                                            @*<th>@(item.IsActive == true ? "Active" : "Inactive")</th>*@
+
+                                                            <td>
+                                                                <a class="dropdown-item d-inline" href="/Loan/GetEmployeeLoanInfo/@item.EncryptedId"><i class="bx bx-edit-alt me-1"></i></a>
+                                                                <a class="dropdown-item d-inline" href="#" onclick="DeleteRecord('@item.SanctionId','@item.EncryptedId')"><i class="bx bx-trash me-1"></i></a>
+                                                            </td>
+                                                            @* <th>
+                                                                <a class="btn btn-primary" href="/Loan/GetEmployeeLoanInfo/@item.EncryptedId">Edit</a>
+                                                                <button class="btn btn-primary" onclick="DeleteRecord('@item.SanctionId','@item.EncryptedId')"> Delete</button>
+                                                            </th> *@
+                                                        </tr>
+                                                    }
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                   
+                                </div>
+                                <div id="dvLoanSanction" style="display:none;">
+                                    <table cellspacing="2" border="1" cellpadding="10" style="width: 100%;">
+
+                                        <tr>
+
+
+                                            <td style="text-align: center;"><div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f"><strong>Start Month-Year</strong></div></td>
+                                            <td style="text-align: center;"><div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f"><strong>Employee</strong></div></td>
+                                            <td style="text-align: center;"><div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f"><strong>Sanction Amount</strong></div></td>
+                                            <td style="text-align: center;"><div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f"><strong>Repayment Tenure</strong></div></td>
+                                            <td style="text-align: center;"><div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f"><strong>Installment</strong></div></td>
+                                            <td style="text-align: center;"><div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f"><strong>Closing Amount</strong></div></td>
+                                            <td style="text-align: center;"><div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f"><strong>Stop Month-Year</strong></div></td>
+                                           
+                                            
+                                        </tr>
+                                        @if (Model.GetSanctionLoan != null)
+                                            @foreach (var item in Model.GetSanctionLoan)
+                                            {
+                                                <tr>
+                                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.Month-@item.RepaymentStartYear </td>
+                                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.Employee</td>
+                                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.SanctionAmount</td>
+                                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.RepaymentTenure</td>
+                                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.MonthlyInstallment</td>
+                                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.ClosingBalance</td>
+                                                    <td style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-size: 1rem;color: #566a7f; background-color: #fff;">@item.StopMonth-@item.RepaymentStopYear </td>
+                                                    
+                                                </tr>
+                                            }
+                                    
+
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+
+                                <div class="card-body">
+
+                                    <input type="button" class="btn btn-primary addShow" value="List" onclick="ListView()" style="float:right" />
+                                    <div style="clear:both"></div>
+                                    <form id="ViewForm" method="post" action="/Loan/ManageLoans">
+                                        <div class="row g-3">
+
+
+
+                                            <div class="col-md-6">
+                                                <label class="form-label required" for=""> Employees</label>
+                                                <select class="form-select" id="selEmployee" required name="EmployeeId" aria-label="Default select example">
+                                                    <option value="0" selected>Select an option</option>
+
+                                                    @if (Model.EmployeeMasterList != null)
+                                                    {
+                                                        @foreach (var item in Model.EmployeeMasterList)
+                                                        {
+                                                            if (item.EmployeeId == Model.EmployeeId)
+                                                            {
+                                                                <option value="@item.EmployeeId" selected> @item.EmployeeName</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item.EmployeeId"> @item.EmployeeName</option>
+                                                            }
+
+
+                                                        }
+                                                    }
+                                                </select>
+
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="form-label required" for=""> Sanction Amount</label>
+                                                <input type="number" id="SanctionAmount" required name="SanctionAmount" class="form-control" onKeyPress="if(this.value.length==7) return false;">
+
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="form-label required" for=""> Repayment Tenure (In Month)</label>
+                                                <input type="number" id="RepaymentTenure" required name="RepaymentTenure" class="form-control" onKeyPress="if(this.value.length==2) return false;">
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label" for=""> Monthly Installment</label>
+                                                <input type="number" id="MonthlyInstallment" name="MonthlyInstallment" readonly class="form-control">
+
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="form-label required" for=""> Start Month</label>
+                                                <select class="form-select" id="StartMonth" required name="RepaymentStartMonth" aria-label="Default select example" required>
+                                                    <option value="0" selected>Select an option</option>
+
+                                                    @if (Model.SalMonths != null)
+                                                    {
+                                                        @foreach (var item in Model.SalMonths)
+                                                        {
+                                                            if (item.ID == Model.RepaymentStartMonth)
+                                                            {
+                                                                <option value="@item.ID" selected> @item.Name</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item.ID"> @item.Name</option>
+                                                            }
+
+                                                        }
+                                                    }
+                                                </select>
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label required" for=""> Start Year</label>
+
+                                                <select class="form-select" id="StartYear" required name="RepaymentStartYear" aria-label="Default select example">
+                                                    <option value="0" selected>Select an option</option>
+
+                                                    @if (Model.Years != null)
+                                                    {
+                                                        @foreach (var item in Model.Years)
+                                                        {
+                                                            if (item == Model.RepaymentStartYear)
+                                                            {
+                                                                <option value="@item" selected> @item</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item"> @item</option>
+                                                            }
+
+                                                        }
+                                                    }
+                                                </select>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="pt-4">
+                                            <input type="hidden" id="hdnEmployeeName" name="EmployeeName" />
+                                            @* <button type="button" class="btn btn-primary me-sm-3 me-1" onclick="getLocation();">View Attendance</button>*@
+                                            <button type="submit" class="btn btn-primary btn-sm me-sm-3 me-1" onclick="return Validate();">Submit</button>
+                                        </div>
+                                    </form>
+
+
+
+
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                 
+
+
+
+
+
+                </div>
+            </div>
+            <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+                    <h2>SimpliHR2.0</h2>
+                    <div class="modal-content p-3 p-md-5">
+                        <div class="modal-body">
+                            <button type="button" class="btn-close" name="btnPopupClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div class="text-center mb-4">
+                            </div>
+                            <form id="showAlert" class="row g-3" onsubmit="return false">
+                                <div class="col-12 text-center" id="errorDiv">
+                                    <p id="errorPara" class="error" style="color:red"></p>
+                                </div>
+                                <div class="col-12 text-center" id="successDiv">
+                                    <p id="successPara" class="error" style="color:black"></p>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div id="popupBtnDiv" class="col-12 text-center">
+                            @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                            <button type="reset" name="btnPopupClose"
+                                    class="btn btn-label-secondary btn-reset mt-3"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close">
+                                Close
+                            </button>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!--/ User Pills -->
+
+        </div>
+        <!--/ User Content -->
+    </div>
+
+
+</div>
+
+
+
+
+@section scripts {
+    <script src="~/customjs/commonfunction.js"></script>
+    <script src="~/customjs/employeevalidation.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+            
+
+            // jQuery(" #tableInfo").hide();
+            BlockUI();
+            if ("@Model.DisplayMessage.Trim().ToUpper()" != "_BLANK") {
+                $successalert("Loan", "@Model.DisplayMessage");
+                $("#Add").show();
+                $("#List").hide();
+                UnblockUI();
+            }
+            if (jQuery("@Model.EmployeeId") != "") {
+                UnblockUI();
+            }
+
+            $("input[name='LoanSanction']").val($("#dvLoanSanction").html());
+
+        });
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+        // $("#selEmployee").on("change", function () {
+        //     $("#hdnEmployeeName").val($(this).find("option:selected").text());
+
+        //     alert($("#hdnEmployeeName").val());
+        // });
+
+        $('#RepaymentTenure').keyup(function (e) {
+            var repayTenure = $(this);
+
+            var repayTenureval = repayTenure.val();
+            var sAmount = $('#SanctionAmount').val();
+            var instalment = sAmount / repayTenureval;
+            $('#MonthlyInstallment').val(instalment.toFixed(2));
+            // alert(instalment);
+
+        });
+
+
+        $('#SanctionAmount').keyup(function (e) {
+            var repayTenure = $(this);
+
+            var sAmount = repayTenure.val();
+            var repayTenureval = $('#RepaymentTenure').val();
+            var instalment = sAmount / repayTenureval;
+            $('#MonthlyInstallment').val(instalment.toFixed(2));
+            // alert(instalment);
+
+        });
+
+        function Validate() {
+            BlockUI();
+
+            if (jQuery("#StartMonth").val() == 0) {
+
+                $erroralert("Validation", "Please select the month");
+
+                UnblockUI();
+                return false;
+            }
+            if (jQuery("#StartYear").val() == 0) {
+                $erroralert("Validation", "Please select the year");
+
+                UnblockUI();
+
+                return false;
+            }
+
+
+        }
+
+
+        function getMonthName(monthNumber) {
+            const date = new Date();
+            date.setMonth(monthNumber - 1);
+
+          //  alert(date.toLocaleString('en-US', { month: 'short' }));
+            return date.toLocaleString('en-US', { month: 'short' });
+        }
+
+
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                // if (sMsg.toUpperCase() == "SUCCESS") {
+                // sMsg = "Earnnig component created/updated successfully";
+                jQuery("#successDiv").show();
+                jQuery("#successPara").html(sMsg);
+
+                // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                //  }
+                //else {
+                //    jQuery("#errorDiv").show();
+                //    jQuery("#errorPara").html(sMsg);
+                //}
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+
+
+      
+
+
+
+    </script>
+}
+

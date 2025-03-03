@@ -1,0 +1,28 @@
+﻿<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Performance /</span> KRA List
+    </h4>
+    <input type="hidden" id="PerformanceSettingId" value="@ViewBag.PerformanceSettingId" />
+    <div class="card" id="">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <input type="button" value="Go To PMS List" class="btn btn-primary btn-sm" style="float:right" onclick="javascript:window.location.href='/Performance/ListPMSSetting'" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <table class="table">
+                        <tbody>
+                            <tr><td><a href="/Performance/ViewPMSMasterKRA?ePerformanceSettingId=@ViewBag.PerformanceSettingId">View Goals/Key Result Areas</a></td></tr>
+                            <tr><td><a href="/Performance/PMSMasterKRA?ePerformanceSettingId=@ViewBag.PerformanceSettingId">Upload Goals/Key Result Areas</a></td></tr>
+                            <tr><td><a href="/Performance/ViewPMSMasterBehavioural?ePerformanceSettingId=@ViewBag.PerformanceSettingId">View Behavioural Skills</a></td></tr>
+                            <tr><td><a href="/Performance/PMSMasterBehavioural?ePerformanceSettingId=@ViewBag.PerformanceSettingId">Upload Behavioural Skills</a></td></tr>
+                            <tr><td><a href="/TrainingNeedMaster/TrainingNeedMaster?ePerformanceSettingId=@ViewBag.PerformanceSettingId">Training Need Master</a></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

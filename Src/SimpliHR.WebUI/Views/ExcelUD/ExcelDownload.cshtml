@@ -1,0 +1,324 @@
+﻿@model SimpliHR.Infrastructure.Models.Payroll.EmployeesSalaryDetailsDTO
+@{
+    ViewData["Title"] = "ExcelDownload";
+}
+
+<style>
+
+
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+
+</style>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Payroll /</span> Employees Salary Template
+    </h4>
+
+    <form id="uploadTemplate" enctype="multipart/form-data" asp-controller="ExcelUD" asp-action="UploadSalaryTemplate">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <!-- Current Plan -->
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 mb-1">
+                                <div class="mb-3">
+                                    <label class="form-label required" for="username">
+                                        Download Salary Template (xlsx)
+                                    </label>
+
+
+                                    <button type="button" class="btn btn-primary me-2 mt-2" onclick="DownloadTemplate();">
+                                        Download
+                                    </button>
+                                    @*  @Html.ActionLink("Button 1", "Download", "ExcelUD")*@
+
+                                    <div class="mb-3">
+                                        <label for="formFile" class="form-label required" for="username">
+                                            Upload Salary Template (xlsx)
+                                        </label>
+                                        <input class="form-control" type="file" id="formFile" name="formFile" />
+                                    </div>
+
+                                </div>
+
+                                <div class="col-12">
+                                    <button class="btn btn-success btn-submit" onclick="BlockedUI();">Submit</button>
+                                    <button class="btn btn-primary me-2 mt-2" onclick="javascript:window.location.href='/PayrollSalary/SalaryComponents/'">
+                                        Cancel
+                                    </button>
+                                    <input type="hidden" class="dbcol" id="UnitId" name="UnitId" value="" />
+
+                                </div>
+
+                                <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+                                        <h2>SimpliHR2.0</h2>
+                                        <div class="modal-content p-3 p-md-5">
+                                            <div class="modal-body">
+                                                <button type="button" class="btn-close" name="btnPopupClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <div class="text-center mb-4">
+                                                </div>
+                                                <form id="showAlert" class="row g-3" onsubmit="return false">
+                                                    <div class="col-12 text-center" id="errorDiv">
+                                                        <p id="errorPara" class="error" style="color:red"></p>
+                                                    </div>
+                                                    <div class="col-12 text-center" id="successDiv">
+                                                        <p id="successPara" class="error" style="color:black"></p>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                            <div id="popupBtnDiv" class="col-12 text-center">
+                                                @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                                                <button type="reset" name="btnPopupClose"
+                                                        class="btn btn-label-secondary btn-reset mt-3"
+                                                        data-bs-dismiss="modal"
+                                                        aria-label="Close">
+                                                    Close
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal fade" id="ComponentsModal" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header border-bottom">
+                                                <div><h5 class="card-title mb-sm-0 me-2">Alert Components Validation</h5></div>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="card-datatable table-responsive text-nowrap">
+                                                    <table class="datatables-ajax table table-bordered" id="SummaryList">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Component</th>
+                                                                <th>Alert Message</th>
+
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if (Model.ComponentValidateList != null)
+                                                                @foreach (var item in Model.ComponentValidateList)
+                                                                {
+                                                                    <tr>
+                                                                        <td>@item.ComponentName</td>
+                                                                        <td>@item.DisplayMessage</td>
+
+
+                                                                    </tr>
+                                                                }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal fade" id="SalaryModal" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header border-bottom">
+                                                <div><h5 class="card-title mb-sm-0 me-2">Employees Salary Status</h5></div>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="card-datatable table-responsive text-nowrap">
+                                                    <table class="datatables-ajax table table-bordered" id="SummaryList">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Employee Code</th>
+                                                                <th>Employee Name</th>
+                                                                <th>Monthly CTC</th>
+                                                                <th>Template Salary</th>
+                                                                <th>Alert Message</th>
+
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if (Model.SalaryValidateList != null)
+                                                                @foreach (var item in Model.SalaryValidateList)
+                                                                {
+                                                                    @if (@item.DisplayMessage == "0")
+                                                                    {
+                                                                        <tr>
+
+                                                                            <td>@item.EmployeeCode</td>
+                                                                            <td>@item.EmployeeName</td>
+                                                                            <td>@item.EmployeeSalValue</td>
+                                                                            <td>@item.TemplateSalValue</td>
+                                                                            <td style="background-color:red; color:white">Not matched</td>
+
+                                                                        </tr>
+                                                                    }
+                                                                    @if (@item.DisplayMessage == "1")
+                                                                    {
+                                                                        <tr>
+
+                                                                            <td>@item.EmployeeCode</td>
+                                                                            <td>@item.EmployeeName</td>
+                                                                            <td>@item.EmployeeSalValue</td>
+                                                                            <td>@item.TemplateSalValue</td>
+                                                                            <td>Matched</td>
+
+                                                                        </tr>
+                                                                    }
+                                                                    @if (@item.DisplayMessage.Length > 2)
+                                                                    {
+                                                                        <tr>
+
+                                                                            <td>@item.EmployeeCode</td>
+                                                                            <td>@item.EmployeeName</td>
+                                                                            <td>@item.EmployeeSalValue</td>
+                                                                            <td>@item.TemplateSalValue</td>
+                                                                            <td style="background-color:yellow;">@item.DisplayMessage</td>
+
+                                                                        </tr>
+                                                                    }
+                                                                }
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+
+                                            <div id="popupBtnDiv" class="col-12 text-center">
+                                                <button type="button" class="btn btn-primary me-sm-3 me-1 mt-3" onclick="DoProcess();">Process</button>
+                                                <button type="reset" name="btnPopupClose"
+                                                        class="btn btn-label-secondary btn-reset mt-3"
+                                                        data-bs-dismiss="modal"
+                                                        aria-label="Close">
+                                                    Discard
+                                                </button>
+                                                <br />
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal -->
+                        <!-- /Modal -->
+                        <!-- /Current Plan -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+</div>
+@section scripts{
+
+    <script src="~/customjs/commonfunction.js"></script>
+    <script src="~/customjs/employeevalidation.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            //$(".List").dataTable();
+
+            if ("@Model.DisplayMessage" == "Component") {
+                jQuery("#ComponentsModal").modal('show');
+            }
+            if ("@Model.DisplayMessage" == "Salary") {
+                jQuery("#SalaryModal").modal('show');
+            }
+
+        });
+        function BlockedUI() {
+            if ($('#formFile').get(0).files.length === 0) {
+                ShowServerMessage("Please select the template");
+            }
+            else {
+                BlockUI();
+            }
+
+        }
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                // if (sMsg.toUpperCase() == "SUCCESS") {
+                // sMsg = "Earnnig component created/updated successfully";
+                jQuery("#successDiv").show();
+                jQuery("#successPara").html(sMsg);
+
+                // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                //  }
+                //else {
+                //    jQuery("#errorDiv").show();
+                //    jQuery("#errorPara").html(sMsg);
+                //}
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+
+            }
+        }
+
+
+        function DownloadTemplate() {
+
+            //BlockUI();
+
+            window.open("/ExcelUD/GetExcel", "_blank");
+
+            //jQuery.ajax({
+            //    type: "GET",
+            //    url: "/ExcelUD/GetExcel",
+            //   // url: "/ClientManagement/GetCounryStates",
+            //   success: function (response) {
+            //       // alert(response);
+            //        UnblockUI();
+            //    },
+            //    failure: function (response) {
+            //        $erroralert(response.responseText);
+            //        UnblockUI();
+            //    },
+            //    error: function (response) {
+            //        $erroralert(response.responseText);
+            //        UnblockUI();
+            //    }
+            //});
+        }
+
+
+        function DoProcess() {
+
+            if (confirm('Are you sure you want to process this?')) {
+            jQuery.ajax({
+                type: "GET",
+                url: "/ExcelUD/SalaryProcessing",
+                // url: "/ClientManagement/GetCounryStates",
+                success: function (response) {
+                    //alert(response);
+                        alert("Salaries have been processed");
+                        window.location.href = "/ExcelUD/ExcelDownload";
+                },
+                failure: function (response) {
+                    $erroralert(response.responseText);
+                },
+                error: function (response) {
+                    $erroralert(response.responseText);
+                }
+            });
+            }
+        }
+
+
+
+    </script>
+}
+

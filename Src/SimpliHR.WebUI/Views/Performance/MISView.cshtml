@@ -1,0 +1,115 @@
+﻿@{
+    ViewData["Title"] = "MIS View";
+}
+@model SimpliHR.Infrastructure.Models.Performace.MISViewListViewModel
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Performance/</span> MIS View</h4>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label>Select Period</label>
+                            <select class="form-control" name="PerformanceSettingId">
+                                @{
+                                    if (Model != null)
+                                    {
+                                        if (Model.PerformanceSettingDTOs != null)
+                                        {
+                                            foreach (var item in Model.PerformanceSettingDTOs)
+                                            {
+                                                <option value="@item.PerformanceSettingId">@item.ReviewPeriodFrom.ToString("dd-MMM-yyyy") - @item.ReviewPeriodTo.ToString("dd-MMM-yyyy")</option>
+                                            }
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div id="div_ViewPartial">
+                        @*@Html.Partial("_employee/_employeeresignDetailsEmployeeWise")*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" asp-for="Source" />
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //initDates();
+            //$("[name='recoverycheck']").click(function () {
+            //    if ($(this).is(":checked")) {
+            //        $(this).parent().find("span").show();
+            //    }
+            //    else {
+            //        $(this).parent().find("span").hide();
+            //    }
+            //});
+            ListPartialView();
+            $("[name='PerformanceSettingId']").change(function () {
+                ListPartialView();
+            });
+        });
+
+
+
+        function publishPerformance(PerformanceEmployeeDataId) {
+            var inputDTO = {
+                PerformanceEmployeeDataId: PerformanceEmployeeDataId
+            };
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                url: "/Performance/PublishPerformace",
+                contentType: 'application/json',
+                data: JSON.stringify(inputDTO),
+                success: function (data) {
+                    UnblockUI();
+                    $successalert("", "Transaction Successful!");
+                    window.location.href = "/Performance/MISView";
+                },
+                error: function (error) {
+                    $erroralert("Error!", error.responseText + '!'); UnblockUI();
+                    UnblockUI();
+                }
+            });
+        }
+
+        function ListPartialView() {
+            //let performanceSettingId = $("[name='PerformanceSettingId']").val();
+            var inputDTO = {};
+            inputDTO.PerformanceSettingId = $("[name='PerformanceSettingId']").val();;
+            inputDTO.Source = $("[name='Source']").val();;
+            BlockUI();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '/Performance/MISView_ListPartialView',
+                data: JSON.stringify(inputDTO),
+                cache: false,
+                dataType: "html",
+                success: function (data, textStatus, jqXHR) {
+                    UnblockUI();
+                    $('#div_ViewPartial').html(data);
+                    $("table").dataTable({
+                        "order": []
+                    });
+                    UnblockUI();
+                },
+                error: function (result) {
+                    //alert(result);
+                    UnblockUI();
+                }
+            });
+        }
+
+    </script>
+}
+
+

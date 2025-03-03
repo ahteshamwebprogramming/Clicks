@@ -1,0 +1,2275 @@
+﻿@model SimpliHR.Infrastructure.Models.Employee.EmployeeMasterDTO
+
+@{
+    int countryId, cityId, stateId;
+    int pCountryId, pCityId, pStateId;
+
+    countryId = cityId = stateId = pCountryId = pCityId = pStateId = 0;
+
+
+}
+
+@*Page CSS*@
+<link rel="stylesheet" href="~/assets/vendor/libs/bs-stepper/bs-stepper.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/bootstrap-select/bootstrap-select.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/select2/select2.css" />
+
+<style>
+
+
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+
+
+
+    .img-panel {
+        margin: 100px auto 40px;
+        max-width: 500px;
+        text-align: center;
+    }
+
+    .button_outer {
+        background: #83ccd3;
+        border-radius: 30px;
+        text-align: center;
+        height: 50px;
+        width: 200px;
+        display: inline-block;
+        transition: .2s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn_upload {
+        padding: 14px 30px 12px;
+        color: #fff;
+        text-align: center;
+        position: relative;
+        display: inline-block;
+        overflow: hidden;
+        z-index: 3;
+        white-space: nowrap;
+    }
+
+        .btn_upload input {
+            position: absolute;
+            width: 100%;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 105%;
+            cursor: pointer;
+            opacity: 0;
+        }
+
+    .file_uploading {
+        width: 100%;
+        height: 10px;
+        margin-top: 20px;
+        background: #ccc;
+    }
+
+        .file_uploading .btn_upload {
+            display: none;
+        }
+
+    .processing_bar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 0;
+        height: 100%;
+        border-radius: 30px;
+        background: #83ccd3;
+        transition: 3s;
+    }
+
+    .file_uploading .processing_bar {
+        width: 100%;
+    }
+
+    .success_box {
+        display: none;
+        width: 50px;
+        height: 50px;
+        position: relative;
+    }
+
+        .success_box:before {
+            content: '';
+            display: block;
+            width: 17px;
+            height: 25px;
+            border-bottom: 6px solid #fff;
+            border-right: 6px solid #fff;
+            -webkit-transform: rotate(45deg);
+            -moz-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+            position: absolute;
+            left: 17px;
+            top: 10px;
+        }
+
+    .file_uploaded .success_box {
+        display: inline-block;
+    }
+
+    .file_uploaded {
+        margin-top: 0;
+        width: 50px;
+        background: #83ccd3;
+        height: 50px;
+    }
+
+    .uploaded_file_view {
+        max-width: 300px;
+        margin: 40px auto;
+        text-align: center;
+        position: relative;
+        transition: .2s;
+        opacity: 0;
+        border: 2px solid #ddd;
+        padding: 15px;
+    }
+
+    .file_remove {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: block;
+        position: absolute;
+        background: #aaa;
+        line-height: 30px;
+        color: #fff;
+        font-size: 12px;
+        cursor: pointer;
+        right: -15px;
+        top: -15px;
+    }
+
+        .file_remove:hover {
+            background: #222;
+            transition: .2s;
+        }
+
+    .uploaded_file_view img {
+        max-width: 100%;
+    }
+
+    .uploaded_file_view.show {
+        opacity: 1;
+    }
+
+    .error_msg {
+        text-align: center;
+        color: #f00
+    }
+
+    input.error {
+        border: 1px solid red;
+    }
+</style>
+
+@*Page CSS*@
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Employee Details</h4>
+
+    <!-- Default -->
+    <div class="row">
+        <!-- Vertical Wizard -->
+        <div class="col-12 mb-4">
+            <div class="bs-stepper wizard-numbered wizard-vertical vertical mt-2">
+                <div class="bs-stepper-header">
+                    <div class="step" data-target="#personal">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">1</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Personal Information</span>
+                                <!--span class="bs-stepper-subtitle">Setup Account Details</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#profile-picture">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">2</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Profile Picture</span>
+                                <!--span class="bs-stepper-subtitle">Add personal info</span-->
+                            </span>
+                        </button>
+                    </div><div class="line"></div>
+                    <div class="step" data-target="#contact-details">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">3</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Contact Details</span>
+                                <!--span class="bs-stepper-subtitle">Add personal info</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#bank-details">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">4</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Bank Details</span>
+                                <!--span class="bs-stepper-subtitle">Add personal info</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#family-details">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">5</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Family Details</span>
+                                <!--span class="bs-stepper-subtitle">Add personal info</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#academic-details">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">6</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Academic Details</span>
+                                <!--span class="bs-stepper-subtitle">Add social links</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#experiences">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">7</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Experiences Background</span>
+                                <!--span class="bs-stepper-subtitle">Add social links</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#job-information">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">8</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Job Information </span>
+                                <!--span class="bs-stepper-subtitle">Add social links</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#certification">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">9</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Certification Details</span>
+                                <!--span class="bs-stepper-subtitle">Add social links</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#upload-documents">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">10</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Upload Documents</span>
+                                <!--span class="bs-stepper-subtitle">Add social links</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#reference-details">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">11</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Reference Details</span>
+                                <!--span class="bs-stepper-subtitle">Add social links</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#passport-details">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">12</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Passport Details</span>
+                                <!--span class="bs-stepper-subtitle">Add social links</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#employee-languages">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">13</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Languages</span>
+                                <!--span class="bs-stepper-subtitle">Add social links</span-->
+                            </span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#seperation-details">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-circle">14</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">Seperation</span>
+                                <!--span class="bs-stepper-subtitle">Add social links</span-->
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <div class="bs-stepper-content" style="width: calc(100% - 18rem);">
+                    <div id="errorDiv">
+                        <p id="errorPara" class="error" style="color:red"></p>
+                    </div>
+                    <div id="attachmentPopUp" style="display:none">
+                        <div class="col-sm-9">
+                            <label id="AttachmentLabel" class="form-label required" for="">First Name</label>
+                            <input type="file" id="FileName" name="FileName" class="form-control" placeholder="Attach File" />
+                            <button id="Uploadfile" name="Uploadfile" class="form-control" placeholder="Attach File">Upload File</button>
+                        </div>
+                    </div>
+                    <form id="employeepersonalinfoForm" onSubmit="return false">
+                        <!-- Personal Details -->
+                        <div id="personal" class="content">
+                            <div class="content-header mb-3">
+                                <h5 class="mb-0">Personal Information</h5>
+                                @*<small>Enter Your Account Details.</small>*@
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">First Name</label>
+                                    <input type="text" id="FirstName" name="FirstName" maxlength="50" required value="@Model.FirstName" class="form-control" placeholder="First Name" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Last Name</label>
+                                    <input type="text" id="LastName" name="LastName" maxlength="50" required value="@Model.LastName" class="form-control" placeholder="Last Name" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Middle Name</label>
+                                    <input type="text" id="MiddleName" name="MiddleName" maxlength="50" value="@Model.MiddleName" class="form-control" placeholder="Middle Name" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Gender</label>
+                                    <select class="select2 form-select" id="GenderId" name="GenderId" required>
+                                        <option selected>Select Option</option>
+                                        <option selected=@(@Model.GenderId==1? true : false) value="1">Male</option>
+                                        <option selected=@(@Model.GenderId==2 ? true : false ) value="2">Female</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Date of Birth</label>
+                                    <input type="text" id="Dob" name="Dob" required value="@(Model.Dob==null ? "" : ((DateTime)Model.Dob).ToString("dd-MMM-yyyy"))" class="form-control flatpickr-date-dob" placeholder="DD-MMM-YYYY" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Contact Number</label>
+                                    <input type="number" id="ContactNo" name="ContactNo" required value="@Model.ContactNo" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="12" class="form-control" placeholder="Contact Number" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Email</label>
+                                    <input type="email"
+                                           id="EmailId" name="EmailId" maxlength="50" value="@Model.EmailId"
+                                           class="form-control"
+                                           placeholder="john.doe@email.com"
+                                           aria-label="john.doe" required />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Father Name</label>
+                                    <input type="text" id="FatherName" required name="FatherName" maxlength="50" value="@Model.FatherName" class="form-control" placeholder="Father Name" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Spouse Name</label>
+                                    <input type="text" id="SpouseName" maxlength="50" name="SpouseName" value="@Model.SpouseName" class="form-control" placeholder="Spouse Name" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Marital Status</label>
+                                    @Html.DropDownListFor(x => x.MaritalStatusId,new SelectList(Model.EmployeeMastersKeyValues.MaritalStatusKeyValues,"MaritalStatusId", "MaritalStatusName", Model.MaritalStatusId),"Select Option",htmlAttributes: new { @class = "form-select" , @required="required"})
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Religion</label>
+                                    @Html.DropDownListFor(x => x.ReligionId,new SelectList(Model.EmployeeMastersKeyValues.ReligionKeyValues,"ReligionId", "ReligionName", Model.ReligionId),"Select Religion",htmlAttributes: new { @class = "form-select",@required="required"})
+
+                                    @* <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                    <option selected>Open this select menu</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                    </select>*@
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Blood Group</label>
+                                    @Html.DropDownListFor(x => x.BloodGroupId,new SelectList(Model.EmployeeMastersKeyValues.BloodGroupKeyValues,"BloodGroupId", "BloodGroupName", Model.BloodGroupId),"Select Option",htmlAttributes: new { @class = "form-select"})
+
+                                    @* <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                    <option selected>Open this select menu</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                    </select>*@
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Pan Card</label>
+                                    <input type="text" id="Pannumber" name="Pannumber" maxlength="10" value="@Model.Pannumber" required class="form-control" placeholder="Pan Card" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Aadhar</label>
+                                    <input type="text" id="AadharNumber" name="AadharNumber" value="@Model.AadharNumber" required maxlength="12" class="form-control" placeholder="Aadhar" />
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-label-secondary btn-prev" disabled>
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+
+                                    <button class="btn btn-primary btn-next" style="visibility:hidden">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                    <button class="btn btn-primary" onclick="SaveEmployeeInfo('employeepersonalinfoForm','/Employee/SaveEmployeePersonalInfo')">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Save and Move Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- Profile Picture  -->
+                    <form id="employeeportfolioForm" onSubmit="return false" enctype="multipart/form-data">
+                        <div id="profile-picture" class="content">
+                            <div class="content-header mb-3">
+                                <h5 class="mb-0">Profile Picture</h5>
+                                @*<small>Enter Your Account Details.</small>*@
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <div class="container">
+                                        <div class="img-panel center">
+                                            <div class="button_outer">
+                                                <div class="btn_upload">
+                                                    <input type="file" id="upload_file" name="" required>
+                                                    Upload Image
+                                                </div>
+                                                <div class="processing_bar"></div>
+                                                <div class="success_box center"></div>
+                                            </div>
+                                        </div>
+                                        <div class="error_msg"></div>
+                                        <div class="uploaded_file_view" id="uploaded_view">
+                                            <span class="file_remove">X</span>
+                                            <img id="profileimagepreview" src="@Model.Base64ProfileImage" "@((Model.Base64ProfileImage == null) ? " style=display:none" : Model.Base64ProfileImage.Trim() == "data:image/png;base64," ? " style=display:none" : "")" />
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next" style="visibility:hidden">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                    <button class="btn btn-primary">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1" onclick="UploadEmployeeDocument('employeeportfolioForm','/Employee/UploadEmployeeProfileImage')">Save and Move Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                    <!-- Contact Details -->
+                    <form id="employeecontactdetailForm" onSubmit="return false">
+                        <div id="contact-details" class="content">
+                            <div class="content-header mb-3">
+                                <h5 class="mb-0">Contact Details</h5>
+                                @*<small>Enter Your Account Details.</small>*@
+                            </div>
+                            @{
+                                dynamic employeeCurrentContact = null;
+                                dynamic employeePermanentContact = null;
+
+                                if (Model.EmployeeContactDetails != null)
+                                {
+                                    employeeCurrentContact = Model.EmployeeContactDetails.Where(r => r.ContactType.ToUpper() == "CURRENT").FirstOrDefault();
+                                    countryId = (employeeCurrentContact == null ? 0 : (@employeeCurrentContact.CountryId == null ? 0 : @employeeCurrentContact.CountryId));
+                                    stateId = (employeeCurrentContact == null ? 0 : (@employeeCurrentContact.StateId == null ? 0 : @employeeCurrentContact.StateId));
+                                    cityId = (employeeCurrentContact == null ? 0 : (@employeeCurrentContact.CityId == null ? 0 : @employeeCurrentContact.CityId));
+                                    employeePermanentContact = Model.EmployeeContactDetails.Where(r => r.ContactType.ToUpper() == "PERMANENT").FirstOrDefault();
+                                    pCountryId = (@employeePermanentContact == null ? 0 : (@employeePermanentContact.CountryId == null ? 0 : @employeePermanentContact.CountryId));
+                                    pStateId = (@employeePermanentContact == null ? 0 : (@employeePermanentContact.StateId == null ? 0 : @employeePermanentContact.StateId));
+                                    pCityId = (@employeePermanentContact == null ? 0 : (@employeePermanentContact.CityId == null ? 0 : @employeePermanentContact.CityId));
+                                }
+
+                            }
+                            <div class="row g-3" id="currentDiv">
+                                <div class="col-12">
+                                    <h6><strong>CURRENT ADDRESS</strong></h6>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" id="lblAddress1" for="">Current Address 1 :</label>
+                                    <input type="text" id="Address1" name="Address1" value="@(employeeCurrentContact==null?"":(@employeeCurrentContact.Address1==null?"":@employeeCurrentContact.Address1))" class="form-control" placeholder="Current Address 1" required maxlength="200" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" id="lblAddress2" name="lblAddress2" for="">Address Line 2 :</label>
+                                    <input type="text" id="Address2" name="Address2" value="@(employeeCurrentContact==null?"":(@employeeCurrentContact.Address2==null?"":@employeeCurrentContact.Address2))" class="form-control" placeholder="Address Line 2" maxlength="200" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Landmark :</label>
+                                    <input type="text" id="Landmark" name="Landmark" value="@(employeeCurrentContact==null?"":(@employeeCurrentContact.Landmark==null?"":@employeeCurrentContact.Landmark))" class="form-control" placeholder="Landmark" maxlength="200" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Country :</label>
+                                    <div class="position-relative">
+                                        <select id="CountryId" name="CountryId" onchange="javascript:PopulateCascadingDDL('/MastersKeyValue/StateKeyValue','CountryId','@countryId','StateId','@stateId','stateId','stateName')" class="select2 form-select select2-hidden-accessible" data-allow-clear="true" data-select2-id="multicol-country" tabindex="-1" aria-hidden="true" required>
+                                            <option value="0">Select Option</option>
+                                            @if (Model.EmployeeMastersKeyValues.CountryKeyValues != null)
+                                                foreach (var item in Model.EmployeeMastersKeyValues.CountryKeyValues)
+                                                {
+                                                    <option value="@item.CountryId" selected="@(item.CountryId==countryId ? true : false)"> @item.CountryName</option>
+                                                }
+                                        </select>
+                                        @*<span asp-validation-for="CountryId" class="text-danger"></span>*@
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">State</label>
+                                    <select class="select2 form-select select2-hidden-accessible" data-allow-clear="true" id="StateId" name="StateId" onchange="javascript:PopulateCascadingDDL('/MastersKeyValue/CityKeyValue','StateId','@stateId','CityId','@cityId','cityId','cityName')" aria-label="Default select example" required>
+                                        <option value="0">Select Option</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">City</label>
+                                    <select class="select2 form-select select2-hidden-accessible" data-allow-clear="true" id="CityId" name="CityId" aria-label="Default select example" required>
+                                        <option value="0">Select Option</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Pincode</label>
+                                    <input type="text" id="Pincode" name="Pincode" value="@(employeeCurrentContact==null?"":(@employeeCurrentContact.Pincode==null?"":@employeeCurrentContact.Pincode))" class="form-control" placeholder="Pincode" required maxlength="10" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Contact Number</label>
+                                    <input type="text" id="ContactNum" name="ContactNum" required value="@(employeeCurrentContact==null?"0":@employeeCurrentContact.ContactNum)" class="form-control" placeholder="ContactNumber" maxlength="10" />
+                                </div>
+                                <div class="col-12"></div>
+                            </div>
+                            <div id="permanentDiv" class="row g-3">
+
+                                <div class="col-sm-6">
+                                    <h6><strong>PERMANENT ADDRESS</strong></h6>
+                                </div>
+                                <div class="col-sm-6" style=" text-align: right;">
+                                    <div class="form-check custom-option custom-option-basic" style="border: 0;">
+                                        <label class="form-check-label" for="customCheckTemp3">
+                                            <input class="form-check-input" type="checkbox" value="" id="sameAsCurrent" onclick="javascript:CopyClearDataForPermanent()" />
+                                            <span class="custom-option-header">
+                                                <span class="h6 mb-0" style="line-height: 1.7;">Same as Current Address</span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Permanent Address 1 :</label>
+                                    <input type="text" id="PermanentAddress1" name="Address1" class="form-control" value="@(employeePermanentContact==null?"":(@employeePermanentContact.Address1==null?"":@employeePermanentContact.Address1))" placeholder="Address Line 1" maxlength="200" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Address Line 2 :</label>
+                                    <input type="text" id="PermanentAddress2" name="Address2" class="form-control" value="@(employeePermanentContact==null?"":(@employeePermanentContact.Address2==null?"":@employeePermanentContact.Address2))" placeholder="Address Line 2" maxlength="200" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Landmark :</label>
+                                    <input type="text" id="PermanentLandmark" name="Landmark" class="form-control" value="@(employeePermanentContact==null?"":(@employeePermanentContact.Landmark==null?"":@employeePermanentContact.Landmark))" placeholder="Landmark" maxlength="200" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Country :</label>
+                                    <select id="PermanentCountryId" name="CountryId" onchange="javascript:PopulateCascadingDDL('/MastersKeyValue/StateKeyValue','PermanentCountryId','PermanentStateId','@pStateId','stateId','stateName')" class="select2 form-select select2-hidden-accessible" data-allow-clear="true" tabindex="-1" aria-hidden="true">
+                                        <option value="0">Select Option</option>
+                                        @if (Model.EmployeeMastersKeyValues.CountryKeyValues != null)
+                                            foreach (var item in Model.EmployeeMastersKeyValues.CountryKeyValues)
+                                            {
+                                                <option value="@item.CountryId" selected="@(item.CountryId==pCountryId ? true : false)"> @item.CountryName</option>
+                                            }
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">State</label>
+                                    <select class="select2 form-select select2-hidden-accessible" data-allow-clear="true" id="PermanentStateId" name="StateId" onchange="javascript:PopulateCascadingDDL('/MastersKeyValue/CityKeyValue','PermanentStateId','PermanentCityId','@pCityId','cityId','cityName')" aria-label="Default select example">
+                                        <option value="0">Select Option</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">City</label>
+                                    <select class="select2 form-select select2-hidden-accessible" data-allow-clear="true" id="PermanentCityId" name="CityId" aria-label="Default select example">
+                                        <option value="0">Select Option</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Pincode</label>
+                                    <input type="text" id="PermanentPincode" name="Pincode" value="@(employeePermanentContact==null?"":(@employeePermanentContact.Pincode==null?"":@employeePermanentContact.Pincode))" class="form-control" placeholder="Pincode" maxlength="10" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Contact Number</label>
+                                    <input type="text" id="PermanentContactNum" name="ContactNum" class="form-control" value="@(employeePermanentContact==null?"":(@employeePermanentContact.ContactNum==null?"":@employeePermanentContact.ContactNum))" placeholder="" maxlength="10" />
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-label-secondary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next" style="visibility:hidden">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                    <button class="btn btn-primary" onclick="SaveEmployeeInfo('employeecontactdetailForm','/EmployeeContact/SaveEmployeeContactInfo')">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Save and Move Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                    <input type="hidden" id="pEmployeeContactDetailId" name="pEmployeeContactDetailId" value="@(employeePermanentContact==null?"0":@employeePermanentContact.EmployeeContactDetailId)" />
+                                    <input type="hidden" id="EmployeeContactDetailId" name="EmployeeContactDetailId" value="@(employeePermanentContact==null?"0":@employeePermanentContact.EmployeeContactDetailId)" />
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </form>
+                    <form id="employeeBankForm" onSubmit="return false">
+                        <!-- Bank Account Info -->
+                        <div id="bank-details" class="content">
+                            <div class="content-header mb-3">
+                                <h5 class="mb-0">Bank Details</h5>
+                                @*<small>Enter Your Account Details.</small>*@
+                            </div>
+                            @{
+                                dynamic employeeBank = null;
+                                var bankId = 0;
+
+                                if (Model.EmployeeBankDetails != null)
+                                {
+                                    employeeBank = Model.EmployeeBankDetails.Select(x => x).FirstOrDefault();
+                                    bankId = (employeeBank == null ? 0 : employeeBank.BankId);
+                                }
+                            }
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="country-vertical">Bank Name</label>
+                                    @Html.DropDownList("BankId",new SelectList(Model.EmployeeMastersKeyValues.BankKeyValues,"BankId", "BankName",bankId),"Select Option",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible" , @required="required"})
+
+                                    @*<select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                                    <option label="Country"></option>
+                                    <option>Option 1</option>
+                                    <option>Option 2</option>
+                                    <option>Option 3</option>
+                                    </select>*@
+                                </div>
+                                @* <div class="col-sm-6">
+                                <label class="form-label" for="first-name-vertical">BankName Name</label>
+                                <input type="text" id="BankName" name="BankName" value= value="@(employeeBank==null?"":(@employeeBank.BankName==null?"":@employeeBank.BankName))" class="form-control" placeholder="Bank Name" />
+                                </div>*@
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="first-name-vertical">Account Number</label>
+                                    <input type="text" id="AccountNo" name="AccountNo" maxlength="25" required value="@(employeeBank==null?"":(employeeBank.AccountNo==null?"":employeeBank.AccountNo))" class="form-control" placeholder="Account Number" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="last-name-vertical">IFSC Code</label>
+                                    <input type="text" id="IFSCCode" name="IFSCCode" maxlength="10" required value="@(employeeBank==null?"":(employeeBank.IFSCCode==null?"":employeeBank.IFSCCode))" class="form-control" placeholder="IFSC Code" />
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next" style="visibility:hidden">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+                                        <input type="hidden" id="BankDetailId" name="BankDetailId" value="@(employeeBank == null ? 0 : employeeBank.BankDetailId)" />
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                    <button class="btn btn-primary" onclick="SaveEmployeeInfo('employeeBankForm','/EmployeeBank/SaveEmployeeBankInfo')">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Save and Move Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                    <form id="employeefamilyForm" onSubmit="return false">
+                        <!-- Family Details -->
+                        <div id="family-details" class="content">
+                            <div class="content-header mb-3">
+                                <h5 class="mb-0">Family Details</h5>
+                                @*<small>Enter Your Account Details.</small>*@
+                            </div>
+                            <!--div class="content-header mb-3">
+                              <h6 class="mb-0">Personal Info</h6>
+                              <small>Enter Your Personal Info.</small>
+                            </div-->
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="country-vertical">Relationship</label>
+                                    <select class="form-select" id="Relationship" name="Relationship" aria-label="Default select example" required>
+                                        <option value="">Select Option</option>
+                                        <option>Father</option>
+                                        <option>Mother</option>
+                                        <option>Wife</option>
+                                        <option>Child</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Date of Birth</label>
+                                    <input type="text" id="MemberDob" name="MemberDob" required class="form-control flatpickr-date1" placeholder="DD-MMM-YYYY" required />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="first-name-vertical">Name</label>
+                                    <input type="text" id="MemberName" name="MemberName" required class="form-control" placeholder="Name" required maxlength="50" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <div style="height: 27px;">&nbsp;</div>
+                                    <button class="btn btn-primary btn-sm pt-2 data-repeater-create" onclick="SaveEmployeeInfo('employeefamilyForm','/EmployeeFamily/SaveEmployeeFamilyInfo')">
+                                        <i class="bx bx-plus me-1"></i>
+                                        <span class="align-middle">Save</span>
+                                    </button>
+                                    <input type="hidden" id="EmployeeFamilyDetailId" name="EmployeeFamilyDetailId" />
+                                    <button class="btn btn-warning btn-sm pt-2 data-repeater-create" onclick="ResetForm('employeefamilyForm')">
+                                        <i class="bx bx-refresh me-1"></i>
+                                        <span class="align-middle">Reset</span>
+                                    </button>
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Move Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row g-3 addShowData" style="width:auto">
+                                <div class="card" id="List">
+                                    <div class="card-body">
+
+                                        <div style="clear:both"></div>
+                                        <div class="card-datatable table-responsive text-nowrap">
+                                            <table id="familyTable" class="datatables-ajax table table-bordered List" id="List">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Member</th>
+                                                        <th>DOB</th>
+                                                        <th>Relationship</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (Model.EmployeeFamilyDetails != null)
+                                                        @foreach (var item in Model.EmployeeFamilyDetails)
+                                                        {
+                                                            <tr>
+                                                                <td><span id="MemberName_@item.EmployeeFamilyDetailId">@item.MemberName</span></td>
+                                                                <td><span id="MemberDob_@item.EmployeeFamilyDetailId">@(item.MemberDob == null ? "" : ((DateTime)item.MemberDob).ToString("dd-MMM-yyyy"))</span></td>
+                                                                <td><span id="Relationship_@item.EmployeeFamilyDetailId">@item.Relationship</span></td>
+                                                                <td>
+                                                                    <button class="btn btn-primary" onclick="javascript:SetFormDetail('familyTable','EmployeeFamilyDetailId','@item.EmployeeFamilyDetailId')">Edit</button>
+                                                                    <button class="btn btn-primary" onclick="DeleteRecord('@item.EmployeeFamilyDetailId')"> Delete</button>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                    <form id="employeeacdemicForm" onSubmit="return false">
+                        <!-- Academic Details -->
+                        <div id="academic-details" class="content">
+                            <div class="content-header mb-3">
+                                <h5 class="mb-0">Academic Details</h5>
+                                @*<small>Enter Your Account Details.</small>*@
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="last-name-vertical">Institute/University</label>
+                                    <input type="text" id="InstituteName" name="InstituteName" required class="form-control" placeholder="Institute/ University" required maxlength="100" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="country-vertical">Qualification Name</label>
+                                    @Html.DropDownList("AcademicId",new SelectList(Model.EmployeeMastersKeyValues.AcademicKeyValues,"AcademicId", "AcademicName"),"Select Option",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible" , @required="required"})
+
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="country-vertical">Year of Passing</label>
+                                    @Html.DropDownList("PassingYear",new SelectList(Model.EmployeeMastersKeyValues.GetYears(1970,DateTime.Now.Year - 1970 + 1),"Select PassingYear"),"Select Option",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible",@name="PassingYear" , @required="required"})
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="first-name-vertical">Percentage/grade</label>
+                                    <input type="number" id="Percentage" name="Percentage" class="form-control" placeholder="Percentage/grade" required maxlength="4" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" />
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div style="height: 27px;">&nbsp;</div>
+                                    <button class="btn btn-primary btn-sm pt-2" data-repeater-create onclick="SaveEmployeeInfo('employeeacdemicForm','/EmployeeAcademic/SaveEmployeeAcademicInfo')">
+                                        <i class="bx bx-plus me-1"></i>
+                                        <span class="align-middle">Save</span>
+                                    </button>
+                                    <button class="btn btn-warning btn-sm pt-2 data-repeater-create" onclick="ResetForm('employeeacdemicForm')">
+                                        <i class="bx bx-refresh me-1"></i>
+                                        <span class="align-middle">Reset</span>
+                                    </button>
+                                    <input type="hidden" id="AcademicDetailId" name="AcademicDetailId" />
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Move Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row g-3 addShowData" style="width:auto">
+                                <div class="card" id="List">
+                                    <div class="card-body">
+
+                                        <div style="clear:both"></div>
+                                        <div class="card-datatable table-responsive text-nowrap">
+                                            <table id="academicTable" class="datatables-ajax table table-bordered List" id="List">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Institute/University</th>
+                                                        <th>Qualification</th>
+                                                        <th>Year Of Passing</th>
+                                                        <th>Percentage</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (Model.EmployeeAcademicDetails != null)
+                                                        @foreach (var item in Model.EmployeeAcademicDetails)
+                                                        {
+                                                            <tr>
+                                                                <td><span id="InstituteName_@item.AcademicDetailId">@item.InstituteName</span></td>
+                                                                <td>
+                                                                    <span id="AcademicId_@item.AcademicDetailId" data-selectedid="@item.AcademicId">
+                                                                        @Model.EmployeeMastersKeyValues.AcademicKeyValues.Where(r=>r.AcademicId==item.AcademicId).Select(x => x.AcademicName).FirstOrDefault()
+                                                                    </span>
+                                                                </td>
+                                                                <td><span id="PassingYear_@item.AcademicDetailId" selectValue="@item.AcademicId">@item.PassingYear</span></td>
+                                                                <td><span id="Percentage_@item.AcademicDetailId">@item.Percentage</span></td>
+                                                                <td>
+                                                                    <button class="btn btn-primary" onclick="javascript:SetFormDetail('academicTable','AcademicDetailId','@item.AcademicDetailId')">Edit</button>
+                                                                    <button class="btn btn-primary" onclick="DeleteRecord('@item.AcademicDetailId')"> Delete</button>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                    <form id="employeeexperienceForm" onSubmit="return false">
+                        <!-- Experiences Background -->
+                        <div id="experiences" class="content">
+                            <div class="content-header mb-3">
+                                <h5 class="mb-0">Experiences Backgroud</h5>
+                                @*<small>Enter Your Account Details.</small>*@
+                            </div>
+                            <!--div class="content-header mb-3">
+                              <h6 class="mb-0">Personal Info</h6>
+                              <small>Enter Your Personal Info.</small>
+                            </div-->
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="first-name-vertical">Company Name</label>
+                                    <input type="text" id="CompanyName" name="CompanyName" required class="form-control" placeholder="Company Name" maxlength="100" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="last-name-vertical">Job title</label>
+                                    @*<input type="text" id="JobTitleId" name="JobTitleId" class="form-control" placeholder="Job title" />*@
+                                    @Html.DropDownList("ExperienceJobTitleId",new SelectList(Model.EmployeeMastersKeyValues.JobTitleKeyValues,"JobTitleId", "JobTitle"),"Select Option",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible" , @required="required"})
+
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for=" ">Joined Date</label>
+                                    <input type="text" id="JoinDate" name="JoinDate" required class="form-control flatpickr-date1" placeholder="DD-MMM-YYYY" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Last working Date</label>
+                                    <input type="text" id="LastWorkingDate" name="LastWorkingDate" required class="form-control flatpickr-date1" placeholder="DD-MMM-YYYY" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <div style="height: 27px;">&nbsp;</div>
+                                    <button class="btn btn-primary btn-sm pt-2 data-repeater-create" onclick="SaveEmployeeInfo('employeeexperienceForm','/EmployeeExperience/SaveEmployeeExperienceInfo')">
+                                        <i class="bx bx-plus me-1"></i>
+                                        <span class="align-middle">Save</span>
+                                    </button>
+                                    <button class="btn btn-warning btn-sm pt-2 data-repeater-create" onclick="ResetForm('employeeexperienceForm')">
+                                        <i class="bx bx-refresh me-1"></i>
+                                        <span class="align-middle">Reset</span>
+                                    </button>
+                                    <input type="hidden" id="ExperienceDetailId" name="ExperienceDetailId" />
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Move Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row g-3 addShowData" style="width:auto">
+                                <div class="card" id="List">
+                                    <div class="card-body">
+
+                                        <div style="clear:both"></div>
+                                        <div class="card-datatable table-responsive text-nowrap">
+                                            <table id="experienceTable" class="datatables-ajax table table-bordered List dataTable" id="List">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Company Name</th>
+                                                        <th>Job Title</th>
+                                                        <th>Joining Date</th>
+                                                        <th>Last Working Date</th>
+
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+
+                                                @if (Model.EmployeeExperienceDetails != null)
+                                                    @foreach (var item in Model.EmployeeExperienceDetails.Where(x => x.EmployeeId == Model.EmployeeId).Select(x => x))
+                                                    {
+                                                        <tr>
+                                                            <td><span id="CompanyName_@item.ExperienceDetailId">@item.CompanyName</span></td>
+                                                            <td>
+                                                                <span id="ExperienceJobTitleId_@item.ExperienceDetailId" data-selectedid="@item.ExperienceJobTitleId">
+                                                                    @Model.EmployeeMastersKeyValues.JobTitleKeyValues.Where(r=>r.JobTitleId==item.ExperienceJobTitleId).Select(x => x.JobTitle).FirstOrDefault()
+                                                                </span>
+                                                            </td>
+
+                                                            <td><span id="JoinDate_@item.ExperienceDetailId">@(item.JoinDate == null ? "" : ((DateTime)item.JoinDate).ToString("dd-MMM-yyyy"))</span></td>
+                                                            <td><span id="LastWorkingDate_@item.ExperienceDetailId">@(item.LastWorkingDate == null ? "" : ((DateTime)item.LastWorkingDate).ToString("dd-MMM-yyyy"))</span></td>
+                                                            <td>
+                                                                <button class="btn btn-primary" onclick="javascript:SetFormDetail('experienceTable','ExperienceDetailId','@item.ExperienceDetailId')">Edit</button>
+                                                                <button class="btn btn-primary" onclick="DeleteRecord('@item.ExperienceDetailId')"> Delete</button>
+                                                            </td>
+                                                        </tr>
+                                                    }
+
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                    <form id="employeejobForm" onSubmit="return false">
+                        <!-- Job Information  -->
+                        <div id="job-information" class="content">
+                            <div class="content-header mb-3">
+                                <h5 class="mb-0">Job Information</h5>
+                                @*<small>Enter Your Account Details.</small>*@
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="username-vertical">Employee Code</label>
+                                    <input type="text" id="EmployeeCode" name="EmployeeCode" value="@Model.EmployeeCode" class="form-control" placeholder="Employee Code" required maxlength="50" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="email-vertical">Job Title</label>
+                                    @Html.DropDownListFor(x => x.JobTitleId,new SelectList(Model.EmployeeMastersKeyValues.JobTitleKeyValues,"JobTitleId", "JobTitle", Model.JobTitleId),"Select Option",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible" ,@required="required"})
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="email-vertical">Department</label>
+                                    @Html.DropDownListFor(x => x.DepartmentId,new SelectList(Model.EmployeeMastersKeyValues.DepartmentKeyValues,"DepartmentId", "DepartmentName", Model.DepartmentId),"Select Option",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible" , @required="required"})
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="confirm-password-vertical">Supervisor/Manager</label>
+                                    @Html.DropDownListFor(x => x.ManagerId,new SelectList(Model.EmployeeMastersKeyValues.EmployeeKeyValues,"EmployeeId", "EmployeeName", Model.ManagerId),"Select Option",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible",@name="ManagerId" , @required="required"})
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="confirm-password-vertical">HOD</label>
+                                    @Html.DropDownListFor(x => x.HODId,new SelectList(Model.EmployeeMastersKeyValues.EmployeeKeyValues,"EmployeeId", "EmployeeName", Model.HODId),"Select Option",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible",@name="HODId" , @required="required"})
+                                    @*                                    @Html.DropDownListFor(x => x.ManagerId,new SelectList(Model.EmployeeMastersKeyValues.EmployeeKeyValues,"EmployeeId", "EmployeeName", Model.ManagerId),"Select Manager",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible",@name="ManagerId" , @required="required"})*@
+
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="confirm-password-vertical">Hiring Date</label>
+                                    <input type="text" id="DOJ" name="DOJ" class="form-control flatpickr-date1" value="@(Model.Doj==null ? "" : ((DateTime)Model.Doj).ToString("dd-MMM-yyyy"))" placeholder="DD-MMM-YYYY" required />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="confirm-password-vertical">Work Location</label>
+                                    @Html.DropDownListFor(x => x.WorkLocationId,new SelectList(Model.EmployeeMastersKeyValues.WorkLocationKeyValues,"WorkLocationId", "Location", Model.WorkLocationId),"Select Option",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible" })
+                                </div>
+                                @*<div class="col-sm-6">
+                                <label class="form-label required" for="confirm-password-vertical">Employment Type</label>
+                                @Html.DropDownListFor(x => x.IdentityId,new SelectList(Model.EmployeeMastersKeyValues.IdtypeKeyValues,"IdentityId", "IdentityName", Model.IdentityId),"Select EmployeeType",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible" , @required="required"})
+                                </div>*@
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="confirm-password-vertical">Employment Type</label>
+                                    <select class="select2 form-select select2-hidden-accessible" asp-for="EmploymentType">
+                                        <option value="0">Select Option</option>
+                                        <option value="1">Permanent</option>
+                                        <option value="2">Probation</option>
+                                        <option value="3">Terminated</option>
+                                        <option value="4">Contractual</option>
+                                        <option value="5">Third Party</option>
+                                    </select>
+                                    @*                                    @Html.DropDownListFor(x => x.IdentityId,new SelectList(Model.EmployeeMastersKeyValues.IdtypeKeyValues,"IdentityId", "IdentityName", Model.IdentityId),"Select EmployeeType",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible" , @required="required"})*@
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="confirm-password-vertical">Employment Status</label>
+                                    <select class="form-select" id="EmployeeStatus" name="EmployeeStatus" aria-label="Default select example" required>
+
+                                        <option value="Active" selected="@(Model.EmployeeStatus==null?false:(Model.EmployeeStatus.ToUpper()=="ACTIVE"?true:false))">Active</option>
+                                        <option value="Terminated" selected="@(Model.EmployeeStatus==null?false:(Model.EmployeeStatus.ToUpper()=="TERMINATED"?true:false))">Terminated</option>
+                                        <option value="On Leave" selected="@(Model.EmployeeStatus==null?false:(Model.EmployeeStatus.ToUpper()=="ON LEAVE"?true:false))">On Leave</option>
+                                    </select>
+
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="confirm-password-vertical">Work Email</label>
+                                    <input type="email"
+                                           id="OfficialEmail"
+                                           name="OfficialEmail"
+                                           class="form-control" value="@Model.OfficialEmail"
+                                           placeholder="john.doe@email.com"
+                                           aria-label="john.doe" required />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="confirm-password-vertical">Role</label>
+                                    @Html.DropDownListFor(x => x.RoleId,new SelectList(Model.EmployeeMastersKeyValues.RoleKeyValues,"RoleId", "RoleName", Model.RoleId),"Select Option",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible" , @required="required"})
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="confirm-password-vertical">Band</label>
+                                    @Html.DropDownListFor(x => x.BandId,new SelectList(Model.EmployeeMastersKeyValues.BandKeyValues,"BandId", "Band", Model.BandId),"Select Option",htmlAttributes: new { @class = "form-select"})
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">CTC</label>
+                                    <input type="number" class="form-control" id="CTC" name="CTC" value="@Model.CTC" placeholder="CTC" required maxlength="8" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">EPF Number</label>
+                                    <input type="text" class="form-control" id="EPFNumber" name="EPFNumber" value="@Model.EPFNumber" placeholder="EPF Number" maxlength="15" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">ESI Number</label>
+                                    <input type="text" class="form-control" id="ESINumber" name="ESINumber" asp-for="ESINumber" maxlength="20" placeholder="ESI Number" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">UAN</label>
+                                    <input type="text" class="form-control" id="UANNumber" name="UANNumber" asp-for="UANNumber" maxlength="15" placeholder="UAN" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="ConfirmationPeriod">Confirmation Period (In Day)</label>
+                                    <input type="number" class="form-control" id="ConfirmationPeriod" required name="ConfirmationPeriod" value="@Model.ConfirmationPeriod" placeholder="Confirmation Period (In Day)" onKeyPress="if(this.value.length==3) return false;" maxlength="12" max="365" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="ConfirmationPeriod">Date Of Confirmation</label>
+                                    <input type="text" id="DOC" name="DOC" required value="@(Model.DOC==null ? "" : ((DateTime)Model.DOC).ToString("dd-MMM-yyyy"))" class="form-control flatpickr-date1" placeholder="DD-MMM-YYYY" readonly disabled />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="NoticePeriod">Notice Period (In Day)</label>
+                                    <input type="number" class="form-control" id="NoticePeriod" name="NoticePeriod" value="@Model.NoticePeriod" placeholder="Notice Period (In Day)" required onKeyPress="if(this.value.length==3) return false;" />
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+
+                                    <button class="btn btn-primary btn-next" style="visibility:hidden">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                    <button class="btn btn-primary" onclick="SaveEmployeeInfo('employeejobForm','/Employee/SaveEmployeeJobInfo')">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Save and Move Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <form id="employeecertificationForm" onSubmit="return false">
+                        <!-- Certification Details  -->
+                        <div id="certification" class="content">
+                            <div class="content-header mb-3">
+                                <h5 class="mb-0">Certification Details</h5>
+                                @*<small>Enter Your Account Details.</small>*@
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Certification Name</label>
+                                    <input type="text" id="CertificationName" name="CertificationName" required class="form-control" placeholder="Certification Name" maxlength="100" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="confirm-password-vertical">Year of certification</label>
+                                    @Html.DropDownList("YearOfCertification",new SelectList(Model.EmployeeMastersKeyValues.GetYears(1970,DateTime.Now.Year - 1970 + 1),DateTime.Now.Year),"Select Option",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible" , @required="required"})
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Duration</label>
+                                    <input type="text" id="Duration" name="Duration" required class="form-control" placeholder="Duration" maxlength="50" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <div style="height: 27px;">&nbsp;</div>
+                                    <button class="btn btn-primary btn-sm pt-2 data-repeater-create" onclick="SaveEmployeeInfo('employeecertificationForm','/EmployeeCertification/SaveEmployeeCertificationInfo')">
+                                        <i class="bx bx-plus me-1"></i>
+                                        <span class="align-middle">Save</span>
+
+                                    </button>
+                                    <button class="btn btn-warning btn-sm pt-2 data-repeater-create" onclick="ResetForm('employeecertificationForm')">
+                                        <i class="bx bx-refresh me-1"></i>
+                                        <span class="align-middle">Reset</span>
+                                    </button>
+                                    <input type="hidden" id="CertificationDetailId" name="CertificationDetailId" />
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <button class="btn btn-primary btn-next">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Move Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row g-3 addShowData" style="width:auto">
+                                <div class="card" id="List">
+                                    <div class="card-body">
+
+                                        <div style="clear:both"></div>
+                                        <div class="card-datatable table-responsive text-nowrap">
+                                            <table id="certificationTable" class="datatables-ajax table table-bordered List" id="List">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Certification Name</th>
+                                                        <th>Year Of Certification Title</th>
+                                                        <th>Duration</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (Model.EmployeeCertificationDetails != null)
+                                                        @foreach (var item in Model.EmployeeCertificationDetails.Where(x => x.EmployeeId == Model.EmployeeId).Select(x => x))
+                                                        {
+                                                            <tr>
+                                                                <td><span id="CertificationName_@item.CertificationDetailId">@item.CertificationName </span></td>
+                                                                <td><span id="YearOfCertification_@item.CertificationDetailId">@item.YearOfCertification </span></td>
+                                                                <td><span id="Duration_@item.CertificationDetailId">@item.Duration </span></td>
+                                                                <td>
+                                                                    <button class="btn btn-primary" onclick="javascript:SetFormDetail('certificationTable','CertificationDetailId','@item.CertificationDetailId')">Edit</button>
+                                                                    <button class="btn btn-primary" onclick="DeleteRecord('@item.CertificationDetailId')"> Delete</button>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </form>
+                    <form id="employeeuploaddocForm" onSubmit="return false">
+                        <!-- Upload Documents -->
+                        <div id="upload-documents" class="content">
+                            <div class="content-header mb-3">
+                                <h5 class="mb-0">Upload Documents</h5>
+                                <small>Upload your documents here.</small>
+                            </div>
+                            @await Component.InvokeAsync("IDTypes")
+                            @if (Model.EmployeeUploadDocuments != null)
+                            {
+                                <div class="row g-3 addShowData" style="width:auto">
+                                    <div class="card" id="List">
+                                        <div class="card-body">
+
+                                            <div style="clear:both"></div>
+                                            <div class="card-datatable table-responsive text-nowrap">
+                                                <table id="certificationTable" class="datatables-ajax table table-bordered List" id="List">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Document Type</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var item in Model.EmployeeUploadDocuments)
+                                                        {
+                                                            //var binaryData = @Model.EmployeeUploadDcuments.Select(r => r.EmployeeDocument).FirstOrDefault();
+                                                            var binaryData = item.EmployeeDocument;
+                                                            if (binaryData != null)
+                                                            {
+                                                                string validExt = "|jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF|";
+                                                                <tr>
+                                                                    @*<td><a onclick="OpenWindows('data:image/png;base64, @Convert.ToBase64String(binaryData, 0, binaryData.Length)','_blank')">@Model.EmployeeMastersKeyValues.IdtypeKeyValues.Where(r=>r.IdentityId==@item.DcumentTypeId).Select(x=>x.IdentityName).FirstOrDefault()</a></td>*@
+
+                                                                    <td>
+                                                                        @if (validExt.ToLower().Contains(item.DocumentType.ToLower()))
+                                                                        {
+                                                                            <a onclick="OpenWindows('data:image/png;base64, @Convert.ToBase64String(binaryData, 0, binaryData.Length)','','_blank')">@Model.EmployeeMastersKeyValues.IdtypeKeyValues.Where(r=>r.IdentityId==@item.DcumentTypeId).Select(x=>x.IdentityName).FirstOrDefault()</a>
+
+                                                                        }
+                                                                        else if (item.DocumentType.ToLower() == "pdf")
+                                                                        {
+                                                                            <a onclick="OpenWindows('data:application/pdf;base64, @Convert.ToBase64String(binaryData, 0, binaryData.Length)','application/pdf','_blank')">@Model.EmployeeMastersKeyValues.IdtypeKeyValues.Where(r=>r.IdentityId==@item.DcumentTypeId).Select(x=>x.IdentityName).FirstOrDefault()</a>
+
+                                                                        }
+                                                                    </td>
+
+                                                                    @* <td>
+                                                        @if (item.DocumentType.ToLower() == "pdf")
+                                                        {
+                                                        <object data="@item.Base64Document" type="application/pdf" width="500px">
+                                                        <embed src="@item.Base64Document" type="application/pdf" />
+                                                        </object>
+                                                        }
+                                                        else if (validExt.ToLower().Contains(item.DocumentType.ToLower()))
+                                                        {
+                                                        <img src="@item.Base64Document"/>
+                                                        }
+                                                        </td>*@
+                                                                    <td>
+                                                                        @if (validExt.ToLower().Contains(item.DocumentType.ToLower()))
+                                                                        {
+                                                                            <button class="btn btn-primary" onclick="OpenWindows('data:image/png;base64, @Convert.ToBase64String(binaryData, 0, binaryData.Length)','','_blank')">View</button>
+                                                                        }
+                                                                        else if (item.DocumentType.ToLower() == "pdf")
+                                                                        {
+                                                                            <button class="btn btn-primary" onclick="OpenWindows('data:application/pdf;base64, @Convert.ToBase64String(binaryData, 0, binaryData.Length)','application/pdf','_blank')">View</button>
+                                                                        }
+
+                                                                        <button class="btn btn-primary" onclick="DeleteRecord('@item.UploadDcumentDetailId')"> Delete</button>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            }
+                        </div>
+                    </form>
+                    <form id="employeereferenceForm" onSubmit="return false">
+                        <!-- Reference Details  -->
+                        <div id="reference-details" class="content">
+                            <div class="content-header mb-3">
+                                <h5 class="mb-0">Reference Details</h5>
+                                @*<small>Enter Your Account Details.</small>*@
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Name</label>
+                                    <input type="text" id="PersonName" name="PersonName" required class="form-control" placeholder="Name" maxlength="50" />
+                                </div>
+                                @* <div class="col-sm-6">
+                                <label class="form-label" for="confirm-password-vertical">ReferenceOf By</label>
+                                @Html.DropDownList("ReferenceOf",new SelectList(Model.EmployeeMastersKeyValues.EmployeeKeyValues,"EmployeeId", "EmployeeName"),"Select ReferenceOf",htmlAttributes: new { @class = "form-select",@name="ReferenceOf"})
+                                </div>*@
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Present Company</label>
+                                    <input type="text" id="PresentCompany" name="PresentCompany" required class="form-control" placeholder="Present Company" maxlength="250" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Designation</label>
+                                    <input type="text" id="ReferenceDesignation" name="ReferenceDesignation" required class="form-control" placeholder="Designation" maxlength="50" />
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Contact No</label>
+                                    <input type="number" id="ReferenceContactNo" name="ReferenceContactNo" required class="form-control" placeholder="Contact No" maxlength="10" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Mobile No</label>
+                                    <input type="number" id="ReferenceMobileNo" name="ReferenceMobileNo" required class="form-control" placeholder="Mobile No" maxlength="10" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">How do you know him/her </label>
+                                    <input type="text" id="HowYouKnow" name="HowYouKnow" required class="form-control" placeholder="How do you know him/her" maxlength="50" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <div style="height: 27px;">&nbsp;</div>
+                                    <button class="btn btn-primary btn-sm pt-2 data-repeater-create" onclick="SaveEmployeeInfo('employeereferenceForm','/EmployeeReference/SaveEmployeeReferenceInfo')">
+                                        <i class="bx bx-plus me-1"></i>
+                                        <span class="align-middle">Save</span>
+                                    </button>
+                                    <input type="hidden" id="ReferenceOf" name="ReferenceOf" value="@Model.EmployeeId" />
+                                    <button class="btn btn-warning btn-sm pt-2 data-repeater-create" onclick="ResetForm('employeereferenceForm')">
+                                        <i class="bx bx-refresh me-1"></i>
+                                        <span class="align-middle">Reset</span>
+                                    </button>
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    @* <input type="hidden" id="EmployeeId" name="EmployeeId" value="@Model.EmployeeId" />
+                                    <input type="hidden" id="ClientId" name="ClientId" value="@Model.ClientId" />
+                                    <input type="hidden" id="UnitId" name="UnitId" value="@Model.UnitId" />
+                                    <input type="hidden" id="FormName" name="FormName" />
+                                    <input type="hidden" id="InfoFillingStatus" name="InfoFillingStatus" value="@Model.InfoFillingStatus" />*@
+                                    <input type="hidden" id="EmployeeReferenceId" name="EmployeeReferenceId" />
+                                    <button class="btn btn-primary btn-next">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Move Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                    @*<button class="btn btn-success btn-submit" onclick="SaveEmployeeInfo('finalSubmit','/Employee/FinalDataSubmit')">Submit</button>*@
+                                </div>
+                            </div>
+
+                            <div class="row g-3 addShowData" style="width:auto">
+                                <div class="card" id="List">
+                                    <div class="card-body">
+
+                                        <div style="clear:both"></div>
+                                        <div class="card-datatable table-responsive text-nowrap">
+                                            <table id="referenceTable" class="datatables-ajax table table-bordered List dataTable" id="List">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Pserson Name</th>
+                                                        <th>Present Company</th>
+                                                        <th>Designation</th>
+                                                        <th>Contact No</th>
+                                                        <th>Mobile No</th>
+                                                        <th>How Do you Know</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (Model.EmployeeReferenceDetails != null)
+                                                        @foreach (var item in Model.EmployeeReferenceDetails)
+                                                        {
+                                                            <tr>
+                                                                <td><span id="PersonName_@item.EmployeeReferenceId">@item.PersonName</span></td>
+                                                                @*<td><span id="EmployeeId_@item.EmployeeReferenceId">@item.EmployeeId</span></td>*@
+                                                                @*  <td>
+                                                        <span id="ReferenceOf_@item.EmployeeReferenceId" data-selectedid="@item.EmployeeReferenceId">
+                                                        @Model.EmployeeMastersKeyValues.EmployeeKeyValues.Where(r=>r.EmployeeId==item.ReferenceOf).Select(x => x.EmployeeName).FirstOrDefault()
+                                                        </span>
+                                                        </td>*@
+                                                                <td><span id="PresentCompany_@item.EmployeeReferenceId">@item.PresentCompany</span></td>
+                                                                <td><span id="ReferenceDesignation_@item.EmployeeReferenceId">@item.ReferenceDesignation</span></td>
+                                                                <td><span id="ReferenceContactNo_@item.EmployeeReferenceId">@item.ReferenceContactNo</span></td>
+                                                                <td><span id="ReferenceMobileNo_@item.EmployeeReferenceId">@item.ReferenceMobileNo</span></td>
+                                                                <td><span id="HowYouKnow_@item.EmployeeReferenceId">@item.HowYouKnow</span></td>
+
+                                                                <td>
+                                                                    <button class="btn btn-primary" onclick="javascript:SetFormDetail('referenceTable','EmployeeReferenceId','@item.EmployeeReferenceId')">Edit</button>
+                                                                    <button class="btn btn-primary" onclick="DeleteRecord('@item.EmployeeReferenceId')"> Delete</button>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                    <form id="employeepassportdetailsForm" onSubmit="return false">
+                        <!-- Reference Details  -->
+                        <div id="passport-details" class="content">
+                            <div class="content-header mb-3">
+                                <h5 class="mb-0">Passport Details</h5>
+                                @*<small>Enter Your Account Details.</small>*@
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Passport No</label>
+                                    <input type="text" id="PassportNumber" name="PassportNumber" maxlength="10" asp-for="PassportNumber" class="form-control" placeholder="Passport No" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="PassportIssueDate">Issue Date</label>
+                                    <input type="text" id="PassportIssueDate" name="PassportIssueDate" asp-for="PassportIssueDate" class="form-control flatpickr-date1" placeholder="DD-MMM-YYYY" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="PassportValidTillDate">Valid Till</label>
+                                    <input type="text" id="PassportValidTillDate" name="PassportValidTillDate" asp-for="PassportValidTillDate" class="form-control flatpickr-date1" placeholder="DD-MMM-YYYY" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="PassportIssueCountryId">Country</label>
+                                    <select id="PassportIssueCountryId" name="PassportIssueCountryId" asp-for="PassportIssueCountryId" onchange="javascript:PopulateCascadingDDL('/MastersKeyValue/StateKeyValue','PassportIssueCountryId','@Model.PassportIssueCountryId','PassportIssueStateId','@Model.PassportIssueStateId','stateId','stateName')" class="select2 form-select select2-hidden-accessible" data-allow-clear="true" data-select2-id="multicol-country" tabindex="-1" aria-hidden="true">
+                                        <option value="0">Select Option</option>
+                                        @if (Model.EmployeeMastersKeyValues.CountryKeyValues != null)
+                                            foreach (var item in Model.EmployeeMastersKeyValues.CountryKeyValues)
+                                            {
+                                                <option value="@item.CountryId" selected="@(item.CountryId==Model.PassportIssueCountryId ? true : false)"> @item.CountryName</option>
+                                            }
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="PassportIssueStateId">State</label>
+                                    <select class="select2 form-select select2-hidden-accessible" asp-for="PassportIssueStateId" data-allow-clear="true" id="PassportIssueStateId" name="PassportIssueStateId" onchange="javascript:PopulateCascadingDDL('/MastersKeyValue/CityKeyValue','PassportIssueStateId','@Model.PassportIssueStateId','PassportIssueCityId','@Model.PassportIssueCityId','cityId','cityName')" aria-label="Default select example">
+                                        <option value="0">Select Option</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="PassportIssueCityId">City</label>
+                                    <select class="select2 form-select select2-hidden-accessible" data-allow-clear="true" id="PassportIssueCityId" asp-for="PassportIssueCityId" name="PassportIssueCityId" aria-label="Default select example">
+                                        <option value="0">Select Option</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    @* <input type="hidden" id="EmployeeId" name="EmployeeId" value="@Model.EmployeeId" />
+                                    <input type="hidden" id="ClientId" name="ClientId" value="@Model.ClientId" />
+                                    <input type="hidden" id="UnitId" name="UnitId" value="@Model.UnitId" />
+                                    <input type="hidden" id="FormName" name="FormName" />
+                                    <input type="hidden" id="InfoFillingStatus" name="InfoFillingStatus" value="@Model.InfoFillingStatus" />
+                                    <input type="hidden" id="EmployeeReferenceId" name="EmployeeReferenceId" />*@
+                                    <button class="btn btn-primary btn-next" style="visibility:hidden">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                    <button class="btn btn-primary" onclick="SaveEmployeeInfo('employeepassportdetailsForm','/Employee/SaveEmployeePassportInfo')">
+                                        <span class="align-middle d-sm-inline-block d-none me-sm-1">Save and Move Next</span>
+                                        <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>
+                                    @*<button class="btn btn-success btn-submit" onclick="SaveEmployeeInfo('finalSubmit','/Employee/FinalDataSubmit')">Submit</button>*@
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <form id="employeelanguagesForm" onSubmit="return false">
+                        <!-- Reference Details  -->
+                        <div id="employee-languages" class="content">
+                            <div class="content-header mb-3">
+                                <h5 class="mb-0">Languages</h5>
+                                @*<small>Enter Your Account Details.</small>*@
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="Language">Language</label>
+                                    <input type="text" id="Language" name="Language" class="form-control" placeholder="Language " maxlength="50" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label required" for="">Proficiency</label>
+                                    <div>
+                                        <input type="checkbox" id="Read" name="Read" /> Read
+                                        <input type="checkbox" id="Write" name="Write" /> Write
+                                        <input type="checkbox" id="Speak" name="Speak" /> Speak
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div style="height: 27px;">&nbsp;</div>
+                                    <button class="btn btn-primary btn-sm pt-2 data-repeater-create" onclick="SaveEmployeeInfo('employeelanguagesForm','/EmployeeLanguageDetail/SaveEmployeeLanguageInfo')">
+                                        <i class="bx bx-plus me-1"></i>
+                                        <span class="align-middle">Save</span>
+                                    </button>
+                                    <input type="hidden" id="LanguageOf" name="LanguageOf" value="@Model.EmployeeId" />
+                                    <input type="hidden" id="EmployeeLanguageDetailId" name="EmployeeLanguageDetailId" />
+                                    <button class="btn btn-warning btn-sm pt-2 data-repeater-create" onclick="ResetForm('employeelanguagesForm')">
+                                        <i class="bx bx-refresh me-1"></i>
+                                        <span class="align-middle">Reset</span>
+                                    </button>
+                                </div>
+                                <div class="col-12 d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-prev">
+                                        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                    </button>
+                                    <input type="hidden" id="EmployeeId" name="EmployeeId" value="@Model.EmployeeId" />
+                                    <input type="hidden" id="ClientId" name="ClientId" value="@Model.ClientId" />
+                                    <input type="hidden" id="UnitId" name="UnitId" value="@Model.UnitId" />
+                                    <input type="hidden" id="FormName" name="FormName" />
+                                    <input type="hidden" id="InfoFillingStatus" name="InfoFillingStatus" value="@Model.InfoFillingStatus" />
+
+                                    @*<button class="btn btn-primary btn-next">
+                                    <span class="align-middle d-sm-inline-block d-none me-sm-1">Move Next</span>
+                                    <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                    </button>*@
+                                    <button class="btn btn-success btn-submit" onclick="SaveEmployeeInfo('finalSubmit','/Employee/FinalDataSubmit')">Submit</button>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 addShowData" style="width:auto">
+                                <div class="card" id="List">
+                                    <div class="card-body">
+
+                                        <div style="clear:both"></div>
+                                        <div class="card-datatable table-responsive text-nowrap">
+                                            <table id="languageTable" class="datatables-ajax table table-bordered List dataTable" id="List">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Language</th>
+                                                        <th>Read</th>
+                                                        <th>Write</th>
+                                                        <th>Speak</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (Model.EmployeeLanguageDetails != null)
+                                                        @foreach (var item in Model.EmployeeLanguageDetails)
+                                                        {
+                                                            if (item.IsActive == true)
+                                                            {
+                                                                <tr>
+                                                                    <td><span id="Language_@item.EmployeeLanguageDetailId">@item.Language</span></td>
+                                                                    <td><span id="Read_@item.EmployeeLanguageDetailId">@item.Read</span></td>
+                                                                    <td><span id="Write_@item.EmployeeLanguageDetailId">@item.Write</span></td>
+                                                                    <td><span id="Speak_@item.EmployeeLanguageDetailId">@item.Speak</span></td>
+                                                                    <td>
+                                                                        <button class="btn btn-primary" onclick="javascript:SetFormDetail('languageTable','EmployeeLanguageDetailId','@item.EmployeeLanguageDetailId')">Edit</button>
+                                                                        <button class="btn btn-primary" onclick="DeleteRecordList('@item.EmployeeLanguageDetailId','languageTable')"> Delete</button>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                    <form id="employeeseperationForm" onSubmit="return false">
+                        <!-- Reference Details  -->
+                        <div id="seperation-details" class="content">
+                            <div class="content-header mb-3">
+                                <h5 class="mb-0">Seperation Details</h5>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Resignation Date</label>
+                                    <input type="text" id="" name="" class="form-control form-control-plaintext" value="@(Model==null ? "NA" : Model.EmployeeExitResignationDetails==null ? "NA" : Model.EmployeeExitResignationDetails.Count==0 ? "NA" : Model.EmployeeExitResignationDetails.FirstOrDefault().ResignationDateAdmin==null ? "NA" :  ((DateTime)Model.EmployeeExitResignationDetails.FirstOrDefault().ResignationDateAdmin).ToString("dd-MMM-yyyy"))" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Last Working Date</label>
+                                    <input type="text" id="" name="" class="form-control form-control-plaintext" value="@(Model==null ? "NA" : Model.EmployeeExitResignationDetails==null ? "NA" : Model.EmployeeExitResignationDetails.Count==0 ? "NA" : Model.EmployeeExitResignationDetails.FirstOrDefault().LastWorkingDateAdmin==null ? "NA" :  ((DateTime)Model.EmployeeExitResignationDetails.FirstOrDefault().LastWorkingDateAdmin).ToString("dd-MMM-yyyy"))" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Rehire Eligibility</label>
+                                    <input type="text" id="" name="" class="form-control form-control-plaintext" value="@(Model==null ? "NA" : Model.EmployeeExitResignationDetails==null ? "NA" : Model.EmployeeExitResignationDetails.Count==0 ? "NA" : Model.EmployeeExitResignationDetails.FirstOrDefault().EligibleToHireAdmin==null ? "NA" :  Model.EmployeeExitResignationDetails.FirstOrDefault().EligibleToHireAdmin==true ? "Yes" : "NO")" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="">Reason For Resignation</label>
+                                    <textarea class="form-control form-control-plaintext" value="@(Model==null ? "NA" : Model.EmployeeExitResignationDetails==null ? "NA" : Model.EmployeeExitResignationDetails.Count==0 ? "NA" : Model.EmployeeExitResignationDetails.FirstOrDefault().ReasonForLeavingAdmin)"></textarea>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- /Vertical Wizard -->
+    </div>
+
+
+</div>
+
+@section scripts{
+    <!-- Vendors JS -->
+    <script src="~/assets/vendor/libs/bs-stepper/bs-stepper.js"></script>
+    <script src="~/assets/vendor/libs/bootstrap-select/bootstrap-select.js"></script>
+    <script src="~/assets/vendor/libs/select2/select2.js"></script>
+    <!-- Page JS -->
+    <script src="~/assets/js/form-wizard-numbered.js"></script>
+    <script src="~/assets/js/form-wizard-validation.js"></script>
+    @*  <script src="http://malsup.github.io/jquery.blockUI.js" type="text/javascript"></script>*@
+    @*    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".flatpickr-date1").flatpickr({
+                monthSelectorType: 'static'
+            });
+        });
+
+
+    </script>
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    @* <script src="../../customjs/CommonFunction.js"></script>*@
+    <script src="~/customjs/commonfunction.js"></script>
+    <script src="~/customjs/employeevalidation.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            updateConfirmationDate();
+            $("#ConfirmationPeriod").blur(function () {
+                updateConfirmationDate();
+            });
+            $("#DOJ").blur(function () {
+                updateConfirmationDate();
+            });
+
+            //Add the dirty class for change in case to any control in Upload document form
+            //AddDirtyClass(".employeeDocs");
+            jQuery(".employeeDocs").each(function (key) {
+                jQuery(this).change(function () {
+                    jQuery(this).addClass('dirty');
+                });
+            });
+
+            $("#upload_file").click(function () {
+                $("#profileimagepreview").hide();
+            });
+            //if (@Model.Base64ProfileImage!== null)
+            //    if (@Model.Base64ProfileImage != "data:image/png;base64,")
+            //$("#upload_file")[0].files[0]
+            //alert(jQuery("#profileimagepreview").prop("src"));
+            if (jQuery("#profileimagepreview").prop("src") != "")
+                jQuery("#uploaded_view").addClass("show");
+            $(".file_remove").click(function () {
+                $("#profileimagepreview").show();
+            });
+
+            var maxBirthdayDate = new Date();
+            maxBirthdayDate.setFullYear(maxBirthdayDate.getFullYear() - 18);
+
+            $(".flatpickr-date-dob").flatpickr({
+                //monthSelectorType: 'static',
+                dateFormat: "d-M-Y",
+                maxDate: maxBirthdayDate
+            });
+            $(".flatpickr-date1").flatpickr({
+                //monthSelectorType: 'static',
+                dateFormat: "d-M-Y"
+            });
+
+            if (jQuery("#CountryId").val() > 0)
+                jQuery("#CountryId").trigger("change");
+            if (@stateId > 0)
+                jQuery("#StateId").trigger("change");
+            if (jQuery("#PermanentCountryId").val() > 0)
+                jQuery("#PermanentCountryId").trigger("change");
+            if (@pStateId > 0)
+                jQuery("#PermanentStateId").trigger("change");
+            if (jQuery("#PassportIssueCountryId").val() > 0)
+                jQuery("#PassportIssueCountryId").trigger("change");
+            //if (@stateId > 0)
+            //    jQuery("#StateId").trigger("change");
+            //if (jQuery("#PermanentCountryId").val() > 0)
+            //    jQuery("#PermanentCountryId").trigger("change");
+            //if (@pStateId > 0)
+            //    jQuery("#PermanentStateId").trigger("change");
+        });
+
+
+        function updateConfirmationDate() {
+            let cp = $("#ConfirmationPeriod").val();
+            let d = moment($("#DOJ").val(), "DD-MMM-YYYY").add(cp, 'days');
+            $("#DOC").val(d.format("DD-MMM-YYYY"));
+        }
+
+
+        function MoveNext(formID) {
+            btnNext = jQuery("#" + formID).find('.btn-next')
+            btnNext.trigger("click")
+        }
+
+        function CopyClearDataForPermanent() {
+            //jQuery("#sameAsCurrent").attr("checked") ? CopyCurrentToPermanent() : ClearFormData()
+            if (jQuery("#sameAsCurrent").prop("checked") == true)
+                CopyCurrentToPermanent();
+            else
+                ClearFormData();
+        }
+
+        function CopyCurrentToPermanent() {
+            var formData = {};
+            var allCtrl = jQuery("[id^=Permanent]")
+            var copyFrom = "";
+            var curCtrl = "";
+            allCtrl.each(function (i) {
+                curCtrl = jQuery(this);
+                copyFrom = (curCtrl.attr('id')).replace("Permanent", "");
+                if (curCtrl.prop("type").indexOf("select-") != -1) {
+                    if ((curCtrl.prop("id").indexOf("CountryId") != -1)) {
+                        var selectedVal = jQuery("#" + copyFrom).val();
+                        curCtrl.val(selectedVal);
+                        curCtrl.text = jQuery("#" + copyFrom).find(':selected').text();
+                    }
+                    else if ((curCtrl.prop("id").indexOf("StateId") != -1) || (curCtrl.prop("id").indexOf("CityId") != -1))
+                        curCtrl.append(jQuery("<option selected></option>").val(jQuery("#" + copyFrom).val()).html(jQuery("#" + copyFrom).find(':selected').text()));
+                }
+                curCtrl.val(jQuery("#" + copyFrom).val())
+            });
+        }
+
+        function CapitalizeSmallFirstLetter(sStr, sChange) {
+            var string = sStr;
+            if (sChange == "S")
+                newString = string[0].toLowerCase() + string.slice(1);
+            else
+                newString = string[0].toUpperCase() + string.slice(1);
+
+            return newString
+        }
+
+        function GetContactData() {
+
+            var formData = [];
+            var permanentData = {};
+            var currentData = {};
+            //   formData.push({jQuery("#currentDiv :input").serialize()})
+            // formData.push({jQuery("#permanentDiv :input").serialize()})
+
+            var allCtrl = jQuery("[id^=Permanent]")
+
+            allCtrl.each(function (i) {
+                var curCtrl = jQuery(this);
+                var dataKey = (curCtrl.attr('id')).replace("Permanent", "");
+                permanentData[dataKey] = (IsNumeric(curCtrl.val()) ? parseInt(curCtrl.val()) : curCtrl.val());
+                currentData[dataKey] = (IsNumeric((jQuery("#" + dataKey).val())) ? parseInt(jQuery("#" + dataKey).val()) : jQuery("#" + dataKey).val());
+            });
+
+            currentData["ContactType"] = "Current"
+            currentData["EmployeeId"] = jQuery("#EmployeeId").val();
+            currentData["EmployeeContactDetailId"] = jQuery("#EmployeeContactDetailId").val();
+            formData.push(currentData)
+
+            permanentData["ContactType"] = "Permanent"
+            permanentData["EmployeeId"] = jQuery("#EmployeeId").val();
+            permanentData["EmployeeContactDetailId"] = jQuery("#pEmployeeContactDetailId").val();
+            formData.push(permanentData)
+
+            return formData;
+        }
+
+        function ClearFormData() {
+            var allCtrl = jQuery("[id^=Permanent]")
+            allCtrl.each(function (i) {
+                var curCtrl = jQuery(this);
+                curCtrl.val('');
+            });
+        }
+
+        function PopulateCascadingDDL(actionURL, parentDDL, parentDDLValue, childDDL, defaultSelected, keyText, valueText) {
+            //var objDDL = countryDDL
+            if (parentDDL != "")
+                jQuery("#" + parentDDL).attr("disabled", true)
+
+            if (parentDDL.toLowerCase() == "countryid" || parentDDL.toLowerCase() == "permanentcountryid" || parentDDL.toLowerCase() == "passportissuecountryid")
+                sParam = { isActive: true, countryId: ((parentDDLValue == "" || parentDDLValue == 0) ? jQuery("#" + parentDDL).val() : parentDDLValue) };
+            else if (parentDDL.toLowerCase() == "stateid" || parentDDL.toLowerCase() == "permanentstateid" || parentDDL.toLowerCase() == "passportissuestateid")
+                sParam = { isActive: true, stateId: (parentDDLValue == 0 ? jQuery("#" + parentDDL).val() : parentDDLValue) };
+
+
+            jQuery("#" + childDDL).html("")
+            // jQuery(this).blockUI();
+            jQuery.ajax({
+                type: "GET",
+                // url: "/WorkLocation/GetCounryStates",
+                url: actionURL,
+                data: sParam,
+                success: function (response) {
+                    //PopulateDropDown("StateId", response, 'Model.StateId', 'stateId', 'stateName')
+                    PopulateDropDown(childDDL, response, defaultSelected, keyText, valueText)
+                    jQuery("#" + parentDDL).attr("disabled", false)
+                    jQuery("#" + childDDL).trigger("change");
+                    // jQuery(document).ajaxStop(jQuery.unblockUI);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function OpenWindows(src, type, target) {
+            var myWindow = window.open("", "FileViwerWindow", "width=700,height=500");
+            if (type == '')
+                myWindow.document.write("<embed src='" + src + "' width='500' height='400' />");
+            else
+                myWindow.document.write("<embed src='" + src + "' type='" + type + "' width='500' height='400' />");
+        }
+
+        //function OpenWindows(src, type, target) {
+        //    var myWindow = window.open("", "FileViwerWindow", "width=700,height=500");
+        //    myWindow.document.write("<embed src='" + src + "'" + (type == '' ? "" : "type='" + type + "'")  width = '500' height = '400' /> ");
+        //        }
+
+        function SaveEmployeeInfo(formID, url) {
+
+            jQuery("#FormName").val(formID);
+
+            if (formID == "finalSubmit") {
+                if (!ValidForm("employeepersonalinfoForm")) {
+                    alert("Please fill personal information and try again");
+                    return false;
+                }
+                else if (!ValidForm("employeejobForm")) {
+                    alert("Please fill all mandatory fields in Job Information Section and try again");
+                    return false;
+                }
+            }
+
+            if (!ValidForm(formID)) {
+                return false;
+            }
+
+            jQuery("#errorDiv").show();
+            jQuery("#errorPara").html("");
+            var moveNextForm = false;
+            var keyAttr = tableID = "";
+            var tableCols = [];
+            var data = [];
+
+            // var formData = jQuery("#employeepersonalinfoForm").serialize(); ;
+            // if (formID == "employeeReferenceForm") {
+            jQuery("#ReferenceOf").val(jQuery("#EmployeeId").val());
+            //}
+            if (formID == "employeecontactdetailForm" && jQuery("#sameAsCurrent").prop("checked") == true) {
+
+                if (jQuery("#PermanentStateId").val() == "0") {
+                    jQuery("#PermanentStateId").val(jQuery("#StateId").val())
+                }
+                if (jQuery("#PermanentCityId").val() == "0") {
+                    jQuery("#PermanentCityId").val(jQuery("#CityId").val())
+                }
+            }
+
+            if (formID == "employeecontactdetailForm") {
+                formData = "employeeContactDataString=" + JSON.stringify(GetContactData());
+            }
+            else if (formID == "employeepassportdetailsForm" || formID == "employeejobForm" || formID == "employeepersonalinfoForm" || formID == "finalSubmit") {
+                formData = jQuery("#employeepersonalinfoForm").serialize() + "&EmployeeId=" + jQuery("#EmployeeId").val() + "&FormName=" + jQuery("#FormName").val();
+                formData = formData + "&" + jQuery("#employeejobForm").serialize()
+                formData = formData + "&" + jQuery("#employeepassportdetailsForm").serialize()
+                var infoFillingStatus = jQuery("#InfoFillingStatus").val();
+                formData = (formID == "finalSubmit" ? formData + "&InfoFillingStatus=" + infoFillingStatus : formData + "&InfoFillingStatus=" + infoFillingStatus);
+            }
+            else if (formID == "employeeuploaddocForm") {
+                var formData = GetEmployeeDocsData();
+            }
+            else if (formID == "employeelanguagesForm") {
+                let read = $("#employeelanguagesForm").find("[name='Read']").is(':checked');// == true : false;
+                let write = $("#employeelanguagesForm").find("[name='Write']").is(':checked');// == true : false;
+                let speak = $("#employeelanguagesForm").find("[name='Speak']").is(':checked');// == true : false;
+                let language = $("#employeelanguagesForm").find("[name='Language']").val();
+                let EmployeeLanguageDetailId = $("#employeelanguagesForm").find("[name='EmployeeLanguageDetailId']").val();
+                EmployeeLanguageDetailId = EmployeeLanguageDetailId == null ? 0 : EmployeeLanguageDetailId;
+                EmployeeLanguageDetailId = EmployeeLanguageDetailId == "" ? 0 : EmployeeLanguageDetailId;
+                //formData = jQuery("#" + formID).serialize() + "  &EmployeeId=" + jQuery("#EmployeeId").val() + "&FormName=" + jQuery("#FormName").val();;
+                formData = "Language=" + language + "&Read=" + read + "&Write=" + write + "&Speak=" + speak + "&EmployeeLanguageDetailId=" + EmployeeLanguageDetailId + "&EmployeeId=" + jQuery("#EmployeeId").val() + "&FormName=" + jQuery("#FormName").val();
+            }
+            else
+                formData = jQuery("#" + formID).serialize() + "&EmployeeId=" + jQuery("#EmployeeId").val() + "&FormName=" + jQuery("#FormName").val();
+            var x = 1
+            //jQuery.blockUI();
+            BlockUI();
+            jQuery.ajax({
+                type: "POST",
+                //url: "/Employee/SaveEmployeePersonalInfo",
+                url: url,
+                data: formData,
+                cache: false,
+                contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                success: function (receivedData) {
+                    UnblockUI();
+                    if (formID == "finalSubmit") {
+                        if (receivedData.displayMessage.trim().toUpperCase() == "SUCCESS") {
+                            alert("All information submitted successfully");
+                            window.location.href = '/Employee/Employee'
+                        }
+                        else {
+                            jQuery("#errorDiv").show();
+                            jQuery("#errorPara").html(receivedData.displayMessage.trim().replace("\r\n", "</br>"));
+                            moveNextForm = false;
+                        }
+                        //OpenWindows('/Employee/Employee');
+                    }
+                    else if (formID == "employeepersonalinfoForm") {
+                        if (IsNumeric(receivedData)) {
+                            jQuery("#EmployeeId").val(receivedData)
+                            jQuery("#EmployeeCode").val(receivedData)
+                            moveNextForm = true;
+                            MoveNext(formID);
+                        }
+                        else if (receivedData.toUpperCase() == "SUCCESS") {
+                            moveNextForm = true;
+                            MoveNext(formID)
+                        }
+                        else {
+                            jQuery("#errorDiv").show();
+                            jQuery("#errorPara").html(receivedData.replace("\r\n", "</br>"));
+                        }
+                    }
+                    else if (formID == "employeeBankForm" || formID == "employeecontactdetailForm" || formID == "employeejobForm" || formID == "employeepassportdetailsForm") {
+                        if (receivedData.toUpperCase() == "SUCCESS") {
+                            moveNextForm = true;
+                            MoveNext(formID)
+                        }
+                        else {
+                            jQuery("#errorDiv").show();
+                            jQuery("#errorPara").html(receivedData.replace("\r\n", "</br>"));
+                        }
+
+                    }
+                    else if (formID == "employeefamilyForm") {
+                        //PopulateFamilyTable("familyTable", data);
+                        data = receivedData.employeeFamilyDetails;
+                        tableID = "familyTable";
+                        keyAttr = "employeeFamilyDetailId"
+                        tableCols = ['memberName', 'memberDob', 'relationship', 'Action']
+                        moveNextForm = true;
+                    }
+                    else if (formID == "employeeacdemicForm") {
+                        data = receivedData.employeeAcademicDetails;
+                        tableID = "academicTable";
+                        keyAttr = "academicDetailId"
+                        tableCols = ['instituteName', 'academicName,data-selectedid,academicId', 'passingYear', 'percentage', 'Action']
+                        moveNextForm = true;
+                    }
+                    else if (formID == "employeeexperienceForm") {
+                        data = receivedData.employeeExperienceDetails;
+                        tableID = "experienceTable";
+                        keyAttr = "experienceDetailId"
+                        tableCols = ['companyName', 'jobTitle,data-selectedid,ExperienceJobTitleId', 'joinDate', 'lastWorkingDate', 'Action']
+                        moveNextForm = true;
+                    }
+                    else if (formID == "employeecertificationForm") {
+                        data = receivedData.employeeCertificationDetails;
+                        tableID = "certificationTable";
+                        keyAttr = "CertificationDetailId"
+                        tableCols = ['certificationName', 'yearOfCertification', 'duration', 'Action']
+                        moveNextForm = true;
+                    }
+                    else if (formID == "employeereferenceForm") {
+                        data = receivedData.employeeReferenceDetails;
+                        tableID = "referenceTable";
+                        keyAttr = "employeeReferenceId"
+                        tableCols = ['personName', 'presentCompany', 'referenceDesignation', 'referenceContactNo', 'referenceMobileNo', 'howYouKnow', 'Action']
+                        moveNextForm = true;
+                    }
+                    else if (formID == "employeelanguagesForm") {
+                        data = receivedData.employeeLanguageDetails;
+                        tableID = "languageTable";
+                        keyAttr = "employeeLanguageDetailId"
+                        tableCols = ['language', 'read', 'write', 'speak', 'Action']
+                        moveNextForm = true;
+                    }
+                    if (data != null) {
+                        if (!(formID == "employeepersonalinfoForm" || formID == "employeecontactdetailForm")) {
+                            if (keyAttr != "")
+                                jQuery("#" + CapitalizeSmallFirstLetter(keyAttr, "C")).val("0");
+                            if (data.length > 0)
+                                PopulateTable(tableID, data, tableCols, keyAttr)
+                        }
+                    }
+
+                    if (receivedData.displayMessage.toUpperCase() != "SUCCESS") {
+                        jQuery("#errorDiv").show();
+                        jQuery("#errorPara").html(receivedData.displayMessage.replace("\r\n", "</br>"));
+                        moveNextForm = false;
+                    }
+
+                    if ((!(formID == "employeepersonalinfoForm" || formID == "employeecontactdetailForm" || formID == "employeejobForm" || formID == "employeebankForm")) && moveNextForm)
+                        ResetForm(formID);
+
+
+                    if ((formID == "employeefamilyForm" || formID == "employeeacdemicForm" || formID == "employeeexperienceForm" || formID == "employeecertificationForm" || formID == "employeereferenceForm") && moveNextForm == true)
+                        ResetForm(formID);
+
+
+                },
+                error: function (result) {
+                    UnblockUI();
+                    $erroralert("Error!", result.responseText + '!');
+                    var x = 1;
+                }
+            });
+        }
+
+
+        function ResetForm(formID) {
+            jQuery("#" + formID)[0].reset();
+            jQuery("#EmployeeFamilyDetailId").val("0");
+            jQuery("#academicDetailId").val("0");
+            jQuery("#ExperienceDetailId").val("0");
+            jQuery("#CertificationDetailId").val("0");
+            jQuery("#EmployeeReferenceId").val("0");
+            jQuery("#EmployeeLanguageDetailId").val("0");
+            jQuery("#FormName").val("");
+        }
+
+        //function IsNumeric(data) {
+        //    isNumeric = /^[-+]?(\d+|\d+\.\d*|\d*\.\d+)$/;
+        //    return isNumeric.test(data) ? true : false;
+        //}
+
+        function PopulateTable(tableID, data, tableCols, keyAttr) {
+            // alert("List");
+            var tableCtrl = jQuery("#" + tableID)
+            //var tBody = jQuery('<tbody>')
+            //jQuery("#" + tableID + " tbody").remove();
+            //jQuery("#" + tableID + " tr").each(function () {
+            //    this.parentNode.removeChild(this);
+            //});
+            jQuery("#" + tableID + " tr").slice(1).remove()
+
+            data.forEach(function (row) {
+                var tr = $('<tr>');
+                tableCols.forEach(function (attr) {
+                    if (attr.toUpperCase() == "ACTION")
+                        tr.append('<th><button  class="btn btn-primary" onclick="SetFormDetail(\'' + tableID + '\',\'' + keyAttr + '\',\'' + row[keyAttr] +
+                            '\')">Edit</button><Button  class="btn btn-primary" onclick = "DeleteRecordList(\'' + row[keyAttr] +
+                            '\',\'' + tableID + '\')">Delete</Button></th>');
+                    else if (attr.indexOf(',') >= 1) {
+                        arrAttr = attr.split(',')
+                        tr.append('<td><span id="' + CapitalizeSmallFirstLetter(arrAttr[2], "C") + '_' + row[keyAttr] + '" ' + arrAttr[1] + '="' + row[arrAttr[2]] + '">' + row[arrAttr[0]] + '</span></td>');
+                    }
+                    else
+                        tr.append('<td><span id="' + CapitalizeSmallFirstLetter(attr, "C") + '_' + row[keyAttr] + '">' + row[attr] + '</span></td>');
+
+                    //tr.append();
+                });
+                tableCtrl.append(tr);
+            });
+
+        }
+
+        function SetFormDetail(tableID, keyID, keyValue) {
+            var tableCols = [];
+            if (tableID == "familyTable") {
+                tableCols = ['MemberName', 'MemberDob', 'Relationship'];
+            }
+            else if (tableID == "academicTable") {
+                tableCols = ['InstituteName', 'AcademicId', 'PassingYear', 'Percentage']
+            }
+            else if (tableID == "experienceTable") {
+                tableCols = ['CompanyName', 'ExperienceJobTitleId', 'JoinDate', 'LastWorkingDate']
+            }
+            else if (tableID == "certificationTable") {
+                tableCols = ['CertificationName', 'YearOfCertification', 'Duration']
+            }
+            else if (tableID == "referenceTable") {
+                tableCols = ['PersonName', 'PresentCompany', 'ReferenceDesignation', 'ReferenceContactNo', 'ReferenceMobileNo', 'HowYouKnow']
+            }
+            else if (tableID == "languageTable") {
+                tableCols = ['Language', 'Read', 'Write', 'Speak']
+            }
+            jQuery("#" + CapitalizeSmallFirstLetter(keyID, "C")).val(keyValue);
+            tableCols.forEach(function (attr) {
+                spanCtrl = jQuery("#" + attr + "_" + keyValue)
+                sSpanVal = spanCtrl.text()
+                var idVal = spanCtrl.data("selectedid");
+                sSpanVal = idVal != undefined ? idVal : sSpanVal;
+                //var isNotReadonly = (jQuery("#" + attr).attr('readonly') == undefined ? "" : jQuery("#" + attr).attr('readonly'));
+                //if (isNotReadonly.toLowerCase() == "readonly")
+                //    jQuery("#" + attr).removeAttr('readonly');
+                if (attr.toUpperCase() == "DOB") {
+                    //  var fp = jQuery("#Dob").flatpickr({ dateFormat: "d-m-Y", setDate(new Date(sSpanVal)})
+
+                }
+                if (jQuery("#" + attr).attr("type") == "checkbox") {
+                    if (sSpanVal.toUpperCase() == "TRUE") {
+                        jQuery("#" + attr).prop('checked', true);
+                    }
+                    else {
+                        jQuery("#" + attr).prop('checked', false);
+                    }
+                }
+                else {
+                    jQuery("#" + attr).val(sSpanVal)
+                }
+
+                //if (isNotReadonly.toLowerCase() == "readonly")
+                //    jQuery("#" + attr).attr('readonly', true);
+
+            });
+
+
+        }
+
+    </script>
+    <script>
+        var btnUpload = $("#upload_file"),
+            btnOuter = $(".button_outer");
+        btnUpload.on("change", function (e) {
+            var ext = btnUpload.val().split('.').pop().toLowerCase();
+            if ($.inArray(ext, ['gif', 'png', 'jpg', 'jpeg']) == -1) {
+                $(".error_msg").text("Not an Image...");
+            } else {
+                $(".error_msg").text("");
+                btnOuter.addClass("file_uploading");
+                setTimeout(function () {
+                    btnOuter.addClass("file_uploaded");
+                }, 3000);
+                var uploadedFile = URL.createObjectURL(e.target.files[0]);
+                setTimeout(function () {
+                    $("#uploaded_view").append('<img src="' + uploadedFile + '" />').addClass("show");
+                }, 3500);
+            }
+        });
+        $(".file_remove").on("click", function (e) {
+            $("#uploaded_view").removeClass("show");
+            $("#uploaded_view").find("img").remove();
+            btnOuter.removeClass("file_uploading");
+            btnOuter.removeClass("file_uploaded");
+        });
+
+        function GetEmployeeDocsData() {
+            var ajaxData = new FormData();
+            jQuery.each(jQuery(".employeeDocs"), function (i, obj) {
+                var dataId = jQuery(this).data("dcumenttypes")
+                jQuery.each(obj.files, function (j, file) {
+                    // var fileName = file.name;
+                    var fileExtension = file.name.replace(/^.*\./, '');
+                    var newName = dataId + "." + fileExtension
+                    ajaxData.append('UploadedFile', file, newName); // is the var i against the var j, because the i is incremental the j is ever 0
+                });
+            });
+            ajaxData.append("EmployeeId", jQuery("#EmployeeId").val());
+            ajaxData.append("ClientId", jQuery("#ClientId").val());
+            ajaxData.append("FormName", jQuery("#FormName").val());
+            // ajaxData.append('UploadDcumentDetailId', jQuery("#UploadDcumentDetailId").val());
+            return ajaxData;
+        }
+
+
+        function GetProfileImage() {
+            let formData = new FormData();
+            formData.append("ProfileImageFile", jQuery("#upload_file")[0].files[0]);
+            formData.append("EmployeeId", jQuery("#EmployeeId").val());
+            formData.append("ClientId", jQuery("#ClientId").val());
+            formData.append("UnitId", jQuery("#UnitId").val());
+            formData.append("EmployeeCode", jQuery("#EmployeeCode").val());
+            formData.append("FormName", jQuery("#FormName").val());
+
+            return formData;
+        }
+
+        //$(document).ready(function () {
+        //    //jQuery(".employeeDocs").each(function (key) {
+        //    //    jQuery(this).change(function () {
+        //    //        jQuery(this).addClass('dirty');
+        //    //    });
+        //    //});
+
+        //});
+
+        function UploadEmployeeDocument(formID, url, actionId) {
+            jQuery("#FormName").val(formID);
+
+            if (jQuery(".dirty").length == 0) {
+                if (!ValidForm(formID)) {
+                    return false;
+                }
+            }
+
+            var formData = new FormData();
+            if (formID == "employeeuploaddocForm")
+                formData = GetEmployeeDocsData();
+            if (formID == "employeeportfolioForm")
+                formData = GetProfileImage();
+            var x = 1
+            BlockUI();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                dataType: "json",
+                success: function (data) {
+                    UnblockUI();
+                    jQuery("#FormName").val("");
+                    if (actionId == "uploaddocs")
+                        GetEmployeeDocsData();
+                    else if (actionId == "uploaddocs_N_movenext")
+                        MoveNext(formID);
+                },
+                error: function (result) {
+                    UnblockUI();
+                    var x = 1;
+                    jQuery("#FormName").val("");
+                    MoveNext(formID);
+                }
+            });
+        }
+
+        function DeleteRecordList(id, tableId) {
+            var del = false;
+            var url = "", formData = "";
+            if (tableId == "languageTable") {
+                del = true;
+                formData = "EmployeeLanguageDetailId=" + id + "&EmployeeId=" + jQuery("#EmployeeId").val() + "";
+                url = "/EmployeeLanguageDetail/DeleteEmployeeLanguage";
+            }
+
+            if (del == true) {
+                BlockUI();
+                jQuery.ajax({
+                    type: "POST",
+                    //url: "/Employee/SaveEmployeePersonalInfo",
+                    url: url,
+                    data: formData,
+                    cache: false,
+                    contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                    success: function (receivedData) {
+                        UnblockUI();
+                        let data, keyAttr, tableCols;
+                        if (tableId == "languageTable") {
+                            data = receivedData.employeeLanguageDetails;
+                            keyAttr = "employeeLanguageDetailId"
+                            tableCols = ['language', 'read', 'write', 'speak', 'Action']
+                            if (keyAttr != "")
+                                jQuery("#" + CapitalizeSmallFirstLetter(keyAttr, "C")).val("0");
+                        }
+                        PopulateTable(tableId, data, tableCols, keyAttr);
+                    },
+                    error: function (result) {
+                        UnblockUI();
+                        $erroralert("Error!", result.responseText + '!');
+
+                    }
+                });
+            }
+
+        }
+
+    </script>
+}

@@ -1,0 +1,173 @@
+﻿@model SimpliHR.Infrastructure.Models.Leave.LeaveCalenderYearDTO
+@{
+    ViewData["Title"] = "LeaveYear";
+}
+<link rel="stylesheet" href="~/assets/vendor/libs/bs-stepper/bs-stepper.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/bootstrap-select/bootstrap-select.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/select2/select2.css" />
+
+<style>
+
+
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+
+
+
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Leave /</span> Leave Year </h4>
+    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table List" id="List">
+                    <thead>
+                        <tr>
+
+                            <th>Leave Year</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            @* <th>Status</th>*@
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       @if (Model.LeaveCalenderYearList != null)
+                            @foreach (var item in Model.LeaveCalenderYearList)
+                            {
+                                <tr>
+
+                                    <td>@item.CalendarName</td>
+                                    <td>@item.StartDate.Value.ToString("dd-MMM-yyyy")</td>
+                                    <td>@item.EndDate.Value.ToString("dd-MMM-yyyy")</td>
+
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="/Leave/GetLeaveCalenderInfo/@item.EncryptedId"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="#" onclick="DeleteRecord('@item.CalendarName','@item.EncryptedId')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                   @*  <th>
+                                        <a class="btn btn-primary" href="/Leave/GetLeaveCalenderInfo/@item.EncryptedId">Edit</a>
+                                        <button class="btn btn-primary" onclick="DeleteRecord('@item.CalendarName','@item.EncryptedId')"> Delete</button>
+                                    </th> *@
+                                </tr>
+                            }
+                            </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/Leave/LeaveYear/'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/Leave/SaveLeaveCalender">
+                <div class="row g-3">
+
+                    <div class="col-md-12">
+                        <label class="form-label required" for="multicol-last-name">Leave Year</label>
+                     @*   <input type="text" class="yearpicker form-control" value="" />*@
+                        <input type="text" id="CalendarName" name="CalendarName" required maxlength="10" value="@Model.CalendarName" onKeyPress="if(this.value.length==10) return false;" class="form-control" placeholder="Leave Year">
+                        @*<span asp-validation-for="LeaveTypeCode" class="text-danger"></span>*@
+                    </div> <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Start Date</label>
+                        <input type="text" id="StartDate" name="StartDate" required maxlength="100" class="form-control flatpickr-date1" value="@Model.StartDate" placeholder="DD-MMM-YYYY">
+                        @*<span asp-validation-for="LeaveType" class="text-danger"></span>*@
+                    </div> <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">End Date</label>
+                        <input type="text" id="EndDate" name="EndDate" required maxlength="50" class="form-control flatpickr-date1" value="@Model.EndDate" placeholder="DD-MMM-YYYY">
+                        @*<span asp-validation-for="MaxLimit" class="text-danger"></span>*@
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" id="hdnLeaveYearId" name="LeaveYearId" class="form-control" value="@Model.LeaveYearId" />
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/Leave/LeaveYear/'">Cancel</button>
+                   @* <button type="button" class="btn btn-primary me-sm-3 me-1" onclick="getLocation()">Get Location</button>*@
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+@*    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script src="~/assets/js/yearpicker.js"></script>*@
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+
+            $(".flatpickr-date1").flatpickr({
+                //monthSelectorType: 'static',
+                dateFormat: "d-M-Y"
+            });
+
+            if (@Model.LeaveYearId != 0 || @Model.HttpStatusCode!= 200) {
+                $("#List").hide();
+                $("#Add").show();
+            }
+            else {
+                ClearInputs();
+            }
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                $successalert("", "@Model.DisplayMessage");
+            }
+
+            });
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+        function ClearInputs() {
+            $("#CalendarName").val("");
+            $("#StartDate").val("");
+            $("#EndDate").val("");
+
+        }
+
+        function DeleteRecord(leaveTypeName, leaveTypeId) {
+            // event.preventDefault();
+            url = $(this).attr('href');
+            history.pushState({ key: url }, '', url);
+            if (confirm("Sure want to delete leave year Calender '" + leaveTypeName + "'?")) {
+                window.location.href = "/Leave/DeleteLeaveCalender/" + leaveTypeId;
+            }
+            return false;
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                x.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        function showPosition(position) {
+            let loc = "Latitude: " + position.coords.latitude +
+                "<br>Longitude: " + position.coords.longitude;
+          //  alert(loc);
+        }
+       
+    </script>
+    }
+

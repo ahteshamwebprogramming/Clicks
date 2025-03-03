@@ -1,0 +1,589 @@
+@model SimpliHR.Infrastructure.Models.Attendance.AttendanceHistoryViewModel
+@{
+    ViewData["Title"] = "Employee Attendance";
+    if (@Model.AttendanceList != null)
+    {
+        int totalRows = 0;
+        totalRows = Model.AttendanceList.Count;
+    }
+    DateTime today = DateTime.Today;
+    DateTime monthStart = new DateTime(today.Year, today.Month, 1);
+    DateTime monthEnd = monthStart.AddMonths(1).AddDays(-1);
+    Dictionary<string, string> rowColor = new Dictionary<string, string>();
+    rowColor.Add("TD", "circleBg grayBg");
+    rowColor.Add("P", "circleBg greenBg");
+    rowColor.Add("A", "circleBg redBg");
+    rowColor.Add("P/H", "circleBg brownBg");
+    rowColor.Add("WO", "circleBg lightGrayBg");
+    rowColor.Add("OD", "circleBg orangeBg");
+    rowColor.Add("HD", "circleBg lightGreenBg");
+}
+<style>
+
+    .grayBg {
+        background: #777777
+    }
+
+    .lightGrayBg {
+        background: #cccccc
+    }
+
+    .greenBg {
+        background: #009900
+    }
+
+    .redBg {
+        background: #ff0000
+    }
+
+    .brownBg {
+        background: #cc9933
+    }
+
+    .pinkBg {
+        background: #da18d8
+    }
+
+    .orangeBg {
+        background: #ff9900
+    }
+
+    .lightGreenBg {
+        background: #66ff99
+    }
+
+    .yellowBg {
+        background: #ffff00
+    }
+
+    .blueBg {
+        background: #0000ff
+    }
+
+    .lightBlueBg {
+        background: #5bc0de
+    }
+
+    .cont-no {
+        display: inline-block;
+        font-size: 12px;
+        margin-right: 5px; margin-bottom:10px;
+    }
+
+
+
+    .circleBg {
+        padding: 10px 10px;
+        color: #fff;
+        border-radius: 5px;
+        display: inline-block;
+        margin-bottom: 10px;
+        text-align: center
+    }
+
+    .cstm-badge {
+        background-color: #FFF;
+        color: #000;
+    }
+
+    .cstm-btn {
+        /*color: #FFF;*/
+        pointer-events: none;
+        border: 0px !important;
+        padding:8px 15px
+    }
+
+        .cstm-btn:hover {
+            /*color: #FFF;*/
+            transform: none !important
+        }
+</style>
+<link rel="stylesheet" href="../../assets/vendor/libs/tagify/tagify.css" />
+<!-- Content wrapper -->
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Attendance /</span> View Attendance</h4>
+    <!-- Location  -->
+    <div class="modal fade" id="showAlert" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+            <h2>SimpliHR2.0</h2>
+            <div class="modal-content p-3 p-md-5">
+                <div class="modal-body">
+                    <button type="button" class="btn-close" name="btnPopupClose" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-4">
+                    </div>
+                    <form id="showAlert" class="row g-3" onsubmit="return false">
+                        <div class="col-12 text-center" id="successDiv">
+                            <p id="errorPara" class="error" style="color:red"></p>
+                        </div>
+                        <div class="col-12 text-center" id="errorDiv">
+                            <p id="successPara" class="error" style="color:black"></p>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="popupBtnDiv" class="col-12 text-center">
+                    @*  <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>*@
+                    <button type="reset" name="btnPopupClose"
+                            class="btn btn-label-secondary btn-reset mt-3"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                        Close
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="tableInfo">
+        <div class="card">
+            <div class="card-body">
+                <div class="mb-3 text-center">
+                    <div class="cont-no">
+                        @*<div class="circleBg grayBg">Total Days (@Model.DutyDays)</div>*@
+                        <div class="btn btn-secondary text-nowrap d-inline-block grayBg cstm-btn">Total Days  <span class="badge cstm-badge badge-notifications">@Model.DutyDays</span> </div>
+                    </div>
+                    <div class="cont-no">
+                        @*<div class="circleBg greenBg">Present @Model.PresentDays)</div>*@
+                        <div class="btn btn-secondary text-nowrap d-inline-block greenBg cstm-btn">Present <span class="badge cstm-badge badge-notifications">@Model.PresentDays</span> </div>
+                    </div>
+                    <div class="cont-no">
+                        @*<div class="circleBg redBg">Absent (@Model.AbsentDays)</div>*@
+                        <div class="btn btn-secondary text-nowrap d-inline-block redBg cstm-btn">Absent <span class="badge cstm-badge badge-notifications">@Model.AbsentDays</span> </div>
+                    </div>
+                    <div class="cont-no">
+                        @*<div class="circleBg brownBg">Half Days (@Model.HalfDays)</div>*@
+                        <div class="btn btn-secondary text-nowrap d-inline-block brownBg cstm-btn">Half Days <span class="badge cstm-badge badge-notifications">@Model.HalfDays</span> </div>
+                    </div>
+                    <div class="cont-no">
+                        @*<div class="circleBg pinkBg">Leave (@Model.Leaves)</div>*@
+                        <div class="btn btn-secondary text-nowrap d-inline-block pinkBg cstm-btn">Leave <span class="badge cstm-badge badge-notifications">@Model.Leaves</span> </div>
+                    </div>
+                    <div class="cont-no">
+                        @*<div class="circleBg orangeBg">Outdoor Duty (@Model.OutsideDuty)</div>*@
+                        <div class="btn btn-secondary text-nowrap d-inline-block orangeBg cstm-btn">Outdoor Duty <span class="badge cstm-badge badge-notifications">@Model.OutsideDuty</span> </div>
+                    </div>
+                    <div class="cont-no">
+                        @*<div class="circleBg lightGrayBg">Weekly Off (@Model.WeeklyOff)</div>*@
+                        <div class="btn btn-secondary text-nowrap d-inline-block lightGrayBg cstm-btn">Weekly Off <span class="badge cstm-badge badge-notifications">@Model.WeeklyOff</span> </div>
+                    </div>
+                    <div class="cont-no">
+                        @*<div class="circleBg lightGreenBg">Halfday (@Model.HalfDays)</div>*@
+                        <div class="btn btn-secondary text-nowrap d-inline-block lightGreenBg cstm-btn">Holiday <span class="badge cstm-badge badge-notifications">@Model.Holidays</span> </div>
+                    </div>
+                    @*<div class="cont-no">
+                        <div class="btn btn-secondary text-nowrap d-inline-block yellowBg cstm-btn">Approved <span class="badge cstm-badge badge-notifications">@Model.Approved</span> </div>
+                    </div>
+                    <div class="cont-no">
+                        <div class="btn btn-secondary text-nowrap d-inline-block blueBg cstm-btn">Rejected <span class="badge cstm-badge badge-notifications">@Model.Rejected</span> </div>
+                    </div>*@
+                    <div class="cont-no">
+                        @*<div class="circleBg lightBlueBg">CompOff (@Model.CompOff)</div>*@
+                        <div class="btn btn-secondary text-nowrap d-inline-block lightBlueBg cstm-btn">CompOff <span class="badge cstm-badge badge-notifications">@Model.CompOff</span> </div>
+                    </div>
+                </div>
+
+                <div style="" class="containerdiv">
+                    <form id="ViewAttendanceForm" method="post" action="/EmployeeAttendanceUI/ViewAttendance">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="formtabs-birthdate">Start Date</label>
+                                <input type="text"
+                                       id="StartDate"
+                                       name="StartDate"
+                                       value="@(Model.StartDate == null ? monthStart.ToString("dd-MMM-yyyy") : ((DateTime)Model.StartDate).ToString("dd-MMM-yyyy"))"
+                                       class="form-control flatpickr-date1"
+                                       placeholder="DD-MMM-YYYY" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="formtabs-birthdate">End Date</label>
+                                <input type="text"
+                                       id="EndDate"
+                                       name="EndDate"
+                                       value="@(Model.EndDate == null ? monthEnd.ToString("dd-MMM-yyyy") : ((DateTime)Model.EndDate).ToString("dd-MMM-yyyy"))"
+                                       class="form-control flatpickr-date1"
+                                       placeholder="DD-MMM-YYYY" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="">Employee</label>
+                                @Html.DropDownListFor(x => x.EmployeeId,new SelectList(Model.EmployeeMasterKeyValue,"EmployeeId", "EmployeeNameCode", Model.EmployeeId),"Select Employees",htmlAttributes: new { @class = "select2 form-select select2-hidden-accessible",@name="EmployeeId" , @required="required"})
+                            </div>
+                        </div>
+                        <div class="pt-4">                         
+                            @*<button type="submit" class="btn btn-primary btn-sm me-sm-3 me-1" onclick="return ValidateViewAttendance()">Show Attendance</button>*@
+                            <button type="submit" class="btn btn-primary mb-2" onclick="return ValidateViewAttendance()">Show Attendance</button>
+                            <button type="button" class="btn btn-primary mb-2" onclick="window.location.href='/EmployeeAttendanceUI/MarkAttendance/@Model.eEmployeeId'">Regularize Attendance</button>
+                        </div>
+                    </form>
+                </div>
+                               
+                <div class="table-responsive text-nowrap mt-2">
+                    <table class="datatables-ajax table List">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Date</th>
+                                <th>Day</th>
+                                <th>Shift</th>
+                                <th>Stay Hrs</th>
+                                <th>Status</th>
+                                <th>In Time</th>
+                                <th>Out Time</th>
+                                <th>Reason</th>
+                                <th>Action</th>                              
+                                <th>Remark</th>
+                            </tr>
+                        </thead>
+                        @if (Model.AttendanceList.Count > 0)
+                        {
+                            <tbody>
+                                @{
+                                    int iCtr = 1;
+                                    var showReason = false;
+                                    var inTime = "00:00:00";
+                                    var outTime = "00:00:00";
+                                    var status = "";
+                                    var shiftSchDetail = "";
+                                    var shiftAtndDetail = "";
+                                    //var Location = "";
+                                    var ctrlId = string.Empty;
+                                    //foreach (var item in @Model.AttendanceList.Where(x => (((x.InTime != null && x.OutTime != null) || x.ActionType != null || x.Status != null && x.Status.ToUpper() == "WO"))))
+                                    foreach (var item in @Model.AttendanceList)
+                                    {
+                                        showReason = false;
+                                        ctrlId = $"{item.EmployeeId}_{item.DutyDate}";
+                                        inTime = @item.InTime == null ? "00:00" : item.InTime.Value.ToString(@"hh\:mm");
+                                        outTime = @item.OutTime == null ? "00:00" : item.OutTime.Value.ToString(@"hh\:mm");
+                                        status = ((@item.Status == null || @item.Status == "") ? "" : @item.Status);
+                                        string rowColorCls = rowColor["TD"];
+                                        rowColorCls =  (item.Status == null || item.Status == "") ? rowColor["A"] : rowColor[item.Status];
+                                        rowColorCls = (item.AttendanceType == "WO" ? rowColor["WO"] : rowColorCls);
+                                        rowColorCls = (item.IsHoliday == true ? rowColor["HD"] : rowColorCls);
+                                        string clockInLocation = "Manual Punches";
+                                        string clockOutLocation = "Manual Punches";
+
+                                        if (@Model.GpslocationDetailList!=null)
+                                        {
+                                            var locationList = @Model.GpslocationDetailList.Where(x => x.EmployeeId == item.EmployeeId && x.DutyDate.Value.ToString("ddMMyyyy") == item.DutyDate.ToString("ddMMyyyy")).Select(p=>p).ToList();
+                                            if (locationList!=null && locationList.Count()>0)
+                                            {                                          
+                                                clockInLocation = locationList.Select(p => p.CheckInLocation).FirstOrDefault().ToString();
+                                                clockOutLocation = locationList.Select(p => p.CheckOutLocation).FirstOrDefault().ToString();                                                                                                
+                                            }
+                                        }  
+
+                                        if (Model.ShiftMasterKeyValue != null)
+                                        {
+                                            shiftAtndDetail = "";
+                                            if(!string.IsNullOrEmpty(@item.ShiftIDAttended))
+                                                shiftAtndDetail = Model.ShiftMasterKeyValue.Where(x => x.ShiftCode == @item.ShiftIDAttended).Select(r => r.ShiftName).FirstOrDefault().ToString();
+                                        }
+                                            <tr>
+                                                <td> <div class="@rowColorCls"></div></td>
+                                              
+                                                <td>@item.DutyDate.ToString("dd-MMM-yy")</td>
+                                                <td>@item.DutyDate.ToString("ddd")</td>
+                                                <td>
+                                                    <span data-bs-toggle="tooltip"
+                                                          data-bs-offset="0,4"
+                                                          data-bs-placement="top"
+                                                          data-bs-html="true"
+                                                          data-bs-custom-class="tooltip-secondary"
+                                                          title="@shiftAtndDetail">
+                                                        @item.ShiftIDAttended
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                @(item.TotalStayHours == "" ? "" : item.TotalStayHours)
+                                                </td>
+                                           
+
+                                            @if (inTime != "00:00" || item.AttendanceType == "WO")
+                                            {
+                                                <td>@(item.IsHoliday.Value ? "Holiday" : item.Status == "P" ? "Present" : item.Status == "A" ? "Absent" : item.Status == "P/H" ? "Present/Absent" : item.AttendanceType == "WO" ? "Weekly Off" : "Absent")</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@(item.IsHoliday.Value ? "Holiday" :"Absent")</td>
+                                            }
+
+                                                <td>
+                                                    @inTime
+                                                <span data-bs-toggle="tooltip"
+                                                      data-bs-offset="0,4"
+                                                      data-bs-placement="top"
+                                                      data-bs-html="true"
+                                                      data-bs-custom-class="tooltip-secondary"
+                                                      title='@(clockInLocation==null?"":clockInLocation)'>
+                                                    <i class="fa-solid fa-location-dot"></i>
+                                                </span>
+                                                </td>
+                                                <td>
+                                                    @outTime
+                                                <span data-bs-toggle="tooltip"
+                                                      data-bs-offset="0,4"
+                                                      data-bs-placement="top"
+                                                      data-bs-html="true"
+                                                      data-bs-custom-class="tooltip-secondary"
+                                                      title='@(clockOutLocation==null?"":clockOutLocation)'>
+                                                    <i class="fa-solid fa-location-dot"></i>
+                                                </span>
+                                                </td>
+
+                                                <td>@item.ManualPunchReason</td>
+                                            <td>@(item.ActionType == "A" ? "Approved" : item.ActionType == "R" ? "Rejected" : "")</td>
+
+                                                <td>@item.ActionRemark</td>
+                                            </tr>
+                                        iCtr++;
+                                    }
+                                }
+
+                            </tbody>
+                        }
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<input type="hidden" id="Longitude" name="Longitude" class="form-control" />
+<input type="hidden" id="Latitude" name="Latitude" class="form-control" />
+
+<!-- Content wrapper -->
+<script src="../../assets/vendor/libs/tagify/tagify.js"></script>
+<script src="../../assets/js/forms-tagify.js"></script>
+<script src="~/customjs/commonfunction.js"></script>
+<script src="~/customjs/common.js"></script>
+
+@section scripts {
+
+                    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            jQuery(".List").dataTable();
+            jQuery("#showAlert").modal('hide');
+            jQuery(".flatpickr-date1").flatpickr({
+                monthSelectorType: 'static',
+                dateFormat: "d-M-Y"
+            });
+            jQuery("#showAlert").modal('hide');
+            //ShowServerMessage("@Model.DisplayMessage");
+            if ("@Model.DisplayMessage.Trim().ToUpper()" != "_BLANK") {
+                $successalert("", "@Model.DisplayMessage");
+            }
+
+            //getLocation();
+
+        });
+        var Latitude;
+        function CheckAll(regularizeAll) {
+            isAllChecked = regularizeAll.checked;
+            for (iCtr = 1; iCtr <= @Model.AttendanceHistoryList.Count; iCtr = iCtr + 1) {
+
+                chkBox = jQuery("#Regularize_" + iCtr)
+                if (chkBox != undefined) {
+                    isChecked = chkBox.is(":checked")
+
+                    if (isAllChecked && !isChecked) {
+                        chkBox.attr('checked', true).change();
+                    }
+                    else if (!isAllChecked && isChecked) {
+                        chkBox.attr('checked', false).change();
+                    }
+                }
+            }
+        }
+
+        function ValidateAttendance(rowData) {
+            var sValidMsg = "";
+
+            if (rowData.InTime == "")
+                sValidMsg = (sValidMsg == "" ? "" : sValidMsg + "<br>") + "Please fill the InTime"
+            if (rowData.OutTime == "")
+                sValidMsg = (sValidMsg == "" ? "" : sValidMsg + "<br>") + "Please fill the OnTime"
+            if (rowData.ManualPunchReason == "")
+                sValidMsg = (sValidMsg == "" ? "" : sValidMsg + "<br>") + "Please fill the Manual Punch Reason"
+            sValidMsg = (sValidMsg == "" ? "" : "Please fill the following for duty date " + rowData.DutyDate + "<br>" + sValidMsg)
+
+            return sValidMsg;
+        }
+
+        function ValidateViewAttendance() {
+
+
+            startDate = jQuery("#StartDate").val();
+            endDate = jQuery("#EndDate").val();
+            var dateDiff = dateDiffrenece(startDate, endDate, "DD-MMM-YYYY", "day")
+            if (dateDiff < 0) {
+                $erroralert("Transaction Failed!", "Start Date cannot be greater then End Date");
+                //jQuery("#errorDiv").show();
+                //jQuery("#errorPara").html("Start Date cannot be greater then End Date");
+                return false;
+            }
+            jQuery(" #tableInfo").hide()
+
+        }
+
+
+        function ShowServerMessage(sMsg) {
+            jQuery("#successPara").html("");
+            jQuery("#errorPara").html("");
+            if (sMsg != "_blank") {
+                if (sMsg.toUpperCase() == "SUCCESS") {
+                    sMsg = "Transaction Successful!";
+                    jQuery("#successDiv").show();
+                    jQuery("#successPara").html(sMsg);
+                    //$("#btnPopupDiv").on('click', '#btnPopup', function () {
+                    //    window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                    //});
+                    // window.location = "/EmployeeAttendanceUI/ViewAttendance"
+                }
+                else {
+                    jQuery("#errorDiv").show();
+                    jQuery("#errorPara").html(sMsg);
+                }
+
+                jQuery("#showAlert").modal('show');
+                //ResetForm();
+            }
+        }
+
+
+        function ResetForm() {
+            jQuery("#AttendanceRosterForm")[0].reset();
+        }
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+
+        function RediretToView() {
+            //window.location.href = '/EmployeeAttendanceUI/ViewAttendance'
+            $('#ViewAttendanceForm').submit();
+
+        }
+
+        function RegulerizeSelected() {
+
+            // alert(Latitude);
+
+            var rowData = {};
+            var attendanceHistoryVM = {};
+            var isData = false;
+            var dataCollection = new Array();
+            var results = new Array();
+            //var formData = new FormData();
+            var iCtr = 0;
+            var sValidMsg = "";
+            if (@Model.AttendanceHistoryList.Count> 0) {
+                for (iCtr = 1; iCtr <= @Model.AttendanceHistoryList.Count; iCtr = iCtr + 1) {
+                    isData = false;
+                    rowData = {};
+                    //var ctrlID = jQuery("#EmployeeId_" + iCtr).val() + "_" + jQuery("#DutyDate_" + iCtr).val();
+                    isChecked = jQuery("#Regularize_" + iCtr).is(":checked")
+
+                    if (isChecked) {
+
+                        rowData.EmployeeId = jQuery("#EmployeeId_" + iCtr).val();
+                        rowData.DutyDate = jQuery("#DutyDate_" + iCtr).val();
+                        rowData.ShiftStartTime = jQuery("#ShiftStartTime_" + iCtr).val();
+                        rowData.ShiftEndTime = jQuery("#ShiftEndTime_" + iCtr).val();
+                        rowData.InTime = document.getElementById("InTime_" + iCtr).value;
+                        rowData.OutTime = document.getElementById("OutTime_" + iCtr).value;
+                        rowData.ShiftIDAttended = document.getElementById("ShiftIDAttended_" + iCtr).value;
+                        rowData.ManualPunchReason = jQuery("#ManualPunchReason_" + iCtr).val();
+
+                        isData = true;
+                    }
+                    //sValidMsg = ValidateAttendance(rowData)
+                    //if (sValidMsg != "") {
+                    //    ShowServerMessage(sValidMsg)
+                    //    return false
+                    //}
+                    if (isData)
+                        dataCollection.push(rowData)
+
+                }
+
+
+            }
+            if (dataCollection.length <= 0)
+                $erroralert("Transaction Failed!", "Select punches request for approval/recjection");
+               // ShowServerMessage("Select punches request for approval/recjection")
+
+            if (dataCollection.length > 0) {
+                attendanceHistoryVM.AttendanceHistoryList = dataCollection;
+                attendanceHistoryVM.EmployeeId = jQuery("#EmployeeId").val();
+                attendanceHistoryVM.StartDate = jQuery("#StartDate").val();
+                attendanceHistoryVM.EndDate = jQuery("#EndDate").val();
+                BlockUI();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/EmployeeAttendanceUI/ApplyManualPunches",
+                    data: { inputData: attendanceHistoryVM },
+                    success: function (data) {
+                        //alert(data)
+                        UnblockUI();
+                        var sMsg = data.displayMessage  //.Trim().Replace("<br>", "\r\n")
+                        $successalert("", sMsg);
+                        if (sMsg.toUpperCase() == "SUCCESS") {
+                            jQuery('[name = "btnPopupClose"]').on('click', RediretToView)
+                        }
+
+
+                    },
+                    error: function (result) {
+                        var x = 1;
+                        $erroralert("Error!", "errror<br>" + result.responseText);
+                        UnblockUI();
+                    }
+                });
+
+            }
+
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            }
+        }
+
+        function showPosition(position) {
+
+            //   Latitude=position.coords.latitude;
+            jQuery("#Latitude").val(position.coords.latitude);
+            jQuery("#Longitude").val(position.coords.longitude);
+            //  alert(position.coords.latitude);
+
+            jQuery.ajax({
+                type: "GET",
+                url: "/EmployeeAttendanceUI/GetGPSLocation",
+                data: { latitude: jQuery("#Latitude").val(), longitude: jQuery("#Longitude").val() },
+                success: function (response) {
+
+                },
+                failure: function (response) {
+                    $erroralert("Error!", "errror<br>" + response.responseText);
+                },
+                error: function (response) {
+                    $erroralert("Error!", "errror<br>" + response.responseText);
+                }
+            });
+
+        }
+
+
+    </script>
+    }

@@ -1,0 +1,202 @@
+﻿@model SimpliHR.Infrastructure.Models.Exit.ExitViewModel
+@{
+    ViewData["Title"] = "EmployeeFinalSettlement";
+}
+
+<link href="~/assets/css/exitclearance.css" rel="stylesheet" />
+<style>
+
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Exit Management /</span>Employee Final Settlement</h4>
+    <div class="row">
+
+        <div class="col-sm-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive text-nowrap">
+                        <table class="table table-bordered">
+                            <thead>
+                                @* <tr>
+                                    <th width="100%">OnePlace - Employee Clearance Report</th>
+                                    <th width="0%"></th>
+                                </tr> *@
+                                <tr>
+                                    <td colspan="2" class="border-0" style="padding: 0;">
+                                        <table class="table table-bordered pb-2" id="particulars">
+                                            <!-- colapsable tr start-->
+                                            <tr>
+                                                <td colspan="2">
+                                                    <div name="RentedPremisesDetailForm" style="">
+                                                        <div name="HouseRentDetailsFormCollection">
+                                                            <div class="row">
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label" for="username"><strong>Employee Code</strong> </label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="EmployeeCode" name="EmployeeCode" value="@Model.EmployeeMasterInfo.EmployeeCode" class="form-control-plaintext mr-2" placeholder="" aria-label="" aria-describedby="">
+
+                                                                    </div>
+                                                                    <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label" for="username"><strong>Employee Name</strong></label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="EmployeeName" name="EmployeeName" value="@Model.EmployeeMasterInfo.EmployeeName" class="form-control-plaintext mr-2" placeholder="" aria-label="" aria-describedby="">
+                                                                    </div>
+                                                                    <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label" for="username"><strong>Department</strong></label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="DepartmentName" name="DepartmentName" value="@Model.EmployeeMasterInfo.DepartmentName" class="form-control-plaintext mr-2" placeholder="" aria-label="" aria-describedby="">
+                                                                        @*<select class="form-select inptgrps" name="">
+                                                                        <option selected="" value="">-Select Department--</option>
+                                                                        <option>Sample 1</option>
+                                                                        </select>*@
+                                                                    </div>
+                                                                    <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label" for="username"><strong>Designation</strong></label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="JobTitleName" name="JobTitleName" value="@Model.EmployeeMasterInfo.JobTitleName" class="form-control-plaintext mr-2" placeholder="" aria-label="" aria-describedby="">
+
+                                                                        @*<select class="form-select inptgrps" name="">
+                                                                        <option selected="" value="">-Select Designation--</option>
+                                                                        <option>Sample 1</option>
+                                                                        </select>*@
+                                                                    </div>
+                                                                    <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label" for="username"><strong>Payroll Company</strong></label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="CompanyName" name="CompanyName" value="@Model.EmployeeMasterInfo.CompanyName" class="form-control-plaintext mr-2" placeholder="" aria-label="" aria-describedby="">
+                                                                    </div>
+                                                                    <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label" for="username"><strong>Portfolio Company</strong></label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="UnitName" name="UnitName" value="@Model.EmployeeMasterInfo.UnitName" class="form-control-plaintext mr-2" placeholder="" aria-label="" aria-describedby="">
+                                                                    </div>
+                                                                    <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label" for="username"><strong>Reporting Manager</strong></label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="ManagerName" name="ManagerName" value="@Model.EmployeeMasterInfo.ManagerName" class="form-control-plaintext mr-2" placeholder="" aria-label="" aria-describedby="">
+                                                                    </div>
+                                                                    <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label" for="username"><strong>Date Of Resign</strong></label>
+                                                                    <div class="input-group">
+                                                                        @* string formatted = Convert.ToDateTime(@Model.EmployeeMasterInfo.ResignationDate).ToString("dd-MM-yyyy"); *@
+                                                                        <input type="text" id="ResignationDate" name="ResignationDate" value="@(Model.EmployeeMasterInfo.ResignationDate == null ? "" : ((DateTime)Model.EmployeeMasterInfo.ResignationDate).ToString("dd-MMM-yyyy"))" class="form-control-plaintext mr-2" placeholder="" aria-label="" aria-describedby="">
+                                                                    </div>
+                                                                    <span class="error" style="display:none">This field is mandatory</span>
+                                                                </div>
+                                                                <div class="col-md-4 mb-3">
+
+                                                                </div>
+                                                                <form id="ViewForm" method="post" action="/ExitManagement/SaveFullnFinalSettlement">
+                                                                    <div class="row g-3">
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label required" for=""><strong>Notice Period</strong></label>
+                                                                    <div class="input-group">
+                                                                        <select class="form-select" id="selNoticePeriod" required name="NoticePeriod" aria-label="Default select example">
+                                                                        <option value="0" selected>Select an option</option>
+                                                                        <option value="1">Waived Off</option>
+                                                                        <option value="2">Recoverable</option>
+                                                                        <option value="3">Payable</option>                                                                        
+                                                                    </select>
+                                                                    </div>
+                                                                </div>
+                                                                 <div class="col-md-4 mb-3">
+                                                                    <label class="form-label required" for=""><strong>Leave Balance</strong></label>
+                                                                    <div class="input-group">
+                                                                        <select class="form-select" id="selLeaveBalance" required name="LeaveBalance" aria-label="Default select example">
+                                                                        <option value="0" selected>Select an option</option>
+                                                                            <option value="1">Waived Off</option>
+                                                                            <option value="2">Recoverable</option>
+                                                                            <option value="3">Payable</option>                                                                                                                                         
+                                                                    </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4 mb-3">
+                                                                    <label class="form-label required" for=""><strong>Gratuity Payable</strong></label>
+                                                                    <div class="input-group">
+                                                                        <select class="form-select" id="selGratuity" required name="Gratuity" aria-label="Default select example">
+                                                                            <option value="0" selected>Select an option</option>
+                                                                            <option value="1">Yes</option>
+                                                                            <option value="2">No</option>                                                                           
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                </div>
+                                                                <div class="pt-4">
+                                                                    <input type="hidden" id="hdnEmployeeId" name="EmployeeId" value="@Model.EmployeeId" />
+                                                                        <button type="submit" class="btn btn-primary btn-sm me-sm-3 me-1" onclick="return BlockedUI();">Process and View</button>
+                                                                        @* <button type="button" id="btnview" onclick="javascript:window.location.href='/ExitManagement/FinalSettlementView/'" class="btn btn-primary btn-sm me-sm-3 me-1">View and Download</button> *@
+                                                                </div>
+                                                                </form>
+                                                               
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                  
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+@section scripts {
+    <script src="../../customjs/CommonFunction.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+          //  alert("@Model.EmployeeId");
+            if (@Model.LeaveBalance != 0) {
+                $("#selLeaveBalance").val(@Model.LeaveBalance);
+                $("#selNoticePeriod").val(@Model.NoticePeriod);
+                $("#selGratuity").val(@Model.Gratuity);
+                $("#selLeaveBalance").change();
+                $("#selNoticePeriod").change();
+                $("#selGratuity").change();
+            }
+
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                var id = $("#hdnEmployeeId").val();
+               window.location = '@Url.Action("FinalSettlementView", "ExitManagement", new { employeeId = "EMPID" })'.replace("EMPID", parseInt(id));
+            }
+
+        });
+
+        function BlockedUI() {
+
+            BlockUI();
+            
+
+        }
+
+    </script>
+}
+
+

@@ -1,0 +1,129 @@
+﻿@model SimpliHR.Infrastructure.Models.ClientManagement.ClientSettingDTO
+
+
+@{
+    string[] arrIdTypes = Model.IDTypes!=null?Model.IDTypes.Split(",").ToArray():null;
+    <div class="row g-3">
+        @if (!String.IsNullOrEmpty(Model.IDTypes))
+        {
+            if (((arrIdTypes.GetType().IsArray ? arrIdTypes.Contains("2") : false) || (Model.ClientId == -1)))
+            {
+                <div class="col-sm-6">
+                    <label for="formFile required" class="form-label">Pan Card</label>
+                    <input class="form-control employeeDocs" name="EmployeeDocs" required type="file" id="PanCardFile" data-dcumentTypes="2" />
+                </div>
+            }
+            if (((arrIdTypes.GetType().IsArray ? Model.IDTypes.Split(",").ToArray().Contains("1") : false) || (Model.ClientId == -1)))
+            //if ((Model.IDTypes.Split(",").ToArray().Contains("1") || (Model.ClientId == -1)))
+            {
+                <div class="col-sm-6">
+                    <label for="formFile required" class="form-label">Aadhar Card</label>
+                    <input class="form-control employeeDocs" name="EmployeeDocs" required type="file" id="AdharCardFile" data-dcumentTypes="1" />
+                </div>
+            }
+            if (((arrIdTypes.GetType().IsArray ? Model.IDTypes.Split(",").ToArray().Contains("3") : false) || (Model.ClientId == -1)))
+            //if ((Model.IDTypes.Split(",").ToArray().Contains("3") || (Model.ClientId == -1)))
+            {
+                <div class="col-sm-6">
+                    <label for="formFile required" class="form-label">Driving Liscense</label>
+                    <input class="form-control employeeDocs" name="EmployeeDocs" required type="file" id="DrivingLiscenseFile" data-dcumentTypes="3" />
+                </div>
+            }
+            if (((arrIdTypes.GetType().IsArray ? Model.IDTypes.Split(",").ToArray().Contains("4") : false) || (Model.ClientId == -1)))
+            //if ((Model.IDTypes.Split(",").ToArray().Contains("4") || (Model.ClientId == -1)))
+            {
+                <div class="col-sm-6">
+                    <label for="formFile required" class="form-label">GSTN</label>
+                    <input class="form-control employeeDocs" name="EmployeeDocs" required type="file" id="GSTNFile" data-dcumentTypes="4" />
+                </div>
+            }
+            if (((arrIdTypes.GetType().IsArray ? Model.IDTypes.Split(",").ToArray().Contains("5") : false) || (Model.ClientId == -1)))
+            //if ((Model.IDTypes.Split(",").ToArray().Contains("5") || (Model.ClientId == -1)))
+            {
+                <div class="col-sm-6">
+                    <label for="formFile required" class="form-label">Voter ID</label>
+                    <input class="form-control employeeDocs" name="EmployeeDocs" required type="file" id="VoterFile" data-dcumentTypes="5" />
+                </div>
+            }
+        }
+        @if (Model.ClientId == -1)
+        {
+                //<div class="col-sm-6">
+                //    <label for="formFile" class="form-label">Pan Card</label>
+                //    <input class="form-control employeeDocs" name="EmployeeDocs" type="file" id="PanCardFile" />
+                //</div>
+
+                //<div class="col-sm-6">
+                //    <label for="formFile" class="form-label">Aadhar Card</label>
+                //    <input class="form-control employeeDocs" name="EmployeeDocs" type="file" id="AdharCardFile" />
+                //</div>
+
+                //<div class="col-sm-6">
+                //    <label for="formFile" class="form-label">Driving Liscense</label>
+                //    <input class="form-control employeeDocs" name="EmployeeDocs" type="file" id="DrivingLiscenseFile" />
+                //</div>
+
+                //<div class="col-sm-6">
+                //    <label for="formFile" class="form-label">GSTN</label>
+                //    <input class="form-control employeeDocs" name="EmployeeDocs" type="file" id="GSTNFile" />
+                //</div>
+
+                //<div class="col-sm-6">
+                //    <label for="formFile" class="form-label">Voter ID</label>
+                //    <input class="form-control employeeDocs" name="EmployeeDocs" type="file" id="VoterFile" />
+                //</div>
+
+                <div class="col-sm-6" style="">
+                    <label for="formFile" class="form-label">Account Cheque</label>
+                <input class="form-control employeeDocs" name="EmployeeDocs" type="file" id="AccountChequeFile" data-dcumentTypes="6" />
+                </div>
+                <div class="col-sm-6" style="">
+                    <label for="formFile" class="form-label">10th Certificate</label>
+                <input class="form-control employeeDocs" name="EmployeeDocs" type="file" id="Certificate10File" data-dcumentTypes="7" />
+                </div>
+                <div class="col-sm-6" style="">
+                    <label for="formFile" class="form-label">12th Certificate</label>
+                <input class="form-control employeeDocs" name="EmployeeDocs" type="file" id="Certificate12File" data-dcumentTypes="8" />
+                </div>
+                <div class="col-sm-6" style="">
+                    <label for="formFile" class="form-label">Graduate</label>
+                <input class="form-control employeeDocs" name="EmployeeDocs" type="file" id="GraduateFile" data-dcumentTypes="9" />
+                </div>
+                <div class="col-sm-6" style="">
+                    <label for="formFile" class="form-label">Post Graduate</label>
+                <input class="form-control employeeDocs" name="EmployeeDocs" type="file" id="PostGraduateFile" data-dcumentTypes="10" />
+                </div>
+                <div class="col-sm-6" style="">
+                    <label for="formFile" class="form-label">Certificate</label>
+                <input class="form-control employeeDocs" name="EmployeeDocs" type="file" id="CertificateFile" data-dcumentTypes="11" />
+                </div>
+            
+        }
+        <div class="col-12 d-flex justify-content-between">
+            <button class="btn btn-primary btn-prev">
+                <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                <span class="align-middle d-sm-inline-block d-none">Previous</span>
+            </button>
+            <button class="btn btn-primary btn-next" style="visibility:hidden">
+                <span class="align-middle d-sm-inline-block d-none me-sm-1" >Next</span>
+
+                <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+            </button>
+            <button class="btn btn-primary">
+                <span class="align-middle d-sm-inline-block d-none me-sm-1" id="uploaddocs" onclick="UploadEmployeeDocument('employeeuploaddocForm','/EmployeeUploadDoc/SaveEmployeeUploadInfo',this.id)">Uplaoad Docs</span>
+                <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+            </button>
+            <button class="btn btn-primary">
+                <span class="align-middle d-sm-inline-block d-none me-sm-1" id="uploaddocs_N_movenext" onclick="UploadEmployeeDocument('employeeuploaddocForm','/EmployeeUploadDoc/SaveEmployeeUploadInfo',this.id)">Uplaoad Docs and Move Next</span>
+                <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+            </button>
+        </div>
+    </div>
+}
+
+
+
+
+
+
+

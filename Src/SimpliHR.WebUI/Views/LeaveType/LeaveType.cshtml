@@ -1,0 +1,222 @@
+﻿@model SimpliHR.Infrastructure.Models.Masters.LeaveTypeMasterDTO
+@{
+    ViewData["Title"] = "Leave Type";
+    Model.DisplayMessage += "";
+    //Layout = null;
+}
+<style>
+
+    label.required:after {
+        content: "*";
+        color: red;
+        font-size: 14px;
+    }
+</style>
+<link rel="stylesheet" href="~/assets/vendor/libs/pickr/pickr-themes.css" />
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Leave /</span> Leave Type</h4>
+    <div class="card addShow" id="List" style="@(ViewBag.Div=="Add" ? "display:none" : "")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary" value="Add Record" onclick="AddView()" style="float:right;" />
+            <div style="clear:both"></div>
+            <div class="card-datatable table-responsive text-nowrap">
+                <table class="datatables-ajax table table-bordered List" id="List">
+                    <thead>
+                        <tr>
+
+                            <th>Leave Code</th>
+                            <th>Leave Name</th>
+                            <th>Applicable For</th>
+                            <th>Min Allowance (Days)</th>
+                            <th>Max Allowance (Days)</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.LeaveTypeMasterList != null)
+                            @foreach (var item in Model.LeaveTypeMasterList)
+                            {
+                                <tr>
+
+                                    <td>@item.LeaveTypeCode</td>
+                                    <td>@item.LeaveType</td>
+                                    <td>
+                                        @(
+                                            item.ApplicableFor == "M" ? "Male" : item.ApplicableFor == "F" ? "FeMale" : item.ApplicableFor == "B" ? "Both" : "Select"
+                                            )
+                                    </td>
+                                    <td>@item.MinLeaveRange </td>
+                                    <td>@item.MaxLeaveRange </td>
+                                    @*  <th>@(item.IsActive == true ? "Active" : "Inactive")</th>*@
+
+                                    <td>
+                                        <a class="dropdown-item d-inline" href="/LeaveType/GetLeaveTypeInfo/@item.EncryptedId"><i class="bx bx-edit-alt me-1"></i></a>
+                                        <a class="dropdown-item d-inline" href="#" onclick="DeleteRecord('@item.LeaveType','@item.EncryptedId')"><i class="bx bx-trash me-1"></i></a>
+                                    </td>
+                                   @*  <th>
+                                        <a class="btn btn-primary" href="/LeaveType/GetLeaveTypeInfo/@item.EncryptedId">Edit</a>
+                                        <button class="btn btn-primary" onclick="DeleteRecord('@item.LeaveType','@item.EncryptedId')"> Delete</button>
+                                    </th> *@
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" id="Add" style="@(ViewBag.Div=="Add" ? "" : "display:none")">
+        <div class="card-body">
+            <input type="button" class="btn btn-primary addShow" value="List" onclick="javascript:window.location.href='/LeaveType/LeaveType/'" style="float:right" />
+            <div style="clear:both"></div>
+            <form method="post" action="/LeaveType/SaveLeaveType">
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Leave Code</label>
+                        <input type="text" id="LeaveTypeCode" name="LeaveTypeCode" required maxlength="3" onKeyPress="if(this.value.length==3) return false;" class="form-control" value="@Model.LeaveTypeCode" placeholder="Leave Type Code">
+                       
+                    </div> 
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Leave Name</label>
+                        <input type="text" id="LeaveType" name="LeaveType" required maxlength="20" class="form-control" value="@Model.LeaveType" placeholder="Leave Name">
+                      
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Min Allowance (Days)</label>
+                        <input type="number" id="MinLeaveRange" name="MinLeaveRange" required maxlength="3" onKeyPress="if(this.value.length==3) return false;" class="form-control" value="@Model.MinLeaveRange" placeholder="Minimum Allowance">
+
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required" for="multicol-last-name">Max Allowance (Days)</label>
+                        <input type="number" id="MaxLeaveRange" name="MaxLeaveRange" required maxlength="3" onKeyPress="if(this.value.length==3) return false;" class="form-control" value="@Model.MaxLeaveRange" placeholder="maximum Allowance">
+
+                    </div>
+                      <div class="col-md-12">
+                        <label class="form-label" for="multicol-last-name">Description</label>
+                    <input type="text" id="Description" name="Description"  maxlength="200" class="form-control" value="@Model.LeaveType" placeholder="Leave short Description">
+                    
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="multicol-last-name">Applicable For</label>
+                        <select id="ApplicableFor" name="ApplicableFor" class="select2 form-select" data-allow-clear="true">
+                            <option value="S">Select</option>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                            <option value="B" selected >Both</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="form-label d-block" for="address">Is Paid Leave?</label>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="IsPaidLeave"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="True"
+                                   id="IsPaidYes" />
+                            <label class="form-check-label" for="defaultRadio1">Yes</label>
+                        </div>
+                        <div class="form-check d-sm-inline-block">
+                            <input name="IsPaidLeave"
+                                   class="form-check-input"
+                                   type="radio"
+                                   value="False"
+                                   id="IsPaidNo" checked />
+                            <label class="form-check-label" for="defaultRadio2"> No </label>
+                        </div>
+                    </div>
+
+                <div class="col-sm-3">
+                        <label class="form-label d-block" for="address">Pick Color</label>
+
+                    <div class="row">
+                        <input type="text" class="form-control" placeholder="YYYY-MM-DD to YYYY-MM-DD" id="flatpickr-range" style="display:none" />
+                       
+                        <div class="nano col col-sm-3 col-lg-2">
+                          
+                            <div id="color-picker-nano"></div>
+                        </div>
+                    </div>
+
+
+                </div>
+                </div>
+                <div class="pt-4">
+                    <input type="hidden" id="hdnLeaveTypeID" name="LeaveTypeId" class="form-control" value="@Model.LeaveTypeId" />
+                    <input type="hidden" id="hdnAppicalbleFor" name="ApplicableFor" class="form-control" value="@Model.ApplicableFor" />
+                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                    <button type="reset" class="btn btn-label-secondary" onclick="javascript:window.location.href='/LeaveType/LeaveType/'">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>    
+
+@section scripts {
+    <script src="~/assets/vendor/libs/pickr/pickr.js"></script>
+    <script src="~/assets/js/forms-pickers.js"></script>
+    @*<script src="../../customjs/countrydatatabletable.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".List").dataTable();
+
+             
+
+                $('#ApplicableFor').val($("#hdnAppicalbleFor").val());
+               $('#ApplicableFor').change();
+
+            if (@Model.LeaveTypeId != 0 || @Model.HttpStatusCode!= 200) {
+                $("#List").hide();
+                $("#Add").show();
+            }
+            else {
+                ClearInputs();
+            }
+
+            if ("@Model.IsPaidLeave" == "True") {
+                $("#IsPaidYes").prop("checked", true);
+            }
+            else {
+
+                $("#IsPaidNo").prop("checked", true);
+            }
+            if ("@Model.DisplayMessage.Equals(string.Empty)" == "False") {
+                $successalert("", "@Model.DisplayMessage");
+            }
+
+        });
+
+        function ClearInputs() {
+            $("#LeaveTypeCode").val("");
+            $("#MinLeaveRange").val("");
+            $("#MaxLeaveRange").val("");
+            $("#LeaveType").val("");
+            $("#Description").val("");
+
+        }
+
+        function ListView() {
+            $("#Add").hide();
+            $("#List").show();
+        }
+
+        function AddView() {
+            $("#Add").show();
+            $("#List").hide();
+
+        }
+
+        function DeleteRecord(leaveTypeName, leaveTypeId) {
+            // event.preventDefault();
+            url = $(this).attr('href');
+            history.pushState({ key: url }, '', url);
+            if (confirm("Sure want to delete leaveType '" + leaveTypeName + "'?")) {
+                window.location.href = "/LeaveType/DeleteLeaveType/" + leaveTypeId;
+            }
+            return false;
+        }
+    </script>
+    }
